@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { fetchRaceDetails } from './api';
 
+import { DriverCard } from './components';
+
 function RaceDetailsPage({ selectedYear }) {
   const [raceDetails, setRaceDetails] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -23,14 +25,22 @@ function RaceDetailsPage({ selectedYear }) {
       ) : (
         <ul>
           {raceDetails.map((race, index) => (
-            <li key={index}>
-              <strong>Race:</strong> {race.raceName}, <strong>Date:</strong> {race.date}, <strong>Time:</strong> {race.time || 'TBA'}
+            <li key={index} className='py-32'>
+              <h6 className='heading-6'>{race.raceName}, <strong>Date:</strong> {race.date}, <strong>Time:</strong> {race.time || 'TBA'}</h6>
               {race.results && race.results.length > 0 && (
-                <ul>
+                <ul className="flex flex-col sm:flex-row align-center justify-center gap-20">
                   {race.results.map((result, resultIndex) => (
-                    <li key={resultIndex}>
-                      {resultIndex + 1}. Driver: {result.driver}, Time: {result.time}
-                    </li>
+                    <DriverCard 
+                      carNumber={result.number}
+                      driver={result.driver}
+                      fastestLap={result.fastestLap}
+                      grid={result.grid}
+                      key={resultIndex}
+                      position={result.position}
+                      status={result.status}
+                      time={result.time}
+                      year={selectedYear}
+                    />
                   ))}
                 </ul>
               )}

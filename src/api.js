@@ -37,9 +37,13 @@ export const fetchRaceDetails = async (selectedYear) => {
       if (response.ok) {
         const data = await response.json();
         const results = data.MRData.RaceTable.Races[0].Results.map(result => ({
+          driver: result.Driver,
+          fastestLap: result.FastestLap,
+          grid: result.grid,
           position: result.position,
-          driver: `${result.Driver.givenName} ${result.Driver.familyName}`,
           time: result.Time?.time || 'N/A',
+          status: result.status,
+          number: result.number,
         }));
         return results;
       }

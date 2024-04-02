@@ -1,9 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { fas } from '@fortawesome/free-solid-svg-icons';
+
 import RaceDetailsPage from './RaceResultsPage';
 import ConstructorPoints from './ConstructorStandings';
 import DriverStandings from './DriverStandings';
 import { fetchUpcomingRace } from './api';
+import { Header } from './components';
+
+library.add(fas);
 
 function App() {
   const currentYear = new Date().getFullYear();
@@ -49,7 +55,8 @@ function App() {
   return (
     <Router>
       <div>
-        <h1>F1 Race Details</h1>
+        <Header />
+        
         {upcomingRace && (
           <div>
             <h2>Upcoming Race</h2>
@@ -70,8 +77,10 @@ function App() {
           ))}
         </select>
         {selectedRace && <p>Selected Race: {selectedRace}</p>}
-        <nav>
-          <Link to="/">Race Results</Link> | <Link to="/constructor-standings">Constructor Standings</Link> | <Link to="/driver-standings">Driver Standings</Link>
+        <nav className="flex justify-between sm:justify-center gap-48">
+          <h3 className="sm:heading-4"><Link to="/">Race Results</Link></h3>
+          <h3 className="sm:heading-4"><Link to="/constructor-standings">Constructor Standings</Link></h3>
+          <h3 className="sm:heading-4"><Link to="/driver-standings">Driver Standings</Link></h3>
         </nav>
         <Routes>
           <Route exact path="/" element={<RaceDetailsPage selectedYear={selectedYear} />} />
