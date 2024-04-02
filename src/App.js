@@ -3,13 +3,8 @@ import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { fas } from '@fortawesome/free-solid-svg-icons';
 
-import RaceResultsPage from './components/RaceResultsPage';
-import ConstructorStandings from './components/ConstructorStandings';
-import DriverStandings from './components/DriverStandings';
-import RacePage from './components/RacePage'; 
-import RaceSelector from './components/RaceSelector';
 import { fetchUpcomingRace } from './utils/api';
-import { Header } from './components';
+import { Header, RaceSelector, RacePage, DriverStandings, ConstructorStandings, RaceResultsPage } from './components';
 
 library.add(fas);
 

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { getDriverStandings } from '../utils/api';
 
-function DriverStandings({ selectedYear }) {
+export function DriverStandings({ selectedYear }) {
   const [standings, setStandings] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -33,5 +33,3 @@ function DriverStandings({ selectedYear }) {
     </div>
   );
 }
-
-export default DriverStandings;

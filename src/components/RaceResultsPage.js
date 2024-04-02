@@ -3,7 +3,7 @@ import { fetchRaceDetails } from '../utils/api';
 
 import { DriverCard } from './DriverCard';
 
-function RaceResultsPage({ selectedYear }) {
+export function RaceResultsPage({ selectedYear }) {
   const [raceDetails, setRaceDetails] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -51,5 +51,3 @@ function RaceResultsPage({ selectedYear }) {
     </div>
   );
 }
-
-export default RaceResultsPage;
