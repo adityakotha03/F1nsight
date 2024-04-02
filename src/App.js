@@ -3,10 +3,12 @@ import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { fas } from '@fortawesome/free-solid-svg-icons';
 
-import RaceDetailsPage from './RaceResultsPage';
-import ConstructorPoints from './ConstructorStandings';
-import DriverStandings from './DriverStandings';
-import { fetchUpcomingRace } from './api';
+import RaceResultsPage from './components/RaceResultsPage';
+import ConstructorStandings from './components/ConstructorStandings';
+import DriverStandings from './components/DriverStandings';
+import RacePage from './components/RacePage'; 
+import RaceSelector from './components/RaceSelector';
+import { fetchUpcomingRace } from './utils/api';
 import { Header } from './components';
 
 library.add(fas);
@@ -15,8 +17,8 @@ function App() {
   const currentYear = new Date().getFullYear();
   const [selectedYear, setSelectedYear] = useState(currentYear);
   const [races, setRaces] = useState([]);
-  const [selectedRace, setSelectedRace] = useState('');
   const [upcomingRace, setUpcomingRace] = useState(null);
+  const [isRaceSelected, setIsRaceSelected] = useState(false);
 
   useEffect(() => {
     const fetchRaces = async () => {
@@ -27,21 +29,21 @@ function App() {
       }
     };
 
+    fetchRaces();
+  }, [selectedYear]);
+
+  useEffect(() => {
+    const today = new Date();
     const fetchUpcoming = async () => {
-      const race = await fetchUpcomingRace(selectedYear);
+      const race = await fetchUpcomingRace(today.getFullYear());
       setUpcomingRace(race);
     };
 
-    fetchRaces();
     fetchUpcoming();
-  }, [selectedYear]);
+  }, []);
 
   const handleYearChange = (e) => {
     setSelectedYear(e.target.value);
-  };
-
-  const handleRaceChange = (e) => {
-    setSelectedRace(e.target.value);
   };
 
   const generateYears = (startYear) => {
@@ -70,22 +72,18 @@ function App() {
             <option key={year} value={year}>{year}</option>
           ))}
         </select>
-        <select value={selectedRace} onChange={handleRaceChange}>
-          <option value="">Race</option>
-          {races.map((race) => (
-            <option key={race.meeting_id} value={race.meeting_name}>{race.meeting_name}</option>
-          ))}
-        </select>
-        {selectedRace && <p>Selected Race: {selectedRace}</p>}
-        <nav className="flex justify-between sm:justify-center gap-48">
-          <h3 className="sm:heading-4"><Link to="/">Race Results</Link></h3>
-          <h3 className="sm:heading-4"><Link to="/constructor-standings">Constructor Standings</Link></h3>
-          <h3 className="sm:heading-4"><Link to="/driver-standings">Driver Standings</Link></h3>
-        </nav>
+        {/* Use RaceSelector for race selection */}
+        <RaceSelector races={races} selectedYear={selectedYear} setIsRaceSelected={setIsRaceSelected} />
+        {!isRaceSelected && ( // Conditional rendering based on isRaceSelected
+          <nav className="flex justify-between sm:justify-center gap-48">
+            <Link to="/">Race Results</Link> | <Link to="/constructor-standings">Constructor Standings</Link> | <Link to="/driver-standings">Driver Standings</Link>
+          </nav>
+        )}
         <Routes>
-          <Route exact path="/" element={<RaceDetailsPage selectedYear={selectedYear} />} />
-          <Route path="/constructor-standings" element={<ConstructorPoints selectedYear={selectedYear} />} />
+          <Route exact path="/" element={<RaceResultsPage selectedYear={selectedYear} />} />
+          <Route path="/constructor-standings" element={<ConstructorStandings selectedYear={selectedYear} />} />
           <Route path="/driver-standings" element={<DriverStandings selectedYear={selectedYear} />} />
+          <Route path="/race/:raceId" element={<RacePage />} />
         </Routes>
       </div>
     </Router>

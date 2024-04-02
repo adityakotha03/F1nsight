@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { fetchRaceDetails } from './api';
+import { fetchRaceDetails } from '../utils/api';
 
-import { DriverCard } from './components';
+import { DriverCard } from './DriverCard';
 
-function RaceDetailsPage({ selectedYear }) {
+function RaceResultsPage({ selectedYear }) {
   const [raceDetails, setRaceDetails] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -52,4 +52,4 @@ function RaceDetailsPage({ selectedYear }) {
   );
 }
 
-export default RaceDetailsPage;
+export default RaceResultsPage;
