@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import RaceResultsPage from './components/RaceResultsPage';
 import ConstructorStandings from './components/ConstructorStandings';
 import DriverStandings from './components/DriverStandings';
@@ -23,14 +23,18 @@ function App() {
       }
     };
 
+    fetchRaces();
+  }, [selectedYear]);
+
+  useEffect(() => {
+    const today = new Date();
     const fetchUpcoming = async () => {
-      const race = await fetchUpcomingRace(selectedYear);
+      const race = await fetchUpcomingRace(today.getFullYear());
       setUpcomingRace(race);
     };
 
-    fetchRaces();
     fetchUpcoming();
-  }, [selectedYear]);
+  }, []);
 
   const handleYearChange = (e) => {
     setSelectedYear(e.target.value);
