@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { getConstructorStandings } from './api';
+import { getConstructorStandings } from '../utils/api';
 
-function ConstructorPoints({ selectedYear }) {
+function ConstructorStandings({ selectedYear }) {
   const [standings, setStandings] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -34,4 +34,4 @@ function ConstructorPoints({ selectedYear }) {
   );
 }
 
-export default ConstructorPoints;
+export default ConstructorStandings;

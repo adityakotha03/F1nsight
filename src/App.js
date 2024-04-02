@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
-import RaceDetailsPage from './RaceResultsPage';
-import ConstructorPoints from './ConstructorStandings';
-import DriverStandings from './DriverStandings';
-import { fetchUpcomingRace } from './api';
+import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
+import RaceResultsPage from './components/RaceResultsPage';
+import ConstructorStandings from './components/ConstructorStandings';
+import DriverStandings from './components/DriverStandings';
+import RacePage from './components/RacePage'; 
+import RaceSelector from './components/RaceSelector';
+import { fetchUpcomingRace } from './utils/api';
 
 function App() {
   const currentYear = new Date().getFullYear();
   const [selectedYear, setSelectedYear] = useState(currentYear);
   const [races, setRaces] = useState([]);
-  const [selectedRace, setSelectedRace] = useState('');
   const [upcomingRace, setUpcomingRace] = useState(null);
+  const [isRaceSelected, setIsRaceSelected] = useState(false);
 
   useEffect(() => {
     const fetchRaces = async () => {
@@ -32,10 +34,6 @@ function App() {
 
   const handleYearChange = (e) => {
     setSelectedYear(e.target.value);
-  };
-
-  const handleRaceChange = (e) => {
-    setSelectedRace(e.target.value);
   };
 
   const generateYears = (startYear) => {
@@ -63,20 +61,18 @@ function App() {
             <option key={year} value={year}>{year}</option>
           ))}
         </select>
-        <select value={selectedRace} onChange={handleRaceChange}>
-          <option value="">Race</option>
-          {races.map((race) => (
-            <option key={race.meeting_id} value={race.meeting_name}>{race.meeting_name}</option>
-          ))}
-        </select>
-        {selectedRace && <p>Selected Race: {selectedRace}</p>}
-        <nav>
-          <Link to="/">Race Results</Link> | <Link to="/constructor-standings">Constructor Standings</Link> | <Link to="/driver-standings">Driver Standings</Link>
-        </nav>
+        {/* Use RaceSelector for race selection */}
+        <RaceSelector races={races} selectedYear={selectedYear} setIsRaceSelected={setIsRaceSelected} />
+        {!isRaceSelected && ( // Conditional rendering based on isRaceSelected
+          <nav>
+            <Link to="/">Race Results</Link> | <Link to="/constructor-standings">Constructor Standings</Link> | <Link to="/driver-standings">Driver Standings</Link>
+          </nav>
+        )}
         <Routes>
-          <Route exact path="/" element={<RaceDetailsPage selectedYear={selectedYear} />} />
-          <Route path="/constructor-standings" element={<ConstructorPoints selectedYear={selectedYear} />} />
+          <Route exact path="/" element={<RaceResultsPage selectedYear={selectedYear} />} />
+          <Route path="/constructor-standings" element={<ConstructorStandings selectedYear={selectedYear} />} />
           <Route path="/driver-standings" element={<DriverStandings selectedYear={selectedYear} />} />
+          <Route path="/race/:raceId" element={<RacePage />} />
         </Routes>
       </div>
     </Router>
