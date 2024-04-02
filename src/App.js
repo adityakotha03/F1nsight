@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
-import RaceResultsPage from './components/RaceResultsPage';
-import ConstructorStandings from './components/ConstructorStandings';
-import DriverStandings from './components/DriverStandings';
-import RacePage from './components/RacePage'; 
-import RaceSelector from './components/RaceSelector';
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { fas } from '@fortawesome/free-solid-svg-icons';
+
 import { fetchUpcomingRace } from './utils/api';
+import { Header, RaceSelector, RacePage, DriverStandings, ConstructorStandings, RaceResultsPage } from './components';
+
+library.add(fas);
 
 function App() {
   const currentYear = new Date().getFullYear();
@@ -51,7 +52,8 @@ function App() {
   return (
     <Router>
       <div>
-        <h1>F1 Race Details</h1>
+        <Header />
+        
         {upcomingRace && (
           <div>
             <h2>Upcoming Race</h2>
@@ -68,7 +70,7 @@ function App() {
         {/* Use RaceSelector for race selection */}
         <RaceSelector races={races} selectedYear={selectedYear} setIsRaceSelected={setIsRaceSelected} />
         {!isRaceSelected && ( // Conditional rendering based on isRaceSelected
-          <nav>
+          <nav className="flex justify-between sm:justify-center gap-48">
             <Link to="/">Race Results</Link> | <Link to="/constructor-standings">Constructor Standings</Link> | <Link to="/driver-standings">Driver Standings</Link>
           </nav>
         )}

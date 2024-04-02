@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 
-function RacePage() {
+export function RacePage() {
   const { state } = useLocation();
   const { raceName, meetingKey, year } = state || {};
   const [drivers, setDrivers] = useState([]);
@@ -82,5 +82,3 @@ function RacePage() {
     </div>
   );
 }
-
-export default RacePage;

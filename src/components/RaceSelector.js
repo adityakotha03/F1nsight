@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const RaceSelector = ({ races, selectedYear, setIsRaceSelected }) => {
+export const RaceSelector = ({ races, selectedYear, setIsRaceSelected }) => {
   const navigate = useNavigate();
 
   const handleRaceChange = (e) => {
@@ -26,5 +26,3 @@ const RaceSelector = ({ races, selectedYear, setIsRaceSelected }) => {
     </select>
   );
 };
-
-export default RaceSelector;
