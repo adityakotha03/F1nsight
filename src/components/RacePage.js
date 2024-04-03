@@ -1,46 +1,80 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { fetchDriversAndTires } from '../utils/api'; // Adjust the import path as needed
+import { fetchDriversAndTires } from '../utils/api';
 
 export function RacePage() {
   const { state } = useLocation();
   const { raceName, meetingKey, year } = state || {};
   const [drivers, setDrivers] = useState([]);
+  const [laps, setLaps] = useState([]);
+  const [driversDetails, setDriversDetails] = useState({});
+  const [startingGrid, setStartingGrid] = useState([]);
 
   useEffect(() => {
-    const fetchSessionKey = async () => {
+    const fetchData = async () => {
+      if (!meetingKey) return;
+    
       try {
         const sessionsResponse = await fetch(`https://api.openf1.org/v1/sessions?meeting_key=${meetingKey}`);
-        if (!sessionsResponse.ok) throw new Error('Failed to fetch sessions');
         const sessionsData = await sessionsResponse.json();
         const raceSession = sessionsData.find(session => session.session_name === "Race");
         if (!raceSession) throw new Error('Race session not found');
-        return raceSession.session_key;
-      } catch (error) {
-        console.error("Error fetching session key:", error);
-      }
-    };
-
-    const fetchData = async () => {
-      try {
-        const sessionKey = await fetchSessionKey();
-        const driversData = await fetchDriversAndTires(sessionKey);
+        const sessionKey = raceSession.session_key;
+    
+        const [driverDetailsData, startingGridData, driversData, lapsData] = await Promise.all([
+          fetch(`https://api.openf1.org/v1/drivers?session_key=${sessionKey}`).then(res => res.json()),
+          fetch(`https://api.openf1.org/v1/position?session_key=${sessionKey}`).then(res => res.json()),
+          fetchDriversAndTires(sessionKey),
+          fetch(`https://api.openf1.org/v1/laps?session_key=${sessionKey}`).then(res => res.json())
+        ]);
+    
+        const driverDetailsMap = driverDetailsData.reduce((acc, driver) => ({
+          ...acc,
+          [driver.driver_number]: driver.name_acronym
+        }), {});
+    
+        setDriversDetails(driverDetailsMap);
+    
+        const earliestDateTime = startingGridData[0]?.date;
+        const filteredStartingGrid = startingGridData.filter(item => item.date === earliestDateTime);
+        setStartingGrid(filteredStartingGrid);
+    
         setDrivers(driversData);
+    
+        setLaps(lapsData.map(lap => ({
+          ...lap,
+          driver_acronym: driverDetailsMap[lap.driver_number]
+        })));
       } catch (error) {
         console.error("Error fetching data:", error);
       }
-    };
+    };    
 
-    if (meetingKey) {
-      fetchData();
-    }
-  }, [meetingKey]); // Rerun when meetingKey changes
+    fetchData();
+  }, [meetingKey]);
+
+  const handleDriverAcronymClick = (acronym) => {
+    const driverLaps = laps.filter(lap => lap.driver_acronym === acronym);
+    const lapDetails = driverLaps.map(lap => `Lap Number: ${lap.lap_number}, Duration: ${lap.lap_duration}, Driver: ${acronym}`).join(', ');
+    console.log(lapDetails);
+  };
+
+  const uniqueAcronyms = [...new Set(laps.map(lap => lap.driver_acronym))];
 
   return (
     <div>
       <h2>Race Details</h2>
       {raceName && <p>Race Name: {raceName} {year}</p>}
       {meetingKey && <p>Meeting Key: {meetingKey}</p>}
+      <h3>Lap Data</h3>
+      <p>Click on a driver acronym to see their lap details in console:</p>
+      <ul>
+        {uniqueAcronyms.map((acronym, index) => (
+          <li key={index} style={{ color: 'red', textDecoration: 'underline', cursor: 'pointer' }} onClick={() => handleDriverAcronymClick(acronym)}>
+            {acronym}
+          </li>
+        ))}
+      </ul>
       <h3>Tire Strategy</h3>
       <ul>
         {drivers.map((driver, index) => (
@@ -53,6 +87,16 @@ export function RacePage() {
             </ul>
           </li>
         ))}
+      </ul>
+      <h3>Starting Grid</h3>
+      <ul>
+        {startingGrid
+          .sort((a, b) => a.position - b.position)
+          .map((gridPosition, index) => (
+            <li key={index}>
+              Position: {gridPosition.position}, Driver: {driversDetails[gridPosition.driver_number]}
+            </li>
+          ))}
       </ul>
     </div>
   );
