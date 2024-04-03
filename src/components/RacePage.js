@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
+import { fetchDriversAndTires } from '../utils/api'; // Adjust the import path as needed
 
 export function RacePage() {
   const { state } = useLocation();
@@ -20,44 +21,18 @@ export function RacePage() {
       }
     };
 
-    const fetchDriversAndTires = async () => {
+    const fetchData = async () => {
       try {
         const sessionKey = await fetchSessionKey();
-        if (!sessionKey) return;
-        const driversResponse = await fetch(`https://api.openf1.org/v1/drivers?session_key=${sessionKey}`);
-        if (!driversResponse.ok) throw new Error('Failed to fetch drivers');
-        let driversData = await driversResponse.json();
-
-        const stintsResponse = await fetch(`https://api.openf1.org/v1/stints?session_key=${sessionKey}`);
-        if (!stintsResponse.ok) throw new Error('Failed to fetch stints');
-        const stintsData = await stintsResponse.json();
-
-        // Grouping stints by driver_number
-        const stintsByDriver = stintsData.reduce((acc, stint) => {
-          const { driver_number, lap_end, compound } = stint;
-          if (!acc[driver_number]) {
-            acc[driver_number] = [];
-          }
-          acc[driver_number].push({ lap_end, compound });
-          return acc;
-        }, {});
-
-        // Adding tire data to drivers
-        driversData = driversData.map(driver => ({
-          ...driver,
-          number: driver.driver_number,
-          acronym: driver.name_acronym,
-          tires: stintsByDriver[driver.driver_number] || [],
-        }));
-
+        const driversData = await fetchDriversAndTires(sessionKey);
         setDrivers(driversData);
       } catch (error) {
-        console.error("Error fetching drivers and tires:", error);
+        console.error("Error fetching data:", error);
       }
     };
 
     if (meetingKey) {
-      fetchDriversAndTires();
+      fetchData();
     }
   }, [meetingKey]); // Rerun when meetingKey changes
 

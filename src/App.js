@@ -53,7 +53,7 @@ function App() {
     <Router>
       <Header>
         <select value={selectedYear} onChange={handleYearChange} className="bg-glow gradient-border bg-transparent">
-          {generateYears(1950).map((year) => (
+          {generateYears(2023).map((year) => (
             <option key={year} value={year}>{year}</option>
           ))}
         </select>
@@ -69,7 +69,7 @@ function App() {
             <p>Time: {upcomingRace.time}</p>
           </div>
         )}
-
+        
         {!isRaceSelected && ( // Conditional rendering based on isRaceSelected
           <nav className="flex justify-between sm:justify-center gap-48 text-sm">
             <Link to="/">Race Results</Link> | <Link to="/constructor-standings">Constructor Standings</Link> | <Link to="/driver-standings">Driver Standings</Link>
