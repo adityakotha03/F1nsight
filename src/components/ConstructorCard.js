@@ -21,8 +21,8 @@ export const ConstructorCard = (props) => {
                 <div className={classNames("divider-glow", { '-mt-16' : type === 'cars' })} /> 
                 <p className="heading-4 mb-16">{name}</p>
             </div>
-            <div className="bg-gradient-to-b from-violet-700/30 to-fuchsia-700/30 self-stretch w-72 flex items-center justify-center">
-                <span className="heading-2 shadow-lg">{points}</span>
+            <div className="bg-gradient-to-b from-neutral-700/30 to-neutral-500/30 self-stretch w-72 flex items-center justify-center">
+                <span className="heading-2">{points}</span>
             </div>
         </div>
     );

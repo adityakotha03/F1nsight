@@ -22,7 +22,7 @@ export function ConstructorStandings({ selectedYear }) {
 
   return (
     <div>
-      <h2>Constructor Points</h2>
+      <h2 className="heading-4 text-center mt-32">Constructor Points</h2>
       {isLoading ? (
         <p>Loading...</p>
       ) : (

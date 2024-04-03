@@ -30,7 +30,7 @@ export const DriverCard = (props) => {
                     arrow={false}
                     content={
                         <div className="p-4">
-                            <div className="bg-violet-500 text-center font-display">
+                            <div className="bg-neutral-500 text-center font-display">
                                 {fastestLap.Time.time}
                             </div>
 

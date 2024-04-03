@@ -22,7 +22,7 @@ export function DriverStandings({ selectedYear }) {
 
   return (
     <div>
-      <h2>Driver Standings</h2>
+      <h2 className="heading-4 text-center mt-32">Driver Standings</h2>
       {isLoading ? (
         <p>Loading...</p>
       ) : (
