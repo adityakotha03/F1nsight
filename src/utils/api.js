@@ -68,6 +68,7 @@ export const getConstructorStandings = async (selectedYear) => {
         const standings = data.MRData.StandingsTable.StandingsLists[0].ConstructorStandings;
         return standings.map(standing => ({
           constructorName: standing.Constructor.name,
+          constructorId: standing.Constructor.constructorId,
           points: standing.points,
         }));
       }
@@ -85,6 +86,7 @@ export const getConstructorStandings = async (selectedYear) => {
         const data = await response.json();
         const standings = data.MRData.StandingsTable.StandingsLists[0].DriverStandings;
         return standings.map(standing => ({
+          driverCode: standing.Driver.code,
           driverName: `${standing.Driver.givenName} ${standing.Driver.familyName}`,
           constructorName: standing.Constructors[0].name,
           points: standing.points,

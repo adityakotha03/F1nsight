@@ -2,14 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-
-import { Popover } from './Popover';
+import { Popover } from "flowbite-react";
 
 export const DriverCard = (props) => {
     const { className, carNumber, driver, fastestLap, grid, position, status, time, year} = props;
     
     return (
-        <div className={classNames(className, 'driver-card flex bg-glow pl-10 gradient-border relative')}>
+        <div className={classNames(className, 'driver-card flex bg-glow pl-10 gradient-border relative mt-16')}>
             <div className="flex items-stretch">
                 <div className="self-center">
                     <p className="heading-1">P{position}</p>
@@ -22,7 +21,41 @@ export const DriverCard = (props) => {
                 <span className="heading-4 mb-12">{driver.code}</span>
             </div>
             {fastestLap.rank === "1" && (
-                <Popover content={<div className="p-2">Popover content</div>}>
+                <Popover
+                    aria-labelledby="default-popover"
+                    className="bg-glow gradient-border p-4 bg-gray-950/60 backdrop-blur-sm"
+                    trigger="hover"
+                    placement="top"
+                    // open={true}
+                    arrow={false}
+                    content={
+                        <div className="p-4">
+                            <div className="bg-violet-500 text-center font-display">
+                                {fastestLap.Time.time}
+                            </div>
+
+                            <div className="flex align-start justify-around">
+                                <div className="flex flex-col items-center">
+                                    <span className="text-sm">Lap</span>
+                                    <span className="font-display">{fastestLap.lap}</span>
+                                </div>
+                                <div className="flex flex-col items-center">
+                                    <span className="text-sm">Tyre</span>
+                                    <span className="font-display">?</span>
+                                </div>
+                            </div>
+
+                            <div className="flex flex-col items-center">
+                                <span className="text-sm">Avg Speed</span>
+                                <div>
+                                    <span className="font-display">{fastestLap.AverageSpeed.speed}</span>
+                                    <span className="text-sm">{fastestLap.AverageSpeed.units}</span>
+                                </div>
+                            </div>
+                            
+                        </div>
+                    }
+                >
                     <span className="fa-layers fa-fw absolute -top-8 right-4">
                         <FontAwesomeIcon icon="circle" />
                         <FontAwesomeIcon icon="clock" className="text-violet-600" inverse transform="shrink-2" />

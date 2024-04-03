@@ -1,8 +1,15 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ["./src/**/*.{html,js}"],
+  content: [
+    "./src/**/*.{html,js}",
+    'node_modules/flowbite-react/lib/esm/**/*.js',
+  ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        display: 'Bungee, ui-serif', // Adds a new `font-display` class
+      }
+    },
     spacing: {
       0.5: '0.05rem',
       1: '0.1rem',
@@ -39,6 +46,8 @@ module.exports = {
       96: '9.6rem',
     },
   },
-  plugins: [],
+  plugins: [
+    require('flowbite/plugin')
+  ],
 }
 
