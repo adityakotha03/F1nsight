@@ -133,4 +133,31 @@ export const getConstructorStandings = async (selectedYear) => {
       return [];
     }
   };  
+
+
+export const fetchCircuitIdByCountry = async (year, country) => {
+  try {
+    const response = await fetch(`https://ergast.com/api/f1/${year}/circuits.json`);
+    const data = await response.json();
+    const circuit = data.MRData.CircuitTable.Circuits.find(circuit => circuit.Location.country === country);
+    return circuit ? circuit.circuitId : null;
+  } catch (error) {
+    console.error("Error fetching circuit data:", error);
+    return null;
+  }
+};
+
+export const fetchRaceResultsByCircuit = async (year, circuitId) => {
+  try {
+    const url = `https://ergast.com/api/f1/${year}/circuits/${circuitId}/results.json`;
+    const response = await fetch(url);
+    const data = await response.json();
+    // Assuming the structure contains RaceTable -> Races -> Results
+    const results = data.MRData.RaceTable.Races[0]?.Results;
+    return results || [];
+  } catch (error) {
+    console.error("Error fetching race results:", error);
+    return [];
+  }
+};
   

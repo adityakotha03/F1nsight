@@ -1,20 +1,31 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { fetchDriversAndTires } from '../utils/api';
+import { fetchDriversAndTires, fetchCircuitIdByCountry, fetchRaceResultsByCircuit } from '../utils/api';
 
 export function RacePage() {
   const { state } = useLocation();
-  const { raceName, meetingKey, year } = state || {};
+  const { raceName, meetingKey, year, country } = state || {};
   const [drivers, setDrivers] = useState([]);
   const [laps, setLaps] = useState([]);
   const [driversDetails, setDriversDetails] = useState({});
   const [startingGrid, setStartingGrid] = useState([]);
+  const [circuitId, setCircuitId] = useState('');
+  const [raceResults, setRaceResults] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
       if (!meetingKey) return;
     
       try {
+        // Fetch circuit ID based on the country and year
+        const circuitId = await fetchCircuitIdByCountry(year, country);
+        setCircuitId(circuitId);
+
+        if (circuitId) {
+          const results = await fetchRaceResultsByCircuit(year, circuitId);
+          setRaceResults(results);
+        }
+
         const sessionsResponse = await fetch(`https://api.openf1.org/v1/sessions?meeting_key=${meetingKey}`);
         const sessionsData = await sessionsResponse.json();
         const raceSession = sessionsData.find(session => session.session_name === "Race");
@@ -51,7 +62,7 @@ export function RacePage() {
     };    
 
     fetchData();
-  }, [meetingKey]);
+  }, [meetingKey, year, country, circuitId]);
 
   const handleDriverAcronymClick = (acronym) => {
     const driverLaps = laps.filter(lap => lap.driver_acronym === acronym);
@@ -66,6 +77,17 @@ export function RacePage() {
       <h2>Race Details</h2>
       {raceName && <p>Race Name: {raceName} {year}</p>}
       {meetingKey && <p>Meeting Key: {meetingKey}</p>}
+
+      <h3>Leaderboard</h3>
+      <ul>
+        {raceResults.map((result, index) => (
+          <li key={index}>
+            Position: {result.position}, Number: {driversDetails[result.number]}, 
+            Time: {result.Time?.time || 'N/A'}, Status: {result.status}
+          </li>
+        ))}
+      </ul>
+
       <h3>Lap Data</h3>
       <p>Click on a driver acronym to see their lap details in console:</p>
       <ul>
@@ -75,6 +97,7 @@ export function RacePage() {
           </li>
         ))}
       </ul>
+
       <h3>Tire Strategy</h3>
       <ul>
         {drivers.map((driver, index) => (
@@ -88,6 +111,7 @@ export function RacePage() {
           </li>
         ))}
       </ul>
+
       <h3>Starting Grid</h3>
       <ul>
         {startingGrid
@@ -98,6 +122,7 @@ export function RacePage() {
             </li>
           ))}
       </ul>
+
     </div>
   );
 }
