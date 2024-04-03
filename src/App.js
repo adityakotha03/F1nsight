@@ -70,7 +70,7 @@ function App() {
         {/* Use RaceSelector for race selection */}
         <RaceSelector races={races} selectedYear={selectedYear} setIsRaceSelected={setIsRaceSelected} />
         {!isRaceSelected && ( // Conditional rendering based on isRaceSelected
-          <nav className="flex justify-between sm:justify-center gap-48">
+          <nav className="flex justify-between sm:justify-center gap-48 text-sm">
             <Link to="/">Race Results</Link> | <Link to="/constructor-standings">Constructor Standings</Link> | <Link to="/driver-standings">Driver Standings</Link>
           </nav>
         )}

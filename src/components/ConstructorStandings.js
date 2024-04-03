@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { getConstructorStandings } from '../utils/api';
 
+import { ConstructorCard } from './ConstructorCard';
+
 export function ConstructorStandings({ selectedYear }) {
   const [standings, setStandings] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -16,6 +18,8 @@ export function ConstructorStandings({ selectedYear }) {
     fetchData();
   }, [selectedYear]);
 
+  // console.log(standings);
+
   return (
     <div>
       <h2>Constructor Points</h2>
@@ -25,7 +29,13 @@ export function ConstructorStandings({ selectedYear }) {
       <ul>
         {standings.map((standing, index) => (
           <li key={index}>
-            Constructor: {standing.constructorName}, Points: {standing.points}
+            <ConstructorCard 
+              type='cars'
+              image={standing.constructorId} 
+              points={standing.points}
+              name={standing.constructorName}
+              year={selectedYear} 
+            />
           </li>
         ))}
       </ul>

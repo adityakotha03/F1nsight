@@ -18,6 +18,8 @@ export function RaceResultsPage({ selectedYear }) {
     fetchData();
   }, [selectedYear]);
 
+// console.log(raceDetails);
+
   return (
     <div>
       {isLoading ? (
@@ -26,7 +28,15 @@ export function RaceResultsPage({ selectedYear }) {
         <ul>
           {raceDetails.map((race, index) => (
             <li key={index} className='py-32'>
-              <h6 className='heading-6'>{race.raceName}, <strong>Date:</strong> {race.date}, <strong>Time:</strong> {race.time || 'TBA'}</h6>
+              <div className='text-center'>
+                <h6 className='heading-6'>
+                  {race.raceName}
+                </h6>
+                <div className='text-sm text-fuchsia-300'>
+                  {race.date}
+                  <span className="ml-8">{race.time || 'TBA'}</span>
+                </div>
+              </div>
               {race.results && race.results.length > 0 && (
                 <ul className="flex flex-col sm:flex-row align-center justify-center gap-20">
                   {race.results.map((result, resultIndex) => (

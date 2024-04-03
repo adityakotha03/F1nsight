@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { getDriverStandings } from '../utils/api';
 
+import { ConstructorCard } from './ConstructorCard';
+
 export function DriverStandings({ selectedYear }) {
   const [standings, setStandings] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -16,6 +18,8 @@ export function DriverStandings({ selectedYear }) {
     fetchData();
   }, [selectedYear]);
 
+  // console.log(standings);
+
   return (
     <div>
       <h2>Driver Standings</h2>
@@ -24,8 +28,14 @@ export function DriverStandings({ selectedYear }) {
       ) : (
         <ul>
           {standings.map((standing, index) => (
-            <li key={index}>
-              <strong>Position:</strong> {index + 1}, <strong>Driver:</strong> {standing.driverName}, <strong>Constructor:</strong> {standing.constructorName}, <strong>Points:</strong> {standing.points}
+            <li key={index} className='w-full'>
+              <ConstructorCard 
+                type='drivers'
+                image={standing.driverCode} 
+                points={standing.points}
+                name={standing.driverName}
+                year={selectedYear} 
+              />
             </li>
           ))}
         </ul>
