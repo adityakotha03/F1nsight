@@ -16,7 +16,7 @@ export const fetchRaceDetails = async (selectedYear) => {
           } else {
             return Promise.resolve({ raceName: race.raceName, 
               date: race.date,
-              time: race.time });
+              time: race.time, });
           }
         });
   
@@ -97,4 +97,40 @@ export const getConstructorStandings = async (selectedYear) => {
     }
     return [];
   };
+
+  export const fetchDriversAndTires = async (sessionKey) => {
+    try {
+      if (!sessionKey) return [];
+      const driversResponse = await fetch(`https://api.openf1.org/v1/drivers?session_key=${sessionKey}`);
+      if (!driversResponse.ok) throw new Error('Failed to fetch drivers');
+      let driversData = await driversResponse.json();
+  
+      const stintsResponse = await fetch(`https://api.openf1.org/v1/stints?session_key=${sessionKey}`);
+      if (!stintsResponse.ok) throw new Error('Failed to fetch stints');
+      const stintsData = await stintsResponse.json();
+  
+      // Grouping stints by driver_number
+      const stintsByDriver = stintsData.reduce((acc, stint) => {
+        const { driver_number, lap_end, compound } = stint;
+        if (!acc[driver_number]) {
+          acc[driver_number] = [];
+        }
+        acc[driver_number].push({ lap_end, compound });
+        return acc;
+      }, {});
+  
+      // Adding tire data to drivers
+      driversData = driversData.map(driver => ({
+        ...driver,
+        number: driver.driver_number,
+        acronym: driver.name_acronym,
+        tires: stintsByDriver[driver.driver_number] || [],
+      }));
+  
+      return driversData;
+    } catch (error) {
+      console.error("Error fetching drivers and tires:", error);
+      return [];
+    }
+  };  
   

@@ -63,7 +63,7 @@ function App() {
           </div>
         )}
         <select value={selectedYear} onChange={handleYearChange}>
-          {generateYears(1950).map((year) => (
+          {generateYears(2023).map((year) => (
             <option key={year} value={year}>{year}</option>
           ))}
         </select>

@@ -30,12 +30,12 @@ export function RaceResultsPage({ selectedYear }) {
             <li key={index} className='py-32'>
               <div className='text-center'>
                 <h6 className='heading-6'>
-                  {race.raceName}
+                  {race.raceName} {race.season}
                 </h6>
-                <div className='text-sm text-fuchsia-300'>
+                {/* <div className='text-sm text-fuchsia-300'>
                   {race.date}
                   <span className="ml-8">{race.time || 'TBA'}</span>
-                </div>
+                </div>*/}
               </div>
               {race.results && race.results.length > 0 && (
                 <ul className="flex flex-col sm:flex-row align-center justify-center gap-20">
@@ -46,7 +46,7 @@ export function RaceResultsPage({ selectedYear }) {
                       fastestLap={result.fastestLap}
                       grid={result.grid}
                       key={resultIndex}
-                      position={result.position}
+                      position={parseInt(result.position, 10)}
                       status={result.status}
                       time={result.time}
                       year={selectedYear}
