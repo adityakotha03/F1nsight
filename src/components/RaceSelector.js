@@ -12,7 +12,7 @@ export const RaceSelector = ({ races, selectedYear, setIsRaceSelected }) => {
       setIsRaceSelected(true);
       const race = races.find(r => r.meeting_name === e.target.value);
       if (race) {
-        navigate(`/race/${race.meeting_key}`, { state: { raceName: race.meeting_name, meetingKey: race.meeting_key, year: selectedYear } });
+        navigate(`/race/${race.meeting_key}`, { state: { raceName: race.meeting_name, meetingKey: race.meeting_key, year: selectedYear, country: race.country_name } });
       }
     }
   };
