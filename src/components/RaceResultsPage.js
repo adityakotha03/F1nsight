@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { fetchRaceDetails } from '../utils/api';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { DriverCard } from './DriverCard';
 
@@ -22,6 +23,7 @@ export function RaceResultsPage({ selectedYear }) {
 
   return (
     <div>
+      <h2 className="heading-4 text-center mt-32">{selectedYear} Race Results</h2>
       {isLoading ? (
         <p>Loading...</p>
       ) : (
@@ -32,7 +34,7 @@ export function RaceResultsPage({ selectedYear }) {
                 <h6 className='heading-6'>
                   {race.raceName}
                 </h6>
-                <div className='text-sm text-fuchsia-300'>
+                <div className='text-sm text-neutral-500'>
                   {race.date}
                   <span className="ml-8">{race.time || 'TBA'}</span>
                 </div>
@@ -54,6 +56,7 @@ export function RaceResultsPage({ selectedYear }) {
                   ))}
                 </ul>
               )}
+              <a className="text-sm block text-center mt-16" href="/">full weekend results <FontAwesomeIcon icon="fa-arrow-up-right-from-square" /></a>
             </li>
           ))}
         </ul>

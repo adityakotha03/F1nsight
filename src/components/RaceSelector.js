@@ -18,7 +18,7 @@ export const RaceSelector = ({ races, selectedYear, setIsRaceSelected }) => {
   };
 
   return (
-    <select onChange={handleRaceChange}>
+    <select onChange={handleRaceChange} className="bg-glow gradient-border bg-transparent">
       <option value="">Select a Race</option>
       {races.map((race) => (
         <option key={race.meeting_key} value={race.meeting_name}>{race.meeting_name}</option>

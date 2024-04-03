@@ -51,9 +51,16 @@ function App() {
 
   return (
     <Router>
-      <div>
-        <Header />
-        
+      <Header>
+        <select value={selectedYear} onChange={handleYearChange} className="bg-glow gradient-border bg-transparent">
+          {generateYears(1950).map((year) => (
+            <option key={year} value={year}>{year}</option>
+          ))}
+        </select>
+        {/* Use RaceSelector for race selection */}
+        <RaceSelector races={races} selectedYear={selectedYear} setIsRaceSelected={setIsRaceSelected} />
+      </Header>
+      <div className='px-8 sm:px-16'>
         {upcomingRace && (
           <div>
             <h2>Upcoming Race</h2>
@@ -62,18 +69,13 @@ function App() {
             <p>Time: {upcomingRace.time}</p>
           </div>
         )}
-        <select value={selectedYear} onChange={handleYearChange}>
-          {generateYears(1950).map((year) => (
-            <option key={year} value={year}>{year}</option>
-          ))}
-        </select>
-        {/* Use RaceSelector for race selection */}
-        <RaceSelector races={races} selectedYear={selectedYear} setIsRaceSelected={setIsRaceSelected} />
+
         {!isRaceSelected && ( // Conditional rendering based on isRaceSelected
           <nav className="flex justify-between sm:justify-center gap-48 text-sm">
             <Link to="/">Race Results</Link> | <Link to="/constructor-standings">Constructor Standings</Link> | <Link to="/driver-standings">Driver Standings</Link>
           </nav>
         )}
+
         <Routes>
           <Route exact path="/" element={<RaceResultsPage selectedYear={selectedYear} />} />
           <Route path="/constructor-standings" element={<ConstructorStandings selectedYear={selectedYear} />} />
