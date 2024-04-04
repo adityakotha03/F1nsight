@@ -4,41 +4,67 @@ import classNames from 'classnames';
 
 
 const tireTypeClasses = {
-  soft: 'bg-red-600',
-  medium: 'bg-yellow-400',
-  hard: 'bg-white',
-  // Add more tire types
+  soft: '#c00000', 
+  medium: '#ffd600', 
+  hard: '#ffffff',
+  inter: '#38a169', // bg-green-400
+  wet: '#2f855a' // bg-green-700
 };
 
 export const TireStrategyCard = ({ driver, tires }) => {
+  const baseWidthPerLap = 20; 
+  const borderWidth = '2px'; 
+
   return (
-    <div className="mb-4">
-      <div className="flex items-center justify-between">
-        <span className="text-white font-bold">{driver.acronym}</span>
-        <div className="flex-1 ml-4">
-          {tires.map((tire, index) => (
-            <span
-              key={index}
-              className={classNames(
-                'inline-block h-6',
-                tireTypeClasses[tire.compound.toLowerCase()], 
-                {
-                  'mr-2': index < tires.length - 1, 
-                }
-              )}
-              style={{ width: `${tire.lap_end * 4}px` }} 
-            >
-              {index === 0 || tires[index - 1].lap_end !== tire.lap_start ? (
-                <span className="text-xs text-white pl-1">{tire.lap_start}</span>
-              ) : null}
-            </span>
-          ))}
+    <div className="mb-4 bg-black p-4 rounded-lg">
+      <div className="flex items-center justify-between text-white">
+        <span className="font-bold">{driver}</span>
+        <div className="flex-1 mx-4 flex">
+          {tires.map((tire, index) => {
+            const previousLapEnd = index > 0 ? tires[index - 1].lap_end : 0;
+            const widthValue = index === 0 ? tire.lap_end : tire.lap_end - previousLapEnd;
+            const boxWidth = `${widthValue * baseWidthPerLap}px`;
+            const tireClass = tireTypeClasses[tire.compound.toLowerCase()];
+            
+            return (
+              <div
+                key={index}
+                className="relative mr-2"
+                style={{
+                  width: boxWidth,
+                  height: '25px', 
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  marginRight: '2px', 
+                  backgroundColor: 'transparent', 
+                  borderColor: tireClass, 
+                  borderWidth: borderWidth,
+                  borderStyle: 'solid',
+                }}
+              >
+                <span
+                  className="font-bold"
+                  style={{
+                    color: tireClass, 
+                    width: '100%', 
+                    textAlign: 'center', 
+                  }}
+                >
+                  {widthValue}
+                </span>
+              </div>
+            );
+          })}
         </div>
-        <span className="text-white font-bold">{tires[tires.length - 1].lap_end}</span>
       </div>
     </div>
   );
 };
+
+
+
+
 
 TireStrategyCard.propTypes = {
   driver: PropTypes.shape({
