@@ -5,21 +5,36 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Popover } from "flowbite-react";
 
 export const DriverCard = (props) => {
-    const { className, carNumber, driver, fastestLap, grid, position, status, time, year} = props;
+    const { className, carNumber, driver, fastestLap, grid, position, layoutSmall, status, time, year} = props;
     
     return (
-        <div className={classNames(className, 'driver-card flex bg-glow pl-10 gradient-border relative mt-16')}>
-            <div className="flex items-stretch">
-                <div className="self-center">
-                    <p className="heading-1">P{position}</p>
-                    <p className="text-sm -mt-4">{time}</p>
+        <div className={classNames(
+            className, 
+            'driver-card flex bg-glow pl-10 gradient-border relative mt-16',
+            { 'driver-card--small': layoutSmall}
+        )}>
+            {layoutSmall ? (
+                <div className="flex items-center">
+                    <p className="heading-4 pr-8 border-r-2 mr-8">P{position}</p>
+                    <span className="heading-4 pr-8">{driver.code}</span>
+                    <p className="text-sm pr-8">{time}</p>
                 </div>
-            </div>
-            <div className="flex flex-col items-center -mt-16">
-                <img alt="" src={`/images/${year}/drivers/${driver.code}.png`} width={80} height={80} className="px-10"/>
-                <div className="divider-glow -mb-10" /> 
-                <span className="heading-4 mb-12">{driver.code}</span>
-            </div>
+            ) : (
+                <>
+                    <div className="flex items-stretch">
+                        <div className="self-center">
+                            <p className="heading-1">P{position}</p>
+                            <p className={classNames("text-sm -mt-4")}>{time}</p>
+                        </div>
+                    </div>
+                    <div className="flex flex-col items-center -mt-16">
+                        <img alt="" src={`/images/${year}/drivers/${driver.code}.png`} width={80} height={80} className="px-10"/>
+                        <div className="divider-glow -mb-10" /> 
+                        <span className="heading-4 mb-12">{driver.code}</span>
+                    </div>
+                </>
+            )}
+            
             {fastestLap.rank === "1" && (
                 <Popover
                     aria-labelledby="default-popover"
@@ -98,4 +113,5 @@ DriverCard.propTypes = {
         time: PropTypes.string,
     }),
     year: PropTypes.string,
+    layoutSmall: PropTypes.bool,
 };

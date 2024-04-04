@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
+
 import { fetchDriversAndTires, fetchCircuitIdByCountry, fetchRaceResultsByCircuit } from '../utils/api';
+import { DriverCard } from './DriverCard';
 
 export function RacePage() {
   const { state } = useLocation();
@@ -72,33 +74,47 @@ export function RacePage() {
 
   const uniqueAcronyms = [...new Set(laps.map(lap => lap.driver_acronym))];
 
+  // console.log(raceResults);
+
   return (
     <div>
-      <h2>Race Details</h2>
+      <h2 className="heading-2">Race Details</h2>
       {raceName && <p>Race Name: {raceName} {year}</p>}
       {meetingKey && <p>Meeting Key: {meetingKey}</p>}
 
       <h3>Leaderboard</h3>
-      <ul>
-        {raceResults.map((result, index) => (
-          <li key={index}>
-            Position: {result.position}, Number: {driversDetails[result.number]}, 
-            Time: {result.Time?.time || 'N/A'}, Status: {result.status}
-          </li>
-        ))}
-      </ul>
+      <div className="race-page flex">
+        <div className="race-page__col grow-0">
+          <ul>
+            {raceResults.map((result, index) => (
+              <DriverCard 
+                driver={result.Driver}
+                position={result.position}
+                year={year} 
+                time={result.Time?.time || 'N/A'}
+                fastestLap={result.FastestLap}
+                layoutSmall={index > 2}
+              />
+            ))}
+          </ul>
+        </div>
+        <div className="race-page__col grow">
+          <h3 className="heading-3">Lap Data</h3>
+          <p>Click on a driver acronym to see their lap details in console:</p>
+          <ul>
+            {uniqueAcronyms.map((acronym, index) => (
+              <li key={index} style={{ color: 'red', textDecoration: 'underline', cursor: 'pointer' }} onClick={() => handleDriverAcronymClick(acronym)}>
+                {acronym}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+      
 
-      <h3>Lap Data</h3>
-      <p>Click on a driver acronym to see their lap details in console:</p>
-      <ul>
-        {uniqueAcronyms.map((acronym, index) => (
-          <li key={index} style={{ color: 'red', textDecoration: 'underline', cursor: 'pointer' }} onClick={() => handleDriverAcronymClick(acronym)}>
-            {acronym}
-          </li>
-        ))}
-      </ul>
+      
 
-      <h3>Tire Strategy</h3>
+      <h3 className="heading-3">Tire Strategy</h3>
       <ul>
         {drivers.map((driver, index) => (
           <li key={index}>
@@ -112,7 +128,7 @@ export function RacePage() {
         ))}
       </ul>
 
-      <h3>Starting Grid</h3>
+      <h3 className="heading-3">Starting Grid</h3>
       <ul>
         {startingGrid
           .sort((a, b) => a.position - b.position)
