@@ -129,18 +129,11 @@ export function RacePage() {
       
 
       <h3 className="heading-3">Tire Strategy</h3>
-      <ul>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {drivers.map((driver, index) => (
-          <li key={index}>
-            Driver Number: {driver.number}, Acronym: {driver.acronym}
-            <ul>
-              {driver.tires?.map((tire, tireIndex) => (
-                <li key={tireIndex}>Lap End: {tire.lap_end}, Compound: {tire.compound}</li>
-              ))}
-            </ul>
-          </li>
+          <TireStrategyCard key={index} driver={driver.acronym} tires={driver.tires} />
         ))}
-      </ul>
+      </div>
 
       <h3 className="heading-3">Starting Grid</h3>
       <ul>
