@@ -7,8 +7,8 @@ const tireTypeClasses = {
   soft: '#c00000', 
   medium: '#ffd600', 
   hard: '#ffffff',
-  inter: '#38a169', // bg-green-400
-  wet: '#2f855a' // bg-green-700
+  intermediate: '#4caf50', // bg-green-400
+  wet: '#1b5e20' // bg-green-700
 };
 
 export const TireStrategyCard = ({ driver, tires }) => {
