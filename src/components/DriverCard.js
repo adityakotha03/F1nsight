@@ -35,7 +35,7 @@ export const DriverCard = (props) => {
                 </>
             )}
             
-            {fastestLap.rank === "1" && (
+            {fastestLap?.rank === "1" && (
                 <Popover
                     aria-labelledby="default-popover"
                     className="bg-glow gradient-border p-4 bg-gray-950/60 backdrop-blur-sm"
