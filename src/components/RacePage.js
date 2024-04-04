@@ -3,6 +3,8 @@ import { useLocation } from 'react-router-dom';
 
 import { fetchDriversAndTires, fetchCircuitIdByCountry, fetchRaceResultsByCircuit } from '../utils/api';
 import { DriverCard } from './DriverCard';
+import { TireStrategyCard } from './TireStrategyCard';
+import { fetchLocationData } from '../utils/api';
 
 export function RacePage() {
   const { state } = useLocation();
@@ -22,6 +24,7 @@ export function RacePage() {
         // Fetch circuit ID based on the country and year
         const circuitId = await fetchCircuitIdByCountry(year, country);
         setCircuitId(circuitId);
+        //console.log(circuitId);
 
         if (circuitId) {
           const results = await fetchRaceResultsByCircuit(year, circuitId);
@@ -47,6 +50,19 @@ export function RacePage() {
         }), {});
     
         setDriversDetails(driverDetailsMap);
+
+        if (drivers.length > 0) {
+          const driverId = 1; // Example
+          const startTime = '2024-03-02T16:00';
+          const endTime = '2024-03-02T16:10';
+          const scaleFactor = 100;
+          try {
+            //const locationData = await fetchLocationData(sessionKey, driverId, startTime, endTime, scaleFactor);
+            //console.log(locationData); // Log the fetched and processed location data
+          } catch (error) {
+            console.error("Error fetching location data:", error);
+          }
+        }
     
         const earliestDateTime = startingGridData[0]?.date;
         const filteredStartingGrid = startingGridData.filter(item => item.date === earliestDateTime);
@@ -91,7 +107,7 @@ export function RacePage() {
                 driver={result.Driver}
                 position={result.position}
                 year={year} 
-                time={result.Time?.time || 'N/A'}
+                time={result.Time?.time || result.status}
                 fastestLap={result.FastestLap}
                 layoutSmall={index > 2}
               />
@@ -110,8 +126,6 @@ export function RacePage() {
           </ul>
         </div>
       </div>
-      
-
       
 
       <h3 className="heading-3">Tire Strategy</h3>
@@ -138,6 +152,19 @@ export function RacePage() {
             </li>
           ))}
       </ul>
+
+      <h3 className="heading-3">Fastest Laps</h3>
+      <ul>
+        {raceResults
+          .filter(result => result.FastestLap && result.FastestLap.rank) // Filter out results without FastestLap or rank
+          .sort((a, b) => parseInt(a.FastestLap.rank) - parseInt(b.FastestLap.rank)) // Use parseInt to ensure numerical comparison
+          .map((result, index) => (
+            <li key={index}>
+              Rank: {result.FastestLap.rank}, Lap: {result.FastestLap.lap}, Time: {result.FastestLap.Time.time}, Driver Name: {result.Driver.code}, Constructor: {result.Constructor.name}
+            </li>
+          ))}
+      </ul>
+
 
     </div>
   );

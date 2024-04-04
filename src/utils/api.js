@@ -152,7 +152,6 @@ export const fetchRaceResultsByCircuit = async (year, circuitId) => {
     const url = `https://ergast.com/api/f1/${year}/circuits/${circuitId}/results.json`;
     const response = await fetch(url);
     const data = await response.json();
-    // Assuming the structure contains RaceTable -> Races -> Results
     const results = data.MRData.RaceTable.Races[0]?.Results;
     return results || [];
   } catch (error) {
@@ -160,4 +159,77 @@ export const fetchRaceResultsByCircuit = async (year, circuitId) => {
     return [];
   }
 };
+
+function scaleCoordinates(x, y, scale_factor) {
+  return [x / scale_factor, y / scale_factor];
+}
+
+export async function fetchLocationData(sessionKey, driverId, startTime, endTime, scaleFactor = 100) {
+  const fetchStartTime = performance.now();
+
+  // Assuming the base URL for API calls might be reused
+  const baseUrl = 'https://api.openf1.org/v1';
+  const locationUrl = `${baseUrl}/location?session_key=${sessionKey}&driver_number=${driverId}&date>=${startTime}&date<${endTime}`;
+  const driverUrl = `${baseUrl}/drivers?driver_number=${driverId}&session_key=${sessionKey}`;
+  const carDataUrl = `${baseUrl}/car_data?session_key=${sessionKey}&driver_number=${driverId}&date>=${startTime}&date<${endTime}`;
+
+  const [locationResponse, driverResponse, carDataResponse] = await Promise.all([
+    fetch(locationUrl),
+    fetch(driverUrl),
+    fetch(carDataUrl)
+  ]);
+
+  if (!locationResponse.ok || !driverResponse.ok || !carDataResponse.ok) {
+    throw new Error('Failed to fetch data');
+  }
+
+  const [locationData, driverData, carData] = await Promise.all([
+    locationResponse.json(),
+    driverResponse.json(),
+    carDataResponse.json()
+  ]);
+
+  const fetchEndTime = performance.now();
+  console.log(`Time taken to fetch data: ${(fetchEndTime - fetchStartTime).toFixed(2)} milliseconds`);
+
+  //console.log(carData);
+  //console.log(locationData);
+  
+  // Sort location and car data by date
+  locationData.sort((a, b) => new Date(a.date) - new Date(b.date));
+  carData.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+  // Merge location and car data using a sliding window approach
+  const mergeStartTime = performance.now();
+  let carDataIndex = 0;
+  const mergedData = locationData.map(location => {
+    const [scaledX, scaledY] = scaleCoordinates(location.x, location.y, scaleFactor);
+    const locationDate = new Date(location.date);
+
+    let closestCarData = carData[carDataIndex];
+    let minTimeDiff = Math.abs(locationDate - new Date(closestCarData.date));
+
+    for (let i = carDataIndex + 1; i < carData.length; i++) {
+      const timeDiff = Math.abs(locationDate - new Date(carData[i].date));
+      if (timeDiff < minTimeDiff) {
+        minTimeDiff = timeDiff;
+        closestCarData = carData[i];
+        carDataIndex = i;
+      } else {
+        break;
+      }
+    }
+
+    return {
+      x: scaledX,
+      y: scaledY,
+      cardata: closestCarData,
+    };
+  });
+
+  const mergeEndTime = performance.now();
+  console.log(`Time taken to merge location data: ${(mergeEndTime - mergeStartTime).toFixed(2)} milliseconds`);
+
+  return mergedData;
+}
   
