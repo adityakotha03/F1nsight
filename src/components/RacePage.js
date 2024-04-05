@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 
 import { fetchDriversAndTires, fetchCircuitIdByCountry, fetchRaceResultsByCircuit } from '../utils/api';
 import { DriverCard } from './DriverCard';
@@ -82,15 +83,34 @@ export function RacePage() {
     fetchData();
   }, [meetingKey, year, country, circuitId]);
 
-  const handleDriverAcronymClick = (acronym) => {
-    const driverLaps = laps.filter(lap => lap.driver_acronym === acronym);
-    const lapDetails = driverLaps.map(lap => `Lap Number: ${lap.lap_number}, Duration: ${lap.lap_duration}, Driver: ${acronym}`).join(', ');
-    console.log(lapDetails);
+  const prepareChartData = () => {
+    const driverAcronyms = [...new Set(laps.map(lap => driversDetails[lap.driver_number]))];
+    const lapNumbers = [...new Set(laps.map(lap => lap.lap_number))].sort((a, b) => a - b);
+  
+    return lapNumbers.map(lapNumber => {
+      const lapDataForAllDrivers = { name: `Lap ${lapNumber}` };
+  
+      driverAcronyms.forEach(acronym => {
+        const lapForDriver = laps.find(lap => lap.lap_number === lapNumber && driversDetails[lap.driver_number] === acronym);
+        if (lapForDriver && !isNaN(lapForDriver.lap_duration) && parseFloat(lapForDriver.lap_duration) > 0) {
+          lapDataForAllDrivers[acronym] = parseFloat(lapForDriver.lap_duration);
+        }
+      });
+  
+      return Object.keys(lapDataForAllDrivers).length > 1 ? lapDataForAllDrivers : null;
+    }).filter(lapData => lapData !== null);
   };
+  
+  const chartData = prepareChartData();
+  
+  // Determine the minimum and maximum lap durations, with a buffer for the Y-axis domain
+  const minLapDuration = Math.min(...chartData.flatMap(lap => Object.values(lap).slice(1)));
+  const maxLapDuration = Math.max(...chartData.flatMap(lap => Object.values(lap).slice(1)));
+  const yAxisPadding = (maxLapDuration - minLapDuration) * 0.05; // 5% padding for example
+  // Calculate adjusted domain values with 3 decimal places
+  const minYAxisValue = parseFloat((minLapDuration - yAxisPadding).toFixed(3));
+  const maxYAxisValue = parseFloat((maxLapDuration + yAxisPadding).toFixed(3));
 
-  const uniqueAcronyms = [...new Set(laps.map(lap => lap.driver_acronym))];
-
-  // console.log(raceResults);
 
   return (
     <div>
@@ -114,22 +134,32 @@ export function RacePage() {
             ))}
           </ul>
         </div>
+
+
         <div className="race-page__col grow">
           <h3 className="heading-3">Lap Data</h3>
-          <p>Click on a driver acronym to see their lap details in console:</p>
-          <ul>
-            {uniqueAcronyms.map((acronym, index) => (
-              <li key={index} style={{ color: 'red', textDecoration: 'underline', cursor: 'pointer' }} onClick={() => handleDriverAcronymClick(acronym)}>
-                {acronym}
-              </li>
+          <p>View the lap duration for each driver below:</p>
+          <LineChart
+            width={1000}
+            height={300}
+            data={chartData}
+            margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+          >
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="name" />
+            <YAxis domain={[minYAxisValue, maxYAxisValue]} />
+            <Tooltip />
+            <Legend />
+            {[...new Set(laps.map(lap => lap.driver_acronym))].map((acronym, index) => (
+              <Line key={index} type="monotone" dataKey={acronym} stroke={`#${Math.floor(Math.random() * 16777215).toString(16)}`} />
             ))}
-          </ul>
+          </LineChart>
         </div>
       </div>
-      
+
 
       <h3 className="heading-3">Tire Strategy</h3>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div>
         {drivers.map((driver, index) => (
           <TireStrategyCard key={index} driver={driver.acronym} tires={driver.tires} />
         ))}
@@ -149,8 +179,8 @@ export function RacePage() {
       <h3 className="heading-3">Fastest Laps</h3>
       <ul>
         {raceResults
-          .filter(result => result.FastestLap && result.FastestLap.rank) // Filter out results without FastestLap or rank
-          .sort((a, b) => parseInt(a.FastestLap.rank) - parseInt(b.FastestLap.rank)) // Use parseInt to ensure numerical comparison
+          .filter(result => result.FastestLap && result.FastestLap.rank)
+          .sort((a, b) => parseInt(a.FastestLap.rank) - parseInt(b.FastestLap.rank))
           .map((result, index) => (
             <li key={index}>
               Rank: {result.FastestLap.rank}, Lap: {result.FastestLap.lap}, Time: {result.FastestLap.Time.time}, Driver Name: {result.Driver.code}, Constructor: {result.Constructor.name}
