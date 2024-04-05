@@ -16,10 +16,10 @@ export const TireStrategyCard = ({ driver, tires }) => {
   const borderWidth = '2px'; 
 
   return (
-    <div className="mb-4 bg-black p-4 rounded-lg">
-      <div className="flex items-center justify-between text-white">
-        <span className="font-bold">{driver}</span>
-        <div className="flex-1 mx-4 flex">
+    <div>
+      <div className="flex items-center">
+        <span className="font-display w-40">{driver}</span>
+        <div className="flex-1 flex mx-4">
           {tires.map((tire, index) => {
             const previousLapEnd = index > 0 ? tires[index - 1].lap_end : 0;
             const widthValue = index === 0 ? tire.lap_end : tire.lap_end - previousLapEnd;
@@ -29,29 +29,23 @@ export const TireStrategyCard = ({ driver, tires }) => {
             return (
               <div
                 key={index}
-                className="relative mr-2"
-                style={{
-                  width: boxWidth,
-                  height: '25px', 
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  marginRight: '2px', 
-                  backgroundColor: 'transparent', 
-                  borderColor: tireClass, 
-                  borderWidth: borderWidth,
-                  borderStyle: 'solid',
-                }}
+                className={classNames(
+                  "flex grow h-24 items-center justify-center mr-4 bg-transparent", {
+                  "bg-glow-red border-2 border-red-800": tire.compound === "SOFT",
+                  "bg-glow-yellow border-2 border-yellow-500": tire.compound === "MEDIUM",
+                  "bg-glow border-2 border-gray-400": tire.compound === "HARD",
+                  }
+                )}
               >
                 <span
-                  className="font-bold"
+                  className="font-display"
                   style={{
                     color: tireClass, 
                     width: '100%', 
                     textAlign: 'center', 
                   }}
                 >
-                  {widthValue}
+                  {widthValue}{tire.compound}
                 </span>
               </div>
             );
@@ -61,10 +55,6 @@ export const TireStrategyCard = ({ driver, tires }) => {
     </div>
   );
 };
-
-
-
-
 
 TireStrategyCard.propTypes = {
   driver: PropTypes.shape({
