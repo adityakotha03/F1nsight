@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 
 import { fetchDriversAndTires, fetchCircuitIdByCountry, fetchRaceResultsByCircuit } from '../utils/api';
 import { DriverCard } from './DriverCard';
@@ -83,45 +82,15 @@ export function RacePage() {
     fetchData();
   }, [meetingKey, year, country, circuitId]);
 
-  // const handleDriverAcronymClick = (acronym) => {
-  //   const driverLaps = laps.filter(lap => lap.driver_acronym === acronym);
-  //   const lapDetails = driverLaps.map(lap => `Lap ${lap.lap_number}, ${lap.lap_duration}, ${acronym}`);
-  //   console.log(lapDetails);
-  // };
+  const handleDriverAcronymClick = (acronym) => {
+    const driverLaps = laps.filter(lap => lap.driver_acronym === acronym);
+    const lapDetails = driverLaps.map(lap => `Lap Number: ${lap.lap_number}, Duration: ${lap.lap_duration}, Driver: ${acronym}`).join(', ');
+    console.log(lapDetails);
+  };
 
   const uniqueAcronyms = [...new Set(laps.map(lap => lap.driver_acronym))];
 
   // console.log(raceResults);
-
-  const data = [
-    {
-      name: "Lap 1",
-      VER: 38.83,
-      SAI: 40.23,
-      NOR: 35.43,
-      PER: 36.45,
-      LEC: 37.65,
-      PIA: 35.12,
-    },
-    {
-      name: "Lap 2",
-      VER: 37.83,
-      SAI: 45.23,
-      NOR: 36.43,
-      PER: 33.45,
-      LEC: 38.65,
-      PIA: 39.12,
-    },
-    {
-      name: "Lap 3",
-      VER: 35.83,
-      SAI: 46.23,
-      NOR: 38.43,
-      PER: 39.45,
-      LEC: 35.65,
-      PIA: 37.12,
-    },
-  ];
 
   return (
     <div>
@@ -148,40 +117,19 @@ export function RacePage() {
         <div className="race-page__col grow">
           <h3 className="heading-3">Lap Data</h3>
           <p>Click on a driver acronym to see their lap details in console:</p>
-          <LineChart
-            width={500}
-            height={300}
-            data={data}
-            margin={{
-              top: 5,
-              right: 30,
-              left: 20,
-              bottom: 5
-            }}
-          >
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="name" />
-            <YAxis />
-            <Tooltip />
-            <Legend />
-            <Line type="monotone" dataKey="VER" stroke="#8884d8" />
-            <Line type="monotone" dataKey="SAI" stroke="#82ca9d" />
-            <Line type="monotone" dataKey="NOR" stroke="#b20000" className="hidden" /> {/* buttons we need to create below adds the hidden class */}
-            <Line type="monotone" dataKey="LEC" stroke="#777777" />
-            <Line type="monotone" dataKey="PER" stroke="#888888" />
-            <Line type="monotone" dataKey="PIA" stroke="#666666" />
-          </LineChart>
-          {/* <ul>
+          <ul>
             {uniqueAcronyms.map((acronym, index) => (
               <li key={index} style={{ color: 'red', textDecoration: 'underline', cursor: 'pointer' }} onClick={() => handleDriverAcronymClick(acronym)}>
                 {acronym}
               </li>
             ))}
-          </ul> */}
+          </ul>
         </div>
       </div>
+      
+
       <h3 className="heading-3">Tire Strategy</h3>
-      <div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {drivers.map((driver, index) => (
           <TireStrategyCard key={index} driver={driver.acronym} tires={driver.tires} />
         ))}
