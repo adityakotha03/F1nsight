@@ -6,6 +6,7 @@ import { fetchDriversAndTires, fetchCircuitIdByCountry, fetchRaceResultsByCircui
 import { DriverCard } from './DriverCard';
 import { TireStrategyCard } from './TireStrategyCard';
 import { fetchLocationData } from '../utils/api';
+import {ThreeCanvas} from './ThreeCanvas.js'
 
 export function RacePage() {
   const { state } = useLocation();
@@ -16,6 +17,7 @@ export function RacePage() {
   const [startingGrid, setStartingGrid] = useState([]);
   const [circuitId, setCircuitId] = useState('');
   const [raceResults, setRaceResults] = useState([]);
+  const [locData, setlocData] = useState({});
 
   useEffect(() => {
     const fetchData = async () => {
@@ -52,18 +54,17 @@ export function RacePage() {
     
         setDriversDetails(driverDetailsMap);
 
-        if (drivers.length > 0) {
           const driverId = 1; // Example
           const startTime = '2024-03-02T16:00';
           const endTime = '2024-03-02T16:10';
-          const scaleFactor = 100;
+          const scaleFactor = 1000;
           try {
-            //const locationData = await fetchLocationData(sessionKey, driverId, startTime, endTime, scaleFactor);
-            //console.log(locationData); // Log the fetched and processed location data
+            const locationData = await fetchLocationData(sessionKey, driverId, startTime, endTime, scaleFactor);
+            setlocData(locationData);
+            console.log(locationData); // Log the fetched and processed location data
           } catch (error) {
             console.error("Error fetching location data:", error);
           }
-        }
     
         const earliestDateTime = startingGridData[0]?.date;
         const filteredStartingGrid = startingGridData.filter(item => item.date === earliestDateTime);
@@ -137,6 +138,8 @@ export function RacePage() {
 
 
         <div className="race-page__col grow">
+        <h3 className="heading-3">3D Track Visualization</h3>
+          <ThreeCanvas imageFile="/maps/map.png" locData = {locData}/>
           <h3 className="heading-3">Lap Data</h3>
           <p>View the lap duration for each driver below:</p>
           <LineChart
@@ -154,8 +157,8 @@ export function RacePage() {
               <Line key={index} type="monotone" dataKey={acronym} stroke={`#${Math.floor(Math.random() * 16777215).toString(16)}`} />
             ))}
           </LineChart>
-        </div>
-      </div>
+        
+      
 
 
       <h3 className="heading-3">Tire Strategy</h3>
@@ -163,6 +166,8 @@ export function RacePage() {
         {drivers.map((driver, index) => (
           <TireStrategyCard key={index} driver={driver.acronym} tires={driver.tires} />
         ))}
+      </div>
+      </div>
       </div>
 
       <h3 className="heading-3">Starting Grid</h3>
