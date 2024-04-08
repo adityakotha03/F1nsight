@@ -82,7 +82,7 @@ export function RacePage() {
     };    
 
     fetchData();
-  }, [meetingKey, year, country, circuitId]);
+  }, [meetingKey, year]);
 
   const prepareChartData = () => {
     const driverAcronyms = [...new Set(laps.map(lap => driversDetails[lap.driver_number]))];
