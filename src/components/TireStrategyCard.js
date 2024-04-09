@@ -4,11 +4,11 @@ import classNames from 'classnames';
 
 
 const tireTypeClasses = {
-  soft: '#c00000', 
+  soft: '#ffffff', 
   medium: '#ffd600', 
-  hard: '#ffffff',
-  intermediate: '#4caf50', 
-  wet: '#1b5e20' 
+  hard: '#c00000',
+  intermediate: '#39b54a', 
+  wet: '#00aeef' 
 };
 
 export const TireStrategyCard = ({ driver, tires }) => {
@@ -25,6 +25,7 @@ export const TireStrategyCard = ({ driver, tires }) => {
             const widthValue = index === 0 ? tire.lap_end : tire.lap_end - previousLapEnd;
             const boxWidth = `${widthValue * baseWidthPerLap}px`;
             const tireClass = tireTypeClasses[tire.compound.toLowerCase()];
+            const glowEffect = `inset 0 0 10px ${tireClass}`;
             
             return (
               <div
@@ -41,6 +42,7 @@ export const TireStrategyCard = ({ driver, tires }) => {
                   borderColor: tireClass, 
                   borderWidth: borderWidth,
                   borderStyle: 'solid',
+                  boxShadow: glowEffect,
                 }}
               >
                 <span
