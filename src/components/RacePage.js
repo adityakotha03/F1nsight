@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
-
 import { fetchDriversAndTires, fetchCircuitIdByCountry, fetchRaceResultsByCircuit } from '../utils/api';
 import { DriverCard } from './DriverCard';
 import { TireStrategyCard } from './TireStrategyCard';
@@ -56,8 +55,8 @@ export function RacePage() {
 
           const driverId = 1; // Example
           const startTime = '2024-03-02T16:00';
-          const endTime = '2024-03-02T16:10';
-          const scaleFactor = 1000;
+          const endTime = '2024-03-02T16:20';
+          const scaleFactor = 1500;
           try {
             const locationData = await fetchLocationData(sessionKey, driverId, startTime, endTime, scaleFactor);
             setlocData(locationData);
@@ -134,6 +133,16 @@ export function RacePage() {
               />
             ))}
           </ul>
+          <h3 className="heading-3">Starting Grid</h3>
+            <ul>
+              {startingGrid
+                .sort((a, b) => a.position - b.position)
+                .map((gridPosition, index) => (
+                  <li key={index}>
+                    Position: {gridPosition.position}, Driver: {driversDetails[gridPosition.driver_number]}
+                  </li>
+                ))}
+            </ul>
         </div>
 
 
@@ -167,19 +176,6 @@ export function RacePage() {
           <TireStrategyCard key={index} driver={driver.acronym} tires={driver.tires} />
         ))}
       </div>
-      </div>
-      </div>
-
-      <h3 className="heading-3">Starting Grid</h3>
-      <ul>
-        {startingGrid
-          .sort((a, b) => a.position - b.position)
-          .map((gridPosition, index) => (
-            <li key={index}>
-              Position: {gridPosition.position}, Driver: {driversDetails[gridPosition.driver_number]}
-            </li>
-          ))}
-      </ul>
 
       <h3 className="heading-3">Fastest Laps</h3>
       <ul>
@@ -192,6 +188,9 @@ export function RacePage() {
             </li>
           ))}
       </ul>
+
+      </div>
+      </div>
 
 
     </div>
