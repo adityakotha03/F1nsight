@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 
 import { fetchDriversAndTires, fetchCircuitIdByCountry, fetchRaceResultsByCircuit } from '../utils/api';
 import { DriverCard } from './DriverCard';
 import { TireStrategyCard } from './TireStrategyCard';
 import { fetchLocationData } from '../utils/api';
 import {ThreeCanvas} from './ThreeCanvas.js'
+import { LapChart } from './LapChart';
+import { TireStrategy } from './TireStrategy';
 
 export function RacePage() {
   const { state } = useLocation();
@@ -61,7 +62,7 @@ export function RacePage() {
           try {
             const locationData = await fetchLocationData(sessionKey, driverId, startTime, endTime, scaleFactor);
             setlocData(locationData);
-            console.log(locationData); // Log the fetched and processed location data
+            // console.log(locationData); // Log the fetched and processed location data
           } catch (error) {
             console.error("Error fetching location data:", error);
           }
@@ -84,45 +85,15 @@ export function RacePage() {
     fetchData();
   }, [meetingKey, year]);
 
-  const prepareChartData = () => {
-    const driverAcronyms = [...new Set(laps.map(lap => driversDetails[lap.driver_number]))];
-    const lapNumbers = [...new Set(laps.map(lap => lap.lap_number))].sort((a, b) => a - b);
-  
-    return lapNumbers.map(lapNumber => {
-      const lapDataForAllDrivers = { name: `Lap ${lapNumber}` };
-  
-      driverAcronyms.forEach(acronym => {
-        const lapForDriver = laps.find(lap => lap.lap_number === lapNumber && driversDetails[lap.driver_number] === acronym);
-        if (lapForDriver && !isNaN(lapForDriver.lap_duration) && parseFloat(lapForDriver.lap_duration) > 0) {
-          lapDataForAllDrivers[acronym] = parseFloat(lapForDriver.lap_duration);
-        }
-      });
-  
-      return Object.keys(lapDataForAllDrivers).length > 1 ? lapDataForAllDrivers : null;
-    }).filter(lapData => lapData !== null);
-  };
-  
-  const chartData = prepareChartData();
-  
-  // Determine the minimum and maximum lap durations, with a buffer for the Y-axis domain
-  const minLapDuration = Math.min(...chartData.flatMap(lap => Object.values(lap).slice(1)));
-  const maxLapDuration = Math.max(...chartData.flatMap(lap => Object.values(lap).slice(1)));
-  const yAxisPadding = (maxLapDuration - minLapDuration) * 0.05; // 5% padding for example
-  // Calculate adjusted domain values with 3 decimal places
-  const minYAxisValue = parseFloat((minLapDuration - yAxisPadding).toFixed(3));
-  const maxYAxisValue = parseFloat((maxLapDuration + yAxisPadding).toFixed(3));
-
-
   return (
     <div>
       <h2 className="heading-2">Race Details</h2>
       {raceName && <p>Race Name: {raceName} {year}</p>}
       {meetingKey && <p>Meeting Key: {meetingKey}</p>}
 
-      <h3>Leaderboard</h3>
-      <div className="race-page flex">
-        <div className="race-page__col grow-0">
-          <ul>
+      <div className="race-page flex flex-col sm:flex-row gap-16">
+        <div className="sm:grow-0">
+          <ul className="mb-64">
             {raceResults.map((result, index) => (
               <DriverCard 
                 driver={result.Driver}
@@ -134,66 +105,65 @@ export function RacePage() {
               />
             ))}
           </ul>
+
+          <h3 className="heading-6 mb-16">Starting Grid</h3>
+          <ul className="flex flex-col w-fit m-auto">
+            {startingGrid
+              .sort((a, b) => a.position - b.position)
+              .map((gridPosition, index) => (
+                <li 
+                  key={index} 
+                  className="text-center w-fit even:-mt-32 even:ml-64 even:mb-24"
+                >
+                  <div className="text-sm font-display text-stone-500">P{gridPosition.position}</div>
+                  <div className="border-x-2 border-t-2 border-solid border-stone-500 px-4 pt-4 w-52">
+                    {driversDetails[gridPosition.driver_number]}
+                  </div>
+                </li>
+              ))}
+          </ul>
         </div>
 
+        <div className="sm:grow-0">
+          <div className="canvas-wrapper mb-64">
+            {/* <ThreeCanvas imageFile="/maps/map.png" locData = {locData}/> */}
+          </div>
 
-        <div className="race-page__col grow">
-        <h3 className="heading-3">3D Track Visualization</h3>
-          <ThreeCanvas imageFile="/maps/map.png" locData = {locData}/>
-          <h3 className="heading-3">Lap Data</h3>
-          <p>View the lap duration for each driver below:</p>
-          <LineChart
-            width={1000}
-            height={300}
-            data={chartData}
-            margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-          >
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="name" />
-            <YAxis domain={[minYAxisValue, maxYAxisValue]} />
-            <Tooltip />
-            <Legend />
-            {[...new Set(laps.map(lap => lap.driver_acronym))].map((acronym, index) => (
-              <Line key={index} type="monotone" dataKey={acronym} stroke={`#${Math.floor(Math.random() * 16777215).toString(16)}`} />
-            ))}
-          </LineChart>
+          <h3 className="heading-6 mb-16">Lap Data</h3>
+          <LapChart laps={laps} setLaps={() => setLaps} driversDetails={driversDetails} className="lap-chart" />
         
-      
+          <h3 className="heading-6 mb-16">Tire Strategy</h3>
+          {/* TireStrategy component needs help see notes inside cmponent and uncomment linen below to see test version */}
+          {/* <TireStrategy drivers={drivers} /> */}
 
-
-      <h3 className="heading-3">Tire Strategy</h3>
-      <div>
-        {drivers.map((driver, index) => (
-          <TireStrategyCard key={index} driver={driver.acronym} tires={driver.tires} />
-        ))}
-      </div>
-      </div>
-      </div>
-
-      <h3 className="heading-3">Starting Grid</h3>
-      <ul>
-        {startingGrid
-          .sort((a, b) => a.position - b.position)
-          .map((gridPosition, index) => (
-            <li key={index}>
-              Position: {gridPosition.position}, Driver: {driversDetails[gridPosition.driver_number]}
-            </li>
+          {drivers.map((driver, index) => (
+            <TireStrategyCard key={index} driver={driver.acronym} tires={driver.tires} />
           ))}
-      </ul>
 
-      <h3 className="heading-3">Fastest Laps</h3>
-      <ul>
-        {raceResults
-          .filter(result => result.FastestLap && result.FastestLap.rank)
-          .sort((a, b) => parseInt(a.FastestLap.rank) - parseInt(b.FastestLap.rank))
-          .map((result, index) => (
-            <li key={index}>
-              Rank: {result.FastestLap.rank}, Lap: {result.FastestLap.lap}, Time: {result.FastestLap.Time.time}, Driver Name: {result.Driver.code}, Constructor: {result.Constructor.name}
-            </li>
-          ))}
-      </ul>
-
-
+          <h3 className="heading-6 mb-16">Fastest Laps</h3>
+          <div className="grid grid-cols-3 gap-4 mb-16">
+            <span>Driver</span> 
+            <span>Time</span> 
+            <span>Lap</span> 
+          </div>
+          <ul className="mb-16">
+            {raceResults
+              .filter(result => result.FastestLap && result.FastestLap.rank)
+              .sort((a, b) => parseInt(a.FastestLap.rank) - parseInt(b.FastestLap.rank))
+              .map((result, index) => (
+                <li key={index} className="grid grid-cols-3 gap-4 mb-8">
+                  <div>
+                    {result.Driver.code}
+                    <span className="text-sm ml-8 text-stone-500">{result.Constructor.name}</span>
+                  </div>
+                  <span>{result.FastestLap.Time.time}</span>
+                  <span>{result.FastestLap.lap}</span>
+                  
+                </li>
+              ))}
+          </ul>
+        </div>
+     </div>
     </div>
   );
 }
