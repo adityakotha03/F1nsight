@@ -36,7 +36,7 @@ export const TireStrategyCard = ({ driver, tires }) => {
               <span
                 className="font-bold"
                 style={{
-                  color: tireClass, 
+                  color: tireClass,
                   width: '100%', 
                   textAlign: 'center', 
                   boxShadow: glowEffect
@@ -51,9 +51,6 @@ export const TireStrategyCard = ({ driver, tires }) => {
     </div>
   );
 };
-
-
-
 
 
 TireStrategyCard.propTypes = {
