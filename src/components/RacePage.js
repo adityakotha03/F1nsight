@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-
 import { fetchDriversAndTires, fetchCircuitIdByCountry, fetchRaceResultsByCircuit } from '../utils/api';
 import { DriverCard } from './DriverCard';
 import { TireStrategyCard } from './TireStrategyCard';
@@ -57,8 +56,8 @@ export function RacePage() {
 
           const driverId = 1; // Example
           const startTime = '2024-03-02T16:00';
-          const endTime = '2024-03-02T16:10';
-          const scaleFactor = 1000;
+          const endTime = '2024-03-02T16:20';
+          const scaleFactor = 1500;
           try {
             const locationData = await fetchLocationData(sessionKey, driverId, startTime, endTime, scaleFactor);
             setlocData(locationData);
@@ -126,7 +125,7 @@ export function RacePage() {
 
         <div className="sm:grow-0">
           <div className="canvas-wrapper mb-64">
-            {/* <ThreeCanvas imageFile="/maps/map.png" locData = {locData}/> */}
+            <ThreeCanvas imageFile="/maps/map.png" locData = {locData}/>
           </div>
 
           <h3 className="heading-6 mb-16">Lap Data</h3>

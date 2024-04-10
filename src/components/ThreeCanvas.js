@@ -28,7 +28,7 @@ export const ThreeCanvas = ({ imageFile, locData }) => {
     // Adding image as a texture to a plane geometry
     const textureLoader = new THREE.TextureLoader();
     textureLoader.load(imageFile, texture => {
-      const geometry = new THREE.PlaneGeometry(10, 10);
+      const geometry = new THREE.PlaneGeometry(7, 7);
       const material = new THREE.MeshBasicMaterial({ map: texture });
       const plane = new THREE.Mesh(geometry, material);
       plane.rotation.z = -Math.PI /2 ;
@@ -43,7 +43,7 @@ export const ThreeCanvas = ({ imageFile, locData }) => {
     const loader = new GLTFLoader();
     loader.load('/car/scene.gltf', function (gltf) {
       carModel = gltf.scene;
-      carModel.scale.set(1, 1, 1);
+      carModel.scale.set(0.3, 0.3, 0.3);
       carModel.rotation.x = Math.PI / 2;
       carModel.rotation.y = -Math.PI;
       scene.add(carModel);
@@ -60,7 +60,9 @@ export const ThreeCanvas = ({ imageFile, locData }) => {
           const newPosition = locData.shift(); // Get and remove the first position from the array
       
           // Optionally, calculate the angle for rotation if your model needs to face the direction of movement
-          const oldPosition = carModel.position;
+          let oldPosition = carModel.position;
+          oldPosition.x = oldPosition.x + 3;
+          oldPosition.y = oldPosition.y + 2;
           const angle = Math.atan2(newPosition.y - oldPosition.y, newPosition.x - oldPosition.x);
       
           // Apply rotation using quaternion to smoothly rotate towards the direction of movement
@@ -69,7 +71,7 @@ export const ThreeCanvas = ({ imageFile, locData }) => {
           carModel.quaternion.copy(quaternion);
       
           // Update the carModel's position
-          carModel.position.set(newPosition.x, newPosition.y, oldPosition.z); // Assuming z-coordinate remains constant
+          carModel.position.set(newPosition.x - 3, newPosition.y - 2, 0); 
         }
       
         renderer.render(scene, camera);
@@ -79,7 +81,9 @@ export const ThreeCanvas = ({ imageFile, locData }) => {
 
     // Clean up
     return () => {
-      mountRef.current.removeChild(renderer.domElement);
+      if (mountRef.current) {
+        mountRef.current.removeChild(renderer.domElement);
+      }
     };
   }, [imageFile, locData]); // Depend on locData for reactivity
 
