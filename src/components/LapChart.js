@@ -74,7 +74,7 @@ export const LapChart = (props) => {
                 {sortedDriverAcronyms.map((acronym, index) => (
                     <button
                         key={index}
-                        className={`py-1 px-4 text-white font-semibold rounded ${driverVisibility[acronym] ? 'bg-green-500' : 'bg-red-500'}`}
+                        className={`py-1 px-4 text-white font-semibold rounded ${driverVisibility[acronym] ? 'bg-green-500' : 'bg-gray-500'}`}
                         onClick={() => handleDriverVisibilityChange(acronym)}
                     >
                         {acronym}
