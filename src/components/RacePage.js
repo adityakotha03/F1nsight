@@ -129,11 +129,11 @@ export function RacePage() {
           </div>
 
           <h3 className="heading-6 mb-16">Lap Data</h3>
-          <LapChart laps={laps} setLaps={() => setLaps} driversDetails={driversDetails} className="lap-chart" />
+          <LapChart laps={laps} setLaps={() => setLaps} driversDetails={driversDetails} raceResults = {raceResults} className="lap-chart" />
         
           <h3 className="heading-6 mb-16">Tire Strategy</h3>
           {/* TireStrategy component needs help see notes inside cmponent and uncomment linen below to see test version */}
-          {/* <TireStrategy drivers={drivers} /> */}
+           {/*<TireStrategy drivers={drivers} /> */}
 
           {drivers.map((driver, index) => (
             <TireStrategyCard key={index} driver={driver.acronym} tires={driver.tires} />
