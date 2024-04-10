@@ -10,7 +10,7 @@ export const DriverCard = (props) => {
     return (
         <div className={classNames(
             className, 
-            'driver-card flex bg-glow pl-10 gradient-border relative mt-16',
+            'driver-card flex items-center justify-center bg-glow pl-10 gradient-border relative mt-16',
             { 'driver-card--small': layoutSmall}
         )}>
             {layoutSmall ? (

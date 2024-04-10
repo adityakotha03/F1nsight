@@ -1188,6 +1188,10 @@ input[type="range"]::-ms-fill-lower {
   margin: -0.15rem;
 }
 
+.m-auto {
+  margin: auto;
+}
+
 .mx-1 {
   margin-left: 0.1rem;
   margin-right: 0.1rem;
@@ -1264,6 +1268,14 @@ input[type="range"]::-ms-fill-lower {
 
 .mb-6 {
   margin-bottom: .6rem;
+}
+
+.mb-64 {
+  margin-bottom: 6.4rem;
+}
+
+.mb-8 {
+  margin-bottom: .8rem;
 }
 
 .me-2 {
@@ -1406,6 +1418,10 @@ input[type="range"]::-ms-fill-lower {
   height: 2.0rem;
 }
 
+.h-24 {
+  height: 2.4rem;
+}
+
 .h-3 {
   height: 0.3rem;
 }
@@ -1520,8 +1536,16 @@ input[type="range"]::-ms-fill-lower {
   width: .4rem;
 }
 
+.w-48 {
+  width: 4.8rem;
+}
+
 .w-5 {
   width: .5rem;
+}
+
+.w-52 {
+  width: 5.2rem;
 }
 
 .w-6 {
@@ -1625,14 +1649,6 @@ input[type="range"]::-ms-fill-lower {
 
 .shrink-0 {
   flex-shrink: 0;
-}
-
-.grow {
-  flex-grow: 1;
-}
-
-.grow-0 {
-  flex-grow: 0;
 }
 
 .origin-\[0\] {
@@ -1746,6 +1762,10 @@ input[type="range"]::-ms-fill-lower {
   grid-auto-flow: column;
 }
 
+.grid-cols-3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
 .grid-cols-4 {
   grid-template-columns: repeat(4, minmax(0, 1fr));
 }
@@ -1800,6 +1820,10 @@ input[type="range"]::-ms-fill-lower {
 
 .gap-1 {
   gap: 0.1rem;
+}
+
+.gap-16 {
+  gap: 1.6rem;
 }
 
 .gap-2 {
@@ -2022,6 +2046,11 @@ input[type="range"]::-ms-fill-lower {
   border-width: 2px;
 }
 
+.border-x-2 {
+  border-left-width: 2px;
+  border-right-width: 2px;
+}
+
 .border-b {
   border-bottom-width: 1px;
 }
@@ -2054,8 +2083,16 @@ input[type="range"]::-ms-fill-lower {
   border-top-width: 1px;
 }
 
+.border-t-2 {
+  border-top-width: 2px;
+}
+
 .border-t-4 {
   border-top-width: 4px;
+}
+
+.border-solid {
+  border-style: solid;
 }
 
 .border-blue-500 {
@@ -2211,6 +2248,11 @@ input[type="range"]::-ms-fill-lower {
 .border-red-900 {
   --tw-border-opacity: 1;
   border-color: rgb(119 29 29 / var(--tw-border-opacity));
+}
+
+.border-stone-500 {
+  --tw-border-opacity: 1;
+  border-color: rgb(120 113 108 / var(--tw-border-opacity));
 }
 
 .border-teal-300 {
@@ -3254,6 +3296,11 @@ input[type="range"]::-ms-fill-lower {
   color: rgb(119 29 29 / var(--tw-text-opacity));
 }
 
+.text-stone-500 {
+  --tw-text-opacity: 1;
+  color: rgb(120 113 108 / var(--tw-text-opacity));
+}
+
 .text-teal-500 {
   --tw-text-opacity: 1;
   color: rgb(6 148 162 / var(--tw-text-opacity));
@@ -3627,6 +3674,10 @@ code {
   box-shadow: inset 0 0 2.4rem 0 rgba(255, 255, 255, .25), 0 0 2.4rem 0 rgba(0, 0, 0, .5);
 }
 
+.bg-glow--sm {
+  box-shadow: inset 0 0 .8rem 0 rgba(255, 255, 255, .25), 0 0 2.4rem 0 rgba(0, 0, 0, .5);
+}
+
 .divider-glow {
   background: radial-gradient(ellipse at top, #171717 0%, transparent 64%);
   height: 1.2rem;
@@ -3723,6 +3774,18 @@ code {
 .odd\:bg-white:nth-child(odd) {
   --tw-bg-opacity: 1;
   background-color: rgb(255 255 255 / var(--tw-bg-opacity));
+}
+
+.even\:-mt-32:nth-child(even) {
+  margin-top: -3.2rem;
+}
+
+.even\:mb-24:nth-child(even) {
+  margin-bottom: 2.4rem;
+}
+
+.even\:ml-64:nth-child(even) {
+  margin-left: 6.4rem;
 }
 
 .even\:bg-gray-50:nth-child(even) {
@@ -5728,6 +5791,10 @@ code {
 
   .sm\:w-6 {
     width: .6rem;
+  }
+
+  .sm\:grow-0 {
+    flex-grow: 0;
   }
 
   .sm\:flex-row {
