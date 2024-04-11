@@ -133,11 +133,11 @@ export function RacePage() {
         
           <h3 className="heading-6 mb-16">Tire Strategy</h3>
           {/* TireStrategy component needs help see notes inside cmponent and uncomment linen below to see test version */}
-           {/*<TireStrategy drivers={drivers} /> */}
+           <TireStrategy drivers={drivers} raceResults={raceResults} />
 
-          {drivers.map((driver, index) => (
+          {/*{drivers.map((driver, index) => (
             <TireStrategyCard key={index} driver={driver.acronym} tires={driver.tires} />
-          ))}
+          ))} */}
 
           <h3 className="heading-6 mb-16">Fastest Laps</h3>
           <div className="grid grid-cols-3 gap-4 mb-16">

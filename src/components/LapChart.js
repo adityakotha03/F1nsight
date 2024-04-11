@@ -60,11 +60,11 @@ export const LapChart = (props) => {
                     data={chartData}
                     margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
                 >
-                    <CartesianGrid stroke="#ccc" strokeDasharray="0" />
+                    <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="name" />
                     <YAxis domain={[minYAxisValue, maxYAxisValue]} />
                     <Tooltip contentStyle={{ backgroundColor: '#000000', borderColor: '#000000' }} />
-                    <Legend />
+                    {/*<Legend />*/}
                     {[...new Set(laps.map(lap => driversDetails[lap.driver_number]))].map((acronym, index) => (
                         driverVisibility[acronym] && <Line key={index} type="monotone" dataKey={acronym} stroke={`#${Math.floor(Math.random() * 16777215).toString(16)}`} />
                     ))}
