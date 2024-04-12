@@ -16,6 +16,7 @@ export function RacePage() {
   const [driversDetails, setDriversDetails] = useState({});
   const [startingGrid, setStartingGrid] = useState([]);
   const [circuitId, setCircuitId] = useState('');
+  const [ImagePath, setImagePath] = useState('');
   const [raceResults, setRaceResults] = useState([]);
   const [locData, setlocData] = useState({});
 
@@ -24,9 +25,17 @@ export function RacePage() {
       if (!meetingKey) return;
     
       try {
-        // Fetch circuit ID based on the country and year
-        const circuitId = await fetchCircuitIdByCountry(year, country);
+        // Fetch circuit ID based on the country and year. UK and Abu dabi doesnt match, so this takes care of that.
+        const countryMap = {
+          "Great Britain": "UK",
+          "United Arab Emirates": "UAE"
+        };
+    
+        // Check if the country is in the map and replace it if it is
+        const adjustedCountry = countryMap[country] || country;
+        const circuitId = await fetchCircuitIdByCountry(year, adjustedCountry);
         setCircuitId(circuitId);
+        setImagePath(`/maps/${circuitId}.png`);
         //console.log(circuitId);
 
         if (circuitId) {
@@ -61,7 +70,7 @@ export function RacePage() {
           try {
             const locationData = await fetchLocationData(sessionKey, driverId, startTime, endTime, scaleFactor);
             setlocData(locationData);
-            // console.log(locationData); // Log the fetched and processed location data
+            //console.log(locationData); // Log the fetched and processed location data
           } catch (error) {
             console.error("Error fetching location data:", error);
           }
@@ -125,7 +134,7 @@ export function RacePage() {
 
         <div className="sm:grow-0">
           <div className="canvas-wrapper mb-64">
-            <ThreeCanvas imageFile="/maps/map.png" locData = {locData}/>
+            <ThreeCanvas imageFile={ImagePath} locData = {locData}/>
           </div>
 
           <h3 className="heading-6 mb-16">Lap Data</h3>

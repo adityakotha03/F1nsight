@@ -28,12 +28,17 @@ export const ThreeCanvas = ({ imageFile, locData }) => {
     // Adding image as a texture to a plane geometry
     const textureLoader = new THREE.TextureLoader();
     textureLoader.load(imageFile, texture => {
-      const geometry = new THREE.PlaneGeometry(7, 7);
+      // Get the original dimensions of the image
+      const imageWidth = texture.image.width/100;
+      const imageHeight = texture.image.height/100;
+      const geometry = new THREE.PlaneGeometry(imageWidth, imageHeight);
+
       const material = new THREE.MeshBasicMaterial({ map: texture });
       const plane = new THREE.Mesh(geometry, material);
-      plane.rotation.z = -Math.PI /2 ;
+      plane.rotation.z = -Math.PI / 2;
       scene.add(plane);
     });
+  
 
     // Camera position
     camera.position.z = 5;
@@ -61,7 +66,7 @@ export const ThreeCanvas = ({ imageFile, locData }) => {
       
           // Optionally, calculate the angle for rotation if your model needs to face the direction of movement
           let oldPosition = carModel.position;
-          oldPosition.x = oldPosition.x + 3;
+          oldPosition.x = oldPosition.x + 2;
           oldPosition.y = oldPosition.y + 2;
           const angle = Math.atan2(newPosition.y - oldPosition.y, newPosition.x - oldPosition.x);
       
@@ -71,7 +76,7 @@ export const ThreeCanvas = ({ imageFile, locData }) => {
           carModel.quaternion.copy(quaternion);
       
           // Update the carModel's position
-          carModel.position.set(newPosition.x - 3, newPosition.y - 2, 0); 
+          carModel.position.set(newPosition.x - 2, newPosition.y - 2, 0); 
         }
       
         renderer.render(scene, camera);
