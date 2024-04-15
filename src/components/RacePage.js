@@ -103,14 +103,16 @@ export function RacePage() {
         <div className="sm:grow-0">
           <ul className="mb-64">
             {raceResults.map((result, index) => (
-              <DriverCard 
-                driver={result.Driver}
-                position={result.position}
-                year={year} 
-                time={result.Time?.time || result.status}
-                fastestLap={result.FastestLap}
-                layoutSmall={index > 2}
-              />
+              <button className="block w-full" onClick={() => console.log(result.Driver.code)}>
+                <DriverCard 
+                  driver={result.Driver}
+                  position={result.position}
+                  year={year} 
+                  time={result.Time?.time || result.status}
+                  fastestLap={result.FastestLap}
+                  layoutSmall={index > 2}
+                />
+              </button>
             ))}
           </ul>
 

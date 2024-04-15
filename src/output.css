@@ -1040,6 +1040,10 @@ input[type="range"]::-ms-fill-lower {
   pointer-events: none;
 }
 
+.visible {
+  visibility: visible;
+}
+
 .invisible {
   visibility: hidden;
 }
@@ -3605,7 +3609,7 @@ html {
 }
 
 body {
-  background: #1a1a1a;
+  background: #000000;
   background-image: url("../public/images/bg.png");
   background-attachment: fixed;
   background-position: top;
@@ -3688,6 +3692,24 @@ code {
   border-width: .1rem;
   border-style: solid;
   border-image: linear-gradient(to bottom, #525252, #737373) 1;
+}
+
+/* Custom Classes */
+
+.tire-compound--soft {
+  filter: url(#inset-shadow-soft);
+  fill: #230000;
+  border: 1px solid #ffffff;
+}
+
+.tire-compound--medium {
+  filter: url(#inset-shadow-medium);
+  fill: #372e00;
+}
+
+.tire-compound--hard {
+  filter: url(#inset-shadow-hard);
+  fill: #242424;
 }
 
 .after\:absolute::after {
