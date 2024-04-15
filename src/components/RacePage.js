@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { fetchDriversAndTires, fetchCircuitIdByCountry, fetchRaceResultsByCircuit } from '../utils/api';
 import { DriverCard } from './DriverCard';
-import { TireStrategyCard } from './TireStrategyCard';
 import { fetchLocationData } from '../utils/api';
 import {ThreeCanvas} from './ThreeCanvas.js'
 import { LapChart } from './LapChart';
@@ -143,12 +142,8 @@ export function RacePage() {
           <LapChart laps={laps} setLaps={() => setLaps} driversDetails={driversDetails} raceResults = {raceResults} className="lap-chart" />
         
           <h3 className="heading-6 mb-16">Tire Strategy</h3>
-          {/* TireStrategy component needs help see notes inside cmponent and uncomment linen below to see test version */}
            <TireStrategy drivers={drivers} raceResults={raceResults} />
 
-          {/*{drivers.map((driver, index) => (
-            <TireStrategyCard key={index} driver={driver.acronym} tires={driver.tires} />
-          ))} */}
 
           <h3 className="heading-6 mb-16">Fastest Laps</h3>
           <div className="grid grid-cols-3 gap-4 mb-16">
