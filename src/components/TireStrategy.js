@@ -94,12 +94,49 @@ export const TireStrategy = (props) => {
                 return aNum - bNum;
               })
               .map((key) => (
-                <Bar
-                  key={key}
-                  dataKey={key}
-                  stackId="a"
-                  fill={tireTypeClasses[key.replace(/[0-9]/g, '')]}
-                ><LabelList dataKey={key} position="center" /></Bar>
+                <>
+                  <filter id={`inset-shadow-${key.replace(/[0-9]/g, '')}`}>
+                    <feOffset
+                      dx='0'
+                      dy='0'
+                    />
+                    <feGaussianBlur
+                      stdDeviation='3'
+                      result='offset-blur'
+                    />
+                    <feComposite
+                      operator='out'
+                      in='SourceGraphic'
+                      in2='offset-blur'
+                      result='inverse'
+                    />
+                    <feFlood
+                      flood-color={tireTypeClasses[key.replace(/[0-9]/g, '')]}
+                      flood-opacity='.15'
+                      result='color'
+                    />
+                    <feComposite
+                      operator='in'
+                      in='color'
+                      in2='inverse'
+                      result='shadow'
+                    />
+                    <feComposite
+                      operator='over'
+                      in='shadow'
+                      in2='SourceGraphic'
+                    />
+                  </filter>
+                  <Bar
+                    className={`tire-compound tire-compound--${key.replace(/[0-9]/g, '')}`}
+                    dataKey={key}
+                    key={key}
+                    stackId="a"
+                    stroke={tireTypeClasses[key.replace(/[0-9]/g, '')]}
+                  >
+                      <LabelList dataKey={key} position="center" fill="#f1f1f1" />
+                  </Bar>
+                </>
               ))}
             </BarChart>
           </ResponsiveContainer>
