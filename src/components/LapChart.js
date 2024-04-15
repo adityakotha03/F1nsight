@@ -23,34 +23,41 @@ export const LapChart = (props) => {
     const prepareChartData = () => {
         const driverAcronyms = [...new Set(laps.map(lap => driversDetails[lap.driver_number]))];
         const lapNumbers = [...new Set(laps.map(lap => lap.lap_number))].sort((a, b) => a - b);
-
+    
         return lapNumbers.map(lapNumber => {
             const lapDataForAllDrivers = { name: `Lap ${lapNumber}` };
-
+    
             driverAcronyms.forEach(acronym => {
                 const lapForDriver = laps.find(lap => lap.lap_number === lapNumber && driversDetails[lap.driver_number] === acronym);
                 if (lapForDriver && !isNaN(lapForDriver.lap_duration) && parseFloat(lapForDriver.lap_duration) > 0) {
-                    lapDataForAllDrivers[acronym] = parseFloat(lapForDriver.lap_duration);
+                    // Convert lap duration from seconds to minutes
+                    lapDataForAllDrivers[acronym] = (parseFloat(lapForDriver.lap_duration) / 60).toFixed(5);
                 }
             });
-
+    
             return Object.keys(lapDataForAllDrivers).length > 1 ? lapDataForAllDrivers : null;
         }).filter(lapData => lapData !== null);
     };
-
+    
     const chartData = prepareChartData();
-
+    
     const minLapDuration = Math.min(...chartData.flatMap(lap => Object.values(lap).slice(1)));
     const maxLapDuration = Math.max(...chartData.flatMap(lap => Object.values(lap).slice(1)));
     const yAxisPadding = (maxLapDuration - minLapDuration) * 0.05;
     const minYAxisValue = parseFloat((minLapDuration - yAxisPadding).toFixed(3));
-    const maxYAxisValue = parseFloat((maxLapDuration + yAxisPadding).toFixed(3));
+    const maxYAxisValue = parseFloat((maxLapDuration + yAxisPadding).toFixed(3));    
 
     const handleDriverVisibilityChange = (acronym) => {
         setDriverVisibility(prevState => ({
             ...prevState,
             [acronym]: !prevState[acronym]
         }));
+    };
+
+    const formatMinutes = (decimalMinutes) => {
+        const minutes = Math.floor(decimalMinutes);
+        const seconds = Math.round((decimalMinutes - minutes) * 60);
+        return `${minutes}:${seconds.toString().padStart(2, '0')}`;
     };
 
     return (
@@ -62,8 +69,18 @@ export const LapChart = (props) => {
                 >
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="name" />
-                    <YAxis domain={[minYAxisValue, maxYAxisValue]} />
-                    <Tooltip contentStyle={{ backgroundColor: '#000000', borderColor: '#000000' }} />
+                    <YAxis domain={[minYAxisValue, maxYAxisValue]} tickFormatter={formatMinutes} />
+                    <Tooltip 
+                    formatter={(value) => {
+                        const decimalMinutes = parseFloat(value);
+                        const minutes = Math.floor(decimalMinutes);
+                        const totalSeconds = (decimalMinutes - minutes) * 60;
+                        const seconds = Math.floor(totalSeconds);
+                        const milliseconds = Math.round((totalSeconds - seconds) * 1000);
+                    return `${minutes}:${seconds.toString().padStart(2, '0')}.${milliseconds.toString().padStart(3, '0')}`;
+                    }}
+                    contentStyle={{ backgroundColor: '#000000', borderColor: '#000000' }} 
+                    />
                     {/*<Legend />*/}
                     {[...new Set(laps.map(lap => driversDetails[lap.driver_number]))].map((acronym, index) => (
                         driverVisibility[acronym] && <Line key={index} type="monotone" dataKey={acronym} stroke={`#${Math.floor(Math.random() * 16777215).toString(16)}`} />

@@ -51,15 +51,18 @@ export const TireStrategy = (props) => {
         ...new Set(sortedTransformedData.flatMap(Object.keys).filter(key => key !== 'acronym')),
     ];
 
+    const capitalizeFirstLetter = (string) => {
+      return string.charAt(0).toUpperCase() + string.slice(1);
+    };
+    
     const CustomTooltip = ({ active, payload, label }) => {
       if (active && payload && payload.length) {
-        const formattedLabel = label.replace(/[0-9]/g, '');
         return (
           <div className="custom-tooltip" style={{ backgroundColor: '#000000', borderColor: '#000000', padding: '10px' }}>
-            <p>{formattedLabel}</p>
+            <p>{label}</p>
             {payload.map((entry, index) => (
-              <p key={index} style={{ color: entry.color }}>
-                {entry.name.replace(/[0-9]/g, '')}: {entry.value}
+              <p key={index} style={{ color: tireTypeClasses[entry.name.replace(/[0-9]/g, '')] }}>
+                {capitalizeFirstLetter(entry.name.replace(/[0-9]/g, ''))}: {entry.value}
               </p>
             ))}
           </div>
@@ -134,7 +137,7 @@ export const TireStrategy = (props) => {
                     stackId="a"
                     stroke={tireTypeClasses[key.replace(/[0-9]/g, '')]}
                   >
-                      <LabelList dataKey={key} position="center" fill="#f1f1f1" />
+                      <LabelList dataKey={key} position="center" fill={tireTypeClasses[key.replace(/[0-9]/g, '')]} />
                   </Bar>
                 </>
               ))}
