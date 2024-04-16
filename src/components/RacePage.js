@@ -18,12 +18,19 @@ export function RacePage() {
   const [ImagePath, setImagePath] = useState('');
   const [raceResults, setRaceResults] = useState([]);
   const [locData, setlocData] = useState({});
+  const [buttonPressed, setButtonPressed] = useState(false);
+  const [activeButtonIndex, setActiveButtonIndex] = useState(null);
+  const [driverCode, setdriverCode] = useState('');
+  const [startTime, setstartTime] = useState('');
+  const [endTime, setendTime] = useState('');
 
   useEffect(() => {
     const fetchData = async () => {
       if (!meetingKey) return;
     
       try {
+        setButtonPressed(false);
+        setActiveButtonIndex(null);
         // Fetch circuit ID based on the country and year. UK and Abu dabi doesnt match, so this takes care of that.
         const countryMap = {
           "Great Britain": "UK",
@@ -62,18 +69,13 @@ export function RacePage() {
     
         setDriversDetails(driverDetailsMap);
 
-          const driverId = 1; // Example
-          const startTime = '2024-03-02T16:00';
-          const endTime = '2024-03-02T16:20';
-          const scaleFactor = 1500;
-          try {
-            const locationData = await fetchLocationData(sessionKey, driverId, startTime, endTime, scaleFactor);
-            setlocData(locationData);
-            //console.log(locationData); // Log the fetched and processed location data
-          } catch (error) {
-            console.error("Error fetching location data:", error);
-          }
-    
+        const latestDate = startingGridData[0].date;
+        const firstDifferentDate = startingGridData.find(item => item.date !== latestDate)?.date;
+        setstartTime(firstDifferentDate); //'2024-03-02T16:00';
+        //console.log(startTime);
+        setendTime(startingGridData[startingGridData.length - 1].date); //'2024-03-02T16:20';
+        //console.log(endTime);
+
         const earliestDateTime = startingGridData[0]?.date;
         const filteredStartingGrid = startingGridData.filter(item => item.date === earliestDateTime);
         setStartingGrid(filteredStartingGrid);
@@ -92,6 +94,88 @@ export function RacePage() {
     fetchData();
   }, [meetingKey, year]);
 
+  const handleButtonClick = (index) => {
+    console.log(raceResults[index].Driver.code); // Log the driver code
+    console.log(raceResults[index].number);
+  
+    if (activeButtonIndex === index) {
+      setButtonPressed(false);
+      setActiveButtonIndex(null); // Reset the active button index
+    } else {
+      setButtonPressed(true);
+      setdriverCode(raceResults[index].number);
+      setActiveButtonIndex(index); // Set new active button index
+  
+      (async () => {
+        try {
+          // Fetch sessions to find the race session
+          const sessionsResponse = await fetch(`https://api.openf1.org/v1/sessions?meeting_key=${meetingKey}`);
+          const sessionsData = await sessionsResponse.json();
+          const raceSession = sessionsData.find(session => session.session_name === "Race");
+          if (!raceSession) throw new Error('Race session not found');
+          const sessionKey = raceSession.session_key;
+  
+          const scaleFactor = 1500;
+  
+          // Fetch location data using sessionKey, driverId (from state), startTime, and endTime
+          const locationData = await fetchLocationData(sessionKey, raceResults[index].number, startTime, endTime, scaleFactor);
+          setlocData(locationData);
+          console.log(locationData); // Log the fetched and processed location data
+  
+        } catch (error) {
+          console.error("Error fetching location data:", error);
+        }
+      })();
+    }
+  };
+  
+
+  if (buttonPressed) {
+    return (
+      <div>
+        <h2 className="heading-2">Race Details</h2>
+        {raceName && <p>Race Name: {raceName} {year}</p>}
+        {meetingKey && <p>Meeting Key: {meetingKey}</p>}
+        <div className="race-page flex flex-col sm:flex-row gap-16">
+          <div className="sm:grow-0">
+            <ul className="mb-64">
+            {raceResults.map((result, index) => (
+              <button 
+                key={index}
+                className="block w-full"
+                style={{
+                  boxShadow: activeButtonIndex === index ? '0 0 20px rgba(255, 0, 0, 1)' : 'none'
+                }}
+                onClick={() => handleButtonClick(index)}
+              >
+                <DriverCard 
+                  driver={result.Driver}
+                  position={result.position}
+                  year={year}
+                  time={result.Time?.time || result.status}
+                  fastestLap={result.FastestLap}
+                  layoutSmall={index > 2}
+                />
+              </button>
+              ))}
+            </ul>
+          </div>
+          <div className="sm:grow-0">
+          <div className="canvas-wrapper mb-64">
+            <ThreeCanvas imageFile={ImagePath} locData = {locData}/>
+          </div>
+
+          <h3 className="heading-6 mb-16">Lap Data</h3>
+          <LapChart laps={laps} setLaps={() => setLaps} driversDetails={driversDetails} raceResults = {raceResults} className="lap-chart" driverCode = {driversDetails[driverCode]} />
+        
+          <h3 className="heading-6 mb-16">Tire Strategy</h3>
+           <TireStrategy drivers={drivers} raceResults={raceResults} driverCode = {driversDetails[driverCode]} />
+           </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div>
       <h2 className="heading-2">Race Details</h2>
@@ -101,17 +185,24 @@ export function RacePage() {
       <div className="race-page flex flex-col sm:flex-row gap-16">
         <div className="sm:grow-0">
           <ul className="mb-64">
-            {raceResults.map((result, index) => (
-              <button className="block w-full" onClick={() => console.log(result.Driver.code)}>
-                <DriverCard 
-                  driver={result.Driver}
-                  position={result.position}
-                  year={year} 
-                  time={result.Time?.time || result.status}
-                  fastestLap={result.FastestLap}
-                  layoutSmall={index > 2}
-                />
-              </button>
+          {raceResults.map((result, index) => (
+            <button 
+              key={index}
+              className="block w-full"
+              style={{
+                boxShadow: activeButtonIndex === index ? '0 0 8px rgba(255, 0, 0, 0.6)' : 'none'
+              }}
+              onClick={() => handleButtonClick(index)}
+            >
+              <DriverCard 
+                driver={result.Driver}
+                position={result.position}
+                year={year}
+                time={result.Time?.time || result.status}
+                fastestLap={result.FastestLap}
+                layoutSmall={index > 2}
+              />
+            </button>
             ))}
           </ul>
 
@@ -139,10 +230,10 @@ export function RacePage() {
           </div>
 
           <h3 className="heading-6 mb-16">Lap Data</h3>
-          <LapChart laps={laps} setLaps={() => setLaps} driversDetails={driversDetails} raceResults = {raceResults} className="lap-chart" />
+          <LapChart laps={laps} setLaps={() => setLaps} driversDetails={driversDetails} raceResults = {raceResults} className="lap-chart" driverCode = {null} />
         
           <h3 className="heading-6 mb-16">Tire Strategy</h3>
-           <TireStrategy drivers={drivers} raceResults={raceResults} />
+           <TireStrategy drivers={drivers} raceResults={raceResults} driverCode = {null} />
 
 
           <h3 className="heading-6 mb-16">Fastest Laps</h3>

@@ -1,55 +1,51 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { 
-    ResponsiveContainer,
-    Bar,
-    BarChart,
-    CartesianGrid,
-    XAxis,
-    YAxis,
-    Tooltip,
-    Legend, LabelList } from 'recharts';
+import {
+  ResponsiveContainer, Bar, BarChart, CartesianGrid, XAxis, YAxis, Tooltip,
+  Legend, LabelList
+} from 'recharts';
 
 export const TireStrategy = (props) => {
-    const { drivers, raceResults } = props;
+  const { drivers, raceResults, driverCode } = props; // Adding driverCode to props
 
-    const sortedDriverAcronyms = raceResults
+  const sortedDriverAcronyms = raceResults
     .sort((a, b) => parseInt(a.position, 10) - parseInt(b.position, 10))
     .map(result => result.Driver.code);
 
-    const transformedData = drivers.map(driver => {
-        const driverData = { acronym: driver.acronym };
-        let previousLapEnd = 0;
-        
-        driver.tires.forEach((tire, index) => {
-          // For the first tire, use tire.lap_end as is.
-          // For subsequent tires, subtract the previous tire's lap_end value.
-          const lapEndValue = index === 0 ? tire.lap_end : tire.lap_end - previousLapEnd;
-          driverData[`${tire.compound.toLowerCase()}${index}`] = lapEndValue;
-          
-          // Update previousLapEnd for the next iteration
-          previousLapEnd = tire.lap_end; 
-        });
-        return driverData;
-      });
+  const transformedData = drivers.map(driver => {
+    const driverData = { acronym: driver.acronym };
+    let previousLapEnd = 0;
 
-    // Sort the transformed data based on the sorted driver acronyms
-    const sortedTransformedData = sortedDriverAcronyms.map(acronym => {
-      return transformedData.find(driverData => driverData.acronym === acronym);
-    }).filter(driverData => driverData !== undefined);
+    driver.tires.forEach((tire, index) => {
+      const lapEndValue = index === 0 ? tire.lap_end : tire.lap_end - previousLapEnd;
+      driverData[`${tire.compound.toLowerCase()}${index}`] = lapEndValue;
+      previousLapEnd = tire.lap_end;
+    });
 
-    const tireTypeClasses = {
-        soft: '#c00000', 
-        medium: '#ffd600', 
-        hard: '#ffffff',
-        intermediate: '#39b54a', 
-        wet: '#00aeef' 
-      };      
+    return driverData;
+  });
 
-    // Get unique tire keys from transformed data (excluding 'acronym')
-    const tireKeys = [
-        ...new Set(sortedTransformedData.flatMap(Object.keys).filter(key => key !== 'acronym')),
-    ];
+  // Filter the transformed data based on the driverCode if it's not null
+  const filteredTransformedData = driverCode
+    ? transformedData.filter(driverData => driverData.acronym === driverCode)
+    : transformedData;
+
+  // Sort the filtered data based on the sorted driver acronyms
+  const sortedTransformedData = sortedDriverAcronyms.map(acronym => {
+    return filteredTransformedData.find(driverData => driverData.acronym === acronym);
+  }).filter(driverData => driverData !== undefined);
+
+  const tireTypeClasses = {
+    soft: '#c00000', 
+    medium: '#ffd600', 
+    hard: '#ffffff',
+    intermediate: '#39b54a', 
+    wet: '#00aeef' 
+  };
+
+  const tireKeys = [
+    ...new Set(sortedTransformedData.flatMap(Object.keys).filter(key => key !== 'acronym')),
+  ];
 
     const capitalizeFirstLetter = (string) => {
       return string.charAt(0).toUpperCase() + string.slice(1);

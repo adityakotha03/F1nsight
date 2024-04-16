@@ -5,6 +5,7 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 
 export const ThreeCanvas = ({ imageFile, locData }) => {
   const mountRef = useRef(null);
+  const infoRef = useRef(null);
 
   useEffect(() => {
     // Scene setup
@@ -15,7 +16,7 @@ export const ThreeCanvas = ({ imageFile, locData }) => {
     mountRef.current.appendChild(renderer.domElement);
 
     // Camera and lighting setup
-    camera.position.z = 100;
+    camera.position.z = 5;
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enablePan = true;
     controls.panSpeed = 0.5;
@@ -38,10 +39,6 @@ export const ThreeCanvas = ({ imageFile, locData }) => {
       plane.rotation.z = -Math.PI / 2;
       scene.add(plane);
     });
-  
-
-    // Camera position
-    camera.position.z = 5;
 
     // GLTF car model
     let carModel;
@@ -77,6 +74,9 @@ export const ThreeCanvas = ({ imageFile, locData }) => {
       
           // Update the carModel's position
           carModel.position.set(newPosition.x - 2, newPosition.y - 2, 0); 
+
+          // Display driver and car data
+          displayDriverDetails(infoRef, newPosition.cardata);
         }
       
         renderer.render(scene, camera);
@@ -92,7 +92,27 @@ export const ThreeCanvas = ({ imageFile, locData }) => {
     };
   }, [imageFile, locData]); // Depend on locData for reactivity
 
-  return <div ref={mountRef} />;
+  return (
+    <div ref={mountRef} style={{ width: '800px', height: '600px', position: 'relative' }}>
+      <div ref={infoRef} style={{ position: 'absolute', top: '10px', left: '10px', color: 'white', zIndex: 10, minWidth: '200px', minHeight: '100px' }}>
+        <p>Loading driver details...</p> {/* Initial content to ensure visibility */}
+      </div>
+    </div>
+  );
 };
+
+function displayDriverDetails(infoRef, carData) {
+  if (infoRef.current && carData) {
+    let htmlContent = `<h3>Driver Details</h3>`;
+    htmlContent += `<p>Driver Number: ${carData.driver_number}</p>`;
+    htmlContent += `<p>Speed: ${carData.speed} km/h</p>`;
+    htmlContent += `<p>RPM: ${carData.rpm}</p>`;
+    htmlContent += `<p>Throttle: ${carData.throttle}</p>`;
+    htmlContent += `<p>Brake: ${carData.brake}</p>`;
+    htmlContent += `<p>DRS Active: ${carData.drs}</p>`;
+    htmlContent += `<p>Current Gear: ${carData.n_gear}</p>`;
+    infoRef.current.innerHTML = htmlContent;  // Update the inner HTML of the infoRef div
+  }
+}
 
 export default ThreeCanvas;
