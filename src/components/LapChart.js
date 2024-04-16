@@ -1,44 +1,47 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 export const LapChart = (props) => {
-    const { className, laps, driversDetails, raceResults } = props;
+    const { className, laps, driversDetails, raceResults, driverCode } = props;
 
     // Initialize visibility state for drivers
     const [driverVisibility, setDriverVisibility] = useState({});
 
     const sortedDriverAcronyms = raceResults
-    .sort((a, b) => parseInt(a.position, 10) - parseInt(b.position, 10))
-    .map(result => result.Driver.code);
-    
+        .sort((a, b) => parseInt(a.position, 10) - parseInt(b.position, 10))
+        .map(result => result.Driver.code);
+
     useEffect(() => {
         const initialVisibility = {};
         sortedDriverAcronyms.forEach((acronym, index) => {
-            initialVisibility[acronym] = index < 3; // Only the top 3 drivers are visible initially
+            // Conditionally set visibility based on driverCode
+            initialVisibility[acronym] = driverCode ? (acronym === driverCode) : (index < 3);
         });
         setDriverVisibility(initialVisibility);
-    }, [laps, driversDetails]);    
+    }, [laps, driversDetails, driverCode]);
 
     const prepareChartData = () => {
         const driverAcronyms = [...new Set(laps.map(lap => driversDetails[lap.driver_number]))];
         const lapNumbers = [...new Set(laps.map(lap => lap.lap_number))].sort((a, b) => a - b);
-    
+
         return lapNumbers.map(lapNumber => {
             const lapDataForAllDrivers = { name: `Lap ${lapNumber}` };
-    
+
             driverAcronyms.forEach(acronym => {
-                const lapForDriver = laps.find(lap => lap.lap_number === lapNumber && driversDetails[lap.driver_number] === acronym);
-                if (lapForDriver && !isNaN(lapForDriver.lap_duration) && parseFloat(lapForDriver.lap_duration) > 0) {
-                    // Convert lap duration from seconds to minutes
-                    lapDataForAllDrivers[acronym] = (parseFloat(lapForDriver.lap_duration) / 60).toFixed(5);
+                if (!driverCode || acronym === driverCode) {
+                    const lapForDriver = laps.find(lap => lap.lap_number === lapNumber && driversDetails[lap.driver_number] === acronym);
+                    if (lapForDriver && !isNaN(lapForDriver.lap_duration) && parseFloat(lapForDriver.lap_duration) > 0) {
+                        // Convert lap duration from seconds to minutes
+                        lapDataForAllDrivers[acronym] = (parseFloat(lapForDriver.lap_duration) / 60).toFixed(5);
+                    }
                 }
             });
-    
+
             return Object.keys(lapDataForAllDrivers).length > 1 ? lapDataForAllDrivers : null;
         }).filter(lapData => lapData !== null);
     };
-    
+
     const chartData = prepareChartData();
     
     const minLapDuration = Math.min(...chartData.flatMap(lap => Object.values(lap).slice(1)));
@@ -87,6 +90,7 @@ export const LapChart = (props) => {
                     ))}
                 </LineChart>
             </ResponsiveContainer>
+            {driverCode == null && (
             <div className="flex justify-center gap-2 mt-4">
                 {sortedDriverAcronyms.map((acronym, index) => (
                     <button
@@ -98,6 +102,7 @@ export const LapChart = (props) => {
                     </button>
                 ))}
             </div>
+            )}
         </div>
     );
 };
