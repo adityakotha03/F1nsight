@@ -5,19 +5,20 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Popover } from "flowbite-react";
 
 export const DriverCard = (props) => {
-    const { className, carNumber, driver, fastestLap, grid, position, layoutSmall, status, time, year} = props;
+    const { className, carNumber, driver, fastestLap, grid, position, isActive, layoutSmall, status, time, year} = props;
     
     return (
         <div className={classNames(
             className, 
             'driver-card flex items-center bg-glow gradient-border relative mt-16',
-            { 'driver-card--small': layoutSmall}
+            { 'bg-glow--sm': layoutSmall},
+            isActive ? "bg-glow--active" : "bg-glow--hover"
         )}>
             {layoutSmall ? (
                 <div className="flex items-center justify-between w-full">
                     <div className="flex items-center">
                         <p className="heading-4 w-72 bg-neutral-600 ">P{position}</p>
-                        <span className="heading-4 pl-12">{driver.code}</span>
+                        <span className="heading-4 pl-16">{driver.code}</span>
                     </div>
                     <p className="text-sm pr-8">{time}</p>
                 </div>
@@ -80,6 +81,7 @@ export const DriverCard = (props) => {
 };
 
 DriverCard.propTypes = {
+    isActive: PropTypes.bool,
     className: PropTypes.string,
     carNumber: PropTypes.string, // Max has a different permanentNumber than his actual car number
     driver: PropTypes.shape({

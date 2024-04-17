@@ -73,8 +73,13 @@ code {
   box-shadow: inset 0 0 2.4rem 0 rgba(255, 255, 255, .25), 0 0 2.4rem 0 rgba(0, 0, 0, .5);
 }
 
+.bg-glow--hover:hover,
+.bg-glow--active {
+  box-shadow: inset 0 0 2.4rem 0 rgba(255, 255, 255, .25), 0 0 2.4rem 0 theme('colors.neutral.500');
+}
+
 .bg-glow--sm {
-  box-shadow: inset 0 0 .8rem 0 rgba(255, 255, 255, .25), 0 0 2.4rem 0 rgba(0, 0, 0, .5);
+  box-shadow: inset 0 0 1rem 0 rgba(255, 255, 255, .25), 0 0 2.4rem 0 rgba(0, 0, 0, .5);
 }
 
 .divider-glow {
@@ -88,6 +93,18 @@ code {
   background: radial-gradient(ellipse at top , theme('colors.neutral.950') 0%, transparent 64%);
   height: 1.6rem;
   width: 100%;
+}
+
+.gradient-text-dark {
+  background: -webkit-linear-gradient(theme('colors.neutral.700'), theme('colors.neutral.800'));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.gradient-text-medium {
+  background: -webkit-linear-gradient(theme('colors.neutral.500'), theme('colors.neutral.800'));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .gradient-border {
@@ -119,17 +136,7 @@ code {
   fill: #242424;
 }
 
-.gradient-text-dark {
-  background: -webkit-linear-gradient(theme('colors.neutral.700'), theme('colors.neutral.800'));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
 
-.gradient-text-medium {
-  background: -webkit-linear-gradient(theme('colors.neutral.500'), theme('colors.neutral.800'));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
 
 .constructor-title {
   font-size: 8rem;

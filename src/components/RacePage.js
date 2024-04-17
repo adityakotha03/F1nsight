@@ -6,6 +6,7 @@ import { fetchLocationData } from '../utils/api';
 import {ThreeCanvas} from './ThreeCanvas.js'
 import { LapChart } from './LapChart';
 import { TireStrategy } from './TireStrategy';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 export function RacePage() {
   const { state } = useLocation();
@@ -18,7 +19,7 @@ export function RacePage() {
   const [ImagePath, setImagePath] = useState('');
   const [raceResults, setRaceResults] = useState([]);
   const [locData, setlocData] = useState({});
-  const [buttonPressed, setButtonPressed] = useState(false);
+  const [driverSelected, setDriverSelected] = useState(false);
   const [activeButtonIndex, setActiveButtonIndex] = useState(null);
   const [driverCode, setdriverCode] = useState('');
   const [startTime, setstartTime] = useState('');
@@ -29,7 +30,7 @@ export function RacePage() {
       if (!meetingKey) return;
     
       try {
-        setButtonPressed(false);
+        setDriverSelected(false);
         setActiveButtonIndex(null);
         // Fetch circuit ID based on the country and year. UK and Abu dabi doesnt match, so this takes care of that.
         const countryMap = {
@@ -94,15 +95,15 @@ export function RacePage() {
     fetchData();
   }, [meetingKey, year]);
 
-  const handleButtonClick = (index) => {
+  const handleDriverSelectionClick = (index) => {
     console.log(raceResults[index].Driver.code); // Log the driver code
     console.log(raceResults[index].number);
   
     if (activeButtonIndex === index) {
-      setButtonPressed(false);
+      setDriverSelected(false);
       setActiveButtonIndex(null); // Reset the active button index
     } else {
-      setButtonPressed(true);
+      setDriverSelected(true);
       setdriverCode(raceResults[index].number);
       setActiveButtonIndex(index); // Set new active button index
   
@@ -128,53 +129,6 @@ export function RacePage() {
       })();
     }
   };
-  
-
-  if (buttonPressed) {
-    return (
-      <div>
-        <h2 className="heading-2">Race Details</h2>
-        {raceName && <p>Race Name: {raceName} {year}</p>}
-        {meetingKey && <p>Meeting Key: {meetingKey}</p>}
-        <div className="race-page flex flex-col sm:flex-row gap-16">
-          <div className="sm:grow-0">
-            <ul className="mb-64">
-            {raceResults.map((result, index) => (
-              <button 
-                key={index}
-                className="block w-full"
-                style={{
-                  boxShadow: activeButtonIndex === index ? '0 0 20px rgba(255, 0, 0, 1)' : 'none'
-                }}
-                onClick={() => handleButtonClick(index)}
-              >
-                <DriverCard 
-                  driver={result.Driver}
-                  position={result.position}
-                  year={year}
-                  time={result.Time?.time || result.status}
-                  fastestLap={result.FastestLap}
-                  layoutSmall={index > 2}
-                />
-              </button>
-              ))}
-            </ul>
-          </div>
-          <div className="sm:grow-0">
-          <div className="canvas-wrapper mb-64">
-            <ThreeCanvas imageFile={ImagePath} locData = {locData}/>
-          </div>
-
-          <h3 className="heading-6 mb-16">Lap Data</h3>
-          <LapChart laps={laps} setLaps={() => setLaps} driversDetails={driversDetails} raceResults = {raceResults} className="lap-chart" driverCode = {driversDetails[driverCode]} />
-        
-          <h3 className="heading-6 mb-16">Tire Strategy</h3>
-           <TireStrategy drivers={drivers} raceResults={raceResults} driverCode = {driversDetails[driverCode]} />
-           </div>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div>
@@ -189,12 +143,10 @@ export function RacePage() {
             <button 
               key={index}
               className="block w-full"
-              style={{
-                boxShadow: activeButtonIndex === index ? '0 0 8px rgba(255, 0, 0, 0.6)' : 'none'
-              }}
-              onClick={() => handleButtonClick(index)}
+              onClick={() => handleDriverSelectionClick(index)}
             >
               <DriverCard 
+                isActive={activeButtonIndex === index}
                 driver={result.Driver}
                 position={result.position}
                 year={year}
@@ -218,7 +170,7 @@ export function RacePage() {
                   <div className="text-sm font-display text-stone-500">P{gridPosition.position}</div>
                   <div className="border-x-2 border-t-2 border-solid border-stone-500 px-4 pt-4 w-52">
                     {driversDetails[gridPosition.driver_number]}
-                  </div>
+                  </div> 
                 </li>
               ))}
           </ul>
@@ -227,37 +179,62 @@ export function RacePage() {
         <div className="sm:grow-0">
           <div className="canvas-wrapper mb-64">
             <ThreeCanvas imageFile={ImagePath} locData = {locData}/>
+            <div className="bg-glow gradient-border p-16">
+              <button><FontAwesomeIcon icon="play" className="mr-32" /></button>
+              <button><FontAwesomeIcon icon="pause" /></button>
+            </div>
+            <div className="bg-glow gradient-border p-16">
+              <select name="driver select" id="driver-select">
+                <option value="">All</option>
+                <option value="dog">Ham</option>
+                <option value="cat">Sai</option>
+                <option value="hamster">Nor</option>
+                <option value="parrot">Rus</option>
+                <option value="spider">Ver</option>
+                <option value="goldfish">Per</option>
+              </select>
+            </div>
+            <div className="bg-glow gradient-border p-16">
+              Playback Speed: 
+              <button className="px-16 py-8">normal</button>
+              <button className="px-16 py-8">push push</button>
+              <button className="px-16 py-8">drs</button>
+            </div>
           </div>
 
           <h3 className="heading-6 mb-16">Lap Data</h3>
-          <LapChart laps={laps} setLaps={() => setLaps} driversDetails={driversDetails} raceResults = {raceResults} className="lap-chart" driverCode = {null} />
+          <LapChart laps={laps} setLaps={() => setLaps} driversDetails={driversDetails} raceResults = {raceResults} className="lap-chart" driverCode={driversDetails[driverCode] ? driversDetails[driverCode] : null} />
         
           <h3 className="heading-6 mb-16">Tire Strategy</h3>
-           <TireStrategy drivers={drivers} raceResults={raceResults} driverCode = {null} />
+          <TireStrategy drivers={drivers} raceResults={raceResults} driverCode={driversDetails[driverCode] ? driversDetails[driverCode] : null} />
 
-
-          <h3 className="heading-6 mb-16">Fastest Laps</h3>
-          <div className="grid grid-cols-3 gap-4 mb-16">
-            <span>Driver</span> 
-            <span>Time</span> 
-            <span>Lap</span> 
-          </div>
-          <ul className="mb-16">
-            {raceResults
-              .filter(result => result.FastestLap && result.FastestLap.rank)
-              .sort((a, b) => parseInt(a.FastestLap.rank) - parseInt(b.FastestLap.rank))
-              .map((result, index) => (
-                <li key={index} className="grid grid-cols-3 gap-4 mb-8">
-                  <div>
-                    {result.Driver.code}
-                    <span className="text-sm ml-8 text-stone-500">{result.Constructor.name}</span>
-                  </div>
-                  <span>{result.FastestLap.Time.time}</span>
-                  <span>{result.FastestLap.lap}</span>
-                  
-                </li>
-              ))}
-          </ul>
+          {!driverSelected && (
+            <>
+              <h3 className="heading-6 mb-16">Fastest Laps</h3>
+              <div className="grid grid-cols-3 gap-4 mb-16">
+                <span>Driver</span> 
+                <span>Time</span> 
+                <span>Lap</span> 
+              </div>
+              <ul className="mb-16">
+                {raceResults
+                  .filter(result => result.FastestLap && result.FastestLap.rank)
+                  .sort((a, b) => parseInt(a.FastestLap.rank) - parseInt(b.FastestLap.rank))
+                  .map((result, index) => (
+                    <li key={index} className="grid grid-cols-3 gap-4 mb-8">
+                      <div>
+                        {result.Driver.code}
+                        <span className="text-sm ml-8 text-stone-500">{result.Constructor.name}</span>
+                      </div>
+                      <span>{result.FastestLap.Time.time}</span>
+                      <span>{result.FastestLap.lap}</span>
+                      
+                    </li>
+                  ))}
+              </ul>
+            </>
+          )}
+          
         </div>
      </div>
     </div>
