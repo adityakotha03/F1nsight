@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { getConstructorStandings } from '../utils/api';
 
-import { ConstructorCard } from './ConstructorCard';
+import { ConstructorCar } from './ConstructorCar';
 
 export function ConstructorStandings({ selectedYear }) {
   const [standings, setStandings] = useState([]);
@@ -29,7 +29,7 @@ export function ConstructorStandings({ selectedYear }) {
       <ul>
         {standings.map((standing, index) => (
           <li key={index}>
-            <ConstructorCard 
+            <ConstructorCar 
               type='cars'
               image={standing.constructorId} 
               points={standing.points}

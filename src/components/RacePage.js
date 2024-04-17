@@ -184,7 +184,7 @@ export function RacePage() {
 
       <div className="race-page flex flex-col sm:flex-row gap-16">
         <div className="sm:grow-0">
-          <ul className="mb-64">
+          <ul className="mb-64 flex flex-col">
           {raceResults.map((result, index) => (
             <button 
               key={index}

@@ -10,6 +10,14 @@ module.exports = {
         display: 'Bungee, ui-serif', // Adds a new `font-display` class
       }
     },
+    fontSize: {
+      sm: '1.2rem',
+      base: '1.6rem',
+      xl: '2rem',
+    },
+    letterSpacing: {
+      wide: '.8rem',
+    },
     spacing: {
       0.5: '0.05rem',
       1: '0.1rem',

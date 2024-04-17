@@ -10,29 +10,27 @@ export const DriverCard = (props) => {
     return (
         <div className={classNames(
             className, 
-            'driver-card flex items-center justify-center bg-glow pl-10 gradient-border relative mt-16',
+            'driver-card flex items-center bg-glow gradient-border relative mt-16',
             { 'driver-card--small': layoutSmall}
         )}>
             {layoutSmall ? (
-                <div className="flex items-center">
-                    <p className="heading-4 pr-8 border-r-2 mr-8">P{position}</p>
-                    <span className="heading-4 pr-8">{driver.code}</span>
+                <div className="flex items-center justify-between w-full">
+                    <div className="flex items-center">
+                        <p className="heading-4 w-72 bg-neutral-600 ">P{position}</p>
+                        <span className="heading-4 pl-12">{driver.code}</span>
+                    </div>
                     <p className="text-sm pr-8">{time}</p>
                 </div>
             ) : (
-                <>
-                    <div className="flex items-stretch">
-                        <div className="self-center">
-                            <p className="heading-1">P{position}</p>
-                            <p className={classNames("text-sm -mt-4")}>{time}</p>
-                        </div>
+                <div className='flex item-center w-full'>
+                    <p className="heading-1 p-8 bg-neutral-700">P{position}</p>
+                    <img alt="" src={`/images/${year}/drivers/${driver.code}.png`} width={80} height={80} className="absolute left-48 inset-x-0 -bottom-1"/>
+                    <div className="grow p-12 text-right">
+                        <span className="heading-4 mb-12 pl-60">{driver.code}</span>
+                        <div className="divider-glow w-full" /> 
+                        <p className={classNames("text-sm -mt-8")}>{time}</p>
                     </div>
-                    <div className="flex flex-col items-center -mt-16">
-                        <img alt="" src={`/images/${year}/drivers/${driver.code}.png`} width={80} height={80} className="px-10"/>
-                        <div className="divider-glow -mb-10" /> 
-                        <span className="heading-4 mb-12">{driver.code}</span>
-                    </div>
-                </>
+                </div>
             )}
             
             {fastestLap?.rank === "1" && (
@@ -71,7 +69,7 @@ export const DriverCard = (props) => {
                         </div>
                     }
                 >
-                    <span className="fa-layers fa-fw absolute -top-8 right-4">
+                    <span className="fa-layers fa-fw absolute top-24 -right-10">
                         <FontAwesomeIcon icon="circle" />
                         <FontAwesomeIcon icon="clock" className="text-violet-600" inverse transform="shrink-2" />
                     </span>

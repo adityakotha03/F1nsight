@@ -78,8 +78,15 @@ code {
 }
 
 .divider-glow {
-  background: radial-gradient(ellipse at top, theme('colors.neutral.900') 0%, transparent 64%);
+  border-top: .1rem solid theme('colors.neutral.600');
+  background: radial-gradient(ellipse at top, theme('colors.neutral.600') 0%, transparent 64%);
   height: 1.2rem;
+  width: 100%;
+}
+
+.divider-glow-dark {
+  background: radial-gradient(ellipse at top , theme('colors.neutral.950') 0%, transparent 64%);
+  height: 1.6rem;
   width: 100%;
 }
 
@@ -88,6 +95,13 @@ code {
   border-style: solid;
   border-image: linear-gradient(to bottom, theme('colors.neutral.600'), theme('colors.neutral.500')) 1;
 }
+
+.text-gradient-white {
+  background: -webkit-linear-gradient(theme('colors.neutral.200'), theme('colors.neutral.700'));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
 
 /* Custom Classes */
 
@@ -103,4 +117,27 @@ code {
 .tire-compound--hard {
   filter: url(#inset-shadow-hard);
   fill: #242424;
+}
+
+.gradient-text-dark {
+  background: -webkit-linear-gradient(theme('colors.neutral.700'), theme('colors.neutral.800'));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.gradient-text-medium {
+  background: -webkit-linear-gradient(theme('colors.neutral.500'), theme('colors.neutral.800'));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.constructor-title {
+  font-size: 8rem;
+  margin-bottom: -3.2rem;
+  line-height: .8;
+  text-align: center;
+  @media (min-width: 768px) {
+    font-size: 12.4rem;
+    margin-bottom: -3.2rem;
+  }
 }

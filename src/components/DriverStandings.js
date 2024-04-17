@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { getDriverStandings } from '../utils/api';
 
-import { ConstructorCard } from './ConstructorCard';
+import { ConstructorDriver } from './ConstructorDriver';
 
 export function DriverStandings({ selectedYear }) {
   const [standings, setStandings] = useState([]);
@@ -18,7 +18,7 @@ export function DriverStandings({ selectedYear }) {
     fetchData();
   }, [selectedYear]);
 
-  // console.log(standings);
+  console.log(standings);
 
   return (
     <div>
@@ -29,11 +29,12 @@ export function DriverStandings({ selectedYear }) {
         <ul>
           {standings.map((standing, index) => (
             <li key={index} className='w-full'>
-              <ConstructorCard 
+              <ConstructorDriver 
                 type='drivers'
                 image={standing.driverCode} 
                 points={standing.points}
-                name={standing.driverName}
+                firstName={standing.driverName.split(' ')[0]}
+                lastName={standing.driverName.split(' ')[1]}
                 year={selectedYear} 
               />
             </li>

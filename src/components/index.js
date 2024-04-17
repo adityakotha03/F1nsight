@@ -1,5 +1,6 @@
 export * from './ConstructorStandings'
-export * from './ConstructorCard'
+export * from './ConstructorCar'
+export * from './ConstructorDriver'
 export * from './DriverCard'
 export * from './DriverStandings'
 export * from './Header'
