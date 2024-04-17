@@ -18,7 +18,7 @@ export function ConstructorStandings({ selectedYear }) {
     fetchData();
   }, [selectedYear]);
 
-  // console.log(standings);
+  //console.log(standings);
 
   return (
     <div>

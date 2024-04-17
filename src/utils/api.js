@@ -60,23 +60,51 @@ export const fetchRaceDetails = async (selectedYear) => {
   };
 
 export const getConstructorStandings = async (selectedYear) => {
-    const url = `https://ergast.com/api/f1/${selectedYear}/constructorStandings.json`;
-    try {
-      const response = await fetch(url);
-      if (response.ok) {
-        const data = await response.json();
-        const standings = data.MRData.StandingsTable.StandingsLists[0].ConstructorStandings;
-        return standings.map(standing => ({
-          constructorName: standing.Constructor.name,
-          constructorId: standing.Constructor.constructorId,
-          points: standing.points,
-        }));
-      }
-    } catch (error) {
-      console.error('Error fetching constructor standings:', error);
+  const baseURL = `https://ergast.com/api/f1/${selectedYear}`;
+
+  try {
+    const constructorUrl = `${baseURL}/constructorStandings.json`;
+    const constructorResponse = await fetch(constructorUrl);
+    let constructorStandings = [];
+
+    if (constructorResponse.ok) {
+      const constructorData = await constructorResponse.json();
+      constructorStandings = constructorData.MRData.StandingsTable.StandingsLists[0].ConstructorStandings.map(standing => ({
+        constructorName: standing.Constructor.name,
+        constructorId: standing.Constructor.constructorId,
+        points: standing.points,
+        driverCodes: []
+      }));
     }
+
+    const driverUrl = `${baseURL}/driverStandings.json`;
+    const driverResponse = await fetch(driverUrl);
+    let driverStandings = [];
+
+    if (driverResponse.ok) {
+      const driverData = await driverResponse.json();
+      driverStandings = driverData.MRData.StandingsTable.StandingsLists[0].DriverStandings;
+    }
+
+    driverStandings.forEach(standing => {
+      standing.Constructors.forEach(constructor => {
+        const constructorIndex = constructorStandings.findIndex(c => c.constructorId === constructor.constructorId);
+        if (constructorIndex !== -1) {
+          constructorStandings[constructorIndex].driverCodes.push(standing.Driver.code);
+        }
+      });
+    });
+
+    constructorStandings.forEach(standing => {
+      standing.driverCodes = [...new Set(standing.driverCodes)].sort();
+    });
+
+    return constructorStandings;
+  } catch (error) {
+    console.error('Error fetching enhanced constructor standings:', error);
     return [];
-  };
+  }
+};
 
   export const getDriverStandings = async (selectedYear) => {
     const url = `https://ergast.com/api/f1/${selectedYear}/driverStandings.json`;
@@ -89,6 +117,7 @@ export const getConstructorStandings = async (selectedYear) => {
           driverCode: standing.Driver.code,
           driverName: `${standing.Driver.givenName} ${standing.Driver.familyName}`,
           constructorName: standing.Constructors[0].name,
+          constructorId: standing.Constructors[0].constructorId,
           points: standing.points,
         }));
       }
