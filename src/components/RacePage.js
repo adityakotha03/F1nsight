@@ -201,8 +201,6 @@ export function RacePage() {
           </div>
 
           <h3 className="heading-6 mb-16">Lap Data</h3>
-
-
           <LapChart laps={laps} setLaps={() => setLaps} driversDetails={driversDetails} raceResults = {raceResults} className="lap-chart" driverCode={driverSelected ? driversDetails[driverCode] : null} />
         
           <h3 className="heading-6 mb-16">Tire Strategy</h3>
