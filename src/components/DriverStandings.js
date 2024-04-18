@@ -20,7 +20,7 @@ export function DriverStandings({ selectedYear }) {
     fetchData();
   }, [selectedYear]);
 
-  console.log(standings);
+  // console.log(standings);
 
   return (
     <>
@@ -31,8 +31,8 @@ export function DriverStandings({ selectedYear }) {
           {standings.map((standing, index) => (
             <li key={index} className='w-full'>
               <ConstructorDriver 
-                type='drivers'
                 image={standing.driverCode} 
+                car={standing.constructorId}
                 points={standing.points}
                 firstName={standing.driverName.split(' ')[0]}
                 lastName={standing.driverName.split(' ')[1]}

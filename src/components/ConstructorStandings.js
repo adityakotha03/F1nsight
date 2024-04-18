@@ -19,8 +19,6 @@ export function ConstructorStandings({ selectedYear }) {
     fetchData();
   }, [selectedYear]);
 
-  //console.log(standings);
-
   return (
     <>
       {isLoading ? (
@@ -30,11 +28,11 @@ export function ConstructorStandings({ selectedYear }) {
         {standings.map((standing, index) => (
           <li key={index}>
             <ConstructorCar 
-              type='cars'
               image={standing.constructorId} 
               points={standing.points}
               name={standing.constructorName}
               year={selectedYear} 
+              drivers={standing.driverCodes}
             />
           </li>
         ))}

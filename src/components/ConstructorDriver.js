@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import { useInView } from "framer-motion";
 
 export const ConstructorDriver = (props) => {
-    const { className, points, image, firstName, lastName, year, type} = props;
+    const { className, points, image, car, firstName, lastName, year} = props;
     const ref = useRef(null);
     const isInView = useInView(ref, { once: true });
 
@@ -13,27 +13,37 @@ export const ConstructorDriver = (props) => {
             <div 
                 className={classNames(
                     className, 
-                    'constructor-driver-card mt-64 flex item-start'
+                    'constructor-driver-card mt-32 flex justify-center items-end'
                 )}
                 ref={ref}
             >
                 <img 
                     alt="" 
-                    className=""
-                    height={120} 
-                    src={`/images/${year}/${type}/${image}.png`} 
-                    width={type === 'cars' ? 288 : 120} 
+                    className="-mr-28"
+                    src={`/images/${year}/drivers/${image}.png`} 
+                    width={120} 
                     style={{
-                        transform: isInView ? "none" : "translateX(-50px)",
                         opacity: isInView ? 1 : 0,
-                        transition: "all 0.9s cubic-bezier(0.17, 0.55, 0.55, 1)"
+                        transition: "all 2s cubic-bezier(0.17, 0.55, 0.55, 1)"
                     }}
                 />
-                <div className="">
-                    <p className="gradient-text-medium uppercase text-xl tracking-wide">{firstName}</p>
+                <div className="-mb-10">
+                    <p className="gradient-text-medium uppercase text-xl tracking-wide -mb-8">{firstName}</p>
                     <p className="heading-2">{lastName}</p>
-                    {/* carimage */}
-                    <span className="heading-1">{points}</span>
+                    <div className="flex items-end">
+                        <img 
+                            alt="" 
+                            className="-mb-8 z-10"
+                            src={`/images/${year}/cars/${car}.png`} 
+                            width={200} 
+                            style={{
+                                transform: isInView ? "none" : "translateX(-50px)",
+                                opacity: isInView ? 1 : 0,
+                                transition: "all 1s cubic-bezier(0.17, 0.55, 0.55, 1)"
+                            }}
+                        />
+                        <span className="heading-1">{points}</span>
+                    </div>
                 </div>
             </div>
             <div className="divider-glow-dark w-full" />
@@ -46,6 +56,7 @@ ConstructorDriver.propTypes = {
     year: PropTypes.string,
     points: PropTypes.string,
     image: PropTypes.string,
+    car: PropTypes.string,
     firstName: PropTypes.string,
     lastName: PropTypes.string,
     type: PropTypes.string,

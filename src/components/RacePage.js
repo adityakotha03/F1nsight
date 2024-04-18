@@ -143,6 +143,7 @@ export function RacePage() {
               <DriverCard 
                 hasHover
                 isActive={activeButtonIndex === index}
+                index={index}
                 driver={result.Driver}
                 position={result.position}
                 year={year}

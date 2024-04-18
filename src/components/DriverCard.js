@@ -1,11 +1,15 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Popover } from "flowbite-react";
+import { useInView } from "framer-motion";
 
 export const DriverCard = (props) => {
-    const { className, carNumber, driver, fastestLap, grid, position, isActive, layoutSmall, status, time, year, hasHover} = props;
+    const { className, carNumber, driver, fastestLap, grid, position, isActive, layoutSmall, status, time, year, hasHover, index} = props;
+
+    const ref = useRef(null);
+    const isInView = useInView(ref, { once: true });
     
     return (
         <div className={classNames(
@@ -25,7 +29,18 @@ export const DriverCard = (props) => {
             ) : (
                 <div className='flex item-center w-full'>
                     <p className="heading-1 p-8 bg-neutral-700">P{position}</p>
-                    <img alt="" src={`/images/${year}/drivers/${driver.code}.png`} width={80} height={80} className="absolute left-48 inset-x-0 -bottom-1"/>
+                    <img 
+                        alt="" 
+                        src={`/images/${year}/drivers/${driver.code}.png`} 
+                        width={80} 
+                        height={80} 
+                        ref={ref}
+                        className="absolute left-48 inset-x-0 -bottom-1"
+                        style={{
+                            opacity: isInView ? 1 : 0,
+                            transition: `all 1s cubic-bezier(0.17, 0.55, 0.55, 1) .${index}s`
+                        }}
+                    />
                     <div className="grow p-12 text-right">
                         <span className="heading-4 mb-12 pl-60">{driver.code}</span>
                         <div className="divider-glow w-full" /> 
@@ -82,6 +97,7 @@ export const DriverCard = (props) => {
 
 DriverCard.propTypes = {
     isActive: PropTypes.bool,
+    index: PropTypes.number,
     hasHover: PropTypes.bool,
     className: PropTypes.string,
     carNumber: PropTypes.string, // Max has a different permanentNumber than his actual car number
