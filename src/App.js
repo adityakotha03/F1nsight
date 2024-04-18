@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Link, NavLink } from 'react-router-dom';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { fas } from '@fortawesome/free-solid-svg-icons';
 
@@ -60,6 +60,13 @@ function App() {
         {/* Use RaceSelector for race selection */}
         <RaceSelector races={races} selectedYear={selectedYear} setIsRaceSelected={setIsRaceSelected} />
       </Header>
+      {!isRaceSelected && ( // Conditional rendering based on isRaceSelected
+        <nav className="flex flex-col sm:flex-row items-center justify-center gap-16 sm:gap-32 py-48 shadow-xl border-b-2 border-neutral-800 mb-48 heading-4">
+          <NavLink activeClassName="active" className="navLink" to="/">Race Results</NavLink>
+          <NavLink activeClassName="active" className="navLink" to="/constructor-standings">Constructor Standings</NavLink>
+          <NavLink activeClassName="active" className="navLink" to="/driver-standings">Driver Standings</NavLink>
+        </nav>
+      )}
       <div className='px-8 sm:px-16'>
         {/* {upcomingRace && (
           <div>
@@ -69,12 +76,6 @@ function App() {
             <p>Time: {upcomingRace.time}</p>
           </div>
         )} */}
-        
-        {!isRaceSelected && ( // Conditional rendering based on isRaceSelected
-          <nav className="flex justify-between sm:justify-center gap-48 text-sm">
-            <Link to="/">Race Results</Link> | <Link to="/constructor-standings">Constructor Standings</Link> | <Link to="/driver-standings">Driver Standings</Link>
-          </nav>
-        )}
 
         <Routes>
           <Route exact path="/" element={<RaceResultsPage selectedYear={selectedYear} />} />

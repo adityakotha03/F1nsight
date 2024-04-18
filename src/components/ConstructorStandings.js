@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { getConstructorStandings } from '../utils/api';
 
 import { ConstructorCar } from './ConstructorCar';
+import { Loading } from "./Loading"
 
 export function ConstructorStandings({ selectedYear }) {
   const [standings, setStandings] = useState([]);
@@ -21,10 +22,9 @@ export function ConstructorStandings({ selectedYear }) {
   //console.log(standings);
 
   return (
-    <div>
-      <h2 className="heading-4 text-center mt-32">Constructor Points</h2>
+    <>
       {isLoading ? (
-        <p>Loading...</p>
+        <Loading />
       ) : (
       <ul>
         {standings.map((standing, index) => (
@@ -40,6 +40,6 @@ export function ConstructorStandings({ selectedYear }) {
         ))}
       </ul>
       )}
-    </div>
+    </>
   );
 }
