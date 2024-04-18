@@ -49,6 +49,7 @@ export function RaceResultsPage({ selectedYear }) {
                       fastestLap={result.fastestLap}
                       grid={result.grid}
                       key={resultIndex}
+                      index={resultIndex}
                       position={parseInt(result.position, 10)}
                       status={result.status}
                       time={result.time}
