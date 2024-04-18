@@ -3,19 +3,17 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 
-export const ThreeCanvas = ({ imageFile, locData }) => {
+export const ThreeCanvas = ({ imageFile, locData, driverSelected }) => {
   const mountRef = useRef(null);
   const infoRef = useRef(null);
 
   useEffect(() => {
-    // Scene setup
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(75, 800 / 600, 0.1, 1000);
     const renderer = new THREE.WebGLRenderer();
-    renderer.setSize(800, 600); // Set fixed size for canvas
+    renderer.setSize(800, 600);
     mountRef.current.appendChild(renderer.domElement);
 
-    // Camera and lighting setup
     camera.position.z = 5;
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enablePan = true;
@@ -26,21 +24,17 @@ export const ThreeCanvas = ({ imageFile, locData }) => {
     directionalLight.position.set(1, 1, 1);
     scene.add(directionalLight);
 
-    // Adding image as a texture to a plane geometry
     const textureLoader = new THREE.TextureLoader();
     textureLoader.load(imageFile, texture => {
-      // Get the original dimensions of the image
-      const imageWidth = texture.image.width/100;
-      const imageHeight = texture.image.height/100;
+      const imageWidth = texture.image.width / 100;
+      const imageHeight = texture.image.height / 100;
       const geometry = new THREE.PlaneGeometry(imageWidth, imageHeight);
-
       const material = new THREE.MeshBasicMaterial({ map: texture });
       const plane = new THREE.Mesh(geometry, material);
       plane.rotation.z = -Math.PI / 2;
       scene.add(plane);
     });
 
-    // GLTF car model
     let carModel;
     const loader = new GLTFLoader();
     loader.load('/car/scene.gltf', function (gltf) {
@@ -53,50 +47,56 @@ export const ThreeCanvas = ({ imageFile, locData }) => {
       console.error(error);
     });
 
-    // Animation loop
     const animate = () => {
-        requestAnimationFrame(animate);
-      
-        // Assuming locData is an array of objects with x and y coordinates
-        if (carModel && locData.length > 0) {
-          const newPosition = locData.shift(); // Get and remove the first position from the array
-      
-          // Optionally, calculate the angle for rotation if your model needs to face the direction of movement
-          let oldPosition = carModel.position;
-          oldPosition.x = oldPosition.x + 2;
-          oldPosition.y = oldPosition.y + 2;
-          const angle = Math.atan2(newPosition.y - oldPosition.y, newPosition.x - oldPosition.x);
-      
-          // Apply rotation using quaternion to smoothly rotate towards the direction of movement
-          const euler = new THREE.Euler(Math.PI / 2, 0, angle + Math.PI / 2, 'YZX');
-          const quaternion = new THREE.Quaternion().setFromEuler(euler);
-          carModel.quaternion.copy(quaternion);
-      
-          // Update the carModel's position
-          carModel.position.set(newPosition.x - 2, newPosition.y - 2, 0); 
+      requestAnimationFrame(animate);
 
-          // Display driver and car data
+      if (carModel && locData.length > 0 && driverSelected) {
+        const newPosition = locData.shift();
+        let oldPosition = carModel.position;
+        oldPosition.x = oldPosition.x + 2;
+        oldPosition.y = oldPosition.y + 2;
+        const angle = Math.atan2(newPosition.y - oldPosition.y, newPosition.x - oldPosition.x);
+        const euler = new THREE.Euler(Math.PI / 2, 0, angle + Math.PI / 2, 'YZX');
+        const quaternion = new THREE.Quaternion().setFromEuler(euler);
+        carModel.quaternion.copy(quaternion);
+        carModel.position.set(newPosition.x - 2, newPosition.y - 2, 0);
+
+        if (infoRef.current) {
           displayDriverDetails(infoRef, newPosition.cardata);
         }
-      
-        renderer.render(scene, camera);
-      };
-      
-      animate();      
+      }
 
-    // Clean up
+      renderer.render(scene, camera);
+    };
+
+    animate();
+
     return () => {
       if (mountRef.current) {
         mountRef.current.removeChild(renderer.domElement);
       }
+      renderer.dispose();
+      scene.traverse(object => {
+        if (object.material) {
+          object.material.dispose();
+        }
+        if (object.geometry) {
+          object.geometry.dispose();
+        }
+      });
+      if (controls) {
+        controls.dispose();
+      }
     };
-  }, [imageFile, locData]); // Depend on locData for reactivity
+  }, [imageFile, locData, driverSelected]);
 
   return (
     <div ref={mountRef} style={{ width: '800px', height: '600px', position: 'relative' }}>
-      <div ref={infoRef} style={{ position: 'absolute', top: '10px', left: '10px', color: 'white', zIndex: 10, minWidth: '200px', minHeight: '100px' }}>
-        <p>Loading driver details...</p> {/* Initial content to ensure visibility */}
-      </div>
+      { driverSelected &&
+        <div ref={infoRef} style={{ position: 'absolute', top: '10px', left: '10px', color: 'white', zIndex: 10, minWidth: '200px', minHeight: '100px' }}>
+          <p>Loading driver details...</p>
+        </div>
+      }
     </div>
   );
 };
@@ -111,8 +111,6 @@ function displayDriverDetails(infoRef, carData) {
     htmlContent += `<p>Brake: ${carData.brake}</p>`;
     htmlContent += `<p>DRS Active: ${carData.drs}</p>`;
     htmlContent += `<p>Current Gear: ${carData.n_gear}</p>`;
-    infoRef.current.innerHTML = htmlContent;  // Update the inner HTML of the infoRef div
+    infoRef.current.innerHTML = htmlContent;
   }
 }
-
-export default ThreeCanvas;
