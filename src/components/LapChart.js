@@ -24,31 +24,52 @@ export const LapChart = (props) => {
     const prepareChartData = () => {
         const driverAcronyms = [...new Set(laps.map(lap => driversDetails[lap.driver_number]))];
         const lapNumbers = [...new Set(laps.map(lap => lap.lap_number))].sort((a, b) => a - b);
-
+    
+        // Step 1: Gather all valid lap durations in seconds
+        let lapDurations = [];
+        laps.forEach(lap => {
+            const lapDuration = parseFloat(lap.lap_duration);
+            if (!isNaN(lapDuration) && lapDuration > 0) {
+                lapDurations.push(lapDuration);
+            }
+        });
+    
+        // Step 2: Calculate Q1, Q3, and IQR
+        lapDurations.sort((a, b) => a - b);
+        const q1 = lapDurations[Math.floor((lapDurations.length / 4))];
+        const q3 = lapDurations[Math.floor((lapDurations.length * 3) / 4)];
+        const iqr = q3 - q1;
+        const lowerBound = q1 - 1.5 * iqr;
+        const upperBound = q3 + 1.5 * iqr;
+    
         return lapNumbers.map(lapNumber => {
             const lapDataForAllDrivers = { name: `Lap ${lapNumber}` };
-
+    
             driverAcronyms.forEach(acronym => {
                 if (!driverCode || acronym === driverCode) {
                     const lapForDriver = laps.find(lap => lap.lap_number === lapNumber && driversDetails[lap.driver_number] === acronym);
-                    if (lapForDriver && !isNaN(lapForDriver.lap_duration) && parseFloat(lapForDriver.lap_duration) > 0) {
-                        // Convert lap duration from seconds to minutes
-                        lapDataForAllDrivers[acronym] = (parseFloat(lapForDriver.lap_duration) / 60).toFixed(5);
+                    if (lapForDriver) {
+                        const lapDurationInSeconds = parseFloat(lapForDriver.lap_duration);
+                        if (!isNaN(lapDurationInSeconds) && lapDurationInSeconds > 0 && lapDurationInSeconds >= lowerBound && lapDurationInSeconds <= upperBound) {
+                            // Convert lap duration from seconds to minutes and exclude outliers
+                            lapDataForAllDrivers[acronym] = (lapDurationInSeconds / 60).toFixed(5);
+                        }
                     }
                 }
             });
-
+    
             return Object.keys(lapDataForAllDrivers).length > 1 ? lapDataForAllDrivers : null;
         }).filter(lapData => lapData !== null);
     };
-
+    
     const chartData = prepareChartData();
     
     const minLapDuration = Math.min(...chartData.flatMap(lap => Object.values(lap).slice(1)));
     const maxLapDuration = Math.max(...chartData.flatMap(lap => Object.values(lap).slice(1)));
     const yAxisPadding = (maxLapDuration - minLapDuration) * 0.05;
     const minYAxisValue = parseFloat((minLapDuration - yAxisPadding).toFixed(3));
-    const maxYAxisValue = parseFloat((maxLapDuration + yAxisPadding).toFixed(3));    
+    const maxYAxisValue = parseFloat((maxLapDuration + yAxisPadding).toFixed(3));
+       
 
     const handleDriverVisibilityChange = (acronym) => {
         setDriverVisibility(prevState => ({
