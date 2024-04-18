@@ -3,6 +3,8 @@ import { fetchRaceDetails } from '../utils/api';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { DriverCard } from './DriverCard';
+import { Loading } from "./Loading"
+
 
 export function RaceResultsPage({ selectedYear }) {
   const [raceDetails, setRaceDetails] = useState([]);
@@ -22,17 +24,16 @@ export function RaceResultsPage({ selectedYear }) {
 // console.log(raceDetails);
 
   return (
-    <div>
-      <h2 className="heading-4 text-center mt-32">{selectedYear} Race Results</h2>
+    <>
       {isLoading ? (
-        <p>Loading...</p>
+        <Loading />
       ) : (
-        <ul>
+        <ul className=''>
           {raceDetails.map((race, index) => (
-            <li key={index} className='py-32'>
+            <li key={index} className='pb-48 max-sm:w-3/4 m-auto'>
               <div className='text-center'>
-                <h6 className='heading-6'>
-                  {race.raceName} {race.season}
+                <h6 className='heading-6 text-neutral-500 mb-16'>
+                  {race.season} {race.raceName}
                 </h6>
                 {/* <div className='text-sm text-neutral-500'>
                   {race.date}
@@ -56,11 +57,11 @@ export function RaceResultsPage({ selectedYear }) {
                   ))}
                 </ul>
               )}
-              <a className="text-sm block text-center mt-16" href="/">full weekend results <FontAwesomeIcon icon="fa-arrow-up-right-from-square" /></a>
+              <a className="text-sm block text-center mt-16 text-neutral-500" href="/">full weekend results <FontAwesomeIcon icon="fa-arrow-up-right-from-square" /></a>
             </li>
           ))}
         </ul>
       )}
-    </div>
+    </>
   );
 }

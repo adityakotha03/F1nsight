@@ -136,8 +136,6 @@ code {
   fill: #242424;
 }
 
-
-
 .constructor-title {
   font-size: 8rem;
   margin-bottom: -3.2rem;
@@ -147,4 +145,11 @@ code {
     font-size: 12.4rem;
     margin-bottom: -3.2rem;
   }
+}
+
+.navLink {
+  color: theme('colors.neutral.600');
+}
+.navLink.active {
+  color: theme('colors.neutral.300');
 }

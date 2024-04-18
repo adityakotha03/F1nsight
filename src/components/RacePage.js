@@ -131,21 +131,17 @@ export function RacePage() {
   };
 
   return (
-    <div>
-      <h2 className="heading-2">Race Details</h2>
-      {raceName && <p>Race Name: {raceName} {year}</p>}
-      {meetingKey && <p>Meeting Key: {meetingKey}</p>}
-
-      <div className="race-page flex flex-col sm:flex-row gap-16">
+      <div className="race-page flex flex-col sm:flex-row gap-16 mt-32">
         <div className="sm:grow-0">
           <ul className="mb-64 flex flex-col">
           {raceResults.map((result, index) => (
             <button 
               key={index}
-              className="block w-full"
+              className="block w-full mb-8"
               onClick={() => handleDriverSelectionClick(index)}
             >
               <DriverCard 
+                hasHover
                 isActive={activeButtonIndex === index}
                 driver={result.Driver}
                 position={result.position}
@@ -177,6 +173,8 @@ export function RacePage() {
         </div>
 
         <div className="sm:grow-0">
+        {raceName && <p className="heading-2 text-right text-stone-500 mb-24">{raceName} {year}</p>}
+        {/* {meetingKey && <p>Meeting Key: {meetingKey}</p>} */}
           <div className="canvas-wrapper mb-64">
             <ThreeCanvas imageFile={ImagePath} locData = {locData}/>
             <div className="bg-glow gradient-border p-16">
@@ -233,10 +231,8 @@ export function RacePage() {
                   ))}
               </ul>
             </>
-          )}
-          
+          )} 
         </div>
      </div>
-    </div>
   );
 }

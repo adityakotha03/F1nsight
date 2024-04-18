@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { getDriverStandings } from '../utils/api';
 
 import { ConstructorDriver } from './ConstructorDriver';
+import { Loading } from "./Loading"
+
 
 export function DriverStandings({ selectedYear }) {
   const [standings, setStandings] = useState([]);
@@ -21,10 +23,9 @@ export function DriverStandings({ selectedYear }) {
   console.log(standings);
 
   return (
-    <div>
-      <h2 className="heading-4 text-center mt-32">Driver Standings</h2>
+    <>
       {isLoading ? (
-        <p>Loading...</p>
+        <Loading />
       ) : (
         <ul>
           {standings.map((standing, index) => (
@@ -41,6 +42,6 @@ export function DriverStandings({ selectedYear }) {
           ))}
         </ul>
       )}
-    </div>
+    </>
   );
 }
