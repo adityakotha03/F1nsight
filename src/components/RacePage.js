@@ -176,7 +176,7 @@ export function RacePage() {
         {raceName && <p className="heading-2 text-right text-stone-500 mb-24">{raceName} {year}</p>}
         {/* {meetingKey && <p>Meeting Key: {meetingKey}</p>} */}
           <div className="canvas-wrapper mb-64">
-            <ThreeCanvas imageFile={ImagePath} locData = {locData}/>
+            <ThreeCanvas imageFile={ImagePath} locData = {locData} driverSelected={driverSelected}/>
             <div className="bg-glow gradient-border p-16">
               <button><FontAwesomeIcon icon="play" className="mr-32" /></button>
               <button><FontAwesomeIcon icon="pause" /></button>
@@ -201,10 +201,10 @@ export function RacePage() {
           </div>
 
           <h3 className="heading-6 mb-16">Lap Data</h3>
-          <LapChart laps={laps} setLaps={() => setLaps} driversDetails={driversDetails} raceResults = {raceResults} className="lap-chart" driverCode={driversDetails[driverCode] ? driversDetails[driverCode] : null} />
+          <LapChart laps={laps} setLaps={() => setLaps} driversDetails={driversDetails} raceResults = {raceResults} className="lap-chart" raceResults} driverCode={driverSelected ? driversDetails[driverCode] : null} />
         
           <h3 className="heading-6 mb-16">Tire Strategy</h3>
-          <TireStrategy drivers={drivers} raceResults={raceResults} driverCode={driversDetails[driverCode] ? driversDetails[driverCode] : null} />
+          <TireStrategy drivers={drivers} raceResults={raceResults} raceResults} driverCode={driverSelected ? driversDetails[driverCode] : null} />
 
           {!driverSelected && (
             <>
