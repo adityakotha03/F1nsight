@@ -107,7 +107,7 @@ export const LapChart = (props) => {
                     />
                     {/*<Legend />*/}
                     {[...new Set(laps.map(lap => driversDetails[lap.driver_number]))].map((acronym, index) => (
-                        driverVisibility[acronym] && <Line key={index} type="monotone" dataKey={acronym} stroke={`#${Math.floor(Math.random() * 16777215).toString(16)}`} />
+                        driverVisibility[acronym] && <Line key={index} type="monotone" dataKey={acronym} stroke={`#${Math.floor(Math.random() * 16777215).toString(16)}`} connectNulls={true} />
                     ))}
                 </LineChart>
             </ResponsiveContainer>

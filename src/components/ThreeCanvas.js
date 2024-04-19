@@ -49,8 +49,17 @@ export const ThreeCanvas = ({ imageFile, locData, driverSelected, controls }) =>
       console.error(error);
     });
 
+    const clock = new THREE.Clock();
+    let delta = 0;
+    const targetFrameDuration = 0.1; // Change this value to control the speed
+
     const animate = () => {
       requestAnimationFrame(animate);
+      delta += clock.getDelta();
+
+      if (delta < targetFrameDuration) {
+        return;
+      }
 
       if (carModel && locData.length > 0 && driverSelected) {
         const newPosition = locData.shift();
@@ -64,33 +73,40 @@ export const ThreeCanvas = ({ imageFile, locData, driverSelected, controls }) =>
         carModel.position.set(newPosition.x - 2, newPosition.y - 2, 0);
 
         if (infoRef.current) {
-          setDriverDetails(newPosition.cardata)
+          setDriverDetails(newPosition.cardata);
         }
       }
 
       renderer.render(scene, camera);
+      delta = 0; // Reset the time accumulator
     };
 
     animate();
 
     return () => {
-      if (mountRef.current) {
-        mountRef.current.removeChild(renderer.domElement);
+      if (mountRef.current && renderer.domElement) {
+          mountRef.current.removeChild(renderer.domElement);
       }
       renderer.dispose();
       scene.traverse(object => {
-        if (object.material) {
-          object.material.dispose();
-        }
-        if (object.geometry) {
-          object.geometry.dispose();
-        }
+          if (object.material) {
+              object.material.dispose();
+          }
+          if (object.geometry) {
+              object.geometry.dispose();
+          }
+          if (object.isMesh) {
+              object.geometry.dispose();
+              object.material.dispose();
+          }
       });
       if (controls) {
-        controls.dispose();
+          controls.dispose();
       }
     };
   }, [imageFile, locData, driverSelected]);
+
+  const drsActiveNumbers = [10, 12, 14]; // Define the DRS numbers that activate the message
 
   return (
     <div ref={mountRef} className="flex flex-col-reverse relative">
@@ -104,7 +120,7 @@ export const ThreeCanvas = ({ imageFile, locData, driverSelected, controls }) =>
                   <button className="uppercase text-sm tracking-wide">km/h</button>
                   <button className="uppercase text-sm tracking-wide text-neutral-500">mph</button>
                 </div>
-                {driverDetails.drs && (
+                {driverDetails.drs && drsActiveNumbers.includes(driverDetails.drs) &&(
                   <p className="border-solid border-2 border-emerald-700 bg-emerald-900 px-16">DRS Enabled</p>
                 )}
               </div>
