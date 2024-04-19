@@ -1,9 +1,11 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 
-export const ThreeCanvas = ({ imageFile, locData, driverSelected }) => {
+export const ThreeCanvas = ({ imageFile, locData, driverSelected, controls }) => {
+  const [driverDetails, setDriverDetails] = useState(null);
+
   const mountRef = useRef(null);
   const infoRef = useRef(null);
 
@@ -62,7 +64,7 @@ export const ThreeCanvas = ({ imageFile, locData, driverSelected }) => {
         carModel.position.set(newPosition.x - 2, newPosition.y - 2, 0);
 
         if (infoRef.current) {
-          displayDriverDetails(infoRef, newPosition.cardata);
+          setDriverDetails(newPosition.cardata)
         }
       }
 
@@ -91,26 +93,40 @@ export const ThreeCanvas = ({ imageFile, locData, driverSelected }) => {
   }, [imageFile, locData, driverSelected]);
 
   return (
-    <div ref={mountRef} style={{ width: '800px', height: '600px', position: 'relative' }}>
-      { driverSelected &&
-        <div ref={infoRef} style={{ position: 'absolute', top: '10px', left: '10px', color: 'white', zIndex: 10, minWidth: '200px', minHeight: '100px' }}>
-          <p>Loading driver details...</p>
+    <div ref={mountRef} className="flex flex-col-reverse relative">
+      {driverSelected &&
+        <div className="w-full" ref={infoRef}>
+          {(infoRef.current && driverDetails) ? (
+            <div className="">
+              <div className="flex flex-col">
+                <p className="font-display text-[128px] leading-none">{driverDetails.speed}</p>
+                <div className="flex justify-between">
+                  <button className="uppercase text-sm tracking-wide">km/h</button>
+                  <button className="uppercase text-sm tracking-wide text-neutral-500">mph</button>
+                </div>
+                {driverDetails.drs && (
+                  <p className="border-solid border-2 border-emerald-700 bg-emerald-900 px-16">DRS Enabled</p>
+                )}
+              </div>
+              <div className="flex flex-col">
+                <p className="uppercase text-sm tracking-wide">Throttle</p>
+                <div className="shadow-lg mb-8 border-solid border-2 border-neutral-800">
+                  <div className="bg-emerald-900 h-24" style={{width: `${driverDetails.throttle}%`}} />
+                </div>
+                <div className="shadow-lg border-solid border-2 border-neutral-800">
+                  <div className="bg-rose-900 h-24" style={{width: `${driverDetails.brake}%`}} />
+                </div>
+                <p className="uppercase text-sm tracking-wide">Brake</p>
+              </div>
+              <div className="flex flex-col">
+                <p className="uppercase text-sm tracking-wide">Gear</p>
+                <p className="font-display text-[128px] leading-none">{driverDetails.n_gear}</p>
+              </div>
+            </div>
+          ) : <p>Loading driver details...</p>}
         </div>
       }
+      {controls}
     </div>
   );
 };
-
-function displayDriverDetails(infoRef, carData) {
-  if (infoRef.current && carData) {
-    let htmlContent = `<h3>Driver Details</h3>`;
-    htmlContent += `<p>Driver Number: ${carData.driver_number}</p>`;
-    htmlContent += `<p>Speed: ${carData.speed} km/h</p>`;
-    htmlContent += `<p>RPM: ${carData.rpm}</p>`;
-    htmlContent += `<p>Throttle: ${carData.throttle}</p>`;
-    htmlContent += `<p>Brake: ${carData.brake}</p>`;
-    htmlContent += `<p>DRS Active: ${carData.drs}</p>`;
-    htmlContent += `<p>Current Gear: ${carData.n_gear}</p>`;
-    infoRef.current.innerHTML = htmlContent;
-  }
-}

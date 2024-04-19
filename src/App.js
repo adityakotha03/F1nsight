@@ -68,15 +68,6 @@ function App() {
         </nav>
       )}
       <div className='px-8 sm:px-16'>
-        {/* {upcomingRace && (
-          <div>
-            <h2>Upcoming Race</h2>
-            <p>Race Name: {upcomingRace.raceName}</p>
-            <p>Date: {upcomingRace.date}</p>
-            <p>Time: {upcomingRace.time}</p>
-          </div>
-        )} */}
-
         <Routes>
           <Route exact path="/" element={<RaceResultsPage selectedYear={selectedYear} />} />
           <Route path="/constructor-standings" element={<ConstructorStandings selectedYear={selectedYear} />} />
