@@ -179,30 +179,38 @@ export function RacePage() {
           <div className="canvas-wrapper mb-64">
             <ThreeCanvas 
               imageFile={ImagePath} 
-              locData={locData} 
+              locData={locData}
               driverSelected={driverSelected}
               controls={
                 <>
                   <div className="bg-glow gradient-border p-16">
-                    <button><FontAwesomeIcon icon="play" className="mr-32" /></button>
-                    <button><FontAwesomeIcon icon="pause" /></button>
+                  <button><FontAwesomeIcon icon="play" className="mr-32" /></button>
+                  <button><FontAwesomeIcon icon="pause" /></button>
+                  </div>
+                  <div className="bg-glow gradient-border p-16 flex items-center justify-start">
+                      <div className="mr-8">
+                          <select name="driver select" id="driver-select" className="mr-4">
+                              <option value="">All</option>
+                              <option value="HAM">HAM</option>
+                              <option value="SAI">SAI</option>
+                              <option value="NOR">NOR</option>
+                              <option value="RUS">RUS</option>
+                              <option value="VER">VER</option>
+                              <option value="PER">PER</option>
+                          </select>
+                      </div>
+                      <img 
+                          alt="" 
+                          src={`/images/${year}/drivers/${driversDetails[locData[0]?.cardata.driver_number]}.png`} 
+                          width={80} 
+                          height={80} 
+                      />
                   </div>
                   <div className="bg-glow gradient-border p-16">
-                    <select name="driver select" id="driver-select">
-                      <option value="">All</option>
-                      <option value="HAM">HAM</option>
-                      <option value="SAI">SAI</option>
-                      <option value="NOR">NOR</option>
-                      <option value="RUS">RUS</option>
-                      <option value="VER">VER</option>
-                      <option value="PER">PER</option>
-                    </select>
-                  </div>
-                  <div className="bg-glow gradient-border p-16">
-                    Playback Speed: 
-                    <button className="px-16 py-8">normal</button>
-                    <button className="px-16 py-8">push push</button>
-                    <button className="px-16 py-8">drs</button>
+                      Playback Speed: 
+                      <button className="px-16 py-8">normal</button>
+                      <button className="px-16 py-8">push push</button>
+                      <button className="px-16 py-8">drs</button>
                   </div>
                 </>
               }
