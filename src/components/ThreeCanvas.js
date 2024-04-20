@@ -3,7 +3,7 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 
-export const ThreeCanvas = ({ imageFile, locData, driverSelected, controls }) => {
+export const ThreeCanvas = ({ imageFile, locData, driverSelected, controls, speedFactor }) => {
   const [driverDetails, setDriverDetails] = useState(null);
 
   const mountRef = useRef(null);
@@ -17,9 +17,9 @@ export const ThreeCanvas = ({ imageFile, locData, driverSelected, controls }) =>
     mountRef.current.appendChild(renderer.domElement);
 
     camera.position.z = 5;
-    const controls = new OrbitControls(camera, renderer.domElement);
-    controls.enablePan = true;
-    controls.panSpeed = 0.5;
+    const control = new OrbitControls(camera, renderer.domElement);
+    control.enablePan = true;
+    control.panSpeed = 0.5;
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
     scene.add(ambientLight);
     const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
@@ -49,18 +49,21 @@ export const ThreeCanvas = ({ imageFile, locData, driverSelected, controls }) =>
       console.error(error);
     });
 
-    const clock = new THREE.Clock();
-    let delta = 0;
-    const targetFrameDuration = 0.1; // Change this value to control the speed
-
+    const startTime = Date.now();
+    let lastRenderTime = startTime;
+    
     const animate = () => {
+
       requestAnimationFrame(animate);
-      delta += clock.getDelta();
+      
+      const currentTime = Date.now();
+      const elapsedSinceLastRender = currentTime - lastRenderTime;
 
-      if (delta < targetFrameDuration) {
-        return;
-      }
+      const targetFrameDuration = 50 * speedFactor;
 
+      if (elapsedSinceLastRender >= targetFrameDuration || elapsedSinceLastRender > 200) {
+        //console.log(elapsedSinceLastRender);
+        //console.log(elapsedSinceLastRender);
       if (carModel && locData.length > 0 && driverSelected) {
         const newPosition = locData.shift();
         let oldPosition = carModel.position;
@@ -72,13 +75,15 @@ export const ThreeCanvas = ({ imageFile, locData, driverSelected, controls }) =>
         carModel.quaternion.copy(quaternion);
         carModel.position.set(newPosition.x - 2, newPosition.y - 2, 0);
 
+        lastRenderTime = currentTime;
+
         if (infoRef.current) {
           setDriverDetails(newPosition.cardata);
         }
       }
+    }
 
       renderer.render(scene, camera);
-      delta = 0; // Reset the time accumulator
     };
 
     animate();
@@ -100,11 +105,11 @@ export const ThreeCanvas = ({ imageFile, locData, driverSelected, controls }) =>
               object.material.dispose();
           }
       });
-      if (controls) {
-          controls.dispose();
+      if (control) {
+          control.dispose();
       }
     };
-  }, [imageFile, locData, driverSelected]);
+  }, [imageFile, locData, driverSelected, speedFactor]);
 
   const drsActiveNumbers = [10, 12, 14]; // Define the DRS numbers that activate the message
 
