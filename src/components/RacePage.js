@@ -24,6 +24,8 @@ export function RacePage() {
   const [driverCode, setdriverCode] = useState('');
   const [startTime, setstartTime] = useState('');
   const [endTime, setendTime] = useState('');
+  const [speedFactor, setSpeedFactor] = useState(4); // Manage speed state here
+  const [pauseButton, setpauseButton] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -181,11 +183,12 @@ export function RacePage() {
               imageFile={ImagePath} 
               locData={locData}
               driverSelected={driverSelected}
+              pauseButton={pauseButton}
               controls={
                 <>
                   <div className="bg-glow gradient-border p-16">
-                  <button><FontAwesomeIcon icon="play" className="mr-32" /></button>
-                  <button><FontAwesomeIcon icon="pause" /></button>
+                  <button><FontAwesomeIcon icon="play" className="mr-32" onClick={() => setpauseButton(true)} /></button>
+                  <button><FontAwesomeIcon icon="pause" onClick={() => setpauseButton(false)} /></button>
                   </div>
                   <div className="bg-glow gradient-border p-16 flex items-center justify-start">
                       <div className="mr-8">
@@ -207,13 +210,44 @@ export function RacePage() {
                       />
                   </div>
                   <div className="bg-glow gradient-border p-16">
-                      Playback Speed: 
-                      <button className="px-16 py-8">normal</button>
-                      <button className="px-16 py-8">push push</button>
-                      <button className="px-16 py-8">drs</button>
-                  </div>
+                  Playback Speed:
+                  <button
+                    style={{
+                      padding: '16px 32px',
+                      color: speedFactor === 4 ? 'white' : 'initial',
+                      backgroundColor: speedFactor === 4 ? 'red' : 'initial',
+                      boxShadow: speedFactor === 4 ? '0 0 10px red, 0 0 20px red, 0 0 30px red, 0 0 40px red' : 'none'
+                    }}
+                    onClick={() => setSpeedFactor(4)}
+                  >
+                    Normal
+                  </button>
+                  <button
+                    style={{
+                      padding: '16px 32px',
+                      color: speedFactor === 1.5 ? 'white' : 'initial',
+                      backgroundColor: speedFactor === 1.5 ? 'red' : 'initial',
+                      boxShadow: speedFactor === 1.5 ? '0 0 10px red, 0 0 20px red, 0 0 30px red, 0 0 40px red' : 'none'
+                    }}
+                    onClick={() => setSpeedFactor(1.5)}
+                  >
+                    Push
+                  </button>
+                  <button
+                    style={{
+                      padding: '16px 32px',
+                      color: speedFactor === 0.2 ? 'white' : 'initial',
+                      backgroundColor: speedFactor === 0.2 ? 'red' : 'initial',
+                      boxShadow: speedFactor === 0.2 ? '0 0 10px red, 0 0 20px red, 0 0 30px red, 0 0 40px red' : 'none'
+                    }}
+                    onClick={() => setSpeedFactor(0.2)}
+                  >
+                    DRS
+                  </button>
+                </div>
                 </>
               }
+              speedFactor={speedFactor}
             />
           </div>
 

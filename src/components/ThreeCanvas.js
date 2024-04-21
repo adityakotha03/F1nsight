@@ -1,30 +1,38 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState, useMemo } from 'react';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+import TWEEN from '@tweenjs/tween.js';
 
-export const ThreeCanvas = ({ imageFile, locData, driverSelected, controls }) => {
+export const ThreeCanvas = ({ imageFile, locData, driverSelected, pauseButton, controls, speedFactor }) => {
   const [driverDetails, setDriverDetails] = useState(null);
 
   const mountRef = useRef(null);
   const infoRef = useRef(null);
 
+  const ambientLight = useMemo(() => new THREE.AmbientLight(0xffffff, 0.5), []);
+  const directionalLight = useMemo(() => {
+    const light = new THREE.DirectionalLight(0xffffff, 0.8);
+    light.position.set(1, 1, 1);
+    return light;
+  }, []);
+
+
   useEffect(() => {
     const scene = new THREE.Scene();
+    scene.add(ambientLight);
+    scene.add(directionalLight);
+
     const camera = new THREE.PerspectiveCamera(75, 800 / 600, 0.1, 1000);
+    camera.position.z = 5;
+
     const renderer = new THREE.WebGLRenderer();
     renderer.setSize(800, 600);
     mountRef.current.appendChild(renderer.domElement);
 
-    camera.position.z = 5;
-    const controls = new OrbitControls(camera, renderer.domElement);
-    controls.enablePan = true;
-    controls.panSpeed = 0.5;
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
-    scene.add(ambientLight);
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
-    directionalLight.position.set(1, 1, 1);
-    scene.add(directionalLight);
+    const control = new OrbitControls(camera, renderer.domElement);
+    control.enablePan = true;
+    control.panSpeed = 0.5;
 
     const textureLoader = new THREE.TextureLoader();
     textureLoader.load(imageFile, texture => {
@@ -39,72 +47,68 @@ export const ThreeCanvas = ({ imageFile, locData, driverSelected, controls }) =>
 
     let carModel;
     const loader = new GLTFLoader();
-    loader.load('/car/scene.gltf', function (gltf) {
+    loader.load('/car/scene.gltf', gltf => {
       carModel = gltf.scene;
       carModel.scale.set(0.3, 0.3, 0.3);
       carModel.rotation.x = Math.PI / 2;
       carModel.rotation.y = -Math.PI;
       scene.add(carModel);
-    }, undefined, function (error) {
-      console.error(error);
-    });
-
-    const clock = new THREE.Clock();
-    let delta = 0;
-    const targetFrameDuration = 0.1; // Change this value to control the speed
+    }, undefined, error => console.error(error));
 
     const animate = () => {
-      requestAnimationFrame(animate);
-      delta += clock.getDelta();
 
-      if (delta < targetFrameDuration) {
-        return;
-      }
-
-      if (carModel && locData.length > 0 && driverSelected) {
+      if (!mountRef.current) return;
+      
+      TWEEN.update(); // Ensure this is called to progress tweens
+    
+      if (carModel && locData.length > 0 && driverSelected && !carModel.userData.tweenActive && pauseButton) {
         const newPosition = locData.shift();
-        let oldPosition = carModel.position;
-        oldPosition.x = oldPosition.x + 2;
-        oldPosition.y = oldPosition.y + 2;
-        const angle = Math.atan2(newPosition.y - oldPosition.y, newPosition.x - oldPosition.x);
-        const euler = new THREE.Euler(Math.PI / 2, 0, angle + Math.PI / 2, 'YZX');
-        const quaternion = new THREE.Quaternion().setFromEuler(euler);
-        carModel.quaternion.copy(quaternion);
-        carModel.position.set(newPosition.x - 2, newPosition.y - 2, 0);
+        //console.log('New position:', newPosition); // Log to see the new positions
 
-        if (infoRef.current) {
-          setDriverDetails(newPosition.cardata);
-        }
+        carModel.userData.tweenActive = true;
+        const initialPosition = { x: carModel.position.x, y: carModel.position.y, z: carModel.position.z }; // Store initial position
+        const tween = new TWEEN.Tween(carModel.position)
+          .to({ x: newPosition.x, y: newPosition.y, z: 0 }, 10)
+        
+          .onUpdate(() => {
+            // Use initial position for calculating the angle
+            const angle = Math.atan2(newPosition.y - initialPosition.y, newPosition.x - initialPosition.x);
+            const euler = new THREE.Euler(Math.PI / 2, 0, angle + Math.PI / 2, 'YZX');
+            const quaternion = new THREE.Quaternion().setFromEuler(euler);
+            carModel.quaternion.copy(quaternion);
+            
+          })
+          .easing(TWEEN.Easing.Linear.None)
+          .delay(50 * speedFactor)
+          .onComplete(() => {
+            carModel.userData.tweenActive = false; // Reset flag when tween completes
+            if (infoRef.current) {
+              setDriverDetails(newPosition.cardata); // Ensure details are set correctly
+            }
+          })
+          tween.start();        
       }
-
+    
       renderer.render(scene, camera);
-      delta = 0; // Reset the time accumulator
+      requestAnimationFrame(animate);
     };
-
+    
     animate();
+    
 
     return () => {
       if (mountRef.current && renderer.domElement) {
-          mountRef.current.removeChild(renderer.domElement);
-      }
+        mountRef.current.removeChild(renderer.domElement);
+    }
       renderer.dispose();
       scene.traverse(object => {
-          if (object.material) {
-              object.material.dispose();
-          }
-          if (object.geometry) {
-              object.geometry.dispose();
-          }
-          if (object.isMesh) {
-              object.geometry.dispose();
-              object.material.dispose();
-          }
+        if (object.material) object.material.dispose();
+        if (object.geometry) object.geometry.dispose();
       });
-      if (controls) {
-          controls.dispose();
-      }
+      control.dispose();
+      TWEEN.removeAll();
     };
-  }, [imageFile, locData, driverSelected]);
+  }, [imageFile, locData, driverSelected, speedFactor, pauseButton]);
 
   const drsActiveNumbers = [10, 12, 14]; // Define the DRS numbers that activate the message
 
