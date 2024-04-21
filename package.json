@@ -9,6 +9,7 @@
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
+    "@tweenjs/tween.js": "^23.1.1",
     "classnames": "^2.5.1",
     "flowbite": "^2.3.0",
     "flowbite-react": "^0.7.8",
