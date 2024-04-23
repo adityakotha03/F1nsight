@@ -67,14 +67,12 @@ function App() {
           <NavLink activeClassName="active" className="navLink" to="/driver-standings">Driver Standings</NavLink>
         </nav>
       )}
-      <div className='px-8 sm:px-16'>
-        <Routes>
-          <Route exact path="/" element={<RaceResultsPage selectedYear={selectedYear} />} />
-          <Route path="/constructor-standings" element={<ConstructorStandings selectedYear={selectedYear} />} />
-          <Route path="/driver-standings" element={<DriverStandings selectedYear={selectedYear} />} />
-          <Route path="/race/:raceId" element={<RacePage />} />
-        </Routes>
-      </div>
+      <Routes>
+        <Route exact path="/" element={<RaceResultsPage selectedYear={selectedYear} />} />
+        <Route path="/constructor-standings" element={<ConstructorStandings selectedYear={selectedYear} />} />
+        <Route path="/driver-standings" element={<DriverStandings selectedYear={selectedYear} />} />
+        <Route path="/race/:raceId" element={<RacePage />} />
+      </Routes>
     </Router>
   );
 }

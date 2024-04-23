@@ -6,7 +6,7 @@ import { Popover } from "flowbite-react";
 import { useInView } from "framer-motion";
 
 export const DriverCard = (props) => {
-    const { className, carNumber, driver, fastestLap, grid, position, isActive, layoutSmall, status, time, year, hasHover, index} = props;
+    const { className, carNumber, driver, fastestLap, grid, position, isActive, layoutSmall, status, time, year, hasHover, index, mobileSmall} = props;
 
     const ref = useRef(null);
     const isInView = useInView(ref, { once: true });
@@ -14,12 +14,13 @@ export const DriverCard = (props) => {
     return (
         <div className={classNames(
             className, 
-            'driver-card flex items-center bg-glow gradient-border relative',
+            'driver-card flex items-center bg-glow gradient-border relative mb-8',
             { 'bg-glow--sm': layoutSmall},
+            { 'driver-card--canvas': mobileSmall},
             isActive ? "bg-glow--active" : hasHover ? "bg-glow--hover" : ""
         )}>
             {layoutSmall ? (
-                <div className="flex items-center justify-between w-full">
+                <div className={classNames("flex items-center justify-between w-full", { "max-sm:hidden": mobileSmall})}>
                     <div className="flex items-center">
                         <p className="heading-4 w-72 bg-neutral-600 ">P{position}</p>
                         <span className="heading-4 pl-16">{driver.code}</span>
@@ -27,8 +28,8 @@ export const DriverCard = (props) => {
                     <p className="text-sm pr-8">{time}</p>
                 </div>
             ) : (
-                <div className='flex item-center w-full'>
-                    <p className="heading-1 p-8 bg-neutral-700">P{position}</p>
+                <div className={classNames('flex item-center w-full', { "max-sm:hidden": mobileSmall})}>
+                    <p className="driver-card-position heading-1 p-8 bg-neutral-700">P{position}</p>
                     <img 
                         alt="" 
                         src={`/images/${year}/drivers/${driver.code}.png`} 
@@ -45,6 +46,17 @@ export const DriverCard = (props) => {
                         <span className="heading-4 mb-12 pl-60">{driver.code}</span>
                         <div className="divider-glow w-full" /> 
                         <p className={classNames("text-sm -mt-8")}>{time}</p>
+                    </div>
+                </div>
+            )}
+            {mobileSmall && (
+                <div className="sm:hidden">
+                    <div className="flex items-center text-xs font-display">
+                        <p className="w-24 bg-neutral-600 ">P{position}</p>
+                        <p className="pl-8">{driver.code}</p>
+                    </div>
+                    <div>
+                        <p className="text-xs pl-8">{time}</p>
                     </div>
                 </div>
             )}
@@ -85,7 +97,7 @@ export const DriverCard = (props) => {
                         </div>
                     }
                 >
-                    <span className="fa-layers fa-fw absolute top-24 -right-10">
+                    <span className="fa-layers fa-fw absolute top-4 -right-10 z-100">
                         <FontAwesomeIcon icon="circle" />
                         <FontAwesomeIcon icon="clock" className="text-violet-600" inverse transform="shrink-2" />
                     </span>
@@ -131,4 +143,5 @@ DriverCard.propTypes = {
     }),
     year: PropTypes.string,
     layoutSmall: PropTypes.bool,
+    mobileSmall: PropTypes.bool,
 };

@@ -12,7 +12,10 @@ export const Loading = () => {
     };
     
     return (
-        <div className="mt-96">
+        <div className="loading-animation relative w-fit m-auto">
+            <div className="loading-animation__title uppercase tracking-wide text-center pt-4 text-neutral-500">
+                Loading
+            </div>
             <Lottie 
                 options={defaultOptions}
                 height={200}

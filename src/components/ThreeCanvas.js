@@ -4,6 +4,8 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import TWEEN from '@tweenjs/tween.js';
 
+import { Loading } from "./Loading"
+
 export const ThreeCanvas = ({ imageFile, locData, driverSelected, pauseButton, controls, speedFactor }) => {
   const [driverDetails, setDriverDetails] = useState(null);
 
@@ -27,7 +29,7 @@ export const ThreeCanvas = ({ imageFile, locData, driverSelected, pauseButton, c
     camera.position.z = 5;
 
     const renderer = new THREE.WebGLRenderer();
-    renderer.setSize(800, 600);
+    // renderer.setSize(800, 600);
     mountRef.current.appendChild(renderer.domElement);
 
     const control = new OrbitControls(camera, renderer.domElement);
@@ -54,6 +56,15 @@ export const ThreeCanvas = ({ imageFile, locData, driverSelected, pauseButton, c
       carModel.rotation.y = -Math.PI;
       scene.add(carModel);
     }, undefined, error => console.error(error));
+
+    window.addEventListener('resize', setCanvasWidth);
+
+    function setCanvasWidth() {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+  }
+
 
     const animate = () => {
 
@@ -88,14 +99,14 @@ export const ThreeCanvas = ({ imageFile, locData, driverSelected, pauseButton, c
           })
           tween.start();        
       }
-    
+
+      setCanvasWidth()
       renderer.render(scene, camera);
       requestAnimationFrame(animate);
     };
     
     animate();
     
-
     return () => {
       if (mountRef.current && renderer.domElement) {
         mountRef.current.removeChild(renderer.domElement);
@@ -113,11 +124,13 @@ export const ThreeCanvas = ({ imageFile, locData, driverSelected, pauseButton, c
   const drsActiveNumbers = [10, 12, 14]; // Define the DRS numbers that activate the message
 
   return (
-    <div ref={mountRef} className="flex flex-col-reverse relative">
+    <div>
+      <div ref={mountRef} className="canvas-container" />
+      {controls}
       {driverSelected &&
-        <div className="w-full" ref={infoRef}>
+        <div className="w-full mt-32" ref={infoRef}>
           {(infoRef.current && driverDetails) ? (
-            <div className="">
+            <>
               <div className="flex flex-col">
                 <p className="font-display text-[128px] leading-none">{driverDetails.speed}</p>
                 <div className="flex justify-between">
@@ -142,11 +155,10 @@ export const ThreeCanvas = ({ imageFile, locData, driverSelected, pauseButton, c
                 <p className="uppercase text-sm tracking-wide">Gear</p>
                 <p className="font-display text-[128px] leading-none">{driverDetails.n_gear}</p>
               </div>
-            </div>
-          ) : <p>Loading driver details...</p>}
+            </>
+          ) : <Loading className="mt-64" />}
         </div>
       }
-      {controls}
     </div>
   );
 };
