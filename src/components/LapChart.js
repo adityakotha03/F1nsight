@@ -85,7 +85,7 @@ export const LapChart = (props) => {
     };
 
     return (
-        <div style={{ width: '100%' }} className="mb-64">
+        <div style={{ width: '100%', height: 300 }} className="mb-64">
             <ResponsiveContainer>
                 <LineChart
                     data={chartData}
@@ -112,7 +112,7 @@ export const LapChart = (props) => {
                 </LineChart>
             </ResponsiveContainer>
             {driverCode == null && (
-            <div className="flex flex-wrap gap-2 mt-4">
+            <div className="flex justify-center gap-2 mt-4">
                 {sortedDriverAcronyms.map((acronym, index) => (
                     <button
                         key={index}
