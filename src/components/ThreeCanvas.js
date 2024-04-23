@@ -32,6 +32,8 @@ export const ThreeCanvas = ({ imageFile, locData, driverSelected, pauseButton, c
     // renderer.setSize(800, 600);
     mountRef.current.appendChild(renderer.domElement);
 
+    renderer.setClearColor(0x1f1f1f);
+
     const control = new OrbitControls(camera, renderer.domElement);
     control.enablePan = true;
     control.panSpeed = 0.5;
@@ -63,11 +65,9 @@ export const ThreeCanvas = ({ imageFile, locData, driverSelected, pauseButton, c
       camera.aspect = window.innerWidth / window.innerHeight;
       camera.updateProjectionMatrix();
       renderer.setSize(window.innerWidth, window.innerHeight);
-  }
-
+    }
 
     const animate = () => {
-
       if (!mountRef.current) return;
       
       TWEEN.update(); // Ensure this is called to progress tweens
