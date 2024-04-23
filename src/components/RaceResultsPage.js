@@ -21,6 +21,11 @@ export function RaceResultsPage({ selectedYear }) {
     fetchData();
   }, [selectedYear]);
 
+  const formatTime = (time) => {
+    if (!time) return 'TBA';
+    return `${time.slice(0, -1)} UTC`; // Remove the 'Z' and append ' UTC'
+  };
+
 // console.log(raceDetails);
 
   return (
@@ -37,7 +42,7 @@ export function RaceResultsPage({ selectedYear }) {
                 </h6>
                 <div className='text-sm text-neutral-500 tracking-wide'>
                   {race.date}
-                  <span className="ml-8">{race.time || 'TBA'}</span>
+                  <span className="ml-8">{formatTime(race.time)}</span>
                 </div>
               </div>
               {race.results && race.results.length > 0 && (

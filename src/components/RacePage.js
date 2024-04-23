@@ -136,11 +136,10 @@ export function RacePage() {
   const selectInputDriverImage = driversDetails[locData[0]?.cardata.driver_number]
 
   return (
-
     <>
-
-      <div className="race-display">
-        <ul className="mb-64 flex flex-col">
+      {raceName && <p className="heading-2 text-right text-neutral-500 mb-24">{raceName} {year}</p>}
+      <div className="race-display mb-64">
+        <ul className="flex flex-col">
           {raceResults.map((result, index) => (
             <button 
               key={index}
@@ -163,91 +162,70 @@ export function RacePage() {
           ))}
         </ul>
         <ThreeCanvas 
-              imageFile={ImagePath} 
-              locData={locData}
-              driverSelected={driverSelected}
-              pauseButton={pauseButton}
-              controls={
-                <>
-                  <div className="flex">
-                    <div className="gradient-border-extreme flex items-center gap-32 py-16 px-32 grow-0">
-                      <button><FontAwesomeIcon icon="play" onClick={() => setpauseButton(true)} /></button>
-                      <button><FontAwesomeIcon icon="pause" onClick={() => setpauseButton(false)} /></button>
+          imageFile={ImagePath} 
+          locData={locData}
+          driverSelected={driverSelected}
+          pauseButton={pauseButton}
+          controls={
+            <>
+              <div className="race-controls">
+                <div className="race-controls__play gradient-border-extreme flex items-center gap-32 py-16 px-32">
+                  <button><FontAwesomeIcon icon="play" onClick={() => setpauseButton(true)} /></button>
+                  <button><FontAwesomeIcon icon="pause" onClick={() => setpauseButton(false)} /></button>
+                </div>
+                <div className="race-controls__driver gradient-border-extreme px-16 flex items-end">
+                    <div className="mr-8 tracking-wide uppercase pb-16">
+                      <span className="text-neutral-500 mr-4 max-sm:text-xs ">Driver</span>
+                      <select name="driver select" id="driver-select" className="uppercase bg-transparent border-none max-sm:text-xs  sm:text-base mr-4">
+                          <option value="">All</option>
+                          <option value="HAM">HAM</option>
+                          <option value="SAI">SAI</option>
+                          <option value="NOR">NOR</option>
+                          <option value="RUS">RUS</option>
+                          <option value="VER">VER</option>
+                          <option value="PER">PER</option>
+                      </select>
                     </div>
-                    <div className="gradient-border-extreme px-16 flex items-end justify-end grow">
-                        <div className="mr-8 tracking-wide uppercase pb-16">
-                          <span className="text-neutral-500 mr-4">Driver</span>
-                          <select name="driver select" id="driver-select" className="uppercase bg-transparent border-none text-base mr-4">
-                              <option value="">All</option>
-                              <option value="HAM">HAM</option>
-                              <option value="SAI">SAI</option>
-                              <option value="NOR">NOR</option>
-                              <option value="RUS">RUS</option>
-                              <option value="VER">VER</option>
-                              <option value="PER">PER</option>
-                          </select>
-                        </div>
-                        {selectInputDriverImage && (
-                          <img 
-                            alt="" 
-                            className="-mt-32"
-                            src={`/images/${year}/drivers/${selectInputDriverImage}.png`} 
-                            width={80} 
-                            height={80} 
-                          />
-                        )}
-                    </div>
-                  </div>
-                  <div className="flex justify-between gap-16 gradient-border-extreme py-16 tracking-wide uppercase px-32">
-                    Playback Speed:
-                    <button
-                      className={classNames("tracking-wide uppercase", { 'text-neutral-500': speedFactor !== 4})}
-                      onClick={() => setSpeedFactor(4)}
-                    >
-                      Normal
-                    </button>
-                    <button
-                      className={classNames("tracking-wide uppercase", { 'text-neutral-500': speedFactor !== 1.5})}
-                      onClick={() => setSpeedFactor(1.5)}
-                    >
-                      Push
-                    </button>
-                    <button
-                      className={classNames("tracking-wide uppercase", { 'text-neutral-500': speedFactor !== 0.2})}
-                      onClick={() => setSpeedFactor(0.2)}
-                    >
-                      DRS
-                    </button> 
-                  </div>
-                </>
-              }
-              speedFactor={speedFactor}
-            />
+                    {selectInputDriverImage && (
+                      <img 
+                        alt="" 
+                        className="-mt-32"
+                        src={`/images/${year}/drivers/${selectInputDriverImage}.png`} 
+                        width={80} 
+                        height={80} 
+                      />
+                    )}
+                </div>
+                <div className="race-controls__speed gradient-border-extreme flex max-sm:text-xs max-sm:flex-col sm:justify-between gap-16 py-16 px-32 tracking-wide uppercase">
+                  Playback Speed:
+                  <button
+                    className={classNames("tracking-wide uppercase", { 'text-neutral-500': speedFactor !== 4})}
+                    onClick={() => setSpeedFactor(4)}
+                  >
+                    Normal
+                  </button>
+                  <button
+                    className={classNames("tracking-wide uppercase", { 'text-neutral-500': speedFactor !== 1.5})}
+                    onClick={() => setSpeedFactor(1.5)}
+                  >
+                    Push
+                  </button>
+                  <button
+                    className={classNames("tracking-wide uppercase", { 'text-neutral-500': speedFactor !== 0.2})}
+                    onClick={() => setSpeedFactor(0.2)}
+                  >
+                    DRS
+                  </button> 
+                </div>
+              </div>
+            </>
+          }
+          speedFactor={speedFactor}
+        />    
       </div>
 
-      <div className="race-page flex flex-col sm:flex-row gap-16 mt-32">
+      <div className="global-container flex flex-col sm:flex-row gap-16 mt-32">
         <div className="sm:grow-0">
-          {/* <ul className="mb-64 flex flex-col">
-          {raceResults.map((result, index) => (
-            <button 
-              key={index}
-              className="block w-full mb-8"
-              onClick={() => handleDriverSelectionClick(index)}
-            >
-              <DriverCard 
-                hasHover
-                isActive={activeButtonIndex === index}
-                index={index}
-                driver={result.Driver}
-                position={result.position}
-                year={year}
-                time={result.Time?.time || result.status}
-                fastestLap={result.FastestLap}
-                layoutSmall={index > 2}
-              />
-            </button>
-            ))}
-          </ul> */}
 
           <h3 className="heading-6 mb-16">Starting Grid</h3>
           <ul className="flex flex-col w-fit m-auto">
@@ -268,90 +246,11 @@ export function RacePage() {
         </div>
 
         <div className="sm:grow-0">
-        {raceName && <p className="heading-2 text-right text-neutral-500 mb-24">{raceName} {year}</p>}
-          <div className="canvas-wrapper mb-64">
-            {/* <ThreeCanvas 
-              imageFile={ImagePath} 
-              locData={locData}
-              driverSelected={driverSelected}
-              pauseButton={pauseButton}
-              controls={
-                <>
-                  <div className="bg-glow gradient-border p-16">
-                    Playback Speed:
-                    <button
-                      style={{
-                        padding: '16px 32px',
-                        color: speedFactor === 4 ? 'white' : 'initial',
-                        backgroundColor: speedFactor === 4 ? 'red' : 'initial',
-                        boxShadow: speedFactor === 4 ? '0 0 10px red, 0 0 20px red, 0 0 30px red, 0 0 40px red' : 'none'
-                      }}
-                      onClick={() => setSpeedFactor(4)}
-                    >
-                      Normal
-                    </button>
-                    <button
-                      style={{
-                        padding: '16px 32px',
-                        color: speedFactor === 1.5 ? 'white' : 'initial',
-                        backgroundColor: speedFactor === 1.5 ? 'red' : 'initial',
-                        boxShadow: speedFactor === 1.5 ? '0 0 10px red, 0 0 20px red, 0 0 30px red, 0 0 40px red' : 'none'
-                      }}
-                      onClick={() => setSpeedFactor(1.5)}
-                    >
-                      Push
-                    </button>
-                    <button
-                      style={{
-                        padding: '16px 32px',
-                        color: speedFactor === 0.2 ? 'white' : 'initial',
-                        backgroundColor: speedFactor === 0.2 ? 'red' : 'initial',
-                        boxShadow: speedFactor === 0.2 ? '0 0 10px red, 0 0 20px red, 0 0 30px red, 0 0 40px red' : 'none'
-                      }}
-                      onClick={() => setSpeedFactor(0.2)}
-                    >
-                      DRS
-                  </button> 
-                  </div>
-                  <div className="flex justify-between flex-row-reverse">
-                    <div className="bg-glow gradient-border p-16 flex items-center justify-start">
-                        <div className="mr-8">
-                            <select name="driver select" id="driver-select" className="mr-4">
-                                <option value="">All</option>
-                                <option value="HAM">HAM</option>
-                                <option value="SAI">SAI</option>
-                                <option value="NOR">NOR</option>
-                                <option value="RUS">RUS</option>
-                                <option value="VER">VER</option>
-                                <option value="PER">PER</option>
-                            </select>
-                        </div>
-                        {selectInputDriverImage && (
-                          <img 
-                          alt="" 
-                          src={`/images/${year}/drivers/${selectInputDriverImage}.png`} 
-                          width={80} 
-                          height={80} 
-                          />
-                        )}
-                    </div>
-                    <div className="bg-glow gradient-border p-16">
-                      <button><FontAwesomeIcon icon="play" className="mr-32" onClick={() => setpauseButton(true)} /></button>
-                      <button><FontAwesomeIcon icon="pause" onClick={() => setpauseButton(false)} /></button>
-                    </div>
-                  </div>
-                </>
-              }
-              speedFactor={speedFactor}
-            /> */}
-          </div>
-
           <h3 className="heading-6 mb-16">Lap Data</h3>
           <LapChart laps={laps} setLaps={() => setLaps} driversDetails={driversDetails} raceResults = {raceResults} className="lap-chart" driverCode={driverSelected ? driversDetails[driverCode] : null} />
         
           <h3 className="heading-6 mb-16">Tire Strategy</h3>
           <TireStrategy drivers={drivers} raceResults={raceResults} driverCode={driverSelected ? driversDetails[driverCode] : null} />
-
 
           {!driverSelected && (
             <>

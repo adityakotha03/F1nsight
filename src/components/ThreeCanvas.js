@@ -8,6 +8,7 @@ import { Loading } from "./Loading"
 
 export const ThreeCanvas = ({ imageFile, locData, driverSelected, pauseButton, controls, speedFactor }) => {
   const [driverDetails, setDriverDetails] = useState(null);
+  const [unit, setUnit] = useState('km/h');
 
   const mountRef = useRef(null);
   const infoRef = useRef(null);
@@ -31,6 +32,8 @@ export const ThreeCanvas = ({ imageFile, locData, driverSelected, pauseButton, c
     const renderer = new THREE.WebGLRenderer();
     // renderer.setSize(800, 600);
     mountRef.current.appendChild(renderer.domElement);
+
+    renderer.setClearColor(0x1f1f1f);
 
     const control = new OrbitControls(camera, renderer.domElement);
     control.enablePan = true;
@@ -65,9 +68,7 @@ export const ThreeCanvas = ({ imageFile, locData, driverSelected, pauseButton, c
       renderer.setSize(window.innerWidth, window.innerHeight);
   }
 
-
     const animate = () => {
-
       if (!mountRef.current) return;
       
       TWEEN.update(); // Ensure this is called to progress tweens
@@ -122,6 +123,13 @@ export const ThreeCanvas = ({ imageFile, locData, driverSelected, pauseButton, c
   }, [imageFile, locData, driverSelected, speedFactor, pauseButton]);
 
   const drsActiveNumbers = [10, 12, 14]; // Define the DRS numbers that activate the message
+  const handleUnitChange = (newUnit) => {
+    if (newUnit === 'mph' && unit !== 'mph') {
+      setUnit('mph');
+    } else if (newUnit === 'km/h' && unit !== 'km/h') {
+      setUnit('km/h');
+    }
+  };
 
   return (
     <div>
@@ -132,10 +140,20 @@ export const ThreeCanvas = ({ imageFile, locData, driverSelected, pauseButton, c
           {(infoRef.current && driverDetails) ? (
             <>
               <div className="flex flex-col">
-                <p className="font-display text-[128px] leading-none">{driverDetails.speed}</p>
+                <p className="font-display text-[128px] leading-none">{unit === 'km/h' ? driverDetails.speed : Math.round(driverDetails.speed * 0.621371)}</p>
                 <div className="flex justify-between">
-                  <button className="uppercase text-sm tracking-wide">km/h</button>
-                  <button className="uppercase text-sm tracking-wide text-neutral-500">mph</button>
+                <button 
+                  className={`uppercase text-sm tracking-wide ${unit === 'km/h' ? '' : 'text-neutral-500'}`}
+                  onClick={() => handleUnitChange('km/h')}
+                >
+                  km/h
+                </button>
+                <button 
+                  className={`uppercase text-sm tracking-wide ${unit === 'mph' ? '' : 'text-neutral-500'}`}
+                  onClick={() => handleUnitChange('mph')}
+                >
+                  mph
+                </button>
                 </div>
                 {driverDetails.drs && drsActiveNumbers.includes(driverDetails.drs) &&(
                   <p className="border-solid border-2 border-emerald-700 bg-emerald-900 px-16">DRS Enabled</p>
