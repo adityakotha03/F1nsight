@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Link, NavLink } from 'react-rou
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { fas } from '@fortawesome/free-solid-svg-icons';
 
-import { fetchUpcomingRace } from './utils/api';
+//import { fetchUpcomingRace } from './utils/api';
 import { Header, RaceSelector, RacePage, DriverStandings, ConstructorStandings, RaceResultsPage } from './components';
 
 library.add(fas);
@@ -27,7 +27,7 @@ function App() {
     fetchRaces();
   }, [selectedYear]);
 
-  useEffect(() => {
+  {/*useEffect(() => {
     const today = new Date();
     const fetchUpcoming = async () => {
       const race = await fetchUpcomingRace(today.getFullYear());
@@ -35,7 +35,7 @@ function App() {
     };
 
     fetchUpcoming();
-  }, []);
+  }, []);*/}
 
   const handleYearChange = (e) => {
     setSelectedYear(e.target.value);
