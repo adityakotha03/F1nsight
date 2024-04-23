@@ -135,7 +135,7 @@ DriverCard.propTypes = {
         }),
     }),
     grid: PropTypes.string,
-    position: PropTypes.number,
+    position: PropTypes.string,
     status: PropTypes.string,
     time: PropTypes.string,
     year: PropTypes.number,

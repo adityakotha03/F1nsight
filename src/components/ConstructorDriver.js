@@ -53,7 +53,7 @@ export const ConstructorDriver = (props) => {
 
 ConstructorDriver.propTypes = {
     className: PropTypes.string,
-    year: PropTypes.string,
+    year: PropTypes.number,
     points: PropTypes.string,
     image: PropTypes.string,
     car: PropTypes.string,
