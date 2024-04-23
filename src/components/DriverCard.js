@@ -137,11 +137,8 @@ DriverCard.propTypes = {
     grid: PropTypes.string,
     position: PropTypes.number,
     status: PropTypes.string,
-    time: PropTypes.shape({
-        millis: PropTypes.string,
-        time: PropTypes.string,
-    }),
-    year: PropTypes.string,
+    time: PropTypes.string,
+    year: PropTypes.number,
     layoutSmall: PropTypes.bool,
     mobileSmall: PropTypes.bool,
 };

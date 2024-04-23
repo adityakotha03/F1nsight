@@ -85,7 +85,7 @@ export const LapChart = (props) => {
     };
 
     return (
-        <div style={{ width: '100%' }} className="mb-64">
+        <div style={{ width: '100%', height: 300}} className="mb-64">
             <ResponsiveContainer>
                 <LineChart
                     data={chartData}
