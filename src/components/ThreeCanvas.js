@@ -8,6 +8,7 @@ import { Loading } from "./Loading"
 
 export const ThreeCanvas = ({ imageFile, locData, driverSelected, pauseButton, controls, speedFactor }) => {
   const [driverDetails, setDriverDetails] = useState(null);
+  const [carPosition, setCarPosition] = useState({ x: 0, y: 0, z: 0 });
   const [unit, setUnit] = useState('km/h');
 
   const mountRef = useRef(null);
@@ -57,6 +58,7 @@ export const ThreeCanvas = ({ imageFile, locData, driverSelected, pauseButton, c
       carModel.scale.set(0.3, 0.3, 0.3);
       carModel.rotation.x = Math.PI / 2;
       carModel.rotation.y = -Math.PI;
+      carModel.position.set(carPosition.x, carPosition.y, carPosition.z);
       scene.add(carModel);
     }, undefined, error => console.error(error));
 
@@ -75,6 +77,7 @@ export const ThreeCanvas = ({ imageFile, locData, driverSelected, pauseButton, c
     
       if (carModel && locData.length > 0 && driverSelected && !carModel.userData.tweenActive && pauseButton) {
         const newPosition = locData.shift();
+        setCarPosition(newPosition);
         //console.log('New position:', newPosition); // Log to see the new positions
 
         carModel.userData.tweenActive = true;

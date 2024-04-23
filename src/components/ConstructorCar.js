@@ -77,7 +77,7 @@ export const ConstructorCar = (props) => {
 ConstructorCar.propTypes = {
     className: PropTypes.string,
     drivers: PropTypes.array,
-    year: PropTypes.string,
+    year: PropTypes.number,
     points: PropTypes.string,
     image: PropTypes.string,
     name: PropTypes.string,

@@ -110,8 +110,8 @@ export const TireStrategy = (props) => {
                       result='inverse'
                     />
                     <feFlood
-                      flood-color={tireTypeClasses[key.replace(/[0-9]/g, '')]}
-                      flood-opacity='.15'
+                      floodColor={tireTypeClasses[key.replace(/[0-9]/g, '')]}
+                      floodOpacity='.15'
                       result='color'
                     />
                     <feComposite
@@ -145,5 +145,5 @@ export const TireStrategy = (props) => {
 
 TireStrategy.propTypes = {
     className: PropTypes.string,
-    drivers: PropTypes.object
+    drivers: PropTypes.array
 };
