@@ -7,6 +7,7 @@ import {ThreeCanvas} from './ThreeCanvas.js'
 import { LapChart } from './LapChart';
 import { TireStrategy } from './TireStrategy';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import classNames from 'classnames';
 
 export function RacePage() {
   const { state } = useLocation();
@@ -132,10 +133,101 @@ export function RacePage() {
     }
   };
 
+  const selectInputDriverImage = driversDetails[locData[0]?.cardata.driver_number]
+
   return (
+
+    <>
+
+      <div className="race-display">
+        <ul className="mb-64 flex flex-col">
+          {raceResults.map((result, index) => (
+            <button 
+              key={index}
+              className="block w-full mb-8"
+              onClick={() => handleDriverSelectionClick(index)}
+            >
+              <DriverCard 
+                hasHover
+                isActive={activeButtonIndex === index}
+                index={index}
+                driver={result.Driver}
+                position={result.position}
+                year={year}
+                time={result.Time?.time || result.status}
+                fastestLap={result.FastestLap}
+                layoutSmall={index > 2}
+                mobileSmall
+              />
+            </button>
+          ))}
+        </ul>
+        <ThreeCanvas 
+              imageFile={ImagePath} 
+              locData={locData}
+              driverSelected={driverSelected}
+              pauseButton={pauseButton}
+              controls={
+                <>
+                  <div className="flex">
+                    <div className="gradient-border-extreme flex items-center gap-32 py-16 px-32 grow-0">
+                      <button><FontAwesomeIcon icon="play" onClick={() => setpauseButton(true)} /></button>
+                      <button><FontAwesomeIcon icon="pause" onClick={() => setpauseButton(false)} /></button>
+                    </div>
+                    <div className="gradient-border-extreme px-16 flex items-end justify-end grow">
+                        <div className="mr-8 tracking-wide uppercase pb-16">
+                          <span className="text-neutral-500 mr-4">Driver</span>
+                          <select name="driver select" id="driver-select" className="uppercase bg-transparent border-none text-base mr-4">
+                              <option value="">All</option>
+                              <option value="HAM">HAM</option>
+                              <option value="SAI">SAI</option>
+                              <option value="NOR">NOR</option>
+                              <option value="RUS">RUS</option>
+                              <option value="VER">VER</option>
+                              <option value="PER">PER</option>
+                          </select>
+                        </div>
+                        {selectInputDriverImage && (
+                          <img 
+                            alt="" 
+                            className="-mt-32"
+                            src={`/images/${year}/drivers/${selectInputDriverImage}.png`} 
+                            width={80} 
+                            height={80} 
+                          />
+                        )}
+                    </div>
+                  </div>
+                  <div className="flex justify-between gap-16 gradient-border-extreme py-16 tracking-wide uppercase px-32">
+                    Playback Speed:
+                    <button
+                      className={classNames("tracking-wide uppercase", { 'text-neutral-500': speedFactor !== 4})}
+                      onClick={() => setSpeedFactor(4)}
+                    >
+                      Normal
+                    </button>
+                    <button
+                      className={classNames("tracking-wide uppercase", { 'text-neutral-500': speedFactor !== 1.5})}
+                      onClick={() => setSpeedFactor(1.5)}
+                    >
+                      Push
+                    </button>
+                    <button
+                      className={classNames("tracking-wide uppercase", { 'text-neutral-500': speedFactor !== 0.2})}
+                      onClick={() => setSpeedFactor(0.2)}
+                    >
+                      DRS
+                    </button> 
+                  </div>
+                </>
+              }
+              speedFactor={speedFactor}
+            />
+      </div>
+
       <div className="race-page flex flex-col sm:flex-row gap-16 mt-32">
         <div className="sm:grow-0">
-          <ul className="mb-64 flex flex-col">
+          {/* <ul className="mb-64 flex flex-col">
           {raceResults.map((result, index) => (
             <button 
               key={index}
@@ -155,7 +247,7 @@ export function RacePage() {
               />
             </button>
             ))}
-          </ul>
+          </ul> */}
 
           <h3 className="heading-6 mb-16">Starting Grid</h3>
           <ul className="flex flex-col w-fit m-auto">
@@ -166,8 +258,8 @@ export function RacePage() {
                   key={index} 
                   className="text-center w-fit even:-mt-32 even:ml-64 even:mb-24"
                 >
-                  <div className="text-sm font-display text-stone-500">P{gridPosition.position}</div>
-                  <div className="border-x-2 border-t-2 border-solid border-stone-500 px-4 pt-4 w-52">
+                  <div className="text-sm font-display text-neutral-500">P{gridPosition.position}</div>
+                  <div className="border-x-2 border-t-2 border-solid border-neutral-500 px-4 pt-4 w-52">
                     {driversDetails[gridPosition.driver_number]}
                   </div> 
                 </li>
@@ -176,10 +268,9 @@ export function RacePage() {
         </div>
 
         <div className="sm:grow-0">
-        {raceName && <p className="heading-2 text-right text-stone-500 mb-24">{raceName} {year}</p>}
-        {/* {meetingKey && <p>Meeting Key: {meetingKey}</p>} */}
+        {raceName && <p className="heading-2 text-right text-neutral-500 mb-24">{raceName} {year}</p>}
           <div className="canvas-wrapper mb-64">
-            <ThreeCanvas 
+            {/* <ThreeCanvas 
               imageFile={ImagePath} 
               locData={locData}
               driverSelected={driverSelected}
@@ -187,68 +278,72 @@ export function RacePage() {
               controls={
                 <>
                   <div className="bg-glow gradient-border p-16">
-                  <button><FontAwesomeIcon icon="play" className="mr-32" onClick={() => setpauseButton(true)} /></button>
-                  <button><FontAwesomeIcon icon="pause" onClick={() => setpauseButton(false)} /></button>
+                    Playback Speed:
+                    <button
+                      style={{
+                        padding: '16px 32px',
+                        color: speedFactor === 4 ? 'white' : 'initial',
+                        backgroundColor: speedFactor === 4 ? 'red' : 'initial',
+                        boxShadow: speedFactor === 4 ? '0 0 10px red, 0 0 20px red, 0 0 30px red, 0 0 40px red' : 'none'
+                      }}
+                      onClick={() => setSpeedFactor(4)}
+                    >
+                      Normal
+                    </button>
+                    <button
+                      style={{
+                        padding: '16px 32px',
+                        color: speedFactor === 1.5 ? 'white' : 'initial',
+                        backgroundColor: speedFactor === 1.5 ? 'red' : 'initial',
+                        boxShadow: speedFactor === 1.5 ? '0 0 10px red, 0 0 20px red, 0 0 30px red, 0 0 40px red' : 'none'
+                      }}
+                      onClick={() => setSpeedFactor(1.5)}
+                    >
+                      Push
+                    </button>
+                    <button
+                      style={{
+                        padding: '16px 32px',
+                        color: speedFactor === 0.2 ? 'white' : 'initial',
+                        backgroundColor: speedFactor === 0.2 ? 'red' : 'initial',
+                        boxShadow: speedFactor === 0.2 ? '0 0 10px red, 0 0 20px red, 0 0 30px red, 0 0 40px red' : 'none'
+                      }}
+                      onClick={() => setSpeedFactor(0.2)}
+                    >
+                      DRS
+                  </button> 
                   </div>
-                  <div className="bg-glow gradient-border p-16 flex items-center justify-start">
-                      <div className="mr-8">
-                          <select name="driver select" id="driver-select" className="mr-4">
-                              <option value="">All</option>
-                              <option value="HAM">HAM</option>
-                              <option value="SAI">SAI</option>
-                              <option value="NOR">NOR</option>
-                              <option value="RUS">RUS</option>
-                              <option value="VER">VER</option>
-                              <option value="PER">PER</option>
-                          </select>
-                      </div>
-                      <img 
+                  <div className="flex justify-between flex-row-reverse">
+                    <div className="bg-glow gradient-border p-16 flex items-center justify-start">
+                        <div className="mr-8">
+                            <select name="driver select" id="driver-select" className="mr-4">
+                                <option value="">All</option>
+                                <option value="HAM">HAM</option>
+                                <option value="SAI">SAI</option>
+                                <option value="NOR">NOR</option>
+                                <option value="RUS">RUS</option>
+                                <option value="VER">VER</option>
+                                <option value="PER">PER</option>
+                            </select>
+                        </div>
+                        {selectInputDriverImage && (
+                          <img 
                           alt="" 
-                          src={`/images/${year}/drivers/${driversDetails[locData[0]?.cardata.driver_number]}.png`} 
+                          src={`/images/${year}/drivers/${selectInputDriverImage}.png`} 
                           width={80} 
                           height={80} 
-                      />
+                          />
+                        )}
+                    </div>
+                    <div className="bg-glow gradient-border p-16">
+                      <button><FontAwesomeIcon icon="play" className="mr-32" onClick={() => setpauseButton(true)} /></button>
+                      <button><FontAwesomeIcon icon="pause" onClick={() => setpauseButton(false)} /></button>
+                    </div>
                   </div>
-                  <div className="bg-glow gradient-border p-16">
-                  Playback Speed:
-                  <button
-                    style={{
-                      padding: '16px 32px',
-                      color: speedFactor === 4 ? 'white' : 'initial',
-                      backgroundColor: speedFactor === 4 ? 'red' : 'initial',
-                      boxShadow: speedFactor === 4 ? '0 0 10px red, 0 0 20px red, 0 0 30px red, 0 0 40px red' : 'none'
-                    }}
-                    onClick={() => setSpeedFactor(4)}
-                  >
-                    Normal
-                  </button>
-                  <button
-                    style={{
-                      padding: '16px 32px',
-                      color: speedFactor === 1.5 ? 'white' : 'initial',
-                      backgroundColor: speedFactor === 1.5 ? 'red' : 'initial',
-                      boxShadow: speedFactor === 1.5 ? '0 0 10px red, 0 0 20px red, 0 0 30px red, 0 0 40px red' : 'none'
-                    }}
-                    onClick={() => setSpeedFactor(1.5)}
-                  >
-                    Push
-                  </button>
-                  <button
-                    style={{
-                      padding: '16px 32px',
-                      color: speedFactor === 0.2 ? 'white' : 'initial',
-                      backgroundColor: speedFactor === 0.2 ? 'red' : 'initial',
-                      boxShadow: speedFactor === 0.2 ? '0 0 10px red, 0 0 20px red, 0 0 30px red, 0 0 40px red' : 'none'
-                    }}
-                    onClick={() => setSpeedFactor(0.2)}
-                  >
-                    DRS
-                  </button>
-                </div>
                 </>
               }
               speedFactor={speedFactor}
-            />
+            /> */}
           </div>
 
           <h3 className="heading-6 mb-16">Lap Data</h3>
@@ -274,7 +369,7 @@ export function RacePage() {
                     <li key={index} className="grid grid-cols-3 gap-4 mb-8">
                       <div>
                         {result.Driver.code}
-                        <span className="text-sm ml-8 text-stone-500">{result.Constructor.name}</span>
+                        <span className="text-sm ml-8 text-neutral-500">{result.Constructor.name}</span>
                       </div>
                       <span>{result.FastestLap.Time.time}</span>
                       <span>{result.FastestLap.lap}</span>
@@ -286,5 +381,6 @@ export function RacePage() {
           )} 
         </div>
      </div>
+    </>
   );
 }

@@ -2,8 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Bungee&family=Lato:wght@300;400;700&display=swap');
-
 html {
 	font-size: 62.5%;
 }
@@ -61,7 +59,9 @@ code {
   text-transform: uppercase;
 }
 
+/* ------- */
 /* Helpers */
+/* ------- */
 
 .global-container {
   margin: 0 auto;
@@ -107,10 +107,23 @@ code {
   -webkit-text-fill-color: transparent;
 }
 
+.gradient-text-light {
+  background: -webkit-linear-gradient(theme('colors.neutral.300'), theme('colors.neutral.500'));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
 .gradient-border {
   border-width: .1rem;
   border-style: solid;
   border-image: linear-gradient(to bottom, theme('colors.neutral.600'), theme('colors.neutral.500')) 1;
+}
+
+.gradient-border-extreme {
+  border-width: .1rem;
+  border-style: solid;
+  border-image: linear-gradient(90deg, rgba(96,96,96,1) 0%, rgba(79,79,79,1) 20%, rgba(140,140,140,1) 30%, rgba(241,241,241,1) 40%, rgba(241,241,241,1) 60%, rgba(140,140,140,1) 70%, rgba(79,79,79,1) 80%, rgba(96,96,96,1) 100%) 1;
+  box-shadow: inset 0 0 2.4rem 0 rgba(255, 255, 255, .25), 0 0 3.2rem 0 rgba(255, 255, 255, .25);
 }
 
 .text-gradient-white {
@@ -119,9 +132,11 @@ code {
   -webkit-text-fill-color: transparent;
 }
 
-
+/* -------------- */
 /* Custom Classes */
+/* -------------- */
 
+/* tire strategy */
 .tire-compound--soft {
   filter: url(#inset-shadow-soft);
   fill: #230000;
@@ -136,6 +151,14 @@ code {
   fill: #242424;
 }
 
+/* season results pages */
+.navLink {
+  color: theme('colors.neutral.600');
+}
+.navLink.active {
+  color: theme('colors.neutral.300');
+}
+
 .constructor-title {
   font-size: 8rem;
   margin-bottom: -3.2rem;
@@ -147,9 +170,55 @@ code {
   }
 }
 
-.navLink {
-  color: theme('colors.neutral.600');
+/* loading animation */
+.loading-animation__title {
+  backdrop-filter: blur(12px);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: 3.2rem;
+  background: linear-gradient(90deg, rgba(31,31,31,0) 0%, rgba(31,31,31,.7) 15%, rgba(31,31,31,.7) 5%, rgba(31,31,31,0) 100%);
+  width: 150%;
+  z-index: 1;
 }
-.navLink.active {
-  color: theme('colors.neutral.300');
+.loading-animation__title:before {
+  content: '';
+  background: radial-gradient(ellipse at bottom , theme('colors.neutral.900') 0%, transparent 50%);
+  height: 1rem;
+  width: 100%;
+  position: absolute;
+    bottom: 100%;
+    left: 0;
+}
+.loading-animation__title:after {
+  content: '';
+  background: radial-gradient(ellipse at top , theme('colors.neutral.900') 0%, transparent 50%);
+  height: 1rem;
+  width: 100%;
+  position: absolute;
+    top: 100%;
+    left: 0;
+}
+
+/* driver card */
+.driver-card--canvas {
+  background-color: rgba(0, 0, 0, .5);
+  backdrop-filter: blur(12px);
+  @media (max-width: 639px) {
+    margin-bottom: 0;
+  }
+}
+.canvas-container {
+  height: 600px;
+  width: calc(100vw - 62px);
+  @media (min-width: 639px) {
+    height: 816px;
+    width: calc(100vw - 210px);
+  }
+  overflow: hidden;
+}
+.race-display {
+  display: grid;
+  grid-template-columns: auto 1fr;
 }
