@@ -58,7 +58,7 @@ export function RaceResultsPage({ selectedYear }) {
                         index={resultIndex}
                         endPosition={parseInt(result.position, 10)}
                         status={result.status}
-                        time={result.Time?.time || result.status}
+                        time={result.time}
                         year={selectedYear}
                       />
                     ))}
