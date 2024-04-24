@@ -1,4 +1,4 @@
-export const fetchRaceDetails = async (selectedYear) => {
+  export const fetchRaceDetails = async (selectedYear) => {
     const url = `https://ergast.com/api/f1/${selectedYear}.json`;
     try {
       const response = await fetch(url);
@@ -185,6 +185,19 @@ export const fetchRaceResultsByCircuit = async (year, circuitId) => {
     return results || [];
   } catch (error) {
     console.error("Error fetching race results:", error);
+    return [];
+  }
+};
+
+export const fetchDriverColor = async (driver, session) => {
+  console.log(`https://api.openf1.org/v1/drivers?name_acronym=${driver}&session_key=${session}`)
+  try {
+    const url = `https://api.openf1.org/v1/drivers?name_acronym=${driver}&session_key=${session}`;
+    const response = await fetch(url);
+    const data = await response.json();
+    return data.team_colour || null;
+  } catch (error) {
+    console.error("Error fetching driver color:", error);
     return [];
   }
 };
