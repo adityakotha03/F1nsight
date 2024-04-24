@@ -15,6 +15,7 @@ export function RacePage() {
   const [drivers, setDrivers] = useState([]);
   const [laps, setLaps] = useState([]);
   const [driversDetails, setDriversDetails] = useState({});
+  const [driversColor, setdriversColor] = useState({});
   const [startingGrid, setStartingGrid] = useState([]);
   const [circuitId, setCircuitId] = useState('');
   const [ImagePath, setImagePath] = useState('');
@@ -65,6 +66,8 @@ export function RacePage() {
           fetchDriversAndTires(sessionKey),
           fetch(`https://api.openf1.org/v1/laps?session_key=${sessionKey}`).then(res => res.json())
         ]);
+
+        console.log(driverDetailsData);
     
         const driverDetailsMap = driverDetailsData.reduce((acc, driver) => ({
           ...acc,
@@ -72,6 +75,13 @@ export function RacePage() {
         }), {});
     
         setDriversDetails(driverDetailsMap);
+
+        const driverColorMap = driverDetailsData.reduce((acc, driver) => ({
+          ...acc,
+          [driver.name_acronym]: driver.team_colour
+        }), {});
+
+        setdriversColor(driverColorMap);
 
         const latestDate = startingGridData[0].date;
         const firstDifferentDate = startingGridData.find(item => item.date !== latestDate)?.date;
@@ -151,8 +161,8 @@ export function RacePage() {
                 isActive={activeButtonIndex === index}
                 index={index}
                 driver={result.Driver}
-                startPosition={result.grid}
-                endPosition={result.position}
+                startPosition={parseInt(result.grid, 10)}
+                endPosition={parseInt(result.position,10)}
                 year={year}
                 time={result.Time?.time || result.status}
                 fastestLap={result.FastestLap}
@@ -248,7 +258,7 @@ export function RacePage() {
 
         <div className="sm:grow-0">
           <h3 className="heading-6 mb-16">Lap Data</h3>
-          <LapChart laps={laps} setLaps={() => setLaps} driversDetails={driversDetails} raceResults={raceResults} className="lap-chart" driverCode={driverSelected ? driversDetails[driverCode] : null} />
+          <LapChart laps={laps} setLaps={() => setLaps} driversDetails={driversDetails} driversColor={driversColor} raceResults={raceResults} className="lap-chart" driverCode={driverSelected ? driversDetails[driverCode] : null} />
         
           <h3 className="heading-6 mb-16">Tire Strategy</h3>
           <TireStrategy drivers={drivers} raceResults={raceResults} driverCode={driverSelected ? driversDetails[driverCode] : null} />
