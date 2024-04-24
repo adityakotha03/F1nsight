@@ -67,7 +67,7 @@ export function RacePage() {
           fetch(`https://api.openf1.org/v1/laps?session_key=${sessionKey}`).then(res => res.json())
         ]);
 
-        console.log(driverDetailsData);
+        //console.log(driverDetailsData);
     
         const driverDetailsMap = driverDetailsData.reduce((acc, driver) => ({
           ...acc,
