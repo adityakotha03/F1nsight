@@ -53,10 +53,10 @@ export function RaceResultsPage({ selectedYear }) {
                         carNumber={result.number}
                         driver={result.driver}
                         fastestLap={result.fastestLap}
-                        grid={result.grid}
+                        startPosition={parseInt(result.grid, 10)}
                         key={resultIndex}
                         index={resultIndex}
-                        position={parseInt(result.position, 10)}
+                        endPosition={parseInt(result.position, 10)}
                         status={result.status}
                         time={result.time}
                         year={selectedYear}
