@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-// import { fetchDriverColor } from '../utils/api';
 
 export const LapChart = (props) => {
-    const { className, laps, driversDetails, raceResults, driverCode } = props;
+    const { className, laps, driversDetails, driversColor, raceResults, driverCode } = props;
 
     // Initialize visibility state for drivers
     const [driverVisibility, setDriverVisibility] = useState({});
@@ -110,7 +109,7 @@ export const LapChart = (props) => {
                     />
                     {/*<Legend />*/}
                     {[...new Set(laps.map(lap => driversDetails[lap.driver_number]))].map((acronym, index) => (
-                        driverVisibility[acronym] && <Line key={index} type="monotone" dataKey={acronym} stroke={`#${Math.floor(Math.random() * 16777215).toString(16)}`} connectNulls={true} />
+                        driverVisibility[acronym] && <Line key={index} type="monotone" dataKey={acronym} stroke={`#${driversColor[acronym]}`} connectNulls={true} />
                     ))}
                 </LineChart>
             </ResponsiveContainer>
@@ -121,8 +120,7 @@ export const LapChart = (props) => {
                             key={index}
                             className={`py-1 px-4 text-white font-semibold rounded`}
                             onClick={() => handleDriverVisibilityChange(acronym)}
-                            style={{backgroundColor: driverVisibility[acronym] ? '#666666' : '#333333'}}
-                            // style={{backgroundColor: driverVisibility[acronym] ? fetchDriverColor(acronym, sessionKey) : '#333333'}}
+                            style={{backgroundColor: driverVisibility[acronym] ? `#${driversColor[acronym]}` : '#333333'}}
                         >
                             {acronym}
                         </button>
