@@ -15,6 +15,7 @@ export function RacePage() {
   const [drivers, setDrivers] = useState([]);
   const [laps, setLaps] = useState([]);
   const [driversDetails, setDriversDetails] = useState({});
+  const [driversColor, setdriversColor] = useState({});
   const [startingGrid, setStartingGrid] = useState([]);
   const [circuitId, setCircuitId] = useState('');
   const [ImagePath, setImagePath] = useState('');
@@ -65,6 +66,8 @@ export function RacePage() {
           fetchDriversAndTires(sessionKey),
           fetch(`https://api.openf1.org/v1/laps?session_key=${sessionKey}`).then(res => res.json())
         ]);
+
+        console.log(driverDetailsData);
     
         const driverDetailsMap = driverDetailsData.reduce((acc, driver) => ({
           ...acc,
@@ -72,6 +75,13 @@ export function RacePage() {
         }), {});
     
         setDriversDetails(driverDetailsMap);
+
+        const driverColorMap = driverDetailsData.reduce((acc, driver) => ({
+          ...acc,
+          [driver.name_acronym]: driver.team_colour
+        }), {});
+
+        setdriversColor(driverColorMap);
 
         const latestDate = startingGridData[0].date;
         const firstDifferentDate = startingGridData.find(item => item.date !== latestDate)?.date;
@@ -143,7 +153,7 @@ export function RacePage() {
           {raceResults.map((result, index) => (
             <button 
               key={index}
-              className="block w-full mb-8"
+              className="block w-full mb-8 z-[100] relative"
               onClick={() => handleDriverSelectionClick(index)}
             >
               <DriverCard 
@@ -151,7 +161,8 @@ export function RacePage() {
                 isActive={activeButtonIndex === index}
                 index={index}
                 driver={result.Driver}
-                position={result.position}
+                startPosition={parseInt(result.grid, 10)}
+                endPosition={parseInt(result.position,10)}
                 year={year}
                 time={result.Time?.time || result.status}
                 fastestLap={result.FastestLap}
@@ -169,14 +180,14 @@ export function RacePage() {
           controls={
             <>
               <div className="race-controls">
-                <div className="race-controls__play gradient-border-extreme flex items-center gap-32 py-16 px-32">
+                <div className="race-controls__play gradient-border-extreme flex items-center justify-center gap-32 py-16 px-32">
                   <button><FontAwesomeIcon icon="play" onClick={() => setpauseButton(true)} /></button>
                   <button><FontAwesomeIcon icon="pause" onClick={() => setpauseButton(false)} /></button>
                 </div>
-                <div className="race-controls__driver gradient-border-extreme px-16 flex items-end">
-                    <div className="mr-8 tracking-wide uppercase pb-16">
+                <div className="race-controls__driver gradient-border-extreme px-16 flex items-center justify-center">
+                    <div className="mr-8 tracking-wide uppercase">
                       <span className="text-neutral-500 mr-4 max-sm:text-xs ">Driver</span>
-                      <select name="driver select" id="driver-select" className="uppercase bg-transparent border-none max-sm:text-xs  sm:text-base mr-4">
+                      <select name="driver select" id="driver-select" className="uppercase bg-transparent border-none max-sm:text-xs sm:text-base mr-4">
                           <option value="">All</option>
                           <option value="HAM">HAM</option>
                           <option value="SAI">SAI</option>
@@ -189,14 +200,14 @@ export function RacePage() {
                     {selectInputDriverImage && (
                       <img 
                         alt="" 
-                        className="-mt-32"
+                        className="-mt-24"
                         src={`/images/${year}/drivers/${selectInputDriverImage}.png`} 
                         width={80} 
                         height={80} 
                       />
                     )}
                 </div>
-                <div className="race-controls__speed gradient-border-extreme flex max-sm:text-xs max-sm:flex-col sm:justify-between gap-16 py-16 px-32 tracking-wide uppercase">
+                <div className="race-controls__speed gradient-border-extreme flex max-sm:text-xs max-sm:flex-col sm:justify-between gap-16 py-16 px-32 tracking-wide uppercase text-center">
                   Playback Speed:
                   <button
                     className={classNames("tracking-wide uppercase", { 'text-neutral-500': speedFactor !== 4})}
@@ -225,7 +236,7 @@ export function RacePage() {
       </div>
 
       <div className="global-container flex flex-col sm:flex-row gap-16 mt-32">
-        <div className="sm:grow-0">
+        <div className="w-[20rem]">
 
           <h3 className="heading-6 mb-16">Starting Grid</h3>
           <ul className="flex flex-col w-fit m-auto">
@@ -247,7 +258,7 @@ export function RacePage() {
 
         <div className="sm:grow-0">
           <h3 className="heading-6 mb-16">Lap Data</h3>
-          <LapChart laps={laps} setLaps={() => setLaps} driversDetails={driversDetails} raceResults = {raceResults} className="lap-chart" driverCode={driverSelected ? driversDetails[driverCode] : null} />
+          <LapChart laps={laps} setLaps={() => setLaps} driversDetails={driversDetails} driversColor={driversColor} raceResults={raceResults} className="lap-chart" driverCode={driverSelected ? driversDetails[driverCode] : null} />
         
           <h3 className="heading-6 mb-16">Tire Strategy</h3>
           <TireStrategy drivers={drivers} raceResults={raceResults} driverCode={driverSelected ? driversDetails[driverCode] : null} />

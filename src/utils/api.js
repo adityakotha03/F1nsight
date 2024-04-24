@@ -1,4 +1,4 @@
-export const fetchRaceDetails = async (selectedYear) => {
+  export const fetchRaceDetails = async (selectedYear) => {
     const url = `https://ergast.com/api/f1/${selectedYear}.json`;
     try {
       const response = await fetch(url);

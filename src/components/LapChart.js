@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 export const LapChart = (props) => {
-    const { className, laps, driversDetails, raceResults, driverCode } = props;
+    const { className, laps, driversDetails, driversColor, raceResults, driverCode } = props;
 
     // Initialize visibility state for drivers
     const [driverVisibility, setDriverVisibility] = useState({});
@@ -20,6 +20,8 @@ export const LapChart = (props) => {
         });
         setDriverVisibility(initialVisibility);
     }, [laps, driversDetails, driverCode]);
+
+    // const sessionKey = laps[0].session_key
 
     const prepareChartData = () => {
         const driverAcronyms = [...new Set(laps.map(lap => driversDetails[lap.driver_number]))];
@@ -107,22 +109,23 @@ export const LapChart = (props) => {
                     />
                     {/*<Legend />*/}
                     {[...new Set(laps.map(lap => driversDetails[lap.driver_number]))].map((acronym, index) => (
-                        driverVisibility[acronym] && <Line key={index} type="monotone" dataKey={acronym} stroke={`#${Math.floor(Math.random() * 16777215).toString(16)}`} connectNulls={true} />
+                        driverVisibility[acronym] && <Line key={index} type="monotone" dataKey={acronym} stroke={`#${driversColor[acronym]}`} connectNulls={true} />
                     ))}
                 </LineChart>
             </ResponsiveContainer>
             {driverCode == null && (
-            <div className="flex flex-wrap gap-2 mt-4">
-                {sortedDriverAcronyms.map((acronym, index) => (
-                    <button
-                        key={index}
-                        className={`py-1 px-4 text-white font-semibold rounded ${driverVisibility[acronym] ? 'bg-green-500' : 'bg-gray-500'}`}
-                        onClick={() => handleDriverVisibilityChange(acronym)}
-                    >
-                        {acronym}
-                    </button>
-                ))}
-            </div>
+                <div className="flex flex-wrap gap-2 mt-4">
+                    {sortedDriverAcronyms.map((acronym, index) => (
+                        <button
+                            key={index}
+                            className={`py-1 px-4 text-white font-semibold rounded`}
+                            onClick={() => handleDriverVisibilityChange(acronym)}
+                            style={{backgroundColor: driverVisibility[acronym] ? `#${driversColor[acronym]}` : '#333333'}}
+                        >
+                            {acronym}
+                        </button>
+                    ))}
+                </div>
             )}
         </div>
     );
