@@ -189,19 +189,6 @@ export const fetchRaceResultsByCircuit = async (year, circuitId) => {
   }
 };
 
-export const fetchDriverColor = async (driver, session) => {
-  console.log(`https://api.openf1.org/v1/drivers?name_acronym=${driver}&session_key=${session}`)
-  try {
-    const url = `https://api.openf1.org/v1/drivers?name_acronym=${driver}&session_key=${session}`;
-    const response = await fetch(url);
-    const data = await response.json();
-    return data.team_colour || null;
-  } catch (error) {
-    console.error("Error fetching driver color:", error);
-    return [];
-  }
-};
-
 function scaleCoordinates(x, y, scale_factor) {
   return [x / scale_factor, y / scale_factor];
 }
