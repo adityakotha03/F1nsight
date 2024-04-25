@@ -54,8 +54,8 @@ export const TireStrategy = (props) => {
     const CustomTooltip = ({ active, payload, label }) => {
       if (active && payload && payload.length) {
         return (
-          <div className="custom-tooltip" style={{ backgroundColor: '#000000', borderColor: '#000000', padding: '10px' }}>
-            <p>{label}</p>
+          <div className="custom-tooltip">
+            <p className="font-display">{label}</p>
             {payload.map((entry, index) => (
               <p key={index} style={{ color: tireTypeClasses[entry.name.replace(/[0-9]/g, '')] }}>
                 {capitalizeFirstLetter(entry.name.replace(/[0-9]/g, ''))}: {entry.value}
@@ -68,20 +68,19 @@ export const TireStrategy = (props) => {
       return null;
     }; 
 
+    console.log(tireKeys)
+
     return (
-        <div style={{ width: '100%', height: 700 }}>
-          <ResponsiveContainer width="100%" height="100%">
+        <div className="bg-glow h-fit p-32 mb-16">
+          <h3 className="heading-4 mb-16">Tire Strategy</h3>
+          <ResponsiveContainer width="100%" height={700}>
             <BarChart
               data={sortedTransformedData}
-              margin={{
-                top: 20,
-                right: 30,
-                left: 20,
-                bottom: 5,
-              }}
+              width="100%"
               layout="vertical"
+              margin={{ right: 30 }}
             >
-              <CartesianGrid strokeDasharray="3 3" />
+              <CartesianGrid strokeDasharray="3 3" width="100%" />
               <XAxis type="number" />
               <YAxis dataKey="acronym" type="category" interval={0}/>
               <Tooltip content={<CustomTooltip />} />

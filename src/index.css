@@ -90,7 +90,7 @@ code {
 }
 
 .divider-glow-dark {
-  background: radial-gradient(ellipse at top , theme('colors.neutral.950') 0%, transparent 64%);
+  background: radial-gradient(ellipse at top , theme('colors.neutral.950') 0%, transparent 75%);
   height: 1.6rem;
   width: 100%;
 }
@@ -117,6 +117,13 @@ code {
   border-width: .1rem;
   border-style: solid;
   border-image: linear-gradient(to bottom, theme('colors.neutral.600'), theme('colors.neutral.500')) 1;
+}
+
+.vertical-divider {
+  width: .2rem;
+  margin-right: 3.2rem;
+  margin-left: 3.2rem;
+  background: linear-gradient(to bottom, theme('colors.neutral.600'), theme('colors.neutral.500'));
 }
 
 .gradient-border-extreme {
@@ -210,7 +217,7 @@ code {
   }
 }
 
-/* canvas */
+/* race canvas and controls */
 .canvas-container {
   position: relative;
   height: 600px;
@@ -240,8 +247,7 @@ code {
 }
 
 .race-controls {
-  
-  @media (min-width: 639px) {
+  @media (min-width: 640px) {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     grid-template-areas:
@@ -249,8 +255,58 @@ code {
       "speed speed speed"
     ;
   }
+
+  @media (min-width: 1280px) {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    grid-template-areas:
+      "play speed driver"
+    ;
+  }
 }
 
 .race-controls__play { grid-area: play; }
 .race-controls__driver { grid-area: driver; }
 .race-controls__speed { grid-area: speed; }
+
+
+/* lap chart */
+.recharts-cartesian-axis-tick-value {
+  font-size: 1rem;
+  letter-spacing: .2rem;
+}
+.recharts-default-tooltip,
+.custom-tooltip {
+  background-color: rgba(0, 0, 0, .5) !important;
+  backdrop-filter: blur(12px);
+  border: .1rem solid transparent !important;
+  border-image: linear-gradient(to bottom, theme('colors.neutral.600'), theme('colors.neutral.500')) 1;
+  padding: .8rem;
+}
+.recharts-tooltip-label {
+  font-family: "Bungee", sans-serif;
+}
+
+/* select input */
+.select {
+  position: relative;
+}
+
+.select__input {
+  padding: 2.2rem 3.2rem 0.8rem 1.6rem !important;
+  font-size: 1.6rem;
+  font-family: "Bungee", sans-serif;
+  
+  @media (max-width: 639px) {
+    width: 100%;
+  }
+}
+
+.select__label {
+  font-size: 1.2rem;
+  color: #b7b7b7;
+  left: 1.6rem;
+  pointer-events: none;
+  position: absolute;
+  top: .4rem;
+}

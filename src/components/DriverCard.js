@@ -33,17 +33,15 @@ export const DriverCard = (props) => {
                         </div>
                     }
                 >
-                    {startPosition > endPosition ? (
-                        <span className="fa-layers fa-fw">
-                            <FontAwesomeIcon icon="circle" className="text-neutral-700 fa-xs" />
-                            <FontAwesomeIcon icon="circle-up" inverse transform="shrink-2" className="text-emerald-500 fa-xs" />
-                        </span>
-                    ) : (
-                        <span className="fa-layers fa-fw">
-                            <FontAwesomeIcon icon="circle" className="text-neutral-700 fa-xs" />
-                            <FontAwesomeIcon icon="circle-down" inverse transform="shrink-2" className="text-rose-500 fa-xs" />
-                        </span>
-                    )}
+                    <span className="fa-layers fa-fw">
+                        <FontAwesomeIcon icon="circle" className="text-neutral-700 fa-xs" />
+                        <FontAwesomeIcon 
+                            icon={startPosition > endPosition ? "circle-up" : "circle-down"} 
+                            inverse 
+                            transform="shrink-2" 
+                            className={classNames("fa-xs", startPosition > endPosition ? "text-emerald-500" : "text-rose-500")} 
+                        />
+                    </span>
                 </Popover>
             )
         }
@@ -61,10 +59,10 @@ export const DriverCard = (props) => {
             {layoutSmall ? (
                 <div className={classNames("flex items-center justify-between w-full", { "max-sm:hidden": mobileSmall})}>
                     <div className="flex items-center">
-                        <p className="heading-4 w-72 bg-neutral-600 ">P{endPosition}</p>
-                        <span className="heading-4 pl-16">{driver.code}</span>
+                        <p className="heading-4 w-64 bg-neutral-600 py-4">P{endPosition}</p>
+                        <span className="font-display pl-16 mr-4">{driver.code}</span>
                     </div>
-                    <p className="text-sm pr-8">{time}</p>
+                    <p className=" text-xs pr-8">{time}</p>
                 </div>
             ) : (
                 <div className={classNames('flex item-center w-full', { "max-sm:hidden": mobileSmall})}>

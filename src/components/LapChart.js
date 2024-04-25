@@ -126,38 +126,38 @@ export const LapChart = (props) => {
     };
 
     return (
-        <div style={{ width: '100%', height: 300}} className="mb-64">
-            <ResponsiveContainer>
+        <div className="mb-16 bg-glow p-32">
+            <h3 className="heading-4 mb-16">Lap Data</h3>
+            <ResponsiveContainer width="100%" height={250}>
                 <LineChart
                     data={chartData}
-                    margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                    margin={{ top: 20, right: 30 }}
+                    width="100%"
                 >
-                    <CartesianGrid strokeDasharray="3 3" />
+                    <CartesianGrid strokeDasharray="3 3" stroke="#444444" />
                     <XAxis dataKey="name" />
                     <YAxis domain={[minYAxisValue, maxYAxisValue]} tickFormatter={formatMinutes} />
                     <Tooltip 
-                    formatter={(value) => {
-                        const decimalMinutes = parseFloat(value);
-                        const minutes = Math.floor(decimalMinutes);
-                        const totalSeconds = (decimalMinutes - minutes) * 60;
-                        const seconds = Math.floor(totalSeconds);
-                        const milliseconds = Math.round((totalSeconds - seconds) * 1000);
-                    return `${minutes}:${seconds.toString().padStart(2, '0')}.${milliseconds.toString().padStart(3, '0')}`;
-                    }}
-                    contentStyle={{ backgroundColor: '#000000', borderColor: '#000000' }} 
+                        formatter={(value) => {
+                            const decimalMinutes = parseFloat(value);
+                            const minutes = Math.floor(decimalMinutes);
+                            const totalSeconds = (decimalMinutes - minutes) * 60;
+                            const seconds = Math.floor(totalSeconds);
+                            const milliseconds = Math.round((totalSeconds - seconds) * 1000);
+                            return `${minutes}:${seconds.toString().padStart(2, '0')}.${milliseconds.toString().padStart(3, '0')}`;
+                        }}
                     />
-                    {/*<Legend />*/}
                     {[...new Set(laps.map(lap => driversDetails[lap.driver_number]))].map((acronym, index) => (
                         driverVisibility[acronym] && <Line key={index} type="monotone" dataKey={acronym} stroke={`${newDriversColor[acronym]}`} connectNulls={true} />
                     ))}
                 </LineChart>
             </ResponsiveContainer>
             {driverCode == null && (
-                <div className="flex flex-wrap gap-2 mt-4">
+                <div className="flex flex-wrap justify-center gap-4 mt-4 sm:max-w-[80%] sm:mx-auto">
                     {sortedDriverAcronyms.map((acronym, index) => (
                         <button
                             key={index}
-                            className={`py-1 px-4 text-white font-semibold rounded`}
+                            className={`py-1 px-4 text-white font-semibold rounded font-display`}
                             onClick={() => handleDriverVisibilityChange(acronym)}
                             style={{backgroundColor: driverVisibility[acronym] ? `${newDriversColor[acronym]}` : '#333333'}}
                         >

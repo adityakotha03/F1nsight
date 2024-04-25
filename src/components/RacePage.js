@@ -147,7 +147,7 @@ export function RacePage() {
 
   return (
     <>
-      {raceName && <p className="heading-2 text-right text-neutral-500 mb-24">{raceName} {year}</p>}
+      {raceName && <p className="heading-2 text-right text-neutral-500 m-32">{raceName} {year}</p>}
       <div className="race-display mb-64">
         <ul className="flex flex-col">
           {raceResults.map((result, index) => (
@@ -179,15 +179,15 @@ export function RacePage() {
           pauseButton={pauseButton}
           controls={
             <>
-              <div className="race-controls">
+              <div className="race-controls relative z-10">
                 <div className="race-controls__play gradient-border-extreme flex items-center justify-center gap-32 py-16 px-32">
                   <button><FontAwesomeIcon icon="play" onClick={() => setpauseButton(true)} /></button>
                   <button><FontAwesomeIcon icon="pause" onClick={() => setpauseButton(false)} /></button>
                 </div>
                 <div className="race-controls__driver gradient-border-extreme px-16 flex items-center justify-center">
-                    <div className="mr-8 tracking-wide uppercase">
-                      <span className="text-neutral-500 mr-4 max-sm:text-xs ">Driver</span>
-                      <select name="driver select" id="driver-select" className="uppercase bg-transparent border-none max-sm:text-xs sm:text-base mr-4">
+                    <div className="sm:ml-16 uppercase tracking-sm">
+                      <span className="text-neutral-500 mr-4 text-xs">Driver</span>
+                      <select name="driver select" id="driver-select" className="uppercase bg-transparent border-none text-xs">
                           <option value="">All</option>
                           <option value="HAM">HAM</option>
                           <option value="SAI">SAI</option>
@@ -207,25 +207,25 @@ export function RacePage() {
                       />
                     )}
                 </div>
-                <div className="race-controls__speed gradient-border-extreme flex max-sm:text-xs max-sm:flex-col sm:justify-between gap-16 py-16 px-32 tracking-wide uppercase text-center">
-                  Playback Speed:
+                <div className="race-controls__speed gradient-border-extreme flex text-xs max-sm:flex-col sm:items-center sm:justify-center gap-16 py-16 px-32 tracking-sm uppercase text-center">
+                  <p>Playback Speed:</p>
                   <button
-                    className={classNames("tracking-wide uppercase", { 'text-neutral-500': speedFactor !== 4})}
+                    className={classNames("tracking-sm uppercase", { 'text-neutral-500': speedFactor !== 4})}
                     onClick={() => setSpeedFactor(4)}
                   >
                     Normal
                   </button>
                   <button
-                    className={classNames("tracking-wide uppercase", { 'text-neutral-500': speedFactor !== 1.5})}
+                    className={classNames("tracking-sm uppercase", { 'text-neutral-500': speedFactor !== 1.5})}
                     onClick={() => setSpeedFactor(1.5)}
                   >
-                    Push
+                    Push Push
                   </button>
                   <button
-                    className={classNames("tracking-wide uppercase", { 'text-neutral-500': speedFactor !== 0.2})}
+                    className={classNames("tracking-sm uppercase", { 'text-neutral-500': speedFactor !== 0.2})}
                     onClick={() => setSpeedFactor(0.2)}
                   >
-                    DRS
+                    DRS 
                   </button> 
                 </div>
               </div>
@@ -236,19 +236,18 @@ export function RacePage() {
       </div>
 
       <div className="global-container flex flex-col sm:flex-row gap-16 mt-32">
-        <div className="w-[20rem]">
-
-          <h3 className="heading-6 mb-16">Starting Grid</h3>
+        <div className="sm:w-[26rem] bg-glow p-32 h-fit">
+          <h3 className="heading-4 mb-16">Starting Grid</h3>
           <ul className="flex flex-col w-fit m-auto">
             {startingGrid
               .sort((a, b) => a.position - b.position)
               .map((gridPosition, index) => (
                 <li 
                   key={index} 
-                  className="text-center w-fit even:-mt-32 even:ml-64 even:mb-24"
+                  className="text-center w-fit even:-mt-32 even:ml-[8rem] even:mb-24"
                 >
                   <div className="text-sm font-display text-neutral-500">P{gridPosition.position}</div>
-                  <div className="border-x-2 border-t-2 border-solid border-neutral-500 px-4 pt-4 w-52">
+                  <div className="border-x-2 border-t-2 border-solid border-neutral-500 px-4 pt-4 w-64 font-display">
                     {driversDetails[gridPosition.driver_number]}
                   </div> 
                 </li>
@@ -257,37 +256,37 @@ export function RacePage() {
         </div>
 
         <div className="sm:grow-0">
-          <h3 className="heading-6 mb-16">Lap Data</h3>
           <LapChart laps={laps} setLaps={() => setLaps} driversDetails={driversDetails} driversColor={driversColor} raceResults={raceResults} className="lap-chart" driverCode={driverSelected ? driversDetails[driverCode] : null} />
         
-          <h3 className="heading-6 mb-16">Tire Strategy</h3>
           <TireStrategy drivers={drivers} raceResults={raceResults} driverCode={driverSelected ? driversDetails[driverCode] : null} />
 
           {!driverSelected && (
-            <>
-              <h3 className="heading-6 mb-16">Fastest Laps</h3>
-              <div className="grid grid-cols-3 gap-4 mb-16">
-                <span>Driver</span> 
-                <span>Time</span> 
-                <span>Lap</span> 
+            <div className="bg-glow h-fit p-32 mb-16">
+              <h3 className="heading-4 mb-16">Fastest Laps</h3> 
+              <div className="grid grid-cols-3 gap-4 mb-16  text-neutral-500">
+                <span className="tracking-sm">Driver</span> 
+                <span className="tracking-sm text-center">Time</span> 
+                <span className="tracking-sm text-right">Lap</span> 
               </div>
-              <ul className="mb-16">
+              <ul>
                 {raceResults
                   .filter(result => result.FastestLap && result.FastestLap.rank)
                   .sort((a, b) => parseInt(a.FastestLap.rank) - parseInt(b.FastestLap.rank))
                   .map((result, index) => (
+                    <>
                     <li key={index} className="grid grid-cols-3 gap-4 mb-8">
                       <div>
-                        {result.Driver.code}
-                        <span className="text-sm ml-8 text-neutral-500">{result.Constructor.name}</span>
+                        <span className="font-display">{result.Driver.code}</span>
+                        <span className="text-sm ml-8 text-neutral-500 tracking-sm max-sm:hidden">{result.Constructor.name}</span>
                       </div>
-                      <span>{result.FastestLap.Time.time}</span>
-                      <span>{result.FastestLap.lap}</span>
-                      
+                      <span className="text-center">{result.FastestLap.Time.time}</span>
+                      <span className="text-right">{result.FastestLap.lap}</span>
                     </li>
+                    <div className='divider-glow-dark' />
+                    </>
                   ))}
               </ul>
-            </>
+            </div>
           )} 
         </div>
      </div>
