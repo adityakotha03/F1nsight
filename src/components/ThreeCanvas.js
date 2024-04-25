@@ -6,13 +6,15 @@ import TWEEN from '@tweenjs/tween.js';
 
 import { Loading } from "./Loading"
 
-export const ThreeCanvas = ({ imageFile, locData, driverSelected, pauseButton, controls, speedFactor }) => {
+export const ThreeCanvas = ({ imageFile, locData, driverSelected, fastestLap, pauseButton, controls, speedFactor }) => {
   const [driverDetails, setDriverDetails] = useState(null);
   const [carPosition, setCarPosition] = useState({ x: 0, y: 0, z: 0 });
   const [unit, setUnit] = useState('km/h');
 
   const mountRef = useRef(null);
   const infoRef = useRef(null);
+
+  //console.log(fastestLap);
 
   const ambientLight = useMemo(() => new THREE.AmbientLight(0xffffff, 0.5), []);
   const directionalLight = useMemo(() => {
@@ -175,6 +177,10 @@ export const ThreeCanvas = ({ imageFile, locData, driverSelected, pauseButton, c
               <div className="flex flex-col">
                 <p className="uppercase text-sm tracking-wide">Gear</p>
                 <p className="font-display text-[128px] leading-none">{driverDetails.n_gear}</p>
+              </div>
+              <div className="flex flex-col">
+                <p className="uppercase text-sm tracking-wide">Best Lap Time</p>
+                <p className="font-display text-[128px] leading-none">{fastestLap.Time.time}</p>
               </div>
             </>
           ) : <Loading className="mt-64" />}

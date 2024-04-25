@@ -177,6 +177,7 @@ export function RacePage() {
           locData={locData}
           driverSelected={driverSelected}
           pauseButton={pauseButton}
+          fastestLap={driverSelected? raceResults[activeButtonIndex].FastestLap : 'N/A'}
           controls={
             <>
               <div className="race-controls">
