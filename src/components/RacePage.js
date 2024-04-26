@@ -17,7 +17,6 @@ export function RacePage() {
   const [driversDetails, setDriversDetails] = useState({});
   const [driversColor, setdriversColor] = useState({});
   const [startingGrid, setStartingGrid] = useState([]);
-  const [circuitId, setCircuitId] = useState('');
   const [ImagePath, setImagePath] = useState('');
   const [raceResults, setRaceResults] = useState([]);
   const [locData, setlocData] = useState({});
@@ -45,7 +44,6 @@ export function RacePage() {
         // Check if the country is in the map and replace it if it is
         const adjustedCountry = countryMap[country] || country;
         const circuitId = await fetchCircuitIdByCountry(year, adjustedCountry);
-        setCircuitId(circuitId);
         setImagePath(`/maps/${circuitId}.png`);
         //console.log(circuitId);
 

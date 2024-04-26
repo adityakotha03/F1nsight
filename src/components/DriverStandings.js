@@ -34,8 +34,8 @@ export function DriverStandings({ selectedYear }) {
                 image={standing.driverCode} 
                 car={standing.constructorId}
                 points={standing.points}
-                firstName={standing.driverName.split(' ')[0]}
-                lastName={standing.driverName.split(' ')[1]}
+                firstName={standing.firstName}
+                lastName={standing.lastName}
                 year={selectedYear} 
               />
             </li>

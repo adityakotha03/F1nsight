@@ -15,7 +15,10 @@ export const ThreeCanvas = ({ imageFile, locData, driverSelected, fastestLap, pa
   const infoRef = useRef(null);
 
   //console.log(fastestLap);
-
+  if(!pauseButton){
+    console.log(carPosition);
+  }
+  
   const ambientLight = useMemo(() => new THREE.AmbientLight(0xffffff, 0.5), []);
   const directionalLight = useMemo(() => {
     const light = new THREE.DirectionalLight(0xffffff, 0.8);
@@ -162,7 +165,7 @@ export const ThreeCanvas = ({ imageFile, locData, driverSelected, fastestLap, pa
                       mph
                     </button>
                   </div>
-                  {driverDetails.drs && drsActiveNumbers.includes(driverDetails.drs) &&(
+                  {drsActiveNumbers.includes(driverDetails.drs) &&(
                     <p className="border-solid border-2 border-emerald-700 bg-emerald-900 px-16 mt-16">DRS Enabled</p>
                   )}
                 </div>

@@ -68,7 +68,7 @@ export const TireStrategy = (props) => {
       return null;
     }; 
 
-    console.log(tireKeys)
+    //console.log(tireKeys)
 
     return (
         <div className="bg-glow h-fit p-32 mb-16">
