@@ -59,52 +59,57 @@
     return upcomingRace || null;
   };
 
-export const getConstructorStandings = async (selectedYear) => {
-  const baseURL = `https://ergast.com/api/f1/${selectedYear}`;
-
-  try {
-    const constructorUrl = `${baseURL}/constructorStandings.json`;
-    const constructorResponse = await fetch(constructorUrl);
-    let constructorStandings = [];
-
-    if (constructorResponse.ok) {
-      const constructorData = await constructorResponse.json();
-      constructorStandings = constructorData.MRData.StandingsTable.StandingsLists[0].ConstructorStandings.map(standing => ({
+  export const getConstructorStandings = async (selectedYear) => {
+    const baseURL = `https://ergast.com/api/f1/${selectedYear}`;
+    const urls = {
+      constructorUrl: `${baseURL}/constructorStandings.json`,
+      driverUrl: `${baseURL}/driverStandings.json`
+    };
+  
+    try {
+      const [constructorResponse, driverResponse] = await Promise.all([
+        fetch(urls.constructorUrl),
+        fetch(urls.driverUrl)
+      ]);
+  
+      if (!constructorResponse.ok || !driverResponse.ok) {
+        throw new Error('Failed to fetch data');
+      }
+  
+      const [constructorData, driverData] = await Promise.all([
+        constructorResponse.json(),
+        driverResponse.json()
+      ]);
+  
+      const constructorStandings = constructorData.MRData.StandingsTable.StandingsLists[0].ConstructorStandings.map(standing => ({
         constructorName: standing.Constructor.name,
         constructorId: standing.Constructor.constructorId,
         points: standing.points,
         driverCodes: []
       }));
-    }
-
-    const driverUrl = `${baseURL}/driverStandings.json`;
-    const driverResponse = await fetch(driverUrl);
-    let driverStandings = [];
-
-    if (driverResponse.ok) {
-      const driverData = await driverResponse.json();
-      driverStandings = driverData.MRData.StandingsTable.StandingsLists[0].DriverStandings;
-    }
-
-    driverStandings.forEach(standing => {
-      standing.Constructors.forEach(constructor => {
-        const constructorIndex = constructorStandings.findIndex(c => c.constructorId === constructor.constructorId);
-        if (constructorIndex !== -1) {
-          constructorStandings[constructorIndex].driverCodes.push(standing.Driver.code);
-        }
+  
+      const driverStandings = driverData.MRData.StandingsTable.StandingsLists[0].DriverStandings;
+  
+      driverStandings.forEach(standing => {
+        standing.Constructors.forEach(constructor => {
+          const constructorIndex = constructorStandings.findIndex(c => c.constructorId === constructor.constructorId);
+          if (constructorIndex !== -1) {
+            constructorStandings[constructorIndex].driverCodes.push(standing.Driver.code);
+          }
+        });
       });
-    });
-
-    constructorStandings.forEach(standing => {
-      standing.driverCodes = [...new Set(standing.driverCodes)].sort();
-    });
-
-    return constructorStandings;
-  } catch (error) {
-    console.error('Error fetching enhanced constructor standings:', error);
-    return [];
-  }
-};
+  
+      constructorStandings.forEach(standing => {
+        standing.driverCodes = [...new Set(standing.driverCodes)].sort();
+      });
+  
+      return constructorStandings;
+    } catch (error) {
+      console.error('Error fetching constructor standings:', error);
+      return [];
+    }
+  };
+  
 
   export const getDriverStandings = async (selectedYear) => {
     const url = `https://ergast.com/api/f1/${selectedYear}/driverStandings.json`;
@@ -115,7 +120,8 @@ export const getConstructorStandings = async (selectedYear) => {
         const standings = data.MRData.StandingsTable.StandingsLists[0].DriverStandings;
         return standings.map(standing => ({
           driverCode: standing.Driver.code,
-          driverName: `${standing.Driver.givenName} ${standing.Driver.familyName}`,
+          firstName: standing.Driver.givenName,
+          lastName: standing.Driver.familyName,
           constructorName: standing.Constructors[0].name,
           constructorId: standing.Constructors[0].constructorId,
           points: standing.points,
@@ -128,35 +134,39 @@ export const getConstructorStandings = async (selectedYear) => {
   };
 
   export const fetchDriversAndTires = async (sessionKey) => {
+    if (!sessionKey) return [];
+  
+    const urls = {
+      driversUrl: `https://api.openf1.org/v1/drivers?session_key=${sessionKey}`,
+      stintsUrl: `https://api.openf1.org/v1/stints?session_key=${sessionKey}`
+    };
+  
     try {
-      if (!sessionKey) return [];
-      const driversResponse = await fetch(`https://api.openf1.org/v1/drivers?session_key=${sessionKey}`);
+      const [driversResponse, stintsResponse] = await Promise.all([
+        fetch(urls.driversUrl),
+        fetch(urls.stintsUrl)
+      ]);
+  
       if (!driversResponse.ok) throw new Error('Failed to fetch drivers');
-      let driversData = await driversResponse.json();
-  
-      const stintsResponse = await fetch(`https://api.openf1.org/v1/stints?session_key=${sessionKey}`);
       if (!stintsResponse.ok) throw new Error('Failed to fetch stints');
-      const stintsData = await stintsResponse.json();
   
-      // Grouping stints by driver_number
-      const stintsByDriver = stintsData.reduce((acc, stint) => {
-        const { driver_number, lap_end, compound } = stint;
-        if (!acc[driver_number]) {
-          acc[driver_number] = [];
-        }
+      const [driversData, stintsData] = await Promise.all([
+        driversResponse.json(),
+        stintsResponse.json()
+      ]);
+  
+      const stintsByDriver = stintsData.reduce((acc, { driver_number, lap_end, compound }) => {
+        acc[driver_number] = acc[driver_number] || [];
         acc[driver_number].push({ lap_end, compound });
         return acc;
       }, {});
   
-      // Adding tire data to drivers
-      driversData = driversData.map(driver => ({
+      return driversData.map(driver => ({
         ...driver,
         number: driver.driver_number,
         acronym: driver.name_acronym,
-        tires: stintsByDriver[driver.driver_number] || [],
+        tires: stintsByDriver[driver.driver_number] || []
       }));
-  
-      return driversData;
     } catch (error) {
       console.error("Error fetching drivers and tires:", error);
       return [];
@@ -199,30 +209,24 @@ export async function fetchLocationData(sessionKey, driverId, startTime, endTime
   // Assuming the base URL for API calls might be reused
   const baseUrl = 'https://api.openf1.org/v1';
   const locationUrl = `${baseUrl}/location?session_key=${sessionKey}&driver_number=${driverId}&date>=${startTime}&date<${endTime}`;
-  const driverUrl = `${baseUrl}/drivers?driver_number=${driverId}&session_key=${sessionKey}`;
   const carDataUrl = `${baseUrl}/car_data?session_key=${sessionKey}&driver_number=${driverId}&date>=${startTime}&date<${endTime}`;
 
-  const [locationResponse, driverResponse, carDataResponse] = await Promise.all([
+  const [locationResponse, carDataResponse] = await Promise.all([
     fetch(locationUrl),
-    fetch(driverUrl),
     fetch(carDataUrl)
   ]);
 
-  if (!locationResponse.ok || !driverResponse.ok || !carDataResponse.ok) {
+  if (!locationResponse.ok || !carDataResponse.ok) {
     throw new Error('Failed to fetch data');
   }
 
-  const [locationData, driverData, carData] = await Promise.all([
+  const [locationData, carData] = await Promise.all([
     locationResponse.json(),
-    driverResponse.json(),
     carDataResponse.json()
   ]);
 
   const fetchEndTime = performance.now();
   console.log(`Time taken to fetch data: ${(fetchEndTime - fetchStartTime).toFixed(2)} milliseconds`);
-
-  //console.log(carData);
-  //console.log(locationData);
   
   // Sort location and car data by date
   locationData.sort((a, b) => new Date(a.date) - new Date(b.date));
