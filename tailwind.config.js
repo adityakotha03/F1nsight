@@ -18,6 +18,7 @@ module.exports = {
       '128': '12.8rem',
     },
     letterSpacing: {
+      sm: '.4rem',
       wide: '.8rem',
     },
     spacing: {

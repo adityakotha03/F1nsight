@@ -141,42 +141,47 @@ export const ThreeCanvas = ({ imageFile, locData, driverSelected, fastestLap, pa
       <div ref={mountRef} className="canvas-container" />
       {controls}
       {driverSelected &&
-        <div className="w-full mt-32" ref={infoRef}>
+        <div className="my-32 sm:mx-32 flex max-sm:flex-col sm:flex-row gap-32 sm:items-center" ref={infoRef}>
           {(infoRef.current && driverDetails) ? (
             <>
-              <div className="flex flex-col">
-                <p className="font-display text-[128px] leading-none">{unit === 'km/h' ? driverDetails.speed : Math.round(driverDetails.speed * 0.621371)}</p>
-                <div className="flex justify-between">
-                <button 
-                  className={`uppercase text-sm tracking-wide ${unit === 'km/h' ? '' : 'text-neutral-500'}`}
-                  onClick={() => handleUnitChange('km/h')}
-                >
-                  km/h
-                </button>
-                <button 
-                  className={`uppercase text-sm tracking-wide ${unit === 'mph' ? '' : 'text-neutral-500'}`}
-                  onClick={() => handleUnitChange('mph')}
-                >
-                  mph
-                </button>
+              <div className="flex gap-32">
+                <div className="flex flex-col w-[10rem] sm:w-[25rem]">
+                  <p className="font-display max-lg:text-[6.4rem] lg:text-[128px] leading-none">{unit === 'km/h' ? driverDetails.speed : Math.round(driverDetails.speed * 0.621371)}</p>
+                  <div className="flex gap-16">
+                    <button 
+                      className={`uppercase text-sm tracking-sm ${unit === 'km/h' ? '' : 'text-neutral-500'}`}
+                      onClick={() => handleUnitChange('km/h')}
+                    >
+                      km/h
+                    </button>
+                    /
+                    <button 
+                      className={`uppercase text-sm tracking-sm ${unit === 'mph' ? '' : 'text-neutral-500'}`}
+                      onClick={() => handleUnitChange('mph')}
+                    >
+                      mph
+                    </button>
+                  </div>
+                  {driverDetails.drs && drsActiveNumbers.includes(driverDetails.drs) &&(
+                    <p className="border-solid border-2 border-emerald-700 bg-emerald-900 px-16 mt-16">DRS Enabled</p>
+                  )}
                 </div>
-                {driverDetails.drs && drsActiveNumbers.includes(driverDetails.drs) &&(
-                  <p className="border-solid border-2 border-emerald-700 bg-emerald-900 px-16">DRS Enabled</p>
-                )}
+                <div className="vertical-divider" />
+                <div className="flex flex-col w-96">
+                  <p className="font-display max-lg:text-[6.4rem] lg:text-[128px]  leading-none">{driverDetails.n_gear}</p>
+                  <p className="uppercase text-sm tracking-sm">Gear</p>
+                </div>
+                <div className="vertical-divider max-sm:hidden" />
               </div>
-              <div className="flex flex-col">
-                <p className="uppercase text-sm tracking-wide">Throttle</p>
+              <div className="flex flex-col grow">
+                <p className="uppercase text-sm tracking-sm">Throttle</p>
                 <div className="shadow-lg mb-8 border-solid border-2 border-neutral-800">
-                  <div className="bg-emerald-900 h-24" style={{width: `${driverDetails.throttle}%`}} />
+                  <div className="bg-emerald-900 h-24 ease-in-out" style={{width: `${driverDetails.throttle}%`}} />
                 </div>
                 <div className="shadow-lg border-solid border-2 border-neutral-800">
-                  <div className="bg-rose-900 h-24" style={{width: `${driverDetails.brake}%`}} />
+                  <div className="bg-rose-900 h-24 ease-in-out" style={{width: `${driverDetails.brake}%`}} />
                 </div>
-                <p className="uppercase text-sm tracking-wide">Brake</p>
-              </div>
-              <div className="flex flex-col">
-                <p className="uppercase text-sm tracking-wide">Gear</p>
-                <p className="font-display text-[128px] leading-none">{driverDetails.n_gear}</p>
+                <p className="uppercase text-sm tracking-sm">Brake</p>
               </div>
               <div className="flex flex-col">
                 <p className="uppercase text-sm tracking-wide">Best Lap Time</p>

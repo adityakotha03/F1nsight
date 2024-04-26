@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Select } from './Select';
 
 export const RaceSelector = ({ races, selectedYear, setIsRaceSelected }) => {
   const navigate = useNavigate();
@@ -18,11 +19,11 @@ export const RaceSelector = ({ races, selectedYear, setIsRaceSelected }) => {
   };
 
   return (
-    <select onChange={handleRaceChange} className="bg-glow gradient-border bg-transparent">
-      <option value="">Select a Race</option>
-      {races.map((race) => (
-        <option key={race.meeting_key} value={race.meeting_name}>{race.meeting_name}</option>
+    <Select label="Race" onChange={handleRaceChange} >
+        <option value="">---</option>
+        {races.map((race) => (
+          <option key={race.meeting_key} value={race.meeting_name}>{race.meeting_name}</option>
       ))}
-    </select>
+    </Select>
   );
 };

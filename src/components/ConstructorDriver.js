@@ -33,7 +33,7 @@ export const ConstructorDriver = (props) => {
                     <div className="flex items-end">
                         <img 
                             alt="" 
-                            className="-mb-8 z-10"
+                            className="-mb-8 z-10 -ml-32"
                             src={`/images/${year}/cars/${car}.png`} 
                             width={200} 
                             style={{

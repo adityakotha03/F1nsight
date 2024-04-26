@@ -23,7 +23,7 @@ export function DriverStandings({ selectedYear }) {
   // console.log(standings);
 
   return (
-    <>
+    <div className="sm:max-w-5xl sm:mx-auto">
       {isLoading ? (
         <Loading />
       ) : (
@@ -42,6 +42,6 @@ export function DriverStandings({ selectedYear }) {
           ))}
         </ul>
       )}
-    </>
+    </div>
   );
 }

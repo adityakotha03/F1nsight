@@ -19,10 +19,10 @@ export const ConstructorCar = (props) => {
             <div className="flex flex-col items-center">
                 <p className="heading-4 -mb-4 constructor-title gradient-text-dark">{name}</p>
                 <span className="heading-1">{points}</span>
-                <div className="flex items-end">
+                <div className="flex items-end relative">
                     <img 
                         alt="" 
-                        className="-mt-40 -mr-40"
+                        className="-mt-40 -mr-80 sm:-mr-40"
                         height={85} 
                         src={`/images/${year}/drivers/${drivers[0]}.png`} 
                         width={120} 
@@ -31,6 +31,20 @@ export const ConstructorCar = (props) => {
                             transition: "all 2s cubic-bezier(0.17, 0.55, 0.55, 1) .3s"
                         }}
                     />
+                    {drivers[3] && (
+                        <img 
+                            alt="" 
+                            className="absolute left-60"
+                            height={85} 
+                            src={`/images/${year}/drivers/${drivers[3]}.png`} 
+                            width={120} 
+                            style={{
+                                opacity: isInView ? 1 : 0,
+                                transition: "all 2s cubic-bezier(0.17, 0.55, 0.55, 1) .4s"
+                            }}
+                        />
+                    )}
+
                     <img 
                         alt="" 
                         className="-mt-16 -mb-32 z-10"
@@ -43,9 +57,10 @@ export const ConstructorCar = (props) => {
                             transition: "all 1s cubic-bezier(0.17, 0.55, 0.55, 1) .2s"
                         }}
                     />
+
                     <img 
                         alt="" 
-                        className="-mt-40 -ml-40 -mr-40"
+                        className="-mt-40 -ml-80 sm:-ml-40"
                         height={85} 
                         src={`/images/${year}/drivers/${drivers[1]}.png`} 
                         width={120} 
@@ -57,7 +72,7 @@ export const ConstructorCar = (props) => {
                     {drivers[2] && (
                         <img 
                             alt="" 
-                            className="-mt-40"
+                            className="absolute right-[7rem]"
                             height={85} 
                             src={`/images/${year}/drivers/${drivers[2]}.png`} 
                             width={120} 

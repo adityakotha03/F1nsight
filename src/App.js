@@ -4,7 +4,7 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 import { fas } from '@fortawesome/free-solid-svg-icons';
 
 //import { fetchUpcomingRace } from './utils/api';
-import { Header, RaceSelector, RacePage, DriverStandings, ConstructorStandings, RaceResultsPage } from './components';
+import { Header, RaceSelector, RacePage, DriverStandings, ConstructorStandings, RaceResultsPage, Select } from './components';
 
 library.add(fas);
 
@@ -52,11 +52,11 @@ function App() {
   return (
     <Router>
       <Header>
-        <select value={selectedYear} onChange={handleYearChange} className="bg-glow gradient-border bg-transparent">
+        <Select label="Year" value={selectedYear} onChange={handleYearChange}>
           {generateYears(2023).map((year) => (
             <option key={year} value={year}>{year}</option>
           ))}
-        </select>
+        </Select>
         {/* Use RaceSelector for race selection */}
         <RaceSelector races={races} selectedYear={selectedYear} setIsRaceSelected={setIsRaceSelected} />
       </Header>

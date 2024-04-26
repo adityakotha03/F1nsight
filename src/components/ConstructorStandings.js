@@ -20,7 +20,7 @@ export function ConstructorStandings({ selectedYear }) {
   }, [selectedYear]);
 
   return (
-    <>
+    <div className="sm:max-w-7xl  sm:mx-auto">
       {isLoading ? (
         <Loading />
       ) : (
@@ -38,6 +38,6 @@ export function ConstructorStandings({ selectedYear }) {
         ))}
       </ul>
       )}
-    </>
+    </div>
   );
 }
