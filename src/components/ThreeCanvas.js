@@ -21,7 +21,7 @@ export const ThreeCanvas = ({ imageFile, locData, driverSelected, fastestLap, pa
   
   const ambientLight = useMemo(() => new THREE.AmbientLight(0xffffff, 0.5), []);
   const directionalLight = useMemo(() => {
-    const light = new THREE.DirectionalLight(0xffffff, 0.8);
+    const light = new THREE.DirectionalLight(0xffffff, 10);
     light.position.set(1, 1, 1);
     return light;
   }, []);
@@ -33,7 +33,7 @@ export const ThreeCanvas = ({ imageFile, locData, driverSelected, fastestLap, pa
     scene.add(directionalLight);
 
     const camera = new THREE.PerspectiveCamera(75, 800 / 600, 0.1, 1000);
-    camera.position.z = 5;
+    camera.position.z = 10;
 
     const renderer = new THREE.WebGLRenderer();
     // renderer.setSize(800, 600);
@@ -45,16 +45,27 @@ export const ThreeCanvas = ({ imageFile, locData, driverSelected, fastestLap, pa
     control.enablePan = true;
     control.panSpeed = 0.5;
 
-    const textureLoader = new THREE.TextureLoader();
-    textureLoader.load(imageFile, texture => {
-      const imageWidth = texture.image.width / 100;
-      const imageHeight = texture.image.height / 100;
-      const geometry = new THREE.PlaneGeometry(imageWidth, imageHeight);
-      const material = new THREE.MeshBasicMaterial({ map: texture });
-      const plane = new THREE.Mesh(geometry, material);
-      plane.rotation.z = -Math.PI / 2;
-      scene.add(plane);
-    });
+    // const textureLoader = new THREE.TextureLoader();
+    // textureLoader.load(imageFile, texture => {
+    //   const imageWidth = texture.image.width / 50;
+    //   const imageHeight = texture.image.height / 50;
+    //   const geometry = new THREE.PlaneGeometry(imageWidth, imageHeight);
+    //   const material = new THREE.MeshBasicMaterial({ map: texture });
+    //   const plane = new THREE.Mesh(geometry, material);
+    //   plane.rotation.z = -Math.PI / 2;
+    //   scene.add(plane);
+    // });
+
+    let map;
+    const lo = new GLTFLoader();
+    lo.load('/map/maptest9.gltf', gltf => {
+      map = gltf.scene;
+      map.scale.set(0.1, 0.1, 0.1);
+      map.rotation.x = Math.PI / 2;
+      // map.rotation.y = -Math.PI;
+      //carModel.position.set(carPosition.x, carPosition.y, carPosition.z);
+      scene.add(map);
+    }, undefined, error => console.error(error));
 
     let carModel;
     const loader = new GLTFLoader();
