@@ -208,8 +208,8 @@ export async function fetchLocationData(sessionKey, driverId, startTime, endTime
 
   // Assuming the base URL for API calls might be reused
   const baseUrl = 'https://api.openf1.org/v1';
-  const locationUrl = `${baseUrl}/location?session_key=${sessionKey}&driver_number=${driverId}&date>=${startTime}&date<${endTime}`;
-  const carDataUrl = `${baseUrl}/car_data?session_key=${sessionKey}&driver_number=${driverId}&date>=${startTime}&date<${endTime}`;
+  const locationUrl = `${baseUrl}/location?session_key=${sessionKey}&driver_number=${driverId}&date>${startTime}&date<${endTime}`;
+  const carDataUrl = `${baseUrl}/car_data?session_key=${sessionKey}&driver_number=${driverId}&date>${startTime}&date<${endTime}`;
 
   const [locationResponse, carDataResponse] = await Promise.all([
     fetch(locationUrl),

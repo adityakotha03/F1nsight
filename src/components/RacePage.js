@@ -83,7 +83,19 @@ export function RacePage() {
 
         const latestDate = startingGridData[0].date;
         const firstDifferentDate = startingGridData.find(item => item.date !== latestDate)?.date;
-        setstartTime(firstDifferentDate); //'2024-03-02T16:00';
+        const sTime = new Date(firstDifferentDate);
+        sTime.setMinutes(sTime.getMinutes() - 1);
+
+        // Format the date manually to "YYYY-MM-DDTHH:MM:SS.fff"
+        const formattedStartTime = sTime.getFullYear() + '-' + 
+            (sTime.getMonth() + 1).toString().padStart(2, '0') + '-' +
+            sTime.getDate().toString().padStart(2, '0') + 'T' +
+            sTime.getHours().toString().padStart(2, '0') + ':' +
+            sTime.getMinutes().toString().padStart(2, '0') + ':' +
+            sTime.getSeconds().toString().padStart(2, '0') + '.' +
+            sTime.getMilliseconds().toString().padStart(3, '0');
+
+        setstartTime(formattedStartTime);
         //console.log(startTime);
         setendTime(startingGridData[startingGridData.length - 1].date); //'2024-03-02T16:20';
         //console.log(endTime);
