@@ -34,6 +34,7 @@ export const ThreeCanvas = ({ imageFile, locData, driverSelected, fastestLap, pa
 
     const camera = new THREE.PerspectiveCamera(75, 800 / 600, 0.1, 1000);
     camera.position.z = 10;
+    camera.position.y = -2;
 
     const renderer = new THREE.WebGLRenderer();
     // renderer.setSize(800, 600);
@@ -42,8 +43,9 @@ export const ThreeCanvas = ({ imageFile, locData, driverSelected, fastestLap, pa
     renderer.setClearColor(0x1f1f1f);
 
     const control = new OrbitControls(camera, renderer.domElement);
-    control.enablePan = true;
-    control.panSpeed = 0.5;
+    control.maxDistance = 10;
+    control.minDistance = 5;
+    control.target.set(5, 0, 0) ;
 
     // const textureLoader = new THREE.TextureLoader();
     // textureLoader.load(imageFile, texture => {
@@ -58,7 +60,7 @@ export const ThreeCanvas = ({ imageFile, locData, driverSelected, fastestLap, pa
 
     let map;
     const lo = new GLTFLoader();
-    lo.load('/map/maptest9.gltf', gltf => {
+    lo.load('/map/bahrain-map.gltf', gltf => {
       map = gltf.scene;
       map.scale.set(0.1, 0.1, 0.1);
       map.rotation.x = Math.PI / 2;
