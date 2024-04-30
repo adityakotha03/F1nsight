@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Link, NavLink } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { fas } from '@fortawesome/free-solid-svg-icons';
 
@@ -51,7 +51,7 @@ function App() {
 
   return (
     <Router>
-      <Header>
+      <Header isRaceSelected={isRaceSelected}>
         <Select label="Year" value={selectedYear} onChange={handleYearChange}>
           {generateYears(2023).map((year) => (
             <option key={year} value={year}>{year}</option>
@@ -60,13 +60,6 @@ function App() {
         {/* Use RaceSelector for race selection */}
         <RaceSelector races={races} selectedYear={selectedYear} setIsRaceSelected={setIsRaceSelected} />
       </Header>
-      {!isRaceSelected && ( // Conditional rendering based on isRaceSelected
-        <nav className="flex flex-col sm:flex-row items-center justify-center gap-16 sm:gap-32 py-48 shadow-xl border-b-2 border-neutral-800 mb-48 heading-4">
-          <NavLink activeclassname="active" className="navLink" to="/">Race Results</NavLink>
-          <NavLink activeclassname="active" className="navLink" to="/constructor-standings">Constructor Standings</NavLink>
-          <NavLink activeclassname="active" className="navLink" to="/driver-standings">Driver Standings</NavLink>
-        </nav>
-      )}
       <Routes>
         <Route exact path="/" element={<RaceResultsPage selectedYear={selectedYear} />} />
         <Route path="/constructor-standings" element={<ConstructorStandings selectedYear={selectedYear} />} />

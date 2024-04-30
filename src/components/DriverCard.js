@@ -57,29 +57,29 @@ export const DriverCard = (props) => {
             isActive ? "bg-glow--active" : hasHover ? "bg-glow--hover" : ""
         )}>
             {layoutSmall ? (
-                <div className={classNames("flex items-center justify-between w-full", { "max-sm:hidden": mobileSmall})}>
+                <div className={classNames("flex items-center justify-between w-full", { "max-md:hidden": mobileSmall})}>
                     <div className="flex items-center">
-                        <p className="heading-4 w-64 bg-neutral-600 py-4">P{endPosition}</p>
+                        <p className="heading-4 w-64 bg-neutral-600 py-2">P{endPosition}</p>
                         <span className="font-display pl-16 mr-4">{driver.code}</span>
                     </div>
                     <p className=" text-xs pr-8">{time}</p>
                 </div>
             ) : (
-                <div className={classNames('flex item-center w-full', { "max-sm:hidden": mobileSmall})}>
-                    <p className="driver-card-position heading-1 p-8 bg-neutral-700">P{endPosition}</p>
+                <div className={classNames('flex item-center w-full', { "max-md:hidden": mobileSmall})}>
+                    <p className="driver-card-position heading-1 px-8 py-4 bg-neutral-700">P{endPosition}</p>
                     <img 
                         alt="" 
                         src={`/images/${year}/drivers/${driver.code}.png`} 
-                        width={80} 
-                        height={80} 
+                        width={72} 
+                        height={72} 
                         ref={ref}
-                        className="absolute left-48 inset-x-0 -bottom-1"
+                        className="absolute left-52 inset-x-0 -bottom-1"
                         style={{
                             opacity: isInView ? 1 : 0,
                             transition: `all 1s cubic-bezier(0.17, 0.55, 0.55, 1) .${index}s`
                         }}
                     />
-                    <div className="grow p-12 text-right">
+                    <div className="grow py-4 px-12 text-right">
                         <span className="heading-4 mb-12 pl-60">{driver.code}</span>
                         <div className="divider-glow w-full" /> 
                         <p className={classNames("text-sm -mt-8")}>{time}</p>
@@ -87,7 +87,7 @@ export const DriverCard = (props) => {
                 </div>
             )}
             {mobileSmall && (
-                <div className="sm:hidden">
+                <div className="md:hidden">
                     <div className="flex items-center text-xs font-display">
                         <p className="w-24 bg-neutral-600 ">P{endPosition}</p>
                         <p className="pl-8">{driver.code}</p>
