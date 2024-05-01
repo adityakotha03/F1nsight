@@ -8,6 +8,9 @@ module.exports = {
     extend: {
       fontFamily: {
         display: 'Bungee, ui-serif', // Adds a new `font-display` class
+      },
+      backgroundImage: {
+        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
       }
     },
     fontSize: {
@@ -18,6 +21,7 @@ module.exports = {
       '128': '12.8rem',
     },
     letterSpacing: {
+      xs: '.2rem',
       sm: '.4rem',
       wide: '.8rem',
     },

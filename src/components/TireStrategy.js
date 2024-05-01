@@ -6,7 +6,7 @@ import {
 } from 'recharts';
 
 export const TireStrategy = (props) => {
-  const { drivers, raceResults, driverCode } = props; // Adding driverCode to props
+  const { drivers, raceResults, driverCode, driverColor } = props; // Adding driverCode to props
 
   const sortedDriverAcronyms = raceResults
     .sort((a, b) => parseInt(a.position, 10) - parseInt(b.position, 10))
@@ -71,7 +71,7 @@ export const TireStrategy = (props) => {
     //console.log(tireKeys)
 
     return (
-        <div className="bg-glow h-fit p-32 mb-16">
+        <div className="bg-glow h-fit p-32 mb-16 relative">
           <h3 className="heading-4 mb-16">Tire Strategy</h3>
           <ResponsiveContainer width="100%" height={700}>
             <BarChart
@@ -138,11 +138,20 @@ export const TireStrategy = (props) => {
               ))}
             </BarChart>
           </ResponsiveContainer>
+          <div 
+            className="radial-gradient radial-gradient--top-left"
+            style={{background: `radial-gradient(circle at center, #${driverColor} 0%, #${driverColor}00 70%)`}} 
+          />
+          <div 
+            className="radial-gradient radial-gradient--top-right"
+            style={{background: `radial-gradient(circle at center, #${driverColor} 0%, #${driverColor}00 70%)`}} 
+          />
         </div>
       );
     };
 
 TireStrategy.propTypes = {
     className: PropTypes.string,
+    driverColor: PropTypes.string,
     drivers: PropTypes.array
 };

@@ -71,19 +71,17 @@ code {
 
 .bg-glow {
   box-shadow: inset 0 0 2.4rem 0 rgba(255, 255, 255, .25), 0 0 2.4rem 0 rgba(0, 0, 0, .5);
+  background-color: rgba(72, 72, 72, .1);
 }
-
 .bg-glow--hover:hover {
   box-shadow: inset 0 0 2.4rem 0 rgba(255, 255, 255, .25), 0 0 2.4rem 0 theme('colors.neutral.500');
 }
-
 .bg-glow--active {
   box-shadow: inset 0 0 2.4rem 0 rgba(255, 255, 255, .5), 0 0 2.4rem 0 theme('colors.neutral.300');
   border-width: 1px;
   border-style: solid;
   border-image: none !important;
 }
-
 .bg-glow--sm {
   box-shadow: inset 0 0 1rem 0 rgba(255, 255, 255, .25), 0 0 2.4rem 0 rgba(0, 0, 0, .5);
 }
@@ -94,7 +92,6 @@ code {
   height: 1.2rem;
   width: 100%;
 }
-
 .divider-glow-dark {
   background: radial-gradient(ellipse at top , theme('colors.neutral.950') 0%, transparent 75%);
   height: 1.6rem;
@@ -106,15 +103,13 @@ code {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
-
 .gradient-text-medium {
   background: -webkit-linear-gradient(theme('colors.neutral.500'), theme('colors.neutral.800'));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
-
 .gradient-text-light {
-  background: -webkit-linear-gradient(theme('colors.neutral.300'), theme('colors.neutral.500'));
+  background: -webkit-linear-gradient(theme('colors.neutral.300'), theme('colors.neutral.600'));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -124,6 +119,12 @@ code {
   border-style: solid;
   border-image: linear-gradient(to bottom, theme('colors.neutral.600'), theme('colors.neutral.500')) 1;
 }
+.gradient-border-extreme {
+  border-width: .1rem;
+  border-style: solid;
+  border-image: linear-gradient(90deg, rgba(96,96,96,1) 0%, rgba(79,79,79,1) 20%, rgba(140,140,140,1) 30%, rgba(241,241,241,1) 40%, rgba(241,241,241,1) 60%, rgba(140,140,140,1) 70%, rgba(79,79,79,1) 80%, rgba(96,96,96,1) 100%) 1;
+  box-shadow: inset 0 0 2.4rem 0 rgba(255, 255, 255, .25), 0 0 3.2rem 0 rgba(255, 255, 255, .25);
+}
 
 .vertical-divider {
   width: .2rem;
@@ -132,18 +133,24 @@ code {
   background: linear-gradient(to bottom, theme('colors.neutral.600'), theme('colors.neutral.500'));
 }
 
-.gradient-border-extreme {
-  border-width: .1rem;
-  border-style: solid;
-  border-image: linear-gradient(90deg, rgba(96,96,96,1) 0%, rgba(79,79,79,1) 20%, rgba(140,140,140,1) 30%, rgba(241,241,241,1) 40%, rgba(241,241,241,1) 60%, rgba(140,140,140,1) 70%, rgba(79,79,79,1) 80%, rgba(96,96,96,1) 100%) 1;
-  box-shadow: inset 0 0 2.4rem 0 rgba(255, 255, 255, .25), 0 0 3.2rem 0 rgba(255, 255, 255, .25);
+.radial-gradient {
+  opacity: .05;
+  position: absolute;
+  z-index: -1;
+}
+.radial-gradient--top-left {
+  top: -45rem;
+  left: -45rem;
+  width: 90rem;
+  height: 90rem;
+}
+.radial-gradient--top-right {
+  top: -30rem;
+  right: -60rem;
+  width: 120rem;
+  height: 120rem;
 }
 
-.text-gradient-white {
-  background: -webkit-linear-gradient(theme('colors.neutral.200'), theme('colors.neutral.700'));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
 
 /* -------------- */
 /* Custom Classes */
@@ -246,26 +253,23 @@ code {
 }
 
 .race-controls {
-  @media (min-width: 640px) {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    grid-template-areas:
-      "play driver driver"
-      "speed speed speed"
-    ;
-  }
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-areas:
+    "play pause"
+    "speed speed"
+  ;
 
   @media (min-width: 1280px) {
-    display: grid;
-    grid-template-columns: 1fr auto 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
     grid-template-areas:
-      "play speed driver"
+      "play pause speed"
     ;
   }
 }
 
 .race-controls__play { grid-area: play; }
-.race-controls__driver { grid-area: driver; }
+.race-controls__pause { grid-area: pause; }
 .race-controls__speed { grid-area: speed; }
 
 
@@ -302,14 +306,11 @@ code {
 }
 
 .select__label {
-  font-size: 1.2rem;
+  font-size: 1rem;
   color: #b7b7b7;
   left: 1.6rem;
   pointer-events: none;
   position: absolute;
-  top: .4rem;
+  top: .8rem;
 }
 
-.test {
-  background: conic-gradient(from 358deg at 50% 50%, rgba(40, 80, 35, 1) 0%, rgba(112, 190, 87, 1) 100%);
-}
