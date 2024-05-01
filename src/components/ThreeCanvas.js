@@ -38,12 +38,12 @@ export const ThreeCanvas = ({ imageFile, locData, driverColor, driverSelected, f
     stats = new Stats();
 		document.body.appendChild( stats.dom );
 
-    const camera = new THREE.PerspectiveCamera(75, 800 / 600, 0.1, 1000);
+    const camera = new THREE.PerspectiveCamera(75, mountRef.current.clientWidth / mountRef.current.clientHeight, 0.1, 1000);
     camera.position.z = 10;
     camera.position.y = -2;
 
     const renderer = new THREE.WebGLRenderer();
-    // renderer.setSize(800, 600);
+    renderer.setSize(mountRef.current.clientWidth, mountRef.current.clientHeight);
     mountRef.current.appendChild(renderer.domElement);
 
     renderer.setClearColor(0x1f1f1f);
@@ -52,6 +52,45 @@ export const ThreeCanvas = ({ imageFile, locData, driverColor, driverSelected, f
     control.maxDistance = 10;
     control.minDistance = 5;
     control.enableZoom = false;
+    control.enableRotate = false;
+    //control.enablePan = false;
+
+    // Manual rotation setup
+    let isDragging = false;
+    let previousMousePosition = { x: 0, y: 0 };
+
+    renderer.domElement.addEventListener('mousedown', function(e) {
+        if (e.button === 0) {  // Left mouse button begins rotation
+            isDragging = true;
+            previousMousePosition.x = e.clientX;
+            previousMousePosition.y = e.clientY;
+        }
+    });
+
+    renderer.domElement.addEventListener('mousemove', function(e) {
+        if (isDragging) {
+            const deltaMove = {
+                x: e.clientX - previousMousePosition.x
+            };
+
+            const zRotation = deltaMove.x * 0.005;  // Sensitivity factor for rotation
+            camera.rotateOnWorldAxis(new THREE.Vector3(0, 0, 1), -zRotation);  // Negative for right-hand rule
+        }
+
+        previousMousePosition = {
+            x: e.clientX,
+            y: e.clientY
+        };
+    });
+
+    renderer.domElement.addEventListener('mouseup', function(e) {
+        if (e.button === 0) {  // Left mouse button ends rotation
+            isDragging = false;
+        }
+    });
+
+    const axesHelper = new THREE.AxesHelper( 20 );
+    scene.add( axesHelper );
 
     let map;
     const lo = new GLTFLoader();
@@ -71,6 +110,10 @@ export const ThreeCanvas = ({ imageFile, locData, driverColor, driverSelected, f
       carModel.rotation.y = -Math.PI;
       carModel.position.set(carPosition.x, carPosition.y, carPosition.z);
       scene.add(carModel);
+      //uncomment the below 3 line to get first person
+      // carModel.add(camera); 
+      // camera.position.set(0, 0.6, 0.1);
+      // camera.rotation.set(Math.PI/8, Math.PI, 0);
 
       // carModel.traverse(object => {
       //   if (object.isMesh) {
