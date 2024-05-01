@@ -3,6 +3,7 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import TWEEN from '@tweenjs/tween.js';
+import Stats from 'three/addons/libs/stats.module.js';
 
 import { Loading } from "./Loading"
 import classNames from 'classnames';
@@ -14,6 +15,7 @@ export const ThreeCanvas = ({ imageFile, locData, driverColor, driverSelected, f
 
   const mountRef = useRef(null);
   const infoRef = useRef(null);
+  let stats;
 
   // console.log(driverDetails);
   // if(!pauseButton){
@@ -32,6 +34,9 @@ export const ThreeCanvas = ({ imageFile, locData, driverColor, driverSelected, f
     const scene = new THREE.Scene();
     scene.add(ambientLight);
     scene.add(directionalLight);
+
+    stats = new Stats();
+		document.body.appendChild( stats.dom );
 
     const camera = new THREE.PerspectiveCamera(75, 800 / 600, 0.1, 1000);
     camera.position.z = 10;
@@ -128,6 +133,7 @@ export const ThreeCanvas = ({ imageFile, locData, driverColor, driverSelected, f
       setCanvasWidth()
       renderer.render(scene, camera);
       requestAnimationFrame(animate);
+      stats.update();
     };
     
     animate();
