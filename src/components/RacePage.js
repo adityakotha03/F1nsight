@@ -156,14 +156,14 @@ export function RacePage() {
   const selectInputDriverImage = driversDetails[locData[0]?.cardata.driver_number]
 
   return (
-    <>
-      {raceName && <p className="heading-2 text-right text-neutral-500 m-32">{raceName} {year}</p>}
-      <div className="race-display mb-64">
-        <ul className="flex flex-col">
+    <div className="pt-[22rem] sm:pt-[9.6rem]">
+      {raceName && <p className="heading-2 text-center text-neutral-500 mb-32">{raceName} {year}</p>}
+      <div className="race-display mb-64 relative">
+        <ul className="flex flex-col absolute top-1 left-1 z-10">
           {raceResults.map((result, index) => (
             <button 
               key={index}
-              className="block w-full mb-8 z-[100] relative"
+              className="block w-full mb-2 z-[100] relative"
               onClick={() => handleDriverSelectionClick(index)}
             >
               <DriverCard 
@@ -189,58 +189,48 @@ export function RacePage() {
           pauseButton={pauseButton}
           fastestLap={driverSelected? raceResults[activeButtonIndex].FastestLap : 'N/A'}
           controls={
-            <>
-              <div className="race-controls relative z-10">
-                <div className="race-controls__play gradient-border-extreme flex items-center justify-center gap-32 py-16 px-32">
-                  <button><FontAwesomeIcon icon="play" onClick={() => setpauseButton(true)} /></button>
-                  <button><FontAwesomeIcon icon="pause" onClick={() => setpauseButton(false)} /></button>
-                </div>
-                <div className="race-controls__driver gradient-border-extreme px-16 flex items-center justify-center">
-                    <div className="sm:ml-16 uppercase tracking-sm">
-                      <span className="text-neutral-500 mr-4 text-xs">Driver</span>
-                      <select name="driver select" id="driver-select" className="uppercase bg-transparent border-none text-xs">
-                          <option value="">All</option>
-                          <option value="HAM">HAM</option>
-                          <option value="SAI">SAI</option>
-                          <option value="NOR">NOR</option>
-                          <option value="RUS">RUS</option>
-                          <option value="VER">VER</option>
-                          <option value="PER">PER</option>
-                      </select>
-                    </div>
-                    {selectInputDriverImage && (
-                      <img 
-                        alt="" 
-                        className="-mt-24"
-                        src={`/images/${year}/drivers/${selectInputDriverImage}.png`} 
-                        width={80} 
-                        height={80} 
-                      />
-                    )}
-                </div>
-                <div className="race-controls__speed gradient-border-extreme flex text-xs max-sm:flex-col sm:items-center sm:justify-center gap-16 py-16 px-32 tracking-sm uppercase text-center">
-                  <p>Playback Speed:</p>
-                  <button
-                    className={classNames("tracking-sm uppercase", { 'text-neutral-500': speedFactor !== 4})}
-                    onClick={() => setSpeedFactor(4)}
-                  >
-                    Normal
-                  </button>
-                  <button
-                    className={classNames("tracking-sm uppercase", { 'text-neutral-500': speedFactor !== 1.5})}
-                    onClick={() => setSpeedFactor(1.5)}
-                  >
-                    Push Push
-                  </button>
-                  <button
-                    className={classNames("tracking-sm uppercase", { 'text-neutral-500': speedFactor !== 0.2})}
-                    onClick={() => setSpeedFactor(0.2)}
-                  >
-                    DRS 
-                  </button> 
-                </div>
+            <div className="race-controls relative z-10">
+              <div className="race-controls__play gradient-border-extreme flex items-center justify-center gap-32 py-16 px-32">
+                <button><FontAwesomeIcon icon="play" onClick={() => setpauseButton(true)} /></button>
+                <button><FontAwesomeIcon icon="pause" onClick={() => setpauseButton(false)} /></button>
               </div>
-            </>
+              <div className="race-controls__driver gradient-border-extreme px-16 flex items-center justify-center h-[5.8rem]">
+                  <div className="sm:ml-16 uppercase tracking-sm text-xs">
+                    <span className="text-neutral-500 mr-4">Driver</span>
+                    {selectInputDriverImage ? selectInputDriverImage : 'All'} 
+                  </div>
+                  {selectInputDriverImage && (
+                    <img 
+                      alt="" 
+                      className="-mt-24"
+                      src={`/images/${year}/drivers/${selectInputDriverImage}.png`} 
+                      width={80} 
+                      height={80} 
+                    />
+                  )}
+              </div>
+              <div className="race-controls__speed gradient-border-extreme flex text-xs max-sm:flex-col sm:items-center sm:justify-center gap-16 py-16 px-32 tracking-sm uppercase text-center">
+                <p>Playback Speed:</p>
+                <button
+                  className={classNames("tracking-sm uppercase", { 'text-neutral-500': speedFactor !== 4})}
+                  onClick={() => setSpeedFactor(4)}
+                >
+                  Normal
+                </button>
+                <button
+                  className={classNames("tracking-sm uppercase", { 'text-neutral-500': speedFactor !== 1.5})}
+                  onClick={() => setSpeedFactor(1.5)}
+                >
+                  Push Push
+                </button>
+                <button
+                  className={classNames("tracking-sm uppercase", { 'text-neutral-500': speedFactor !== 0.2})}
+                  onClick={() => setSpeedFactor(0.2)}
+                >
+                  DRS 
+                </button> 
+              </div>
+            </div>
           }
           speedFactor={speedFactor}
         />    
@@ -301,6 +291,6 @@ export function RacePage() {
           )} 
         </div>
      </div>
-    </>
+    </div>
   );
 }

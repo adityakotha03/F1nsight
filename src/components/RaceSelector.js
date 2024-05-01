@@ -5,6 +5,8 @@ import { Select } from './Select';
 export const RaceSelector = ({ races, selectedYear, setIsRaceSelected }) => {
   const navigate = useNavigate();
 
+  console.log(races)
+
   const handleRaceChange = (e) => {
     if (e.target.value === "") {
       setIsRaceSelected(false);
@@ -19,7 +21,7 @@ export const RaceSelector = ({ races, selectedYear, setIsRaceSelected }) => {
   };
 
   return (
-    <Select label="Race" onChange={handleRaceChange} >
+    <Select label="Race" onChange={handleRaceChange}>
         <option value="">---</option>
         {races.map((race) => (
           <option key={race.meeting_key} value={race.meeting_name}>{race.meeting_name}</option>

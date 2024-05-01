@@ -29,7 +29,8 @@ export function RaceResultsPage({ selectedYear }) {
 // console.log(raceDetails);
 
   return (
-    <>
+    <div className="pt-[22rem] sm:pt-[9.6rem]">
+      <h2 className="heading-2 text-center mb-64 text-neutral-500">Race Results</h2>
       {isLoading ? (
         <Loading />
       ) : (
@@ -70,6 +71,6 @@ export function RaceResultsPage({ selectedYear }) {
           ))}
         </ul>
       )}
-    </>
+    </div>
   );
 }
