@@ -5,7 +5,7 @@ import { Select } from './Select';
 export const RaceSelector = ({ races, selectedYear, setIsRaceSelected }) => {
   const navigate = useNavigate();
 
-  console.log(races)
+  //console.log(races)
 
   const handleRaceChange = (e) => {
     if (e.target.value === "") {
