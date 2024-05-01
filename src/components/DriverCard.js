@@ -6,7 +6,7 @@ import { Popover } from "flowbite-react";
 import { useInView } from "framer-motion";
 
 export const DriverCard = (props) => {
-    const { className, carNumber, driver, fastestLap, grid, startPosition, endPosition, isActive, layoutSmall, status, time, year, hasHover, index, mobileSmall} = props;
+    const { className, carNumber, driver, driverColor, fastestLap, grid, startPosition, endPosition, isActive, layoutSmall, status, time, year, hasHover, index, mobileSmall} = props;
 
     const ref = useRef(null);
     const isInView = useInView(ref, { once: true });
@@ -16,7 +16,7 @@ export const DriverCard = (props) => {
             return (
                 <Popover
                     aria-labelledby="default-popover"
-                    className="bg-glow gradient-border p-4 bg-gray-950/60 backdrop-blur-sm"
+                    className="bg-glow gradient-border p-4 bg-neutral-950 z-[10]"
                     trigger="hover"
                     placement="top"
                     // open={true}
@@ -49,13 +49,15 @@ export const DriverCard = (props) => {
     }
     
     return (
-        <div className={classNames(
-            className, 
-            'driver-card flex items-center bg-glow gradient-border relative',
-            { 'bg-glow--sm': layoutSmall},
-            { 'driver-card--canvas': mobileSmall},
-            isActive ? "bg-glow--active" : hasHover ? "bg-glow--hover" : ""
-        )}>
+        <div 
+            className={classNames(
+                className, 
+                'driver-card flex items-center bg-glow gradient-border relative',
+                { 'driver-card--canvas': mobileSmall},
+                isActive ? "bg-glow--active" : hasHover ? "bg-glow--hover" : ""
+            )}
+            style={{borderColor: isActive && `#${driverColor}`}}
+        >
             {layoutSmall ? (
                 <div className={classNames("flex items-center justify-between w-full", { "max-md:hidden": mobileSmall})}>
                     <div className="flex items-center">
@@ -102,7 +104,7 @@ export const DriverCard = (props) => {
                 {fastestLap?.rank === "1" && (
                     <Popover
                         aria-labelledby="default-popover"
-                        className="bg-glow gradient-border p-4 bg-gray-950/60 backdrop-blur-sm"
+                        className="bg-glow gradient-border p-4 bg-neutral-950 z-[10]"
                         trigger="hover"
                         placement="top"
                         // open={true}
@@ -152,6 +154,7 @@ DriverCard.propTypes = {
     hasHover: PropTypes.bool,
     className: PropTypes.string,
     carNumber: PropTypes.string, // Max has a different permanentNumber than his actual car number
+    driverColor: PropTypes.string,
     driver: PropTypes.shape({
         driverId: PropTypes.string,
         permanentNumber: PropTypes.string,

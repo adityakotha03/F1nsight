@@ -79,8 +79,9 @@ code {
 
 .bg-glow--active {
   box-shadow: inset 0 0 2.4rem 0 rgba(255, 255, 255, .5), 0 0 2.4rem 0 theme('colors.neutral.300');
-  border-image: linear-gradient(to bottom, theme('colors.neutral.200'), theme('colors.neutral.400')) 1 !important;
-  border-color: #f1f1f1;
+  border-width: 1px;
+  border-style: solid;
+  border-image: none !important;
 }
 
 .bg-glow--sm {

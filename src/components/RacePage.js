@@ -15,18 +15,19 @@ export function RacePage() {
   const [drivers, setDrivers] = useState([]);
   const [laps, setLaps] = useState([]);
   const [driversDetails, setDriversDetails] = useState({});
+  const [driverSelected, setDriverSelected] = useState(false);
+  const [driverCode, setDriverCode] = useState('');
+  const [driverNumber, setDriverNumber] = useState('');
   const [driversColor, setdriversColor] = useState({});
   const [startingGrid, setStartingGrid] = useState([]);
   const [ImagePath, setImagePath] = useState('');
   const [raceResults, setRaceResults] = useState([]);
   const [locData, setlocData] = useState({});
-  const [driverSelected, setDriverSelected] = useState(false);
   const [activeButtonIndex, setActiveButtonIndex] = useState(null);
-  const [driverCode, setdriverCode] = useState('');
   const [startTime, setstartTime] = useState('');
   const [endTime, setendTime] = useState('');
-  const [speedFactor, setSpeedFactor] = useState(4); // Manage speed state here
-  const [pauseButton, setpauseButton] = useState(true);
+  const [speedFactor, setSpeedFactor] = useState(1.5); // Manage speed state here
+  const [pauseButton, setpauseButton] = useState(undefined);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -127,7 +128,8 @@ export function RacePage() {
       setActiveButtonIndex(null); // Reset the active button index
     } else {
       setDriverSelected(true);
-      setdriverCode(raceResults[index].number);
+      setDriverCode(raceResults[index].Driver.code);
+      setDriverNumber(raceResults[index].number);
       setActiveButtonIndex(index); // Set new active button index
   
       (async () => {
@@ -163,7 +165,7 @@ export function RacePage() {
           {raceResults.map((result, index) => (
             <button 
               key={index}
-              className="block w-full mb-2 z-[100] relative"
+              className="block w-full mb-2 relative"
               onClick={() => handleDriverSelectionClick(index)}
             >
               <DriverCard 
@@ -171,6 +173,7 @@ export function RacePage() {
                 isActive={activeButtonIndex === index}
                 index={index}
                 driver={result.Driver}
+                driverColor={driversColor[driverCode]}
                 startPosition={parseInt(result.grid, 10)}
                 endPosition={parseInt(result.position,10)}
                 year={year}
@@ -186,18 +189,22 @@ export function RacePage() {
           imageFile={ImagePath} 
           locData={locData}
           driverSelected={driverSelected}
+          driverColor={driversColor[driverCode]}
           pauseButton={pauseButton}
           fastestLap={driverSelected? raceResults[activeButtonIndex].FastestLap : 'N/A'}
           controls={
             <div className="race-controls relative z-10">
-              <div className="race-controls__play gradient-border-extreme flex items-center justify-center gap-32 py-16 px-32">
-                <button><FontAwesomeIcon icon="play" onClick={() => setpauseButton(true)} /></button>
-                <button><FontAwesomeIcon icon="pause" onClick={() => setpauseButton(false)} /></button>
+              <div className="race-controls__play gradient-border-extreme flex items-center justify-center gap-32 py-16 px-32 text-neutral-500">
+                <button><FontAwesomeIcon className={classNames({'text-neutral-200': pauseButton && driverSelected})} icon="play" onClick={() => setpauseButton(true)} /></button>
+                <button><FontAwesomeIcon className={classNames({'text-neutral-200': !pauseButton && driverSelected})} icon="pause" onClick={() => setpauseButton(false)} /></button>
               </div>
               <div className="race-controls__driver gradient-border-extreme px-16 flex items-center justify-center h-[5.8rem]">
                   <div className="sm:ml-16 uppercase tracking-sm text-xs">
-                    <span className="text-neutral-500 mr-4">Driver</span>
-                    {selectInputDriverImage ? selectInputDriverImage : 'All'} 
+                    {selectInputDriverImage ? (
+                      <>
+                        <span className="text-neutral-500 mr-4">Driver</span>{selectInputDriverImage}
+                      </>
+                    ) : <p className="text-neutral-500 text-center">Select a driver from the leaderboard to active race mode</p>} 
                   </div>
                   {selectInputDriverImage && (
                     <img 
@@ -247,8 +254,19 @@ export function RacePage() {
                   key={index} 
                   className="text-center w-fit even:-mt-32 even:ml-[8rem] even:mb-24"
                 >
-                  <div className="text-sm font-display text-neutral-500">P{gridPosition.position}</div>
-                  <div className="border-x-2 border-t-2 border-solid border-neutral-500 px-4 pt-4 w-64 font-display">
+                  <div className={classNames(
+                    "text-sm font-display", 
+                    driverCode === driversDetails[gridPosition.driver_number] ? "text-neutral-200" : "text-neutral-500"
+                    )}
+                  >
+                    P{gridPosition.position}
+                  </div>
+                  <div className={classNames(
+                    "border-x-2 border-t-2 border-solid px-4 pt-4 w-64 font-display",
+                    driverCode === driversDetails[gridPosition.driver_number] ? "border-neutral-200" : " border-neutral-500"
+                    )}
+                    style={{color: driverCode === driversDetails[gridPosition.driver_number] ? `#${driversColor[driverCode]}` : "#737373"}}
+                  >
                     {driversDetails[gridPosition.driver_number]}
                   </div> 
                 </li>
@@ -257,9 +275,9 @@ export function RacePage() {
         </div>
 
         <div className="sm:grow-0">
-          <LapChart laps={laps} setLaps={() => setLaps} driversDetails={driversDetails} driversColor={driversColor} raceResults={raceResults} className="lap-chart" driverCode={driverSelected ? driversDetails[driverCode] : null} />
+          <LapChart laps={laps} setLaps={() => setLaps} driversDetails={driversDetails} driversColor={driversColor} raceResults={raceResults} className="lap-chart" driverCode={driverSelected ? driversDetails[driverNumber] : null} />
         
-          <TireStrategy drivers={drivers} raceResults={raceResults} driverCode={driverSelected ? driversDetails[driverCode] : null} />
+          <TireStrategy drivers={drivers} raceResults={raceResults} driverCode={driverSelected ? driversDetails[driverNumber] : null} />
 
           {!driverSelected && (
             <div className="bg-glow h-fit p-32 mb-16">

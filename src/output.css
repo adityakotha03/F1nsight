@@ -1196,6 +1196,10 @@ input[type="range"]::-ms-fill-lower {
   z-index: 100;
 }
 
+.z-\[10\] {
+  z-index: 10;
+}
+
 .z-auto {
   z-index: auto;
 }
@@ -1232,19 +1236,9 @@ input[type="range"]::-ms-fill-lower {
   margin-bottom: 0.1rem;
 }
 
-.my-16 {
-  margin-top: 1.6rem;
-  margin-bottom: 1.6rem;
-}
-
 .my-6 {
   margin-top: .6rem;
   margin-bottom: .6rem;
-}
-
-.my-8 {
-  margin-top: .8rem;
-  margin-bottom: .8rem;
 }
 
 .-mb-10 {
@@ -1535,6 +1529,10 @@ input[type="range"]::-ms-fill-lower {
   height: 9.6rem;
 }
 
+.h-\[5\.8rem\] {
+  height: 5.8rem;
+}
+
 .h-auto {
   height: auto;
 }
@@ -1551,10 +1549,6 @@ input[type="range"]::-ms-fill-lower {
 
 .h-screen {
   height: 100vh;
-}
-
-.h-\[5\.8rem\] {
-  height: 5.8rem;
 }
 
 .max-h-\[90dvh\] {
@@ -2281,6 +2275,11 @@ input[type="range"]::-ms-fill-lower {
   border-color: rgb(132 204 22 / var(--tw-border-opacity));
 }
 
+.border-neutral-200 {
+  --tw-border-opacity: 1;
+  border-color: rgb(229 229 229 / var(--tw-border-opacity));
+}
+
 .border-neutral-500 {
   --tw-border-opacity: 1;
   border-color: rgb(115 115 115 / var(--tw-border-opacity));
@@ -2484,10 +2483,6 @@ input[type="range"]::-ms-fill-lower {
   background-color: rgb(17 24 39 / var(--tw-bg-opacity));
 }
 
-.bg-gray-950\/60 {
-  background-color: rgb(3 7 18 / 0.6);
-}
-
 .bg-green-100 {
   --tw-bg-opacity: 1;
   background-color: rgb(222 247 236 / var(--tw-bg-opacity));
@@ -2574,6 +2569,11 @@ input[type="range"]::-ms-fill-lower {
 
 .bg-neutral-900\/90 {
   background-color: rgb(23 23 23 / 0.9);
+}
+
+.bg-neutral-950 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(10 10 10 / var(--tw-bg-opacity));
 }
 
 .bg-pink-100 {
@@ -3169,6 +3169,10 @@ input[type="range"]::-ms-fill-lower {
   font-size: 128px;
 }
 
+.text-\[1rem\] {
+  font-size: 1rem;
+}
+
 .text-\[2rem\] {
   font-size: 2rem;
 }
@@ -3395,6 +3399,11 @@ input[type="range"]::-ms-fill-lower {
 .text-lime-900 {
   --tw-text-opacity: 1;
   color: rgb(54 83 20 / var(--tw-text-opacity));
+}
+
+.text-neutral-200 {
+  --tw-text-opacity: 1;
+  color: rgb(229 229 229 / var(--tw-text-opacity));
 }
 
 .text-neutral-500 {
@@ -3871,8 +3880,9 @@ code {
 
 .bg-glow--active {
   box-shadow: inset 0 0 2.4rem 0 rgba(255, 255, 255, .5), 0 0 2.4rem 0 #d4d4d4;
-  border-image: linear-gradient(to bottom, #e5e5e5, #a3a3a3) 1 !important;
-  border-color: #f1f1f1;
+  border-width: 1px;
+  border-style: solid;
+  border-image: none !important;
 }
 
 .bg-glow--sm {
@@ -6207,39 +6217,9 @@ code {
   color: rgb(63 131 248 / var(--tw-text-opacity));
 }
 
-@media not all and (min-width: 1024px) {
-  .max-lg\:text-\[6\.4rem\] {
-    font-size: 6.4rem;
-  }
-
-  .max-lg\:text-\[1rem\] {
-    font-size: 1rem;
-  }
-
-  .max-lg\:text-\[2\.4rem\] {
-    font-size: 2.4rem;
-  }
-}
-
 @media not all and (min-width: 768px) {
   .max-md\:hidden {
     display: none;
-  }
-
-  .max-md\:text-\[2\.4rem\] {
-    font-size: 2.4rem;
-  }
-
-  .max-md\:text-\[\.1rem\] {
-    font-size: .1rem;
-  }
-
-  .max-md\:text-\[1rem\] {
-    font-size: 1rem;
-  }
-
-  .max-md\:text-\[1\.2rem\] {
-    font-size: 1.2rem;
   }
 }
 
@@ -6262,6 +6242,10 @@ code {
 
   .max-sm\:justify-between {
     justify-content: space-between;
+  }
+
+  .max-sm\:text-\[1rem\] {
+    font-size: 1rem;
   }
 
   .max-sm\:text-\[2\.4rem\] {
@@ -6372,16 +6356,16 @@ code {
     text-align: center;
   }
 
+  .sm\:text-\[6\.4rem\] {
+    font-size: 6.4rem;
+  }
+
   .sm\:text-base {
     font-size: 1.6rem;
   }
 
   .sm\:text-xs {
     font-size: 1rem;
-  }
-
-  .sm\:text-\[6\.4rem\] {
-    font-size: 6.4rem;
   }
 }
 
@@ -6474,10 +6458,6 @@ code {
     font-size: 1.2rem;
   }
 
-  .md\:text-\[6\.4rem\] {
-    font-size: 6.4rem;
-  }
-
   .md\:font-medium {
     font-weight: 500;
   }
@@ -6510,27 +6490,6 @@ code {
   .lg\:my-8 {
     margin-top: .8rem;
     margin-bottom: .8rem;
-  }
-
-  .lg\:my-16 {
-    margin-top: 1.6rem;
-    margin-bottom: 1.6rem;
-  }
-
-  .lg\:mt-16 {
-    margin-top: 1.6rem;
-  }
-
-  .lg\:text-\[9\.8rem\] {
-    font-size: 9.8rem;
-  }
-
-  .lg\:text-\[6\.4rem\] {
-    font-size: 6.4rem;
-  }
-
-  .lg\:text-sm {
-    font-size: 1.2rem;
   }
 }
 
