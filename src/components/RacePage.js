@@ -336,12 +336,12 @@ export function RacePage() {
                 <span className="tracking-xs uppercase text-right">Lap</span> 
               </div>
               <ul>
-                {raceResults
-                  .filter(result => result.FastestLap && result.FastestLap.rank)
-                  .sort((a, b) => parseInt(a.FastestLap.rank) - parseInt(b.FastestLap.rank))
-                  .map((result, index) => (
-                    <>
-                    <li key={index} className="grid grid-cols-3 gap-4 mb-8">
+              {raceResults
+                .filter(result => result.FastestLap && result.FastestLap.rank)
+                .sort((a, b) => parseInt(a.FastestLap.rank) - parseInt(b.FastestLap.rank))
+                .map((result, index) => (
+                  <React.Fragment key={index}>
+                    <li className="grid grid-cols-3 gap-4 mb-8">
                       <div>
                         <span className="font-display">{result.Driver.code}</span>
                         <span className="text-sm ml-8 text-neutral-500 tracking-xs max-sm:hidden">{result.Constructor.name}</span>
@@ -350,9 +350,9 @@ export function RacePage() {
                       <span className="text-right">{result.FastestLap.lap}</span>
                     </li>
                     <div className='divider-glow-dark' />
-                    </>
-                  ))}
-              </ul>
+                  </React.Fragment>
+                ))}
+            </ul>
             </div>
           )} 
         </div>
