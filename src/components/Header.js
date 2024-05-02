@@ -32,7 +32,7 @@ export const Header = (props) => {
                 <div className="flex item-center gap-16 max-sm:justify-between max-sm:w-full">
                     <a className="font-display block text-[2rem] md:text-[3.2rem]" href="/">F1nsight</a>
                     <button 
-                        className="text-sm uppercase cursor-pointer mt-8 md:mt-16" 
+                        className="text-sm tracking-xs uppercase cursor-pointer mt-8 md:mt-14" 
                         onClick={(e) => {
                             e.stopPropagation();
                             setIsOpen(!isOpen);

@@ -1,13 +1,15 @@
+import classNames from 'classnames';
 import React, { useState, useEffect } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useLocation } from 'react-router-dom';
+
 import { fetchDriversAndTires, fetchCircuitIdByCountry, fetchRaceResultsByCircuit } from '../utils/api';
-import { DriverCard } from './DriverCard';
 import { fetchLocationData } from '../utils/api';
+
+import { DriverCard } from './DriverCard';
 import {ThreeCanvas} from './ThreeCanvas.js'
 import { LapChart } from './LapChart';
 import { TireStrategy } from './TireStrategy';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import classNames from 'classnames';
 
 export function RacePage() {
   const { state } = useLocation();
@@ -18,16 +20,20 @@ export function RacePage() {
   const [driverSelected, setDriverSelected] = useState(false);
   const [driverCode, setDriverCode] = useState('');
   const [driverNumber, setDriverNumber] = useState('');
-  const [driversColor, setdriversColor] = useState({});
+  const [driversColor, setDriversColor] = useState({});
   const [startingGrid, setStartingGrid] = useState([]);
   const [ImagePath, setImagePath] = useState('');
   const [raceResults, setRaceResults] = useState([]);
-  const [locData, setlocData] = useState({});
+  const [locData, setLocData] = useState({});
   const [activeButtonIndex, setActiveButtonIndex] = useState(null);
-  const [startTime, setstartTime] = useState('');
-  const [endTime, setendTime] = useState('');
+  const [startTime, setStartTime] = useState('');
+  const [endTime, setEndTime] = useState('');
   const [speedFactor, setSpeedFactor] = useState(1.5); // Manage speed state here
-  const [pauseButton, setpauseButton] = useState(undefined);
+  const [isPaused, setIsPaused] = useState(true);
+  
+  const selectedDriverData = drivers.find(obj => obj['acronym'] === driverCode);
+  const selectedDriverRaceData = raceResults.find(obj => obj['number'] === driverNumber);
+  console.log({isPaused})
 
   useEffect(() => {
     const fetchData = async () => {
@@ -65,8 +71,6 @@ export function RacePage() {
           fetchDriversAndTires(sessionKey),
           fetch(`https://api.openf1.org/v1/laps?session_key=${sessionKey}`).then(res => res.json())
         ]);
-
-        //console.log(driverDetailsData);
     
         const driverDetailsMap = driverDetailsData.reduce((acc, driver) => ({
           ...acc,
@@ -80,7 +84,7 @@ export function RacePage() {
           [driver.name_acronym]: driver.team_colour
         }), {});
 
-        setdriversColor(driverColorMap);
+        setDriversColor(driverColorMap);
 
         const latestDate = startingGridData[0].date;
         const firstDifferentDate = startingGridData.find(item => item.date !== latestDate)?.date;
@@ -96,9 +100,9 @@ export function RacePage() {
             sTime.getSeconds().toString().padStart(2, '0') + '.' +
             sTime.getMilliseconds().toString().padStart(3, '0');
 
-        setstartTime(formattedStartTime);
+        setStartTime(formattedStartTime);
         //console.log(startTime);
-        setendTime(startingGridData[startingGridData.length - 1].date); //'2024-03-02T16:20';
+        setEndTime(startingGridData[startingGridData.length - 1].date); //'2024-03-02T16:20';
         //console.log(endTime);
 
         const earliestDateTime = startingGridData[0]?.date;
@@ -131,6 +135,7 @@ export function RacePage() {
       setDriverCode(raceResults[index].Driver.code);
       setDriverNumber(raceResults[index].number);
       setActiveButtonIndex(index); // Set new active button index
+      setIsPaused(false);
   
       (async () => {
         try {
@@ -145,8 +150,8 @@ export function RacePage() {
   
           // Fetch location data using sessionKey, driverId (from state), startTime, and endTime
           const locationData = await fetchLocationData(sessionKey, raceResults[index].number, startTime, endTime, scaleFactor);
-          setlocData(locationData);
-          console.log(locationData); // Log the fetched and processed location data
+          setLocData(locationData);
+          // console.log(locationData); // Log the fetched and processed location data
   
         } catch (error) {
           console.error("Error fetching location data:", error);
@@ -154,8 +159,6 @@ export function RacePage() {
       })();
     }
   };
-
-  const selectInputDriverImage = driversDetails[locData[0]?.cardata.driver_number]
 
   return (
     <div className="pt-[22rem] sm:pt-[9.6rem]">
@@ -190,53 +193,39 @@ export function RacePage() {
           locData={locData}
           driverSelected={driverSelected}
           driverColor={driversColor[driverCode]}
-          pauseButton={pauseButton}
-          fastestLap={driverSelected? raceResults[activeButtonIndex].FastestLap : 'N/A'}
+          isPaused={isPaused}
           controls={
-            <div className="race-controls relative z-10">
-              <div className="race-controls__play gradient-border-extreme flex items-center justify-center gap-32 py-16 px-32 text-neutral-500">
-                <button><FontAwesomeIcon className={classNames({'text-neutral-200': pauseButton && driverSelected})} icon="play" onClick={() => setpauseButton(true)} /></button>
-                <button><FontAwesomeIcon className={classNames({'text-neutral-200': !pauseButton && driverSelected})} icon="pause" onClick={() => setpauseButton(false)} /></button>
-              </div>
-              <div className="race-controls__driver gradient-border-extreme px-16 flex items-center justify-center h-[5.8rem]">
-                  <div className="sm:ml-16 uppercase tracking-sm text-xs">
-                    {selectInputDriverImage ? (
-                      <>
-                        <span className="text-neutral-500 mr-4">Driver</span>{selectInputDriverImage}
-                      </>
-                    ) : <p className="text-neutral-500 text-center">Select a driver from the leaderboard to active race mode</p>} 
+            <div className="relative z-10">
+              {driverSelected ? (
+                <div className="race-controls">
+                  <button className="race-controls__play gradient-border-extreme py-16 px-32"><FontAwesomeIcon icon="play" onClick={() => setIsPaused(false)} /></button>
+                  <button className="race-controls__pause gradient-border-extreme py-16 px-32"><FontAwesomeIcon icon="pause" onClick={() => setIsPaused(true)} /></button>
+                  <div className="race-controls__speed gradient-border-extreme flex text-xs max-sm:flex-col sm:items-center sm:justify-center gap-16 py-16 px-32 tracking-sm uppercase text-center">
+                    <p>Playback Speed:</p>
+                    <button
+                      className={classNames("tracking-sm uppercase", { 'text-neutral-500': speedFactor !== 4})}
+                      onClick={() => setSpeedFactor(4)}
+                    >
+                      Normal
+                    </button>
+                    <button
+                      className={classNames("tracking-sm uppercase", { 'text-neutral-500': speedFactor !== 1.5})}
+                      onClick={() => setSpeedFactor(1.5)}
+                    >
+                      Push Push
+                    </button>
+                    <button
+                      className={classNames("tracking-sm uppercase", { 'text-neutral-500': speedFactor !== 0.2})}
+                      onClick={() => setSpeedFactor(0.2)}
+                    >
+                      DRS 
+                    </button> 
                   </div>
-                  {selectInputDriverImage && (
-                    <img 
-                      alt="" 
-                      className="-mt-24"
-                      src={`/images/${year}/drivers/${selectInputDriverImage}.png`} 
-                      width={80} 
-                      height={80} 
-                    />
-                  )}
-              </div>
-              <div className="race-controls__speed gradient-border-extreme flex text-xs max-sm:flex-col sm:items-center sm:justify-center gap-16 py-16 px-32 tracking-sm uppercase text-center">
-                <p>Playback Speed:</p>
-                <button
-                  className={classNames("tracking-sm uppercase", { 'text-neutral-500': speedFactor !== 4})}
-                  onClick={() => setSpeedFactor(4)}
-                >
-                  Normal
-                </button>
-                <button
-                  className={classNames("tracking-sm uppercase", { 'text-neutral-500': speedFactor !== 1.5})}
-                  onClick={() => setSpeedFactor(1.5)}
-                >
-                  Push Push
-                </button>
-                <button
-                  className={classNames("tracking-sm uppercase", { 'text-neutral-500': speedFactor !== 0.2})}
-                  onClick={() => setSpeedFactor(0.2)}
-                >
-                  DRS 
-                </button> 
-              </div>
+                </div>
+              ) : (
+                <div className="w-full tracking-xs text-center gradient-border-extreme py-16 px-32 text-neutral-500">Select driver from the leadboard to activate race mode</div>
+              )}
+              
             </div>
           }
           speedFactor={speedFactor}
@@ -244,48 +233,121 @@ export function RacePage() {
       </div>
 
       <div className="global-container flex flex-col sm:flex-row gap-16 mt-32">
-        <div className="sm:w-[26rem] bg-glow p-32 h-fit">
-          <h3 className="heading-4 mb-16">Starting Grid</h3>
-          <ul className="flex flex-col w-fit m-auto">
-            {startingGrid
-              .sort((a, b) => a.position - b.position)
-              .map((gridPosition, index) => (
-                <li 
-                  key={index} 
-                  className="text-center w-fit even:-mt-32 even:ml-[8rem] even:mb-24"
-                >
-                  <div className={classNames(
-                    "text-sm font-display", 
-                    driverCode === driversDetails[gridPosition.driver_number] ? "text-neutral-200" : "text-neutral-500"
-                    )}
-                  >
-                    P{gridPosition.position}
+        <div className="sm:w-[26rem]">
+          {driverSelected && (
+            <div className="bg-glow mb-16">
+              <div className="flex items-end relative pt-16">
+                <img 
+                  alt="" 
+                  src={`/images/${year}/drivers/${selectedDriverData.acronym}.png`} 
+                  width={120} 
+                  height={120} 
+                  className="-ml-8"
+                />
+                <img 
+                    alt="" 
+                    className="absolute -bottom-16 left-32"
+                    src={`/images/${year}/cars/${selectedDriverRaceData.Constructor.constructorId}.png`} 
+                    width={150} 
+                />
+                <div className="-ml-32 w-full">
+                  <h3 className="tracking-xs text-sm uppercase gradient-text-medium -mb-8">{selectedDriverData.first_name}</h3>
+                  <h3 className="font-display gradient-text-light text-[2rem]">{selectedDriverData.last_name}</h3>
+                  <p className="font-display gradient-text-dark text-[6.4rem] mr-16 leading-none text-right">{selectedDriverData.driver_number}</p>
+                </div>
+              </div>
+              <div className="divider-glow-dark" />
+              <div className="px-16 pt-16 pb-24">
+
+                <div className="flex items-start justify-between">
+                  <div>
+                    <div className="uppercase tracking-xs text-xs">Finshed</div>
+                    <div>
+                      <span className="font-display text-[3.2rem]">{selectedDriverRaceData.position}</span>
+                      <span className="uppercase tracking-xs text-xs ml-4">
+                        {selectedDriverRaceData.status === "Finished" ? selectedDriverRaceData.Time.time : selectedDriverRaceData.status}
+                      </span>
+                    </div>
                   </div>
-                  <div className={classNames(
-                    "border-x-2 border-t-2 border-solid px-4 pt-4 w-64 font-display",
-                    driverCode === driversDetails[gridPosition.driver_number] ? "border-neutral-200" : " border-neutral-500"
-                    )}
-                    style={{color: driverCode === driversDetails[gridPosition.driver_number] ? `#${driversColor[driverCode]}` : "#737373"}}
+                  <div className="text-right">
+                    <div className="uppercase tracking-xs text-xs">Started</div>
+                    <div className="font-display text-[3.2rem]">{selectedDriverRaceData.grid}</div>
+                  </div>
+                </div>
+
+                <div className="divider-glow-dark mt-16 mb-10" />
+
+                <p className="font-display text-center mb-16">fastest lap</p>
+
+                <div className="flex items-center justify-between">
+                  <div>
+                    <div className="uppercase tracking-xs text-xs">Time</div>
+                    <div className="font-display">{selectedDriverRaceData.FastestLap.Time.time}</div>
+                  </div>
+                  <div className="text-right">
+                    <div className="uppercase tracking-xs text-xs">Lap</div>
+                    <div className="font-display">{selectedDriverRaceData.FastestLap.lap}</div>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between mt-16">
+                  <div>
+                    <div className="uppercase tracking-xs text-xs">avg speed</div>
+                    <div>
+                      <span className="font-display">{selectedDriverRaceData.FastestLap.AverageSpeed.speed}</span>
+                      <span className="uppercase tracking-xs text-xs">{selectedDriverRaceData.FastestLap.AverageSpeed.units}</span>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <div className="uppercase tracking-xs text-xs">Rank</div>
+                    <div className="font-display">{selectedDriverRaceData.FastestLap.rank}</div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          )}
+          <div className="bg-glow p-32 h-fit">
+            <h3 className="heading-4 mb-16">Starting Grid</h3>
+            <ul className="flex flex-col w-fit m-auto">
+              {startingGrid
+                .sort((a, b) => a.position - b.position)
+                .map((gridPosition, index) => (
+                  <li 
+                    key={index} 
+                    className="text-center w-fit even:-mt-32 even:ml-[8rem] even:mb-24"
                   >
-                    {driversDetails[gridPosition.driver_number]}
-                  </div> 
-                </li>
-              ))}
-          </ul>
+                    <div className={classNames(
+                      "text-sm font-display", 
+                      driverCode === driversDetails[gridPosition.driver_number] ? "text-neutral-200" : "text-neutral-500"
+                      )}
+                    >
+                      P{gridPosition.position}
+                    </div>
+                    <div className={classNames(
+                      "border-x-2 border-t-2 border-solid px-4 pt-4 w-64 font-display",
+                      driverCode === driversDetails[gridPosition.driver_number] ? "border-neutral-200" : " border-neutral-500"
+                      )}
+                      style={{color: driverCode === driversDetails[gridPosition.driver_number] ? `#${driversColor[driverCode]}` : "#737373"}}
+                    >
+                      {driversDetails[gridPosition.driver_number]}
+                    </div> 
+                  </li>
+                ))}
+            </ul>
+          </div>
         </div>
 
         <div className="sm:grow-0">
           <LapChart laps={laps} setLaps={() => setLaps} driversDetails={driversDetails} driversColor={driversColor} raceResults={raceResults} className="lap-chart" driverCode={driverSelected ? driversDetails[driverNumber] : null} />
-        
-          <TireStrategy drivers={drivers} raceResults={raceResults} driverCode={driverSelected ? driversDetails[driverNumber] : null} />
-
+          <TireStrategy drivers={drivers} raceResults={raceResults} driverCode={driverSelected ? driversDetails[driverNumber] : null} driverColor={driversColor[driverCode]} />
           {!driverSelected && (
             <div className="bg-glow h-fit p-32 mb-16">
               <h3 className="heading-4 mb-16">Fastest Laps</h3> 
               <div className="grid grid-cols-3 gap-4 mb-16  text-neutral-500">
-                <span className="tracking-sm">Driver</span> 
-                <span className="tracking-sm text-center">Time</span> 
-                <span className="tracking-sm text-right">Lap</span> 
+                <span className="tracking-xs uppercase">Driver</span> 
+                <span className="tracking-xs uppercase text-center">Time</span> 
+                <span className="tracking-xs uppercase text-right">Lap</span> 
               </div>
               <ul>
                 {raceResults
@@ -296,7 +358,7 @@ export function RacePage() {
                     <li key={index} className="grid grid-cols-3 gap-4 mb-8">
                       <div>
                         <span className="font-display">{result.Driver.code}</span>
-                        <span className="text-sm ml-8 text-neutral-500 tracking-sm max-sm:hidden">{result.Constructor.name}</span>
+                        <span className="text-sm ml-8 text-neutral-500 tracking-xs max-sm:hidden">{result.Constructor.name}</span>
                       </div>
                       <span className="text-center">{result.FastestLap.Time.time}</span>
                       <span className="text-right">{result.FastestLap.lap}</span>

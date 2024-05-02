@@ -24,7 +24,7 @@ export const Select = (props) => {
                 id={inputId}
                 value={value}
             />
-            <label htmlFor={inputId} className="select__label tracking">
+            <label htmlFor={inputId} className="select__label tracking-xs uppercase">
                 {label}
             </label>
         </div>

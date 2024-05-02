@@ -8,7 +8,7 @@ import Stats from 'three/addons/libs/stats.module.js';
 import { Loading } from "./Loading"
 import classNames from 'classnames';
 
-export const ThreeCanvas = ({ imageFile, locData, driverColor, driverSelected, fastestLap, pauseButton, controls, speedFactor }) => {
+export const ThreeCanvas = ({ imageFile, locData, driverColor, driverSelected, fastestLap, isPaused, controls, speedFactor }) => {
   const [driverDetails, setDriverDetails] = useState(null);
   const [carPosition, setCarPosition] = useState({ x: 0, y: 0, z: 0 });
   const [unit, setUnit] = useState('km/h');
@@ -18,7 +18,7 @@ export const ThreeCanvas = ({ imageFile, locData, driverColor, driverSelected, f
   let stats;
 
   // console.log(driverDetails);
-  // if(!pauseButton){
+  // if(!isPaused){
   //   console.log(carPosition);
   // }
   
@@ -105,7 +105,7 @@ export const ThreeCanvas = ({ imageFile, locData, driverColor, driverSelected, f
     const loader = new GLTFLoader();
     loader.load('/car/scene.gltf', gltf => {
       carModel = gltf.scene;
-      carModel.scale.set(0.3, 0.3, 0.3);
+      carModel.scale.set(0.1, 0.1, 0.1);
       carModel.rotation.x = Math.PI / 2;
       carModel.rotation.y = -Math.PI;
       carModel.position.set(carPosition.x, carPosition.y, carPosition.z);
@@ -144,7 +144,7 @@ export const ThreeCanvas = ({ imageFile, locData, driverColor, driverSelected, f
       
       TWEEN.update(); // Ensure this is called to progress tweens
     
-      if (carModel && locData.length > 0 && driverSelected && !carModel.userData.tweenActive && pauseButton) {
+      if (carModel && locData.length > 0 && driverSelected && !carModel.userData.tweenActive && isPaused) {
         const newPosition = locData.shift();
         setCarPosition(newPosition);
         //console.log('New position:', newPosition); // Log to see the new positions
@@ -193,7 +193,7 @@ export const ThreeCanvas = ({ imageFile, locData, driverColor, driverSelected, f
       control.dispose();
       TWEEN.removeAll();
     };
-  }, [imageFile, locData, driverSelected, speedFactor, pauseButton]);
+  }, [imageFile, locData, driverSelected, speedFactor, isPaused]);
 
   const drsActiveNumbers = [10, 12, 14]; // Define the DRS numbers that activate the message
   const handleUnitChange = (newUnit) => {
