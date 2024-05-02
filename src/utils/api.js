@@ -210,50 +210,34 @@ export async function fetchLocationData(sessionKey, driverId, startTime, endTime
   const baseUrl = 'https://api.openf1.org/v1';
   const locationUrl = `${baseUrl}/location?session_key=${sessionKey}&driver_number=${driverId}&date>${startTime}&date<${endTime}`;
   const carDataUrl = `${baseUrl}/car_data?session_key=${sessionKey}&driver_number=${driverId}&date>${startTime}&date<${endTime}`;
-  const positionUrl = `${baseUrl}/position?session_key=${sessionKey}&driver_number=${driverId}`;
-  const lapUrl = `${baseUrl}/laps?session_key=${sessionKey}&driver_number=${driverId}`;
 
-  const [locationResponse, carDataResponse, positionResponse, lapResponse] = await Promise.all([
+  const [locationResponse, carDataResponse] = await Promise.all([
     fetch(locationUrl),
-    fetch(carDataUrl),
-    fetch(positionUrl),
-    fetch(lapUrl)
+    fetch(carDataUrl)
   ]);
 
-  if (!locationResponse.ok || !carDataResponse.ok || !positionResponse.ok || !lapResponse.ok) {
+  if (!locationResponse.ok || !carDataResponse.ok) {
     throw new Error('Failed to fetch data');
   }
 
-  const [locationData, carData, positionData, lapData] = await Promise.all([
+  const [locationData, carData] = await Promise.all([
     locationResponse.json(),
-    carDataResponse.json(),
-    positionResponse.json(),
-    lapResponse.json()
+    carDataResponse.json()
   ]);
 
   const fetchEndTime = performance.now();
   console.log(`Time taken to fetch data: ${(fetchEndTime - fetchStartTime).toFixed(2)} milliseconds`);
+  
+  // Sort location and car data by date
+  locationData.sort((a, b) => new Date(a.date) - new Date(b.date));
+  carData.sort((a, b) => new Date(a.date) - new Date(b.date));
 
   // Merge location and car data using a sliding window approach
   const mergeStartTime = performance.now();
   let carDataIndex = 0;
-  let positionIndex = 0;
-  let lapIndex = 0;
   const mergedData = locationData.map(location => {
     const [scaledX, scaledY] = scaleCoordinates(location.x, location.y, scaleFactor);
     const locationDate = new Date(location.date);
-
-    // Process position data
-    while (positionIndex < positionData.length && new Date(positionData[positionIndex].date) <= locationDate) {
-      positionIndex++;
-    }
-    const positionEntry = positionIndex > 0 ? positionData[positionIndex - 1] : null;
-
-    // Process lap data
-    while (lapIndex < lapData.length && new Date(lapData[lapIndex].date_start) <= locationDate) {
-      lapIndex++;
-    }
-    const lapEntry = lapIndex > 0 ? lapData[lapIndex - 1] : null;
 
     let closestCarData = carData[carDataIndex];
     let minTimeDiff = Math.abs(locationDate - new Date(closestCarData.date));
@@ -272,8 +256,6 @@ export async function fetchLocationData(sessionKey, driverId, startTime, endTime
     return {
       x: scaledX,
       y: scaledY,
-      position: positionEntry,
-      lap: lapEntry,
       cardata: closestCarData,
     };
   });
@@ -283,4 +265,3 @@ export async function fetchLocationData(sessionKey, driverId, startTime, endTime
 
   return mergedData;
 }
-  
