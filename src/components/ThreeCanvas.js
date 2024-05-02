@@ -8,7 +8,7 @@ import Stats from 'three/addons/libs/stats.module.js';
 import { Loading } from "./Loading"
 import classNames from 'classnames';
 
-export const ThreeCanvas = ({ imageFile, locData, driverColor, driverSelected, fastestLap, isPaused, controls, speedFactor }) => {
+export const ThreeCanvas = ({ imageFile, locData, driverColor, driverSelected, fastestLap, isPaused, haloView, controls, speedFactor }) => {
   const [driverDetails, setDriverDetails] = useState(null);
   const [carPosition, setCarPosition] = useState({ x: 0, y: 0, z: 0 });
   const [unit, setUnit] = useState('km/h');
@@ -51,43 +51,6 @@ export const ThreeCanvas = ({ imageFile, locData, driverColor, driverSelected, f
     const control = new OrbitControls(camera, renderer.domElement);
     control.maxDistance = 10;
     control.minDistance = 5;
-    control.enableZoom = false;
-    control.enableRotate = false;
-    //control.enablePan = false;
-
-    // Manual rotation setup
-    let isDragging = false;
-    let previousMousePosition = { x: 0, y: 0 };
-
-    renderer.domElement.addEventListener('mousedown', function(e) {
-        if (e.button === 0) {  // Left mouse button begins rotation
-            isDragging = true;
-            previousMousePosition.x = e.clientX;
-            previousMousePosition.y = e.clientY;
-        }
-    });
-
-    renderer.domElement.addEventListener('mousemove', function(e) {
-        if (isDragging) {
-            const deltaMove = {
-                x: e.clientX - previousMousePosition.x
-            };
-
-            const zRotation = deltaMove.x * 0.005;  // Sensitivity factor for rotation
-            camera.rotateOnWorldAxis(new THREE.Vector3(0, 0, 1), -zRotation);  // Negative for right-hand rule
-        }
-
-        previousMousePosition = {
-            x: e.clientX,
-            y: e.clientY
-        };
-    });
-
-    renderer.domElement.addEventListener('mouseup', function(e) {
-        if (e.button === 0) {  // Left mouse button ends rotation
-            isDragging = false;
-        }
-    });
 
     const axesHelper = new THREE.AxesHelper( 20 );
     scene.add( axesHelper );
@@ -97,7 +60,7 @@ export const ThreeCanvas = ({ imageFile, locData, driverColor, driverSelected, f
     lo.load('/map/bahrain.gltf', gltf => {
       map = gltf.scene;
       map.scale.set(0.1, 0.1, 0.1);
-      map.rotation.x = Math.PI / 2;
+      map.rotation.x = Math.PI / 2; // causing orbit issue in canvas
       scene.add(map);
     }, undefined, error => console.error(error));
 
@@ -110,19 +73,13 @@ export const ThreeCanvas = ({ imageFile, locData, driverColor, driverSelected, f
       carModel.rotation.y = -Math.PI;
       carModel.position.set(carPosition.x, carPosition.y, carPosition.z);
       scene.add(carModel);
-      //uncomment the below 3 line to get first person
-      // carModel.add(camera); 
-      // camera.position.set(0, 0.6, 0.1);
-      // camera.rotation.set(Math.PI/8, Math.PI, 0);
 
-      // carModel.traverse(object => {
-      //   if (object.isMesh) {
-      //     // Check if the material is of type MeshStandardMaterial or MeshBasicMaterial
-      //     if (object.material instanceof THREE.MeshStandardMaterial || object.material instanceof THREE.MeshBasicMaterial) {
-      //       console.log('Material:', object.material); // Log the material to inspect it
-      //     }
-      //   }
-      // });
+      if (haloView) {
+        carModel.add(camera); 
+        camera.position.set(0, 0.6, 0.1);
+        camera.rotation.set(Math.PI/8, Math.PI, 0);
+      }
+      
       carModel.traverse(object => {
         if (object.isMesh && object.material.name === 'main_body_colour_Red.001') {
           // Change the color of the car material
@@ -193,7 +150,7 @@ export const ThreeCanvas = ({ imageFile, locData, driverColor, driverSelected, f
       control.dispose();
       TWEEN.removeAll();
     };
-  }, [imageFile, locData, driverSelected, speedFactor, isPaused]);
+  }, [imageFile, locData, driverSelected, speedFactor, isPaused, haloView]);
 
   const drsActiveNumbers = [10, 12, 14]; // Define the DRS numbers that activate the message
   const handleUnitChange = (newUnit) => {

@@ -3181,10 +3181,6 @@ input[type="range"]::-ms-fill-lower {
   font-family: Bungee, ui-serif;
 }
 
-.text-\[128px\] {
-  font-size: 128px;
-}
-
 .text-\[1rem\] {
   font-size: 1rem;
 }
@@ -4106,16 +4102,16 @@ code {
 
 .race-controls {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: auto auto 50%;
   grid-template-areas:
-    "play pause"
-    "speed speed"
+    "play pause view"
+    "speed speed speed"
   ;
   @media (min-width: 1280px) {
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: auto auto auto 50%;
 
     grid-template-areas:
-      "play pause speed"
+      "play pause view speed"
     ;
   }
 }
@@ -4130,6 +4126,10 @@ code {
 
 .race-controls__speed {
   grid-area: speed;
+}
+
+.race-controls__view {
+  grid-area: view;
 }
 
 /* lap chart */

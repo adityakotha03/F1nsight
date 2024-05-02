@@ -30,6 +30,7 @@ export function RacePage() {
   const [endTime, setEndTime] = useState('');
   const [speedFactor, setSpeedFactor] = useState(1.5);
   const [isPaused, setIsPaused] = useState(false);
+  const [haloView, setHaloView] = useState(false);
   
   const selectedDriverData = drivers.find(obj => obj['acronym'] === driverCode);
   const selectedDriverRaceData = raceResults.find(obj => obj['number'] === driverNumber);
@@ -180,12 +181,16 @@ export function RacePage() {
           driverSelected={driverSelected}
           driverColor={driversColor[driverCode]}
           isPaused={isPaused}
+          haloView={haloView}
           controls={
             <div className="relative z-10">
               {driverSelected ? (
                 <div className="race-controls">
-                  <button className="race-controls__play gradient-border-extreme py-16 px-32"><FontAwesomeIcon icon="play" onClick={() => setIsPaused(false)} /></button>
-                  <button className="race-controls__pause gradient-border-extreme py-16 px-32"><FontAwesomeIcon icon="pause" onClick={() => setIsPaused(true)} /></button>
+                  <button className="race-controls__play gradient-border-extreme py-16 px-32" onClick={() => setIsPaused(false)}><FontAwesomeIcon icon="play" /></button>
+                  <button className="race-controls__pause gradient-border-extreme py-16 px-32" onClick={() => setIsPaused(true)}><FontAwesomeIcon icon="pause" /></button>
+                  <button className="race-controls__view gradient-border-extreme py-16 px-32 tracking-sm uppercase text-xs" onClick={() => setHaloView(!haloView)}>
+                    {haloView ? 'Sky View' : 'Halo View'}
+                  </button>
                   <div className="race-controls__speed gradient-border-extreme flex text-xs max-sm:flex-col sm:items-center sm:justify-center gap-16 py-16 px-32 tracking-sm uppercase text-center">
                     <p>Playback Speed:</p>
                     <button
@@ -293,8 +298,8 @@ export function RacePage() {
               </div>
             </div>
           )}
+          <h3 className="heading-4 mb-16 text-neutral-500">Starting Grid</h3>
           <div className="bg-glow p-32 h-fit">
-            <h3 className="heading-4 mb-16">Starting Grid</h3>
             <ul className="flex flex-col w-fit m-auto">
               {startingGrid
                 .sort((a, b) => a.position - b.position)
@@ -327,9 +332,9 @@ export function RacePage() {
         <div className="sm:grow-0">
           <LapChart laps={laps} setLaps={() => setLaps} driversDetails={driversDetails} driversColor={driversColor} raceResults={raceResults} className="lap-chart" driverCode={driverSelected ? driversDetails[driverNumber] : null} />
           <TireStrategy drivers={drivers} raceResults={raceResults} driverCode={driverSelected ? driversDetails[driverNumber] : null} driverColor={driversColor[driverCode]} />
+          <h3 className="heading-4 mb-16 text-neutral-500">Fastest Laps</h3> 
           {!driverSelected && (
             <div className="bg-glow h-fit p-32 mb-16">
-              <h3 className="heading-4 mb-16">Fastest Laps</h3> 
               <div className="grid grid-cols-3 gap-4 mb-16  text-neutral-500">
                 <span className="tracking-xs uppercase">Driver</span> 
                 <span className="tracking-xs uppercase text-center">Time</span> 

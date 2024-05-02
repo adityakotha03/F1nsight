@@ -254,16 +254,16 @@ code {
 
 .race-controls {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: auto auto 50%;
   grid-template-areas:
-    "play pause"
-    "speed speed"
+    "play pause view"
+    "speed speed speed"
   ;
 
   @media (min-width: 1280px) {
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: auto auto auto 50%;
     grid-template-areas:
-      "play pause speed"
+      "play pause view speed"
     ;
   }
 }
@@ -271,6 +271,7 @@ code {
 .race-controls__play { grid-area: play; }
 .race-controls__pause { grid-area: pause; }
 .race-controls__speed { grid-area: speed; }
+.race-controls__view { grid-area: view; }
 
 
 /* lap chart */

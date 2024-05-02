@@ -126,8 +126,9 @@ export const LapChart = (props) => {
     };
 
     return (
+        <>
+        <h3 className="heading-4 mb-16 text-neutral-500">Lap Data</h3>
         <div className="mb-16 bg-glow p-32">
-            <h3 className="heading-4 mb-16">Lap Data</h3>
             <ResponsiveContainer width="100%" height={250}>
                 <LineChart
                     data={chartData}
@@ -167,6 +168,7 @@ export const LapChart = (props) => {
                 </div>
             )}
         </div>
+        </>
     );
 };
 
