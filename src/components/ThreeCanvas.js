@@ -142,9 +142,9 @@ export const ThreeCanvas = ({ imageFile, locData, driverColor, driverSelected, f
     const animate = () => {
       if (!mountRef.current) return;
       
-      TWEEN.update(); // Ensure this is called to progress tweens
+      TWEEN.update();
     
-      if (carModel && locData.length > 0 && driverSelected && !carModel.userData.tweenActive && isPaused) {
+      if (carModel && locData.length > 0 && driverSelected && !carModel.userData.tweenActive && !isPaused) {
         const newPosition = locData.shift();
         setCarPosition(newPosition);
         //console.log('New position:', newPosition); // Log to see the new positions
@@ -167,7 +167,7 @@ export const ThreeCanvas = ({ imageFile, locData, driverColor, driverSelected, f
           .onComplete(() => {
             carModel.userData.tweenActive = false; // Reset flag when tween completes
             if (infoRef.current) {
-              setDriverDetails(newPosition.cardata); // Ensure details are set correctly
+              setDriverDetails(newPosition.cardata);
             }
           })
           tween.start();        
@@ -269,10 +269,6 @@ export const ThreeCanvas = ({ imageFile, locData, driverColor, driverSelected, f
                 </div>
                 <p className="uppercase text-[1rem] tracking-sm">Brake</p>
               </div>
-              {/* <div className="flex flex-col">
-                <p className="uppercase text-sm tracking-wide">Best Lap Time</p>
-                <p className="font-display text-[128px] leading-none">{fastestLap.Time.time}</p>
-              </div> */}
               
             </div>
           ) : <Loading className="mt-64" />}

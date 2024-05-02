@@ -28,12 +28,11 @@ export function RacePage() {
   const [activeButtonIndex, setActiveButtonIndex] = useState(null);
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
-  const [speedFactor, setSpeedFactor] = useState(1.5); // Manage speed state here
-  const [isPaused, setIsPaused] = useState(true);
+  const [speedFactor, setSpeedFactor] = useState(1.5);
+  const [isPaused, setIsPaused] = useState(false);
   
   const selectedDriverData = drivers.find(obj => obj['acronym'] === driverCode);
   const selectedDriverRaceData = raceResults.find(obj => obj['number'] === driverNumber);
-  console.log({isPaused})
 
   useEffect(() => {
     const fetchData = async () => {
@@ -52,7 +51,6 @@ export function RacePage() {
         const adjustedCountry = countryMap[country] || country;
         const circuitId = await fetchCircuitIdByCountry(year, adjustedCountry);
         setImagePath(`/maps/${circuitId}.png`);
-        //console.log(circuitId);
 
         if (circuitId) {
           const results = await fetchRaceResultsByCircuit(year, circuitId);
@@ -88,22 +86,12 @@ export function RacePage() {
 
         const latestDate = startingGridData[0].date;
         const firstDifferentDate = startingGridData.find(item => item.date !== latestDate)?.date;
-        const sTime = new Date(firstDifferentDate);
-        sTime.setMinutes(sTime.getMinutes() - 1);
+        const date = new Date(firstDifferentDate);
+        date.setMinutes(date.getMinutes() - 1);
+        const updatedDate = date.toISOString();
 
-        // Format the date manually to "YYYY-MM-DDTHH:MM:SS.fff"
-        const formattedStartTime = sTime.getFullYear() + '-' + 
-            (sTime.getMonth() + 1).toString().padStart(2, '0') + '-' +
-            sTime.getDate().toString().padStart(2, '0') + 'T' +
-            sTime.getHours().toString().padStart(2, '0') + ':' +
-            sTime.getMinutes().toString().padStart(2, '0') + ':' +
-            sTime.getSeconds().toString().padStart(2, '0') + '.' +
-            sTime.getMilliseconds().toString().padStart(3, '0');
-
-        setStartTime(formattedStartTime);
-        //console.log(startTime);
-        setEndTime(startingGridData[startingGridData.length - 1].date); //'2024-03-02T16:20';
-        //console.log(endTime);
+        setStartTime(updatedDate);
+        setEndTime(startingGridData[startingGridData.length - 1].date);
 
         const earliestDateTime = startingGridData[0]?.date;
         const filteredStartingGrid = startingGridData.filter(item => item.date === earliestDateTime);
@@ -135,7 +123,6 @@ export function RacePage() {
       setDriverCode(raceResults[index].Driver.code);
       setDriverNumber(raceResults[index].number);
       setActiveButtonIndex(index); // Set new active button index
-      setIsPaused(false);
   
       (async () => {
         try {
@@ -151,7 +138,6 @@ export function RacePage() {
           // Fetch location data using sessionKey, driverId (from state), startTime, and endTime
           const locationData = await fetchLocationData(sessionKey, raceResults[index].number, startTime, endTime, scaleFactor);
           setLocData(locationData);
-          // console.log(locationData); // Log the fetched and processed location data
   
         } catch (error) {
           console.error("Error fetching location data:", error);
