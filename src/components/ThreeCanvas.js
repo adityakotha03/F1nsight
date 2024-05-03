@@ -78,6 +78,14 @@ export const ThreeCanvas = ({ imageFile, locData, driverColor, driverSelected, f
         carModel.add(camera); 
         camera.position.set(0, 0.6, 0.1);
         camera.rotation.set(Math.PI/8, Math.PI, 0);
+        control.enablePan = false;
+        control.enableRotate = false;
+        control.enableZoom = false;
+      }
+      else{
+        control.enablePan = true;
+        control.enableRotate = true;
+        control.enableZoom = true;
       }
       
       carModel.traverse(object => {
