@@ -71,8 +71,9 @@ export const TireStrategy = (props) => {
     //console.log(tireKeys)
 
     return (
+        <>
+        <h3 className="heading-4 mb-16 text-neutral-500">Tire Strategy</h3>
         <div className="bg-glow h-fit p-32 mb-16 relative">
-          <h3 className="heading-4 mb-16">Tire Strategy</h3>
           <ResponsiveContainer width="100%" height={700}>
             <BarChart
               data={sortedTransformedData}
@@ -147,6 +148,7 @@ export const TireStrategy = (props) => {
             style={{background: `radial-gradient(circle at center, #${driverColor} 0%, #${driverColor}00 70%)`}} 
           />
         </div>
+        </>
       );
     };
 
