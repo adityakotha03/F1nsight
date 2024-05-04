@@ -171,20 +171,7 @@
       console.error("Error fetching drivers and tires:", error);
       return [];
     }
-  };  
-
-
-export const fetchCircuitIdByCountry = async (year, country) => {
-  try {
-    const response = await fetch(`https://ergast.com/api/f1/${year}/circuits.json`);
-    const data = await response.json();
-    const circuit = data.MRData.CircuitTable.Circuits.find(circuit => circuit.Location.country === country);
-    return circuit ? circuit.circuitId : null;
-  } catch (error) {
-    console.error("Error fetching circuit data:", error);
-    return null;
-  }
-};
+  }; 
 
 export const fetchRaceResultsByCircuit = async (year, circuitId) => {
   try {

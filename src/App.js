@@ -4,7 +4,8 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 import { fas } from '@fortawesome/free-solid-svg-icons';
 
 //import { fetchUpcomingRace } from './utils/api';
-import { Header, RaceSelector, RacePage, DriverStandings, ConstructorStandings, RaceResultsPage, Select } from './components';
+import { Header, FooterDetails, RaceSelector, RacePage, DriverStandings, ConstructorStandings, RaceResultsPage, Select } from './components';
+import { Footer } from 'flowbite-react';
 
 library.add(fas);
 
@@ -66,6 +67,7 @@ function App() {
         <Route path="/driver-standings" element={<DriverStandings selectedYear={selectedYear} />} />
         <Route path="/race/:raceId" element={<RacePage />} />
       </Routes>
+      <FooterDetails></FooterDetails>
     </Router>
   );
 }

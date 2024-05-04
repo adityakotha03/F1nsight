@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useLocation } from 'react-router-dom';
 
-import { fetchDriversAndTires, fetchCircuitIdByCountry, fetchRaceResultsByCircuit } from '../utils/api';
+import { fetchDriversAndTires, fetchRaceResultsByCircuit } from '../utils/api';
 import { fetchLocationData } from '../utils/api';
 
 import { DriverCard } from './DriverCard';
@@ -13,7 +13,7 @@ import { TireStrategy } from './TireStrategy';
 
 export function RacePage() {
   const { state } = useLocation();
-  const { raceName, meetingKey, year, country } = state || {};
+  const { raceName, meetingKey, year, location } = state || {};
   const [drivers, setDrivers] = useState([]);
   const [laps, setLaps] = useState([]);
   const [driversDetails, setDriversDetails] = useState({});
@@ -42,15 +42,36 @@ export function RacePage() {
       try {
         setDriverSelected(false);
         setActiveButtonIndex(null);
-        // Fetch circuit ID based on the country and year. UK and Abu dabi doesnt match, so this takes care of that.
-        const countryMap = {
-          "Great Britain": "UK",
-          "United Arab Emirates": "UAE"
-        };
+
+        const locationMap = {
+          "Melbourne": "albert_park",
+          "Austin": "americas",
+          "Sakhir": "bahrain",
+          "Baku": "baku",
+          "Budapest": "hungaroring",
+          "Imola": "imola",
+          "São Paulo": "interlagos",
+          "Jeddah": "jeddah",
+          "Marina Bay": "marina_bay",
+          "Monaco": "monaco",
+          "Spielberg": "red_bull_ring",
+          "Mexico City": "rodriguez",
+          "Shanghai": "shanghai",
+          "Silverstone": "silverstone",
+          "Spa-Francorchamps": "spa",
+          "Suzuka": "suzuka",
+          "Las Vegas": "vegas",
+          "Montréal": "villeneuve",
+          "Zandvoort": "zandvoort",
+          "Miami": "miami",
+          "Monza": "monza",
+          "Barcelona": "catalunya",
+          "Lusail": "losail",
+          "Yas Island": "yas_marina"
+        };        
     
         // Check if the country is in the map and replace it if it is
-        const adjustedCountry = countryMap[country] || country;
-        const circuitId = await fetchCircuitIdByCountry(year, adjustedCountry);
+        const circuitId = locationMap[location];
         setMapPath(`/map/${circuitId}.gltf`);
 
         if (circuitId) {
@@ -332,8 +353,10 @@ export function RacePage() {
         <div className="sm:grow-0">
           <LapChart laps={laps} setLaps={() => setLaps} driversDetails={driversDetails} driversColor={driversColor} raceResults={raceResults} className="lap-chart" driverCode={driverSelected ? driversDetails[driverNumber] : null} />
           <TireStrategy drivers={drivers} raceResults={raceResults} driverCode={driverSelected ? driversDetails[driverNumber] : null} driverColor={driversColor[driverCode]} />
-          <h3 className="heading-4 mb-16 text-neutral-500">Fastest Laps</h3> 
+          
           {!driverSelected && (
+            <>
+          <h3 className="heading-4 mb-16 text-neutral-500">Fastest Laps</h3> 
             <div className="bg-glow h-fit p-32 mb-16">
               <div className="grid grid-cols-3 gap-4 mb-16  text-neutral-500">
                 <span className="tracking-xs uppercase">Driver</span> 
@@ -342,11 +365,11 @@ export function RacePage() {
               </div>
               <ul>
               {raceResults
-                .filter(result => result.FastestLap && result.FastestLap.rank)
-                .sort((a, b) => parseInt(a.FastestLap.rank) - parseInt(b.FastestLap.rank))
-                .map((result, index) => (
-                  <React.Fragment key={index}>
-                    <li className="grid grid-cols-3 gap-4 mb-8">
+                  .filter(result => result.FastestLap && result.FastestLap.rank)
+                  .sort((a, b) => parseInt(a.FastestLap.rank) - parseInt(b.FastestLap.rank))
+                  .map((result, index) => (
+                    <>
+                    <li key={index} className="grid grid-cols-3 gap-4 mb-8">
                       <div>
                         <span className="font-display">{result.Driver.code}</span>
                         <span className="text-sm ml-8 text-neutral-500 tracking-xs max-sm:hidden">{result.Constructor.name}</span>
@@ -355,10 +378,11 @@ export function RacePage() {
                       <span className="text-right">{result.FastestLap.lap}</span>
                     </li>
                     <div className='divider-glow-dark' />
-                  </React.Fragment>
-                ))}
+                    </>
+                  ))}
             </ul>
             </div>
+            </>
           )} 
         </div>
      </div>
