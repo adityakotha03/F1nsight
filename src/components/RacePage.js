@@ -22,7 +22,7 @@ export function RacePage() {
   const [driverNumber, setDriverNumber] = useState('');
   const [driversColor, setDriversColor] = useState({});
   const [startingGrid, setStartingGrid] = useState([]);
-  const [ImagePath, setImagePath] = useState('');
+  const [MapPath, setMapPath] = useState('');
   const [raceResults, setRaceResults] = useState([]);
   const [locData, setLocData] = useState({});
   const [activeButtonIndex, setActiveButtonIndex] = useState(null);
@@ -51,7 +51,7 @@ export function RacePage() {
         // Check if the country is in the map and replace it if it is
         const adjustedCountry = countryMap[country] || country;
         const circuitId = await fetchCircuitIdByCountry(year, adjustedCountry);
-        setImagePath(`/maps/${circuitId}.png`);
+        setMapPath(`/map/${circuitId}.gltf`);
 
         if (circuitId) {
           const results = await fetchRaceResultsByCircuit(year, circuitId);
@@ -176,7 +176,7 @@ export function RacePage() {
           ))}
         </ul>
         <ThreeCanvas 
-          imageFile={ImagePath} 
+          MapFile={MapPath} 
           locData={locData}
           driverSelected={driverSelected}
           driverColor={driversColor[driverCode]}

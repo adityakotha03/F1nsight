@@ -8,7 +8,7 @@ import Stats from 'three/addons/libs/stats.module.js';
 import { Loading } from "./Loading"
 import classNames from 'classnames';
 
-export const ThreeCanvas = ({ imageFile, locData, driverColor, driverSelected, fastestLap, isPaused, haloView, controls, speedFactor }) => {
+export const ThreeCanvas = ({ MapFile, locData, driverColor, driverSelected, fastestLap, isPaused, haloView, controls, speedFactor }) => {
   const [driverDetails, setDriverDetails] = useState(null);
   const [carPosition, setCarPosition] = useState({ x: 0, y: 0, z: 0 });
   const [unit, setUnit] = useState('km/h');
@@ -57,7 +57,8 @@ export const ThreeCanvas = ({ imageFile, locData, driverColor, driverSelected, f
 
     let map;
     const lo = new GLTFLoader();
-    lo.load('/map/bahrain.gltf', gltf => {
+    console.log(MapFile);
+    lo.load(MapFile, gltf => {
       map = gltf.scene;
       map.scale.set(0.1, 0.1, 0.1);
       map.rotation.x = Math.PI / 2; // causing orbit issue in canvas
@@ -158,7 +159,7 @@ export const ThreeCanvas = ({ imageFile, locData, driverColor, driverSelected, f
       control.dispose();
       TWEEN.removeAll();
     };
-  }, [imageFile, locData, driverSelected, speedFactor, isPaused, haloView]);
+  }, [MapFile, locData, driverSelected, speedFactor, isPaused, haloView]);
 
   const drsActiveNumbers = [10, 12, 14]; // Define the DRS numbers that activate the message
   const handleUnitChange = (newUnit) => {
