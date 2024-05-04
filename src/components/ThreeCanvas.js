@@ -57,7 +57,6 @@ export const ThreeCanvas = ({ MapFile, locData, driverColor, driverSelected, fas
 
     let map;
     const lo = new GLTFLoader();
-    console.log(MapFile);
     lo.load(MapFile, gltf => {
       map = gltf.scene;
       map.scale.set(0.1, 0.1, 0.1);
