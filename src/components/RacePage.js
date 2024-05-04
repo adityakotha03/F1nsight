@@ -140,6 +140,7 @@ export function RacePage() {
     if (activeButtonIndex === index) {
       setDriverSelected(false);
       setActiveButtonIndex(null); // Reset the active button index
+      setDriverCode('');
     } else {
       setDriverSelected(true);
       setDriverCode(raceResults[index].Driver.code);
@@ -353,35 +354,34 @@ export function RacePage() {
         <div className="sm:grow-0">
           <LapChart laps={laps} setLaps={() => setLaps} driversDetails={driversDetails} driversColor={driversColor} raceResults={raceResults} className="lap-chart" driverCode={driverSelected ? driversDetails[driverNumber] : null} />
           <TireStrategy drivers={drivers} raceResults={raceResults} driverCode={driverSelected ? driversDetails[driverNumber] : null} driverColor={driversColor[driverCode]} />
-          
           {!driverSelected && (
             <>
-          <h3 className="heading-4 mb-16 text-neutral-500">Fastest Laps</h3> 
-            <div className="bg-glow h-fit p-32 mb-16">
-              <div className="grid grid-cols-3 gap-4 mb-16  text-neutral-500">
-                <span className="tracking-xs uppercase">Driver</span> 
-                <span className="tracking-xs uppercase text-center">Time</span> 
-                <span className="tracking-xs uppercase text-right">Lap</span> 
-              </div>
-              <ul>
-              {raceResults
+              <h3 className="heading-4 mb-16 text-neutral-500">Fastest Laps</h3> 
+              <div className="bg-glow h-fit p-32 mb-16">
+                <div className="grid grid-cols-3 gap-4 mb-16  text-neutral-500">
+                  <span className="tracking-xs uppercase">Driver</span> 
+                  <span className="tracking-xs uppercase text-center">Time</span> 
+                  <span className="tracking-xs uppercase text-right">Lap</span> 
+                </div>
+                <ul>
+                  {raceResults
                   .filter(result => result.FastestLap && result.FastestLap.rank)
                   .sort((a, b) => parseInt(a.FastestLap.rank) - parseInt(b.FastestLap.rank))
                   .map((result, index) => (
-                    <>
-                    <li key={index} className="grid grid-cols-3 gap-4 mb-8">
-                      <div>
-                        <span className="font-display">{result.Driver.code}</span>
-                        <span className="text-sm ml-8 text-neutral-500 tracking-xs max-sm:hidden">{result.Constructor.name}</span>
-                      </div>
-                      <span className="text-center">{result.FastestLap.Time.time}</span>
-                      <span className="text-right">{result.FastestLap.lap}</span>
-                    </li>
-                    <div className='divider-glow-dark' />
-                    </>
+                    <React.Fragment key={index}>
+                      <li key={index} className="grid grid-cols-3 gap-4 mb-8">
+                        <div>
+                          <span className="font-display">{result.Driver.code}</span>
+                          <span className="text-sm ml-8 text-neutral-500 tracking-xs max-sm:hidden">{result.Constructor.name}</span>
+                        </div>
+                        <span className="text-center">{result.FastestLap.Time.time}</span>
+                        <span className="text-right">{result.FastestLap.lap}</span>
+                      </li>
+                      <div className='divider-glow-dark' />
+                    </React.Fragment>
                   ))}
-            </ul>
-            </div>
+                </ul>
+              </div>
             </>
           )} 
         </div>

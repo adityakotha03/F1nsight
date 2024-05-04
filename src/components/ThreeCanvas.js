@@ -22,21 +22,27 @@ export const ThreeCanvas = ({ MapFile, locData, driverColor, driverSelected, fas
   //   console.log(carPosition);
   // }
   
-  const ambientLight = useMemo(() => new THREE.AmbientLight(0xffffff, 0.5), []);
-  const directionalLight = useMemo(() => {
+  // const ambientLight = useMemo(() => new THREE.AmbientLight(0xffffff, 0.5), []);
+  const directionalLight1 = useMemo(() => {
     const light = new THREE.DirectionalLight(0xffffff, 10);
-    light.position.set(1, 1, 1);
+    light.position.set(100, 20, 20);
+    return light;
+  }, []);
+  const directionalLight2 = useMemo(() => {
+    const light = new THREE.DirectionalLight(0xffffff, 10);
+    light.position.set(-50, -100, 20);
     return light;
   }, []);
 
 
   useEffect(() => {
     const scene = new THREE.Scene();
-    scene.add(ambientLight);
-    scene.add(directionalLight);
+    // scene.add(ambientLight);
+    scene.add(directionalLight1);
+    scene.add(directionalLight2);
 
     stats = new Stats();
-		document.body.appendChild( stats.dom );
+		// document.body.appendChild( stats.dom );
 
     const camera = new THREE.PerspectiveCamera(75, mountRef.current.clientWidth / mountRef.current.clientHeight, 0.1, 1000);
     camera.position.z = 10;
@@ -53,7 +59,7 @@ export const ThreeCanvas = ({ MapFile, locData, driverColor, driverSelected, fas
     control.minDistance = 5;
 
     const axesHelper = new THREE.AxesHelper( 20 );
-    scene.add( axesHelper );
+    // scene.add( axesHelper );
 
     let map;
     const lo = new GLTFLoader();

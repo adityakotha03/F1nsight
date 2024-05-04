@@ -27,12 +27,12 @@ export const FooterDetails = ({ className }) => {
 
     return (
         <motion.div
-            className={classNames("footer-container", className)}
+            className={classNames("footer-container bg-glow p-4 bg-neutral-950 mt-64", className)}
             ref={ref}
             initial="hidden"
             animate={isInView ? "visible" : "hidden"}
         >
-            <div style={{ display: 'flex', alignItems: 'center' }}>
+            <div className="flex items-center">
                 <motion.img
                     src="/images/2024/cars/ferrari.png"
                     alt="Animated car - Ferrari"
@@ -65,7 +65,7 @@ export const FooterDetails = ({ className }) => {
                 </motion.div>
             </div>
 
-            <div style={{ display: 'flex', alignItems: 'center' }}>
+            <div className="flex items-center">
                 <motion.img
                     src="/images/2024/cars/mercedes.png"
                     alt="Animated car - Mercedes"

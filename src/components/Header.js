@@ -3,6 +3,8 @@ import classNames from 'classnames';
 import React, { useState, useEffect, useRef } from 'react';
 import { NavLink } from 'react-router-dom';
 
+import { ReactComponent as Logo} from './f1nsight.svg';
+
 export const Header = (props) => {
     const { children } = props;
     const [isOpen, setIsOpen] = useState(false);
@@ -30,9 +32,9 @@ export const Header = (props) => {
         <header className="fixed -top-1 w-full z-[100]">
             <div className="flex flex-col items-start sm:items-center sm:flex-row sm:justify-between gap-8 py-8 px-16 shadow-lg bg-glow bg-neutral-800/90 backdrop-blur-sm">
                 <div className="flex item-center gap-16 max-sm:justify-between max-sm:w-full">
-                    <a className="font-display block text-[2rem] md:text-[3.2rem]" href="/">F1nsight</a>
+                    <a href="/"><Logo height={48}/></a>
                     <button 
-                        className="text-sm tracking-xs uppercase cursor-pointer mt-8 md:mt-14" 
+                        className="text-sm tracking-xs uppercase cursor-pointer pt-18" 
                         onClick={(e) => {
                             e.stopPropagation();
                             setIsOpen(!isOpen);
@@ -41,7 +43,7 @@ export const Header = (props) => {
                         Results 
                         <FontAwesomeIcon 
                             icon="caret-down"
-                            className={classNames("text-neutral-700 fa-xs ml-4", {'fa-rotate-180' : isOpen})} 
+                            className={classNames("fa-xs ml-4", {'fa-rotate-180' : isOpen})} 
                         />
                     </button>
                 </div>
