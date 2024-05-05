@@ -3149,6 +3149,10 @@ input[type="range"]::-ms-fill-lower {
   padding-top: 1.6rem;
 }
 
+.pt-18 {
+  padding-top: 1.8rem;
+}
+
 .pt-2 {
   padding-top: 0.2rem;
 }
@@ -6408,10 +6412,6 @@ code {
     margin-right: .6rem;
   }
 
-  .md\:mt-14 {
-    margin-top: 1.4rem;
-  }
-
   .md\:block {
     display: block;
   }
@@ -6477,10 +6477,6 @@ code {
 
   .md\:bg-transparent {
     background-color: transparent;
-  }
-
-  .md\:text-\[3\.2rem\] {
-    font-size: 3.2rem;
   }
 
   .md\:text-sm {

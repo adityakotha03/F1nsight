@@ -43,6 +43,8 @@ export const TireStrategy = (props) => {
     wet: '#00aeef' 
   };
 
+  console.log()
+
   const tireKeys = [
     ...new Set(sortedTransformedData.flatMap(Object.keys).filter(key => key !== 'acronym')),
   ];
@@ -74,7 +76,7 @@ export const TireStrategy = (props) => {
         <>
         <h3 className="heading-4 mb-16 text-neutral-500">Tire Strategy</h3>
         <div className="bg-glow h-fit p-32 mb-16 relative">
-          <ResponsiveContainer width="100%" height={700}>
+          <ResponsiveContainer width="100%" height={driverCode ? 100 :  700}>
             <BarChart
               data={sortedTransformedData}
               width="100%"
@@ -141,11 +143,11 @@ export const TireStrategy = (props) => {
           </ResponsiveContainer>
           <div 
             className="radial-gradient radial-gradient--top-left"
-            style={{background: `radial-gradient(circle at center, #${driverColor} 0%, #${driverColor}00 70%)`}} 
+            style={{background: driverCode && `radial-gradient(circle at center, #${driverColor} 0%, #${driverColor}00 70%)`}} 
           />
           <div 
             className="radial-gradient radial-gradient--top-right"
-            style={{background: `radial-gradient(circle at center, #${driverColor} 0%, #${driverColor}00 70%)`}} 
+            style={{background: driverCode && `radial-gradient(circle at center, #${driverColor} 0%, #${driverColor}00 70%)`}} 
           />
         </div>
         </>
