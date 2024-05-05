@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import { useInView } from "framer-motion";
 
 export const ConstructorDriver = (props) => {
-    const { className, points, image, car, firstName, lastName, year} = props;
+    const { className, showDivider, points, image, car, firstName, lastName, year} = props;
     const ref = useRef(null);
     const isInView = useInView(ref, { once: true });
 
@@ -13,7 +13,8 @@ export const ConstructorDriver = (props) => {
             <div 
                 className={classNames(
                     className, 
-                    'constructor-driver-card mt-32 flex justify-center items-end'
+                    'constructor-driver-card flex justify-center items-end',
+                    {'mt-32' : showDivider}
                 )}
                 ref={ref}
             >
@@ -46,7 +47,7 @@ export const ConstructorDriver = (props) => {
                     </div>
                 </div>
             </div>
-            <div className="divider-glow-dark w-full" />
+            {showDivider && <div className="divider-glow-dark w-full" />}
         </>
     );
 };
@@ -54,10 +55,11 @@ export const ConstructorDriver = (props) => {
 ConstructorDriver.propTypes = {
     className: PropTypes.string,
     year: PropTypes.number,
-    points: PropTypes.string,
+    points: PropTypes.string || PropTypes.element,
     image: PropTypes.string,
     car: PropTypes.string,
     firstName: PropTypes.string,
     lastName: PropTypes.string,
     type: PropTypes.string,
+    showDivider: PropTypes.bool,
 };

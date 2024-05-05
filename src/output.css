@@ -1040,6 +1040,10 @@ input[type="range"]::-ms-fill-lower {
   pointer-events: none;
 }
 
+.visible {
+  visibility: visible;
+}
+
 .invisible {
   visibility: hidden;
 }
@@ -3073,6 +3077,11 @@ input[type="range"]::-ms-fill-lower {
   padding-bottom: .8rem;
 }
 
+.py-32 {
+  padding-top: 3.2rem;
+  padding-bottom: 3.2rem;
+}
+
 .pb-2 {
   padding-bottom: 0.2rem;
 }
@@ -3087,6 +3096,10 @@ input[type="range"]::-ms-fill-lower {
 
 .pb-48 {
   padding-bottom: 4.8rem;
+}
+
+.pb-\[6\.4rem\] {
+  padding-bottom: 6.4rem;
 }
 
 .pl-10 {
@@ -3167,6 +3180,18 @@ input[type="range"]::-ms-fill-lower {
 
 .pt-\[22rem\] {
   padding-top: 22rem;
+}
+
+.pb-64 {
+  padding-bottom: 6.4rem;
+}
+
+.pb-32 {
+  padding-bottom: 3.2rem;
+}
+
+.pt-8 {
+  padding-top: .8rem;
 }
 
 .text-left {
@@ -6258,6 +6283,10 @@ code {
   .max-md\:hidden {
     display: none;
   }
+
+  .max-md\:flex-col {
+    flex-direction: column;
+  }
 }
 
 @media not all and (min-width: 640px) {
@@ -6450,6 +6479,10 @@ code {
 
   .md\:items-center {
     align-items: center;
+  }
+
+  .md\:justify-center {
+    justify-content: center;
   }
 
   .md\:justify-between {
