@@ -38,6 +38,7 @@ export function DriverStandings({ selectedYear }) {
                 firstName={standing.firstName}
                 lastName={standing.lastName}
                 year={selectedYear} 
+                showDivider
               />
             </li>
           ))}

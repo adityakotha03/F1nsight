@@ -2,6 +2,7 @@ import React, { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
 import classNames from 'classnames';
 import { FaGithub, FaLinkedin, FaGlobe } from 'react-icons/fa'; // Importing icons from React Icons
+import { ConstructorDriver } from './ConstructorDriver';
 
 export const FooterDetails = ({ className }) => {
     const ref = useRef(null);
@@ -27,32 +28,20 @@ export const FooterDetails = ({ className }) => {
 
     return (
         <motion.div
-            className={classNames("footer-container bg-glow p-4 bg-neutral-950 mt-64", className)}
+            className={classNames("footer-container flex items-center  gap-32 max-md:flex-col  md:justify-center bg-glow px-16 p-32 bg-neutral-950 mt-64", className)}
             ref={ref}
             initial="hidden"
             animate={isInView ? "visible" : "hidden"}
         >
-            <div className="flex items-center">
-                <motion.img
-                    src="/images/2024/cars/ferrari.png"
-                    alt="Animated car - Ferrari"
-                    className="animated-car-image"
-                    variants={rightToLeftVariant}
-                    style={{
-                        width: 'auto',
-                        height: '50px',
-                    }}
-                />
-                <motion.div
-                    className="footer-text"
-                    variants={rightToLeftVariant}
-                    style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        marginLeft: '20px',
-                    }}
-                >
-                    Antoni Commodore
+            <h6 className="heading-6">Created by</h6>
+            <ConstructorDriver 
+                year={2024}
+                image="antoniF1"
+                firstName="Antoni"
+                lastName="Commodore"
+                car="ferrari"
+                points={
+                    <div className="flex item-center">
                     <a href="https://www.linkedin.com/in/antonicommodore/" className="icon-link" style={{ marginLeft: '10px' }}>
                         <FaLinkedin size={24} />
                     </a>
@@ -62,38 +51,27 @@ export const FooterDetails = ({ className }) => {
                     <a href="https://github.com/ant-dot-comm" className="icon-link" style={{ marginLeft: '10px' }}>
                         <FaGithub size={24} />
                     </a>
-                </motion.div>
-            </div>
-
-            <div className="flex items-center">
-                <motion.img
-                    src="/images/2024/cars/mercedes.png"
-                    alt="Animated car - Mercedes"
-                    className="animated-car-image"
-                    variants={leftToRightVariant}
-                    style={{
-                        width: 'auto',
-                        height: '50px',
-                    }}
-                />
-                <motion.div
-                    className="footer-text"
-                    variants={leftToRightVariant}
-                    style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        marginLeft: '20px',
-                    }}
-                >
-                    Aditya Kotha
+                    </div>
+                }
+            />
+            <ConstructorDriver 
+                year={2024}
+                image="adityaF1"
+                firstName="Aditya"
+                lastName="Kotha"
+                car="mercedes"
+                points={
+                    <div className="flex item-center">
                     <a href="https://www.linkedin.com/in/aditya-kotha-59a010241/" className="icon-link" style={{ marginLeft: '10px' }}>
                         <FaLinkedin size={24} />
                     </a>
                     <a href="https://github.com/adityakotha03" className="icon-link" style={{ marginLeft: '10px' }}>
                         <FaGithub size={24} />
                     </a>
-                </motion.div>
-            </div>
+                    </div>
+                }
+            />
+            <h6 className="heading-6">©2024 F1nsight</h6>
         </motion.div>
     );
 };
