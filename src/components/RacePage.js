@@ -134,8 +134,8 @@ export function RacePage() {
   }, [meetingKey, year]);
 
   const handleDriverSelectionClick = (index) => {
-    console.log(raceResults[index].Driver.code); // Log the driver code
-    console.log(raceResults[index].number);
+    // console.log(raceResults[index].Driver.code); // Log the driver code
+    // console.log(raceResults[index].number);
   
     if (activeButtonIndex === index) {
       setDriverSelected(false);

@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import classNames from 'classnames';
-import { FaGithub, FaLinkedin, FaGlobe } from 'react-icons/fa'; // Importing icons from React Icons
+import { FaGithub, FaLinkedin, FaGlobe } from 'react-icons/fa';
 import { ConstructorDriver } from './ConstructorDriver';
 
 export const FooterDetails = ({ className }) => {
