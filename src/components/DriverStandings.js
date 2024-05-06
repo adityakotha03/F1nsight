@@ -23,15 +23,16 @@ export function DriverStandings({ selectedYear }) {
   // console.log(standings);
 
   return (
-    <div className="sm:max-w-5xl sm:mx-auto pt-[22rem] sm:pt-[9.6rem]">
-      <h2 className="heading-2 text-center mb-64 text-neutral-500">Driver Standings</h2>
+    <div className="sm:max-w-5xl sm:mx-auto pt-[17rem] sm:pt-64">
+      <h2 className="heading-2 text-center mb-64 mt-64 text-neutral-500">Driver Standings</h2>
       {isLoading ? (
-        <Loading />
+        <Loading className="mt-[20rem] mb-[20rem]" />
       ) : (
         <ul>
           {standings.map((standing, index) => (
             <li key={index} className='w-full'>
               <ConstructorDriver 
+                className="mt-32"
                 image={standing.driverCode} 
                 car={standing.constructorId}
                 points={standing.points}

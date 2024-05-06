@@ -29,10 +29,10 @@ export function RaceResultsPage({ selectedYear }) {
 // console.log(raceDetails);
 
   return (
-    <div className="pt-[22rem] sm:pt-[9.6rem]">
-      <h2 className="heading-2 text-center mb-64 text-neutral-500">Race Results</h2>
+    <div className="pt-[17rem] sm:pt-64">
+      <h2 className="heading-2 text-center mb-64 mt-64 text-neutral-500">Race Results</h2>
       {isLoading ? (
-        <Loading />
+        <Loading className="mt-[20rem] mb-[20rem]" />
       ) : (
         <ul className=''>
           {raceDetails.map((race, index) => (

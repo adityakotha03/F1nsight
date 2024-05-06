@@ -20,10 +20,10 @@ export function ConstructorStandings({ selectedYear }) {
   }, [selectedYear]);
 
   return (
-    <div className="sm:max-w-7xl sm:mx-auto pt-[22rem] sm:pt-[9.6rem]">
-      <h2 className="heading-2 text-center mb-64 text-neutral-500">Driver Standings</h2>
+    <div className="sm:max-w-7xl sm:mx-auto pt-[17rem] sm:pt-64">
+      <h2 className="heading-2 text-center mb-64 mt-64 text-neutral-500">Constructor Standings</h2>
       {isLoading ? (
-        <Loading />
+        <Loading className="mt-[20rem] mb-[20rem]" />
       ) : (
       <ul>
         {standings.map((standing, index) => (

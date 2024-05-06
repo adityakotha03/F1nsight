@@ -24,7 +24,7 @@ export const ConstructorCar = (props) => {
                         alt="" 
                         className="-mt-40 -mr-80 sm:-mr-40"
                         height={85} 
-                        src={`/images/${year}/drivers/${drivers[0]}.png`} 
+                        src={`${process.env.PUBLIC_URL + "/images/" + year + "/drivers/" + drivers[0] + ".png"}`}
                         width={120} 
                         style={{
                             opacity: isInView ? 1 : 0,
@@ -36,7 +36,7 @@ export const ConstructorCar = (props) => {
                             alt="" 
                             className="absolute left-60"
                             height={85} 
-                            src={`/images/${year}/drivers/${drivers[3]}.png`} 
+                            src={`${process.env.PUBLIC_URL + "/images/" + year + "/drivers/" + drivers[3] + ".png"}`}
                             width={120} 
                             style={{
                                 opacity: isInView ? 1 : 0,
@@ -49,7 +49,7 @@ export const ConstructorCar = (props) => {
                         alt="" 
                         className="-mt-16 -mb-32 z-10"
                         height={85} 
-                        src={`/images/${year}/cars/${image}.png`} 
+                        src={`${process.env.PUBLIC_URL + "/images/" + year + "/cars/" + image + ".png"}`}
                         width={288} 
                         style={{
                             transform: isInView ? "none" : "translateX(-300px)",
@@ -62,7 +62,7 @@ export const ConstructorCar = (props) => {
                         alt="" 
                         className="-mt-40 -ml-80 sm:-ml-40"
                         height={85} 
-                        src={`/images/${year}/drivers/${drivers[1]}.png`} 
+                        src={`${process.env.PUBLIC_URL + "/images/" + year + "/drivers/" + drivers[1] + ".png"}`}
                         width={120} 
                         style={{
                             opacity: isInView ? 1 : 0,
@@ -74,7 +74,7 @@ export const ConstructorCar = (props) => {
                             alt="" 
                             className="absolute right-[7rem]"
                             height={85} 
-                            src={`/images/${year}/drivers/${drivers[2]}.png`} 
+                            src={`${process.env.PUBLIC_URL + "/images/" + year + "/drivers/" + drivers[2] + ".png"}`}
                             width={120} 
                             style={{
                                 opacity: isInView ? 1 : 0,

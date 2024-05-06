@@ -4,24 +4,23 @@ import classNames from 'classnames';
 import { useInView } from "framer-motion";
 
 export const ConstructorDriver = (props) => {
-    const { className, showDivider, points, image, car, firstName, lastName, year} = props;
+    const { className, points, image, car, firstName, lastName, year} = props;
     const ref = useRef(null);
     const isInView = useInView(ref, { once: true });
 
     return (
-        <>
+        <div>
             <div 
                 className={classNames(
                     className, 
                     'constructor-driver-card flex justify-center items-end',
-                    {'mt-32' : showDivider}
                 )}
                 ref={ref}
             >
                 <img 
                     alt="" 
-                    className="-mr-28"
-                    src={`/images/${year}/drivers/${image}.png`} 
+                    className="constructor-driver-card__person -mr-28"
+                    src={`${process.env.PUBLIC_URL + "/images/" + year + "/drivers/" + image + ".png"}`}
                     width={120} 
                     style={{
                         opacity: isInView ? 1 : 0,
@@ -34,8 +33,8 @@ export const ConstructorDriver = (props) => {
                     <div className="flex items-end">
                         <img 
                             alt="" 
-                            className="-mb-8 z-10 -ml-32"
-                            src={`/images/${year}/cars/${car}.png`} 
+                            className="constructor-driver-card__car -mb-8 z-10 -ml-32"
+                            src={`${process.env.PUBLIC_URL + "/images/" + year + "/cars/" + car + ".png"}`}
                             width={200} 
                             style={{
                                 transform: isInView ? "none" : "translateX(-50px)",
@@ -43,12 +42,12 @@ export const ConstructorDriver = (props) => {
                                 transition: "all 1s cubic-bezier(0.17, 0.55, 0.55, 1)"
                             }}
                         />
-                        <span className="heading-1">{points}</span>
+                        <span className="heading-1 z-10">{points}</span>
                     </div>
                 </div>
             </div>
-            {showDivider && <div className="divider-glow-dark w-full" />}
-        </>
+            <div className="divider-glow-dark w-full" />
+        </div>
     );
 };
 

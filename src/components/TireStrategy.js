@@ -36,11 +36,11 @@ export const TireStrategy = (props) => {
   }).filter(driverData => driverData !== undefined);
 
   const tireTypeClasses = {
-    soft: '#c00000', 
-    medium: '#ffd600', 
+    soft: '#e11d48', 
+    medium: '#fbbf24', 
     hard: '#ffffff',
-    intermediate: '#39b54a', 
-    wet: '#00aeef' 
+    intermediate: '#16a34a', 
+    wet: '#2563eb' 
   };
 
   console.log()
@@ -74,8 +74,8 @@ export const TireStrategy = (props) => {
 
     return (
         <>
-        <h3 className="heading-4 mb-16 text-neutral-500">Tire Strategy</h3>
-        <div className="bg-glow h-fit p-32 mb-16 relative">
+        <h3 className="heading-4 mb-16 mt-32 text-neutral-500">Tire Strategy</h3>
+        <div className="bg-glow bg-glow--large h-fit p-32 mb-16 relative">
           <ResponsiveContainer width="100%" height={driverCode ? 100 :  700}>
             <BarChart
               data={sortedTransformedData}
@@ -102,7 +102,7 @@ export const TireStrategy = (props) => {
                       dy='0'
                     />
                     <feGaussianBlur
-                      stdDeviation='3'
+                      stdDeviation='5'
                       result='offset-blur'
                     />
                     <feComposite
@@ -113,7 +113,7 @@ export const TireStrategy = (props) => {
                     />
                     <feFlood
                       floodColor={tireTypeClasses[key.replace(/[0-9]/g, '')]}
-                      floodOpacity='.15'
+                      floodOpacity='.1'
                       result='color'
                     />
                     <feComposite
