@@ -248,11 +248,11 @@ export function RacePage() {
       <div className="global-container flex flex-col sm:flex-row gap-16 mt-32">
         <div className="sm:w-[26rem]">
           {driverSelected && (
-            <div className="bg-glow mb-16">
-              <div className="flex items-end relative pt-16">
+            <div className="mb-32">
+              <div className="flex items-end relative">
                 <img 
                   alt="" 
-                  src={`/images/${year}/drivers/${selectedDriverData.acronym}.png`} 
+                  src={`${process.env.PUBLIC_URL + "/images/" + year + "/drivers/" + selectedDriverData.acronym + ".png"}`}
                   width={120} 
                   height={120} 
                   className="-ml-8"
@@ -260,7 +260,7 @@ export function RacePage() {
                 <img 
                     alt="" 
                     className="absolute -bottom-16 left-32"
-                    src={`/images/${year}/cars/${selectedDriverRaceData.Constructor.constructorId}.png`} 
+                    src={`${process.env.PUBLIC_URL + "/images/" + year + "/cars/" + selectedDriverRaceData.Constructor.constructorId + ".png"}`}
                     width={150} 
                 />
                 <div className="-ml-32 w-full">
@@ -269,8 +269,7 @@ export function RacePage() {
                   <p className="font-display gradient-text-dark text-[6.4rem] mr-16 leading-none text-right">{selectedDriverData.driver_number}</p>
                 </div>
               </div>
-              <div className="divider-glow-dark" />
-              <div className="px-16 pt-16 pb-24">
+              <div className="bg-glow bg-glow--large px-16 pt-16 pb-24">
 
                 <div className="flex items-start justify-between">
                   <div>
@@ -321,7 +320,7 @@ export function RacePage() {
             </div>
           )}
           <h3 className="heading-4 mb-16 text-neutral-500">Starting Grid</h3>
-          <div className="bg-glow p-32 h-fit">
+          <div className="bg-glow bg-glow--large p-32 h-fit">
             <ul className="flex flex-col w-fit m-auto">
               {startingGrid
                 .sort((a, b) => a.position - b.position)
@@ -356,8 +355,8 @@ export function RacePage() {
           <TireStrategy drivers={drivers} raceResults={raceResults} driverCode={driverSelected ? driversDetails[driverNumber] : null} driverColor={driversColor[driverCode]} />
           {!driverSelected && (
             <>
-              <h3 className="heading-4 mb-16 text-neutral-500">Fastest Laps</h3> 
-              <div className="bg-glow h-fit p-32 mb-16">
+              <h3 className="heading-4 mb-16 mt-32 text-neutral-500">Fastest Laps</h3> 
+              <div className="bg-glow bg-glow--large h-fit p-32 mb-16">
                 <div className="grid grid-cols-3 gap-4 mb-16  text-neutral-500">
                   <span className="tracking-xs uppercase">Driver</span> 
                   <span className="tracking-xs uppercase text-center">Time</span> 

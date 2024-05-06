@@ -20,7 +20,7 @@ export const Select = (props) => {
         >
             <select
                 {...rest}
-                className="select__input bg-glow bg-transparent"
+                className="select__input bg-glow bg-neutral-800/10"
                 id={inputId}
                 value={value}
             />

@@ -71,7 +71,7 @@ export const DriverCard = (props) => {
                     <p className="driver-card-position heading-1 px-8 py-4 bg-neutral-700">P{endPosition}</p>
                     <img 
                         alt="" 
-                        src={`/images/${year}/drivers/${driver.code}.png`} 
+                        src={`${process.env.PUBLIC_URL + "/images/" + year + "/drivers/" + driver.code + ".png"}`}
                         width={72} 
                         height={72} 
                         ref={ref}

@@ -1040,10 +1040,6 @@ input[type="range"]::-ms-fill-lower {
   pointer-events: none;
 }
 
-.visible {
-  visibility: visible;
-}
-
 .invisible {
   visibility: hidden;
 }
@@ -1345,6 +1341,10 @@ input[type="range"]::-ms-fill-lower {
   margin-bottom: .8rem;
 }
 
+.mb-\[20rem\] {
+  margin-bottom: 20rem;
+}
+
 .me-2 {
   margin-inline-end: 0.2rem;
 }
@@ -1435,6 +1435,10 @@ input[type="range"]::-ms-fill-lower {
 
 .mt-8 {
   margin-top: .8rem;
+}
+
+.mt-\[20rem\] {
+  margin-top: 20rem;
 }
 
 .block {
@@ -2570,6 +2574,10 @@ input[type="range"]::-ms-fill-lower {
   background-color: rgb(64 64 64 / var(--tw-bg-opacity));
 }
 
+.bg-neutral-800\/10 {
+  background-color: rgb(38 38 38 / 0.1);
+}
+
 .bg-neutral-800\/90 {
   background-color: rgb(38 38 38 / 0.9);
 }
@@ -3077,11 +3085,6 @@ input[type="range"]::-ms-fill-lower {
   padding-bottom: .8rem;
 }
 
-.py-32 {
-  padding-top: 3.2rem;
-  padding-bottom: 3.2rem;
-}
-
 .pb-2 {
   padding-bottom: 0.2rem;
 }
@@ -3096,10 +3099,6 @@ input[type="range"]::-ms-fill-lower {
 
 .pb-48 {
   padding-bottom: 4.8rem;
-}
-
-.pb-\[6\.4rem\] {
-  padding-bottom: 6.4rem;
 }
 
 .pl-10 {
@@ -3178,20 +3177,12 @@ input[type="range"]::-ms-fill-lower {
   padding-top: .5rem;
 }
 
+.pt-\[17rem\] {
+  padding-top: 17rem;
+}
+
 .pt-\[22rem\] {
   padding-top: 22rem;
-}
-
-.pb-64 {
-  padding-bottom: 6.4rem;
-}
-
-.pb-32 {
-  padding-bottom: 3.2rem;
-}
-
-.pt-8 {
-  padding-top: .8rem;
 }
 
 .text-left {
@@ -3925,7 +3916,14 @@ code {
 
 .bg-glow {
   box-shadow: inset 0 0 2.4rem 0 rgba(255, 255, 255, .25), 0 0 2.4rem 0 rgba(0, 0, 0, .5);
-  background-color: rgba(72, 72, 72, .1);
+}
+
+.bg-glow--large {
+  background-color: #242424;
+  box-shadow: inset 0 0 4rem 0 rgba(255, 255, 255, .1), 0 0 2.4rem 0 rgba(0, 0, 0, .5);
+  @media (min-width: 768px) {
+    box-shadow: inset 0 0 20rem 0 rgba(255, 255, 255, .1), 0 0 2.4rem 0 rgba(0, 0, 0, .5);
+  }
 }
 
 .bg-glow--hover:hover {
@@ -4119,7 +4117,6 @@ code {
 }
 
 .canvas-container:after {
-  box-shadow: inset 0 0 2.4rem 0 rgba(255, 255, 255, .25);
   content: '';
   position: absolute;
   top: 0;
@@ -4127,6 +4124,7 @@ code {
   bottom: 0;
   left: 0;
   pointer-events: none;
+  box-shadow: inset 0 0 20rem 0 rgba(255, 255, 255, .1), 0 0 2.4rem 0 rgba(0, 0, 0, .5);
 }
 
 .race-controls {
@@ -4189,9 +4187,13 @@ code {
 }
 
 .select__input {
+  color: inherit;
   padding: 2.2rem 3.2rem 0.8rem 1.6rem !important;
   font-size: 1.6rem;
   font-family: "Bungee", sans-serif;
+  option {
+    color: inherit;
+  }
   @media (max-width: 639px) {
     width: 100%;
   }
@@ -4204,6 +4206,39 @@ code {
   pointer-events: none;
   position: absolute;
   top: .8rem;
+}
+
+.circle-gage {
+  position:absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.circle-gage--large {
+  width: 40rem;
+  height: 40rem;
+}
+
+.circle-gage--medium {
+  width: 33rem;
+  height: 33rem;
+}
+
+.circle-gage--small {
+  width: 27rem;
+  height: 27rem;
+}
+
+/* footer */
+
+.footer-details {
+  .constructor-driver-card__person {
+    width: 10rem;
+  }
+  .constructor-driver-card__car {
+    width: 15rem;
+  }
 }
 
 .after\:absolute::after {
@@ -6280,12 +6315,28 @@ code {
 }
 
 @media not all and (min-width: 768px) {
+  .max-md\:mt-32 {
+    margin-top: 3.2rem;
+  }
+
+  .max-md\:mt-48 {
+    margin-top: 4.8rem;
+  }
+
+  .max-md\:mt-16 {
+    margin-top: 1.6rem;
+  }
+
   .max-md\:hidden {
     display: none;
   }
 
   .max-md\:flex-col {
     flex-direction: column;
+  }
+
+  .max-md\:items-end {
+    align-items: flex-end;
   }
 }
 
@@ -6410,6 +6461,10 @@ code {
     padding-right: .8rem;
   }
 
+  .sm\:pt-64 {
+    padding-top: 6.4rem;
+  }
+
   .sm\:pt-\[9\.6rem\] {
     padding-top: 9.6rem;
   }
@@ -6439,6 +6494,14 @@ code {
 
   .md\:mr-6 {
     margin-right: .6rem;
+  }
+
+  .md\:mb-8 {
+    margin-bottom: .8rem;
+  }
+
+  .md\:mb-16 {
+    margin-bottom: 1.6rem;
   }
 
   .md\:block {
@@ -6477,8 +6540,16 @@ code {
     flex-direction: row;
   }
 
+  .md\:items-end {
+    align-items: flex-end;
+  }
+
   .md\:items-center {
     align-items: center;
+  }
+
+  .md\:justify-start {
+    justify-content: flex-start;
   }
 
   .md\:justify-center {
@@ -6580,4 +6651,3 @@ code {
 .\[\&\>\*\]\:last\:border-b-0:last-child>* {
   border-bottom-width: 0px;
 }
-
