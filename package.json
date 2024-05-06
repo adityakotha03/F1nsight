@@ -2,6 +2,7 @@
   "name": "temp",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://adityakotha03.github.io/F1nsight",
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.5.1",
     "@fortawesome/free-solid-svg-icons": "^6.5.1",
@@ -27,7 +28,9 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "eslintConfig": {
     "extends": [
@@ -49,6 +52,7 @@
   },
   "devDependencies": {
     "autoprefixer": "^10.4.19",
+    "gh-pages": "^6.1.1",
     "postcss-import": "^16.1.0",
     "postcss-nesting": "^12.1.1",
     "tailwindcss": "^3.4.3"
