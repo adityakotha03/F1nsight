@@ -5,7 +5,6 @@ import { fas } from '@fortawesome/free-solid-svg-icons';
 
 //import { fetchUpcomingRace } from './utils/api';
 import { Header, FooterDetails, RaceSelector, RacePage, DriverStandings, ConstructorStandings, RaceResultsPage, Select } from './components';
-import { Footer } from 'flowbite-react';
 
 library.add(fas);
 
