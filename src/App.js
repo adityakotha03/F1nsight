@@ -50,7 +50,7 @@ function App() {
   };
 
   return (
-    <Router>
+    <Router basename='/F1nsight'>
       <Header isRaceSelected={isRaceSelected}>
         <Select label="Year" value={selectedYear} onChange={handleYearChange}>
           {generateYears(2023).map((year) => (

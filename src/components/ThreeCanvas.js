@@ -72,13 +72,15 @@ export const ThreeCanvas = ({ MapFile, locData, driverColor, driverSelected, fas
 
     let carModel;
     const loader = new GLTFLoader();
-    loader.load('/car/scene.gltf', gltf => {
+    loader.load(`${process.env.PUBLIC_URL + "/car/scene.gltf"}`, gltf => {
       carModel = gltf.scene;
       carModel.scale.set(0.1, 0.1, 0.1);
       carModel.rotation.x = Math.PI / 2;
       carModel.rotation.y = -Math.PI;
       carModel.position.set(carPosition.x, carPosition.y, carPosition.z);
-      scene.add(carModel);
+      if(driverSelected && locData.length > 0){
+        scene.add(carModel);
+      }
 
       if (haloView) {
         carModel.add(camera); 
