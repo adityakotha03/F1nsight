@@ -72,7 +72,7 @@ export function RacePage() {
     
         // Check if the country is in the map and replace it if it is
         const circuitId = locationMap[location];
-        setMapPath(`/map/${circuitId}.gltf`);
+        setMapPath(`${process.env.PUBLIC_URL + "/map/" + circuitId + ".gltf"}`);
 
         if (circuitId) {
           const results = await fetchRaceResultsByCircuit(year, circuitId);
@@ -138,10 +138,12 @@ export function RacePage() {
     // console.log(raceResults[index].number);
   
     if (activeButtonIndex === index) {
+      setLocData({});
       setDriverSelected(false);
       setActiveButtonIndex(null); // Reset the active button index
       setDriverCode('');
     } else {
+      setLocData({});
       setDriverSelected(true);
       setDriverCode(raceResults[index].Driver.code);
       setDriverNumber(raceResults[index].number);

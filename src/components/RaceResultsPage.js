@@ -21,11 +21,25 @@ export function RaceResultsPage({ selectedYear }) {
     fetchData();
   }, [selectedYear]);
 
-  const formatTime = (time) => {
-    if (!time) return 'TBA';
-    return `${time.slice(0, -1)} UTC`; // Remove the 'Z' and append ' UTC'
-  };
+  const formatTime = (date, time) => {
+    if (!date || !time) return 'TBA';
 
+    // Combine date and time to form a full ISO 8601 date-time string
+    const dateTimeString = `${date}T${time}`;
+
+    const dateObject = new Date(dateTimeString);
+    if (isNaN(dateObject.getTime())) {
+      return 'Invalid Date';
+    }
+    const optionsDate = { month: 'numeric', day: 'numeric', year: 'numeric' };
+    const optionsTime = { hour: 'numeric', minute: 'numeric', hour12: true, timeZoneName: 'short' };
+    const formattedDate = dateObject.toLocaleDateString(undefined, optionsDate);
+    const formattedTime = dateObject.toLocaleTimeString(undefined, optionsTime);
+
+    const formattedTimeCapitalized = formattedTime.replace('am', 'AM').replace('pm', 'PM');
+    return `${formattedDate} ${formattedTimeCapitalized}`;
+  };
+  
 // console.log(raceDetails);
 
   return (
@@ -42,8 +56,7 @@ export function RaceResultsPage({ selectedYear }) {
                   {race.season} {race.raceName}
                 </h6>
                 <div className='text-sm text-neutral-500 tracking-wide'>
-                  {race.date}
-                  <span className="ml-8">{formatTime(race.time)}</span>
+                  {formatTime(race.date, race.time)}
                 </div>
               </div>
               {race.results && race.results.length > 0 && (
