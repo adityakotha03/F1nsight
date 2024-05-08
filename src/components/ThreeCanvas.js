@@ -43,8 +43,8 @@ export const ThreeCanvas = ({ MapFile, locData, driverColor, driverSelected, fas
 		// document.body.appendChild( stats.dom );
 
     const camera = new THREE.PerspectiveCamera(75, mountRef.current.clientWidth / mountRef.current.clientHeight, 0.1, 1000);
-    camera.position.z = 10;
-    camera.position.y = -2;
+    camera.position.z = 7;
+    camera.position.y = -7;
 
     const renderer = new THREE.WebGLRenderer();
     renderer.setSize(mountRef.current.clientWidth, mountRef.current.clientHeight);
