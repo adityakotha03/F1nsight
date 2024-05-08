@@ -63,12 +63,14 @@ export const ThreeCanvas = ({ MapFile, locData, driverColor, driverSelected, fas
 
     let map;
     const lo = new GLTFLoader();
-    lo.load(MapFile, gltf => {
-      map = gltf.scene;
-      map.scale.set(0.1, 0.1, 0.1);
-      map.rotation.x = Math.PI / 2; // causing orbit issue in canvas
-      scene.add(map);
-    }, undefined, error => console.error(error));
+    if (MapFile) { 
+      lo.load(MapFile, gltf => {
+        map = gltf.scene;
+        map.scale.set(0.1, 0.1, 0.1);
+        map.rotation.x = Math.PI / 2; // causing orbit issue in canvas
+        scene.add(map);
+      }, undefined, error => console.error(error));
+    }
 
     let carModel;
     const loader = new GLTFLoader();
