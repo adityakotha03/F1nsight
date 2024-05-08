@@ -22,7 +22,6 @@ export const ThreeCanvas = ({ MapFile, locData, driverColor, driverSelected, fas
   //   console.log(carPosition);
   // }
   
-  // const ambientLight = useMemo(() => new THREE.AmbientLight(0xffffff, 0.5), []);
   const directionalLight1 = useMemo(() => {
     const light = new THREE.DirectionalLight(0xffffff, 10);
     light.position.set(100, 20, 20);
@@ -37,7 +36,6 @@ export const ThreeCanvas = ({ MapFile, locData, driverColor, driverSelected, fas
 
   useEffect(() => {
     const scene = new THREE.Scene();
-    // scene.add(ambientLight);
     scene.add(directionalLight1);
     scene.add(directionalLight2);
 
@@ -122,7 +120,6 @@ export const ThreeCanvas = ({ MapFile, locData, driverColor, driverSelected, fas
       if (carModel && locData.length > 0 && driverSelected && !carModel.userData.tweenActive && !isPaused) {
         const newPosition = locData.shift();
         setCarPosition(newPosition);
-        //console.log('New position:', newPosition); // Log to see the new positions
 
         carModel.userData.tweenActive = true;
         const initialPosition = { x: carModel.position.x, y: carModel.position.y, z: carModel.position.z }; // Store initial position

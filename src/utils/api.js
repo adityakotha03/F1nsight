@@ -191,7 +191,7 @@ function scaleCoordinates(x, y, scale_factor) {
 }
 
 export async function fetchLocationData(sessionKey, driverId, startTime, endTime, scaleFactor = 100) {
-  const fetchStartTime = performance.now();
+  // const fetchStartTime = performance.now();
 
   // Assuming the base URL for API calls might be reused
   const baseUrl = 'https://api.openf1.org/v1';
@@ -212,15 +212,15 @@ export async function fetchLocationData(sessionKey, driverId, startTime, endTime
     carDataResponse.json()
   ]);
 
-  const fetchEndTime = performance.now();
-  console.log(`Time taken to fetch data: ${(fetchEndTime - fetchStartTime).toFixed(2)} milliseconds`);
+  // const fetchEndTime = performance.now();
+  // console.log(`Time taken to fetch data: ${(fetchEndTime - fetchStartTime).toFixed(2)} milliseconds`);
   
   // Sort location and car data by date
   locationData.sort((a, b) => new Date(a.date) - new Date(b.date));
   carData.sort((a, b) => new Date(a.date) - new Date(b.date));
 
   // Merge location and car data using a sliding window approach
-  const mergeStartTime = performance.now();
+  // const mergeStartTime = performance.now();
   let carDataIndex = 0;
   const mergedData = locationData.map(location => {
     const [scaledX, scaledY] = scaleCoordinates(location.x, location.y, scaleFactor);
@@ -247,8 +247,8 @@ export async function fetchLocationData(sessionKey, driverId, startTime, endTime
     };
   });
 
-  const mergeEndTime = performance.now();
-  console.log(`Time taken to merge location data: ${(mergeEndTime - mergeStartTime).toFixed(2)} milliseconds`);
+  // const mergeEndTime = performance.now();
+  // console.log(`Time taken to merge location data: ${(mergeEndTime - mergeStartTime).toFixed(2)} milliseconds`);
 
   return mergedData;
 }
