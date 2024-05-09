@@ -20,7 +20,7 @@ Our interactive canvas is a standout feature, offering users a real-time simulat
 
 - Select a driver and watch their race unfold lap by lap.
 - Switch between multiple camera views to get a closer look at race strategies and driver skills.
-- Analyze detailed graphical representations of speed, gear, and track position.
+- Analyze detailed representations of speed, gear, and track position per driver.
 
 ## Notice
 
