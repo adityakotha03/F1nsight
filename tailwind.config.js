@@ -11,7 +11,10 @@ module.exports = {
       },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-      }
+      },
+      screens: {
+        xs: '480px',
+      },
     },
     fontSize: {
       xs: '1rem',

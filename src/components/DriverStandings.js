@@ -23,10 +23,10 @@ export function DriverStandings({ selectedYear }) {
   // console.log(standings);
 
   return (
-    <div className="sm:max-w-5xl sm:mx-auto pt-[17rem] sm:pt-64">
-      <h2 className="heading-2 text-center mb-64 mt-64 text-neutral-500">Driver Standings</h2>
+    <div className="global-container">
+      <h2 className="heading-2 text-center mb-64 mt-64 text-neutral-300">Driver Standings</h2>
       {isLoading ? (
-        <Loading className="mt-[20rem] mb-[20rem]" />
+        <Loading className="mt-[20rem] mb-[20rem]" message={`Loading ${selectedYear} Driver Standings`} />
       ) : (
         <ul>
           {standings.map((standing, index) => (

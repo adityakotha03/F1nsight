@@ -176,12 +176,20 @@ export const ThreeCanvas = ({ MapFile, locData, driverColor, driverSelected, fas
     }
   };
 
+  console.log(driverDetails)
+
   return (
     <div className='relative'>
       <div ref={mountRef} className="canvas-container" />
       {controls}
-      {driverSelected &&
-        <div className="driver-data absolute top-1 right-1" ref={infoRef}>
+      {driverSelected && 
+        <div 
+          className={classNames(
+            "driver-data absolute",
+            infoRef.current && driverDetails ? "top-1 right-1" : "top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2"
+          )} 
+          ref={infoRef}
+        >
           {(infoRef.current && driverDetails) ? (
             <div className="p-16 shadow-xl bg-neutral-800/90 backdrop-blur-sm">
               <div className="flex flex-col">
@@ -241,9 +249,8 @@ export const ThreeCanvas = ({ MapFile, locData, driverColor, driverSelected, fas
                 </div>
                 <p className="uppercase text-[1rem] tracking-sm">Brake</p>
               </div>
-              
             </div>
-          ) : <Loading className="mt-64" />}
+          ) : <Loading className="mt-64" message="Loading Telemetry Data" />}
         </div>
       }
     </div>

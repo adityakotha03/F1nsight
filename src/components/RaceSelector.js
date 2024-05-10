@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Select } from './Select';
 
-export const RaceSelector = ({ races, selectedYear, setIsRaceSelected }) => {
+export const RaceSelector = ({ races, selectedYear, setIsRaceSelected, isRaceSelected }) => {
   const navigate = useNavigate();
 
-  //console.log(races)
+  const [selectValue, setSelectValue] = useState('');
 
   const handleRaceChange = (e) => {
     if (e.target.value === "") {
@@ -14,18 +14,35 @@ export const RaceSelector = ({ races, selectedYear, setIsRaceSelected }) => {
     } else {
       setIsRaceSelected(true);
       const race = races.find(r => r.meeting_name === e.target.value);
+      setSelectValue(race.meeting_name);
       if (race) {
-        navigate(`/race/${race.meeting_key}`, { state: { raceName: race.meeting_name, meetingKey: race.meeting_key, year: selectedYear, location: race.location } });
+        navigate(
+          `/race/${race.meeting_key}`, 
+          { 
+            state: { 
+              raceName: race.meeting_name,
+              meetingKey: race.meeting_key, 
+              year: selectedYear, 
+              location: race.location 
+            }
+          }
+        );
       }
     }
   };
 
+  useEffect(() => {
+    if (!isRaceSelected) { 
+      setSelectValue('');
+    };
+  }, [isRaceSelected]);
+
   return (
-    <Select label="Race" onChange={handleRaceChange}>
+    <Select label="Race" onChange={handleRaceChange} value={selectValue}>
         <option value="">---</option>
         {races.map((race) => (
           <option key={race.meeting_key} value={race.meeting_name}>{race.meeting_name}</option>
-      ))}
+        ))}
     </Select>
   );
 };

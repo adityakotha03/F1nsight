@@ -1,71 +1,115 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import classNames from 'classnames';
 import React, { useState, useEffect, useRef } from 'react';
 import { NavLink } from 'react-router-dom';
 
 import { ReactComponent as Logo} from './f1nsight.svg';
+import { Select } from './Select';
+
+import { RaceSelector } from './RaceSelector';
 
 export const Header = (props) => {
-    const { children } = props;
-    const [isOpen, setIsOpen] = useState(false);
+    const { setSelectedYear, selectedYear, currentYear } = props;
+
+    const [subNavOpenOpen, setSubNavOpen] = useState(false);
+    const [page, setPage] = useState('Race Results');
+    const [races, setRaces] = useState([]);
+    const [isRaceSelected, setIsRaceSelected] = useState(false);
+
     const navRef = useRef(null);
 
     useEffect(() => {
         const handleOutsideClick = (event) => {
             if (navRef.current && !navRef.current.contains(event.target)) {
-                setIsOpen(false);
+                setSubNavOpen(false);
             }
         };
-
         document.addEventListener('click', handleOutsideClick);
-
         return () => {
             document.removeEventListener('click', handleOutsideClick);
         };
     }, []);
 
-    const handleNavLinkClick = () => {
-        setIsOpen(false);
+    useEffect(() => {
+        const fetchRaces = async () => {
+        const response = await fetch(`https://api.openf1.org/v1/meetings?year=${selectedYear}`);
+        if (response.ok) {
+            const data = await response.json();
+            setRaces(data);
+        }
+        };
+
+        fetchRaces();
+    }, [selectedYear]);
+
+    const handleYearChange = (e) => {
+        setSelectedYear(e.target.value);
+    };
+
+    const generateYears = (startYear) => {
+        const years = [];
+        for (let year = currentYear; year >= startYear; year--) {
+          years.push(year);
+        }
+        return years;
+    };
+
+    const handleNavLinkClick = (page) => {
+        setSubNavOpen(false);
+        setPage(page)
+        setIsRaceSelected(false)
     };
 
     return (
-        <header className="fixed -top-1 w-full z-[100]">
-            <div className="flex flex-col items-start sm:items-center sm:flex-row sm:justify-between gap-8 py-8 px-16 shadow-lg bg-glow bg-neutral-800/90 backdrop-blur-sm">
-                <div className="flex item-center gap-16 max-sm:justify-between max-sm:w-full">
+        <header className="global-header">
+            <div className="global-header__main-nav shadow-lg bg-glow bg-neutral-800/90 backdrop-blur-sm">
+
+                <div className="global-header__main-nav__left">
                     <a href="/"><Logo height={48}/></a>
+                    <Select label="Year" value={selectedYear} onChange={handleYearChange}>
+                        {generateYears(2023).map((year) => (
+                        <option key={year} value={year}>{year}</option>
+                        ))}
+                    </Select>
+                </div>
+
+                <div className="global-header__main-nav__right">
                     <button 
-                        className="text-sm tracking-xs uppercase cursor-pointer pt-18" 
+                        className="select select--style-for-button text-left max-md:w-full"
                         onClick={(e) => {
                             e.stopPropagation();
-                            setIsOpen(!isOpen);
+                            setSubNavOpen(!subNavOpenOpen);
                         }}
                     >
-                        Results 
-                        <FontAwesomeIcon 
-                            icon="caret-down"
-                            className={classNames("fa-xs ml-4", {'fa-rotate-180' : isOpen})} 
-                        />
+                        <div className="select__input bg-glow bg-neutral-800/10 leading-none min-w-[18rem]">
+                            {isRaceSelected ? '---' : page}
+                        </div>
+                        <div className="select__label tracking-xs uppercase">
+                            Season Results
+                        </div>
                     </button>
-                </div>
-                <div className="flex flex-col sm:flex-row max-sm:w-full gap-8">
-                    {children}
+                    <RaceSelector 
+                        races={races} 
+                        selectedYear={selectedYear} 
+                        setIsRaceSelected={setIsRaceSelected} 
+                        isRaceSelected={isRaceSelected}
+                        page={page}
+                    />
                 </div>
             </div>
+
             <nav 
-                className="
-                    flex flex-col sm:flex-row items-center justify-center 
-                    gap-16 sm:gap-32 py-48 shadow-xl 
-                    border-b-2 border-neutral-800 bg-neutral-900/90 backdrop-blur-sm
-                    heading-4 absolute w-full ease-in-out duration-300"
+                className="global-header__sub-nav text-center
+                    border-b-2 border-neutral-800 bg-neutral-900/90 backdrop-blur-sm shadow-xl
+                    ease-in-out duration-300 uppercase tracking-xs"
                 style={{
-                    opacity: isOpen ? '1' : '0',
-                    pointerEvents: isOpen ? 'initial' : 'none' 
+                    opacity: subNavOpenOpen ? '1' : '0',
+                    pointerEvents: subNavOpenOpen ? 'initial' : 'none',
+                    height: subNavOpenOpen ? 'inherit' : '1rem', 
                 }}
                 ref={navRef}
             >
-                <NavLink activeclassname="active" className="navLink" to="/" onClick={handleNavLinkClick}>Race Results</NavLink>
-                <NavLink activeclassname="active" className="navLink" to="/constructor-standings" onClick={handleNavLinkClick}>Constructor Standings</NavLink>
-                <NavLink activeclassname="active" className="navLink" to="/driver-standings" onClick={handleNavLinkClick}>Driver Standings</NavLink>
+                <NavLink activeclassname="active" className="navLink" to="/" onClick={() => handleNavLinkClick('Race Results')}>Race Results</NavLink>
+                <NavLink activeclassname="active" className="navLink" to="/constructor-standings" onClick={() => handleNavLinkClick('Constructor Standings')}>Constructor Standings</NavLink>
+                <NavLink activeclassname="active" className="navLink" to="/driver-standings" onClick={() => handleNavLinkClick('Driver Standing')}>Driver Standings</NavLink>
             </nav>
         </header>
     );

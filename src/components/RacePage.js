@@ -131,7 +131,7 @@ export function RacePage() {
     };    
 
     fetchData();
-  }, [meetingKey, year]);
+  }, [meetingKey, year, location]);
 
   const handleDriverSelectionClick = (index) => {
     // console.log(raceResults[index].Driver.code); // Log the driver code
@@ -247,7 +247,7 @@ export function RacePage() {
         />    
       </div>
 
-      <div className="global-container flex flex-col sm:flex-row gap-16 mt-32">
+      <div className="page-container-centered flex flex-col sm:flex-row gap-16 mt-32">
         <div className="sm:w-[26rem]">
           {driverSelected && (
             <div className="mb-32">
@@ -331,18 +331,12 @@ export function RacePage() {
                     key={index} 
                     className="text-center w-fit even:-mt-32 even:ml-[8rem] even:mb-24"
                   >
-                    <div className={classNames(
-                      "text-sm font-display", 
-                      driverCode === driversDetails[gridPosition.driver_number] ? "text-neutral-200" : "text-neutral-500"
-                      )}
-                    >
+                    <div className="text-sm font-display text-neutral-200">
                       P{gridPosition.position}
                     </div>
-                    <div className={classNames(
-                      "border-x-2 border-t-2 border-solid px-4 pt-4 w-64 font-display",
-                      driverCode === driversDetails[gridPosition.driver_number] ? "border-neutral-200" : " border-neutral-500"
-                      )}
-                      style={{color: driverCode === driversDetails[gridPosition.driver_number] ? `#${driversColor[driverCode]}` : "#737373"}}
+                    <div 
+                      className="border-x-2 border-t-2 border-solid px-4 pt-4 w-64 font-display  border-neutral-500"
+                      style={{color: driversDetails[gridPosition.driver_number] ? `#${driversColor[driversDetails[gridPosition.driver_number]]}` : "#737373"}}
                     >
                       {driversDetails[gridPosition.driver_number]}
                     </div> 
@@ -364,6 +358,7 @@ export function RacePage() {
                   <span className="tracking-xs uppercase text-center">Time</span> 
                   <span className="tracking-xs uppercase text-right">Lap</span> 
                 </div>
+                <div className='divider-glow-medium' />
                 <ul>
                   {raceResults
                   .filter(result => result.FastestLap && result.FastestLap.rank)
@@ -378,7 +373,7 @@ export function RacePage() {
                         <span className="text-center">{result.FastestLap.Time.time}</span>
                         <span className="text-right">{result.FastestLap.lap}</span>
                       </li>
-                      <div className='divider-glow-dark' />
+                      <div className='divider-glow-medium' />
                     </React.Fragment>
                   ))}
                 </ul>

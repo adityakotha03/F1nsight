@@ -1,9 +1,13 @@
+@import "./components/Header.css";
+@import "./components/Select.css";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 html {
 	font-size: 62.5%;
+  overflow-x: hidden;
 }
 
 body {
@@ -64,6 +68,17 @@ code {
 /* ------- */
 
 .global-container {
+  padding-top: 17rem;
+  @screen sm {
+    padding-top: 12rem;
+    max-width: 1024px;
+    margin: 0 auto;
+  }
+  @screen md {
+    padding-top: 6.4rem;
+  }
+}
+.page-container-centered {
   margin: 0 auto;
   max-width: 120rem;
   padding: 0 2.4rem;
@@ -96,6 +111,11 @@ code {
   border-top: .1rem solid theme('colors.neutral.600');
   background: radial-gradient(ellipse at top, theme('colors.neutral.600') 0%, transparent 64%);
   height: 1.2rem;
+  width: 100%;
+}
+.divider-glow-medium {
+  background: radial-gradient(ellipse at top , theme('colors.neutral.900') 0%, transparent 75%);
+  height: 1.6rem;
   width: 100%;
 }
 .divider-glow-dark {
@@ -203,10 +223,15 @@ code {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  height: 3.2rem;
   background: linear-gradient(90deg, rgba(31,31,31,0) 0%, rgba(31,31,31,.7) 15%, rgba(31,31,31,.7) 5%, rgba(31,31,31,0) 100%);
-  width: 150%;
+  text-align: center;
   z-index: 1;
+  width: 150%;
+  @media (min-width: 480px) {
+    height: 3.2rem;
+    white-space: nowrap;
+    width: initial;
+  }
 }
 .loading-animation__title:before {
   content: '';
@@ -295,54 +320,6 @@ code {
 }
 .recharts-tooltip-label {
   font-family: "Bungee", sans-serif;
-}
-
-/* select input */
-.select {
-  position: relative;
-}
-
-.select__input {
-  color: inherit;
-  padding: 2.2rem 3.2rem 0.8rem 1.6rem !important;
-  font-size: 1.6rem;
-  font-family: "Bungee", sans-serif;
-
-  option {
-    color: inherit;
-  }
-  
-  @media (max-width: 639px) {
-    width: 100%;
-  }
-}
-
-.select__label {
-  font-size: 1rem;
-  color: #b7b7b7;
-  left: 1.6rem;
-  pointer-events: none;
-  position: absolute;
-  top: .8rem;
-}
-
-.circle-gage {
-  position:absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
-.circle-gage--large {
-  width: 40rem;
-  height: 40rem;
-}
-.circle-gage--medium {
-  width: 33rem;
-  height: 33rem;
-}
-.circle-gage--small {
-  width: 27rem;
-  height: 27rem;
 }
 
 /* footer */
