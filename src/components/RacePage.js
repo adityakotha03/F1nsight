@@ -331,12 +331,18 @@ export function RacePage() {
                     key={index} 
                     className="text-center w-fit even:-mt-32 even:ml-[8rem] even:mb-24"
                   >
-                    <div className="text-sm font-display text-neutral-200">
+                    <div className={classNames(
+                      "text-sm font-display", 
+                      !driverCode === driversDetails[gridPosition.driver_number] ? "text-neutral-200" : "text-neutral-500"
+                      )}
+                    >
                       P{gridPosition.position}
                     </div>
-                    <div 
-                      className="border-x-2 border-t-2 border-solid px-4 pt-4 w-64 font-display  border-neutral-500"
-                      style={{color: driversDetails[gridPosition.driver_number] ? `#${driversColor[driversDetails[gridPosition.driver_number]]}` : "#737373"}}
+                    <div className={classNames(
+                      "border-x-2 border-t-2 border-solid px-4 pt-4 w-64 font-display",
+                      !driverCode === driversDetails[gridPosition.driver_number] ? "border-neutral-200" : " border-neutral-500"
+                      )}
+                      style={{color: driverCode === driversDetails[gridPosition.driver_number] ? `#${driversColor[driversDetails[gridPosition.driver_number]]}` : !driverCode ? `#${driversColor[driversDetails[gridPosition.driver_number]]}` : "#737373"}}
                     >
                       {driversDetails[gridPosition.driver_number]}
                     </div> 
