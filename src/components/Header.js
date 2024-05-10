@@ -72,7 +72,7 @@ export const Header = (props) => {
                     </Select>
                 </div>
 
-                <div className="global-header__main-nav__right">
+                <div className="global-header__main-nav__right flex max-sm:flex-col">
                     <button 
                         className="select select--style-for-button text-left max-md:w-full"
                         onClick={(e) => {
