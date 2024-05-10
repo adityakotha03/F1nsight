@@ -43,8 +43,6 @@ export const TireStrategy = (props) => {
     wet: '#2563eb' 
   };
 
-  console.log()
-
   const tireKeys = [
     ...new Set(sortedTransformedData.flatMap(Object.keys).filter(key => key !== 'acronym')),
   ];
