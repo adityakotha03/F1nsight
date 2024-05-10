@@ -21,9 +21,9 @@ export function ConstructorStandings({ selectedYear }) {
 
   return (
     <div className="sm:max-w-7xl sm:mx-auto pt-[17rem] sm:pt-64">
-      <h2 className="heading-2 text-center mb-64 mt-64 text-neutral-500">Constructor Standings</h2>
+      <h2 className="heading-2 text-center mb-64 mt-64 text-neutral-300">Constructor Standings</h2>
       {isLoading ? (
-        <Loading className="mt-[20rem] mb-[20rem]" />
+        <Loading className="mt-[20rem] mb-[20rem]" message={`Loading ${selectedYear} Constructor Standings`} />
       ) : (
       <ul>
         {standings.map((standing, index) => (

@@ -34,7 +34,7 @@ export const ConstructorCar = (props) => {
                     {drivers[3] && (
                         <img 
                             alt="" 
-                            className="absolute left-60"
+                            className="absolute left-[5rem]"
                             height={85} 
                             src={`${process.env.PUBLIC_URL + "/images/" + year + "/drivers/" + drivers[3] + ".png"}`}
                             width={120} 
@@ -72,7 +72,7 @@ export const ConstructorCar = (props) => {
                     {drivers[2] && (
                         <img 
                             alt="" 
-                            className="absolute right-[7rem]"
+                            className="absolute right-[5rem]"
                             height={85} 
                             src={`${process.env.PUBLIC_URL + "/images/" + year + "/drivers/" + drivers[2] + ".png"}`}
                             width={120} 

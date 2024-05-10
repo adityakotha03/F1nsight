@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { DriverCard } from './DriverCard';
 import { Loading } from "./Loading"
+import classNames from 'classnames';
 
 
 export function RaceResultsPage({ selectedYear }) {
@@ -44,18 +45,19 @@ export function RaceResultsPage({ selectedYear }) {
 
   return (
     <div className="pt-[17rem] sm:pt-64">
-      <h2 className="heading-2 text-center mb-64 mt-64 text-neutral-500">Race Results</h2>
+      <h1 className="heading-2 text-center mb-64 mt-64 text-neutral-300">Race Results</h1>
       {isLoading ? (
-        <Loading className="mt-[20rem] mb-[20rem]" />
+        <Loading className="mt-[20rem] mb-[20rem]" message={`Loading ${selectedYear} Race Results`} />
       ) : (
         <ul className=''>
           {raceDetails.map((race, index) => (
-            <li key={index} className='pb-48 max-sm:w-3/4 m-auto'>
+            <>
+            <li key={index} className='max-sm:w-3/4 m-auto'>
               <div className='text-center mb-16'>
-                <h6 className='heading-6 text-neutral-500 gradient-text-light'>
+                <h2 className='uppercase gradient-text-light tracking-sm  leading-none font-bold'>
                   {race.season} {race.raceName}
-                </h6>
-                <div className='text-sm text-neutral-500 tracking-wide'>
+                </h2>
+                <div className='text-sm text-neutral-500 tracking-sm leading-none'>
                   {formatTime(race.date, race.time)}
                 </div>
               </div>
@@ -77,10 +79,12 @@ export function RaceResultsPage({ selectedYear }) {
                       />
                     ))}
                   </ul>
-                  <a className="text-sm block text-center mt-16 text-neutral-500" href="/">full weekend results <FontAwesomeIcon icon="fa-arrow-up-right-from-square" /></a>
+                  {/* <a className="text-sm block text-center mt-16 text-neutral-500" href="/">full weekend results <FontAwesomeIcon icon="fa-arrow-up-right-from-square" /></a> */}
                 </>
               )}
             </li>
+            <div className={classNames("divider-glow-medium mb-24",  {"mt-32" : !race.results})} />
+            </>
           ))}
         </ul>
       )}
