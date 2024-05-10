@@ -44,7 +44,7 @@ export function RaceResultsPage({ selectedYear }) {
 // console.log(raceDetails);
 
   return (
-    <div className="pt-[17rem] sm:pt-64">
+    <div className="global-container">
       <h1 className="heading-2 text-center mb-64 mt-64 text-neutral-300">Race Results</h1>
       {isLoading ? (
         <Loading className="mt-[20rem] mb-[20rem]" message={`Loading ${selectedYear} Race Results`} />
