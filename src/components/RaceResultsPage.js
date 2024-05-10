@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { fetchRaceDetails } from '../utils/api';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { DriverCard } from './DriverCard';
 import { Loading } from "./Loading"

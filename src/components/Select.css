@@ -7,6 +7,7 @@
     padding: 2.2rem 3.2rem 0.8rem 1.6rem !important;
     font-size: 1.6rem;
     font-family: "Bungee", sans-serif;
+    border: 1px solid theme(colors.neutral.500);
   
     option {
         color: inherit;
@@ -27,6 +28,13 @@
     pointer-events: none;
     position: absolute;
     top: .8rem;
+}
+
+.select__icon {
+    position: absolute;
+    top: 1.2rem;
+    right: .8rem;
+    pointer-events: none;
 }
 
 .select--style-for-button .select__input {

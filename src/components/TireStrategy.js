@@ -1,8 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
-  ResponsiveContainer, Bar, BarChart, CartesianGrid, XAxis, YAxis, Tooltip,
-  Legend, LabelList
+  ResponsiveContainer, Bar, BarChart, CartesianGrid, XAxis, YAxis, Tooltip, LabelList
 } from 'recharts';
 
 export const TireStrategy = (props) => {

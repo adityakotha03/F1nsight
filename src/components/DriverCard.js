@@ -6,7 +6,7 @@ import { Popover } from "flowbite-react";
 import { useInView } from "framer-motion";
 
 export const DriverCard = (props) => {
-    const { className, carNumber, driver, driverColor, fastestLap, grid, startPosition, endPosition, isActive, layoutSmall, status, time, year, hasHover, index, mobileSmall} = props;
+    const { className, driver, driverColor, fastestLap, startPosition, endPosition, isActive, layoutSmall, time, year, hasHover, index, mobileSmall} = props;
 
     const ref = useRef(null);
     const isInView = useInView(ref, { once: true });
