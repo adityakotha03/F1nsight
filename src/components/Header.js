@@ -5,6 +5,7 @@ import { ReactComponent as Logo} from './f1nsight.svg';
 import { Select } from './Select';
 
 import { RaceSelector } from './RaceSelector';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 export const Header = (props) => {
     const { setSelectedYear, selectedYear, currentYear } = props;
@@ -85,6 +86,7 @@ export const Header = (props) => {
                         <div className="select__label tracking-xs uppercase">
                             Season Results
                         </div>
+                        <FontAwesomeIcon icon="caret-down" className="select__icon text-neutral-500 fa-lg" />
                     </button>
                     <RaceSelector 
                         races={races} 

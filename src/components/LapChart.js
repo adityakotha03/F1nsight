@@ -18,7 +18,7 @@ const lightenColor = (color, percent) => {
 };
 
 export const LapChart = (props) => {
-    const { className, laps, driversDetails, driversColor, raceResults, driverCode } = props;
+    const { laps, driversDetails, driversColor, raceResults, driverCode } = props;
 
     // Initialize visibility state for drivers
     const [driverVisibility, setDriverVisibility] = useState({});
