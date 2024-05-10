@@ -11,7 +11,7 @@
     gap: theme(spacing.8);
     flex-direction: column;
     padding: theme(spacing.8) theme(spacing.16);
-    @screen md {
+    @media (min-width: 768px) {
         align-items: center;
         flex-direction: row;
         justify-content: space-between;
@@ -30,7 +30,7 @@
     gap: theme(spacing.16);
     justify-content: space-between;
     gap: theme(spacing.8);
-    @screen sm {
+    @media (min-width: 640px) {
         flex-direction: row;
         width: initial;
     }
@@ -44,7 +44,7 @@
     justify-content: space-between;
     padding: theme(spacing.16);
     width: 100%;
-    @screen sm {
+    @media (min-width: 640px) {
         gap: theme(spacing.32);
         flex-direction: row;
         justify-content: center;

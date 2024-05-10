@@ -69,12 +69,12 @@ code {
 
 .global-container {
   padding-top: 17rem;
-  @screen sm {
-    padding-top: 12rem;
+  @media (min-width: 640px) {
+    padding-top: 16rem;
     max-width: 1024px;
     margin: 0 auto;
   }
-  @screen md {
+  @media (min-width: 768px) {
     padding-top: 6.4rem;
   }
 }

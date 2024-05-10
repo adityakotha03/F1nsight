@@ -20,7 +20,7 @@ export function ConstructorStandings({ selectedYear }) {
   }, [selectedYear]);
 
   return (
-    <div className="sm:max-w-7xl sm:mx-auto pt-[17rem] sm:pt-64">
+    <div className="global-container">
       <h2 className="heading-2 text-center mb-64 mt-64 text-neutral-300">Constructor Standings</h2>
       {isLoading ? (
         <Loading className="mt-[20rem] mb-[20rem]" message={`Loading ${selectedYear} Constructor Standings`} />
