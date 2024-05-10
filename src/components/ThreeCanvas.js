@@ -176,7 +176,7 @@ export const ThreeCanvas = ({ MapFile, locData, driverColor, driverSelected, fas
     }
   };
 
-  console.log(driverDetails)
+  // console.log(driverDetails)
 
   return (
     <div className='relative'>
