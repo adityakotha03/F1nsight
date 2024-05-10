@@ -18,26 +18,6 @@
     }
 }
 
-.global-header__main-nav__left {
-    display: flex;
-    align-items: center;
-    gap: theme(spacing.16);
-    justify-content: space-between;
-    width: 100%;
-}
-
-.global-header__main-nav__right {
-    display: flex;
-    flex-direction: column;
-    gap: theme(spacing.16);
-    justify-content: space-between;
-    gap: theme(spacing.8);
-    @media (min-width: 640px) {
-        flex-direction: row;
-        width: initial;
-    }
-}
-
 .global-header__sub-nav {
     align-items: center;
     display: flex;
@@ -51,4 +31,18 @@
         flex-direction: row;
         justify-content: center;
     }
+}
+
+.global-header__main-nav__left {
+    display: flex;
+    align-items: center;
+    gap: theme(spacing.16);
+    justify-content: space-between;
+    width: 100%;
+}
+
+.global-header__main-nav__right {
+    gap: theme(spacing.16);
+    justify-content: space-between;
+    gap: theme(spacing.8);
 }
