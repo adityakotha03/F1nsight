@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import { useInView } from "framer-motion";
 
 export const ConstructorDriver = (props) => {
-    const { className, points, image, car, firstName, lastName, year, index} = props;
+    const { className, points, image, car, firstName, lastName, year, index, showStanding} = props;
     const ref = useRef(null);
     const isInView = useInView(ref, { once: true });
 
@@ -31,12 +31,12 @@ export const ConstructorDriver = (props) => {
                 <div className="-mb-10">
                     {/* position / firstname */}
                     <div className="w-fit mb-4">
-                        <div div className="flex items-end mb-4">
+                        {showStanding && <div div className="flex items-end mb-4">
                             <div className="font-display text-24 leading-none -mb-4 mr-8 text-neutral-500">
                                 {index + 1}
                             </div>
                             <div className="h-1 w-full border-b-[1px] border-solid border-neutral-600 mr-8" />
-                        </div>
+                        </div>}
                         <p className="gradient-text-light uppercase text-xl tracking-wide -mb-8">{firstName}</p>
                     </div>
                     {/* last name */}
