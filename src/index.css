@@ -205,17 +205,6 @@ code {
   color: theme('colors.neutral.300');
 }
 
-.constructor-title {
-  font-size: 8rem;
-  margin-bottom: -3.2rem;
-  line-height: .8;
-  text-align: center;
-  @media (min-width: 768px) {
-    font-size: 12.4rem;
-    margin-bottom: -3.2rem;
-  }
-}
-
 /* loading animation */
 .loading-animation__title {
   backdrop-filter: blur(12px);
