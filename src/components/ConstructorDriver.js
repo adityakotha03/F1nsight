@@ -4,9 +4,11 @@ import classNames from 'classnames';
 import { useInView } from "framer-motion";
 
 export const ConstructorDriver = (props) => {
-    const { className, points, image, car, firstName, lastName, year} = props;
+    const { className, points, image, car, firstName, lastName, year, index} = props;
     const ref = useRef(null);
     const isInView = useInView(ref, { once: true });
+
+    console.log({index})
 
     return (
         <div>
@@ -19,21 +21,32 @@ export const ConstructorDriver = (props) => {
             >
                 <img 
                     alt="" 
-                    className="constructor-driver-card__person -mr-28"
+                    className="constructor-driver-card__person -mr-28 w-[12rem]"
                     src={`${process.env.PUBLIC_URL + "/images/" + year + "/drivers/" + image + ".png"}`}
-                    width={120} 
                     style={{
                         opacity: isInView ? 1 : 0,
                         transition: "all 2s cubic-bezier(0.17, 0.55, 0.55, 1)"
                     }}
                 />
                 <div className="-mb-10">
-                    <p className="gradient-text-medium uppercase text-xl tracking-wide -mb-8">{firstName}</p>
-                    <p className="heading-2">{lastName}</p>
+                    {/* position / firstname */}
+                    <div className="w-fit mb-4">
+                        <div div className="flex items-end mb-4">
+                            <div className="font-display text-24 leading-none -mb-4 mr-8 text-neutral-500">
+                                {index + 1}
+                            </div>
+                            <div className="h-1 w-full border-b-[1px] border-solid border-neutral-600 mr-8" />
+                        </div>
+                        <p className="gradient-text-light uppercase text-xl tracking-wide -mb-8">{firstName}</p>
+                    </div>
+                    {/* last name */}
+                    <p className="heading-2 mb-6">{lastName}</p>
+                    <div className="h-1 w-full border-b-[1px] border-solid border-neutral-600" />
+                    {/* car / points */}
                     <div className="flex items-end">
                         <img 
                             alt="" 
-                            className="constructor-driver-card__car -mb-8 z-10 -ml-32"
+                            className="constructor-driver-card__car -mb-8 z-10 -ml-32 w-[20rem]"
                             src={`${process.env.PUBLIC_URL + "/images/" + year + "/cars/" + car + ".png"}`}
                             width={200} 
                             style={{
@@ -42,7 +55,7 @@ export const ConstructorDriver = (props) => {
                                 transition: "all 1s cubic-bezier(0.17, 0.55, 0.55, 1)"
                             }}
                         />
-                        <span className="heading-1 z-10">{points}</span>
+                        <span className="heading-1 z-10 gradient-text-light">{points}</span>
                     </div>
                 </div>
             </div>

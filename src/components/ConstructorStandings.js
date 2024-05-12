@@ -34,6 +34,7 @@ export function ConstructorStandings({ selectedYear }) {
               name={standing.constructorName}
               year={selectedYear} 
               drivers={standing.driverCodes}
+              index={index}
             />
           </li>
         ))}
