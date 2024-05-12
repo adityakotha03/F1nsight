@@ -10,7 +10,7 @@ export const FooterDetails = ({ className }) => {
             className={classNames("footer-details flex items-center md:items-end max-md:flex-col md:justify-between bg-glow bg-glow--large px-16 p-32 mt-64", className)}
         >   
             <div className="flex max-md:flex-col items-center md:items-end">
-                <h6 className="tracking-sm text-neutral-500 text-sm md:mb-16">Creators</h6>
+                <h6 className="tracking-sm text-neutral-500 text-sm mb-16">Creators</h6>
                 <ConstructorDriver 
                     className=""
                     year={2024}
@@ -18,7 +18,7 @@ export const FooterDetails = ({ className }) => {
                     firstName="Antoni"
                     lastName="Commodore"
                     car="ferrari"
-                    showDivider
+                    showStanding={false}
                     points={
                         <div className="flex item-center">
                         <a href="https://www.linkedin.com/in/antonicommodore/" className="icon-link" style={{ marginLeft: '10px' }}>
@@ -40,7 +40,7 @@ export const FooterDetails = ({ className }) => {
                     lastName="Kotha"
                     car="mercedes"
                     className="max-md:mt-16"
-                    showDivider
+                    showStanding={false}
                     points={
                         <div className="flex item-center">
                         <a href="https://www.linkedin.com/in/aditya-kotha-59a010241/" className="icon-link" style={{ marginLeft: '10px' }}>
