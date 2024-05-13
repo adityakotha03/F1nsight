@@ -2,6 +2,7 @@ import classNames from 'classnames';
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useLocation } from 'react-router-dom';
+import { Loading } from "./Loading"
 
 import { fetchDriversAndTires, fetchRaceResultsByCircuit } from '../utils/api';
 import { fetchLocationData } from '../utils/api';
@@ -31,6 +32,7 @@ export function RacePage() {
   const [speedFactor, setSpeedFactor] = useState(1.5);
   const [isPaused, setIsPaused] = useState(false);
   const [haloView, setHaloView] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   
   const selectedDriverData = drivers.find(obj => obj['acronym'] === driverCode);
   const selectedDriverRaceData = raceResults.find(obj => obj['number'] === driverNumber);
@@ -71,6 +73,9 @@ export function RacePage() {
         };        
     
         // Check if the country is in the map and replace it if it is
+
+        setIsLoading(true);
+
         const circuitId = locationMap[location];
         setMapPath(`${process.env.PUBLIC_URL + "/map/" + circuitId + ".gltf"}`);
 
@@ -128,6 +133,8 @@ export function RacePage() {
       } catch (error) {
         console.error("Error fetching data:", error);
       }
+
+      setIsLoading(false);
     };    
 
     fetchData();
@@ -172,6 +179,9 @@ export function RacePage() {
   };
 
   return (
+    isLoading ? (
+      <Loading className="mt-[20rem] mb-[20rem]" message={`Loading ${raceName} ${year} Race`} />
+    ) : (
     <div className="pt-[22rem] sm:pt-[9.6rem]">
       {raceName && <p className="heading-2 text-center text-neutral-500 mb-32">{raceName} {year}</p>}
       <div className="race-display mb-64 relative">
@@ -203,6 +213,7 @@ export function RacePage() {
           MapFile={MapPath} 
           locData={locData}
           driverSelected={driverSelected}
+          driverCode={driverCode}
           driverColor={driversColor[driverCode]}
           isPaused={isPaused}
           haloView={haloView}
@@ -389,5 +400,6 @@ export function RacePage() {
         </div>
      </div>
     </div>
+    )
   );
 }
