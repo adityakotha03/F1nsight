@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Select } from './Select';
 
-export const RaceSelector = ({ races, selectedYear, setIsRaceSelected, isRaceSelected }) => {
+export const RaceSelector = ({ races, selectedYear, pagePath, setIsRaceSelected, isRaceSelected }) => {
   const navigate = useNavigate();
 
   const [selectValue, setSelectValue] = useState('');
@@ -10,7 +10,7 @@ export const RaceSelector = ({ races, selectedYear, setIsRaceSelected, isRaceSel
   const handleRaceChange = (e) => {
     if (e.target.value === "") {
       setIsRaceSelected(false);
-      navigate('/');
+      navigate(pagePath);
     } else {
       setIsRaceSelected(true);
       const race = races.find(r => r.meeting_name === e.target.value);
