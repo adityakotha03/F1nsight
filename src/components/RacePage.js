@@ -238,7 +238,7 @@ export function RacePage() {
                   </div>
                 </div>
               ) : (
-                <div className="w-full tracking-xs text-center gradient-border-extreme py-16 px-32 text-neutral-500">Select driver from the leadboard to activate race mode</div>
+                <div className="w-full tracking-xs text-center gradient-border-extreme py-16 px-32">Select driver from the leadboard to activate race mode</div>
               )}
               
             </div>
@@ -333,16 +333,16 @@ export function RacePage() {
                   >
                     <div className={classNames(
                       "text-sm font-display", 
-                      !driverCode === driversDetails[gridPosition.driver_number] ? "text-neutral-200" : "text-neutral-500"
+                      driverCode === driversDetails[gridPosition.driver_number] ? "text-neutral-200" : "text-neutral-500"
                       )}
                     >
                       P{gridPosition.position}
                     </div>
                     <div className={classNames(
                       "border-x-2 border-t-2 border-solid px-4 pt-4 w-64 font-display",
-                      !driverCode === driversDetails[gridPosition.driver_number] ? "border-neutral-200" : " border-neutral-500"
+                      driverCode === driversDetails[gridPosition.driver_number] ? "border-neutral-200" : " border-neutral-500"
                       )}
-                      style={{color: driverCode === driversDetails[gridPosition.driver_number] ? `#${driversColor[driversDetails[gridPosition.driver_number]]}` : !driverCode ? `#${driversColor[driversDetails[gridPosition.driver_number]]}` : "#737373"}}
+                      style={{color: driverCode === driversDetails[gridPosition.driver_number] ? `#${driversColor[driverCode]}` : "#737373"}}
                     >
                       {driversDetails[gridPosition.driver_number]}
                     </div> 

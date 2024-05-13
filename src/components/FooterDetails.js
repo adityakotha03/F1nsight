@@ -18,7 +18,6 @@ export const FooterDetails = ({ className }) => {
                     firstName="Antoni"
                     lastName="Commodore"
                     car="ferrari"
-                    showStanding={false}
                     points={
                         <div className="flex item-center">
                         <a href="https://www.linkedin.com/in/antonicommodore/" className="icon-link" style={{ marginLeft: '10px' }}>
@@ -40,7 +39,6 @@ export const FooterDetails = ({ className }) => {
                     lastName="Kotha"
                     car="mercedes"
                     className="max-md:mt-16"
-                    showStanding={false}
                     points={
                         <div className="flex item-center">
                         <a href="https://www.linkedin.com/in/aditya-kotha-59a010241/" className="icon-link" style={{ marginLeft: '10px' }}>

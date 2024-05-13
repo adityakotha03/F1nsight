@@ -72,7 +72,7 @@ export const TireStrategy = (props) => {
     return (
         <>
         <h3 className="heading-4 mb-16 mt-32 text-neutral-500">Tire Strategy</h3>
-        <div className="bg-glow bg-glow--large h-fit p-32 mb-16 relative">
+        <div className="bg-glow bg-glow--large h-fit max-sm:py-32 sm:p-32 mb-16 relative">
           <ResponsiveContainer width="100%" height={driverCode ? 100 :  700}>
             <BarChart
               data={sortedTransformedData}
