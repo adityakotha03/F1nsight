@@ -41,6 +41,7 @@ export function DriverStandings({ selectedYear }) {
                 year={selectedYear} 
                 showDivider
                 index={index}
+                showStanding
               />
             </li>
           ))}

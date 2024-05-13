@@ -3305,6 +3305,10 @@ input[type="range"]::-ms-fill-lower {
   padding: .6rem;
 }
 
+.p-18 {
+  padding: 1.8rem;
+}
+
 .px-12 {
   padding-left: 1.2rem;
   padding-right: 1.2rem;
@@ -3393,6 +3397,16 @@ input[type="range"]::-ms-fill-lower {
 .py-4 {
   padding-top: .4rem;
   padding-bottom: .4rem;
+}
+
+.py-18 {
+  padding-top: 1.8rem;
+  padding-bottom: 1.8rem;
+}
+
+.py-32 {
+  padding-top: 3.2rem;
+  padding-bottom: 3.2rem;
 }
 
 .pb-2 {
@@ -6661,6 +6675,16 @@ code {
     flex-direction: column;
   }
 
+  .max-sm\:py-\[3\.2rem\] {
+    padding-top: 3.2rem;
+    padding-bottom: 3.2rem;
+  }
+
+  .max-sm\:py-32 {
+    padding-top: 3.2rem;
+    padding-bottom: 3.2rem;
+  }
+
   .max-sm\:text-\[1rem\] {
     font-size: 1rem;
   }
@@ -6734,6 +6758,10 @@ code {
 
   .sm\:justify-center {
     justify-content: center;
+  }
+
+  .sm\:p-32 {
+    padding: 3.2rem;
   }
 
   .sm\:px-4 {
