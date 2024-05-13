@@ -8,8 +8,6 @@ export const ConstructorDriver = (props) => {
     const ref = useRef(null);
     const isInView = useInView(ref, { once: true });
 
-    console.log({index})
-
     return (
         <div>
             <div 

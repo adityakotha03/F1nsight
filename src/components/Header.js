@@ -12,6 +12,7 @@ export const Header = (props) => {
 
     const [subNavOpenOpen, setSubNavOpen] = useState(false);
     const [page, setPage] = useState('Race Results');
+    const [pagePath, setpagePath] = useState('Race Results');
     const [races, setRaces] = useState([]);
     const [isRaceSelected, setIsRaceSelected] = useState(false);
 
@@ -55,8 +56,17 @@ export const Header = (props) => {
 
     const handleNavLinkClick = (page) => {
         setSubNavOpen(false);
-        setPage(page)
-        setIsRaceSelected(false)
+        setPage(page);
+
+        if (page === 'Race Results') {
+            setpagePath('/');
+        } else if (page === 'Constructor Standings') {
+            setpagePath('/constructor-standings');
+        } else {
+            setpagePath('/driver-standings');
+        }
+
+        setIsRaceSelected(false);
     };
 
     return (
@@ -93,6 +103,7 @@ export const Header = (props) => {
                         selectedYear={selectedYear} 
                         setIsRaceSelected={setIsRaceSelected} 
                         isRaceSelected={isRaceSelected}
+                        pagePath={pagePath}
                         page={page}
                     />
                 </div>
