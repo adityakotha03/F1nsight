@@ -59,6 +59,17 @@ export const ThreeCanvas = ({ MapFile, locData, driverColor, driverSelected, dri
     const axesHelper = new THREE.AxesHelper( 20 );
     // scene.add( axesHelper );
 
+    // const textureLoader = new THREE.TextureLoader();
+    // textureLoader.load('/maps/imola.png', texture => {
+    //   const imageWidth = texture.image.width / 100;
+    //   const imageHeight = texture.image.height / 100;
+    //   const geometry = new THREE.PlaneGeometry(imageWidth, imageHeight);
+    //   const material = new THREE.MeshBasicMaterial({ map: texture });
+    //   const plane = new THREE.Mesh(geometry, material);
+    //   plane.rotation.z = -Math.PI / 2;
+    //   scene.add(plane);
+    // });
+
     let map;
     const lo = new GLTFLoader();
     if (MapFile) { 

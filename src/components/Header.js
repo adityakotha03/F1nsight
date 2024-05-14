@@ -12,7 +12,7 @@ export const Header = (props) => {
 
     const [subNavOpenOpen, setSubNavOpen] = useState(false);
     const [page, setPage] = useState('Race Results');
-    const [pagePath, setpagePath] = useState('Race Results');
+    const [pagePath, setpagePath] = useState('/');
     const [races, setRaces] = useState([]);
     const [isRaceSelected, setIsRaceSelected] = useState(false);
 
