@@ -340,7 +340,7 @@ export function RacePage() {
                 .map((gridPosition, index) => (
                   <li 
                     key={index} 
-                    className="text-center w-fit even:-mt-32 even:ml-[8rem] even:mb-24"
+                    className="text-center w-fit even:-mt-32 even:ml-[8rem] even:mb-8"
                   >
                     <div className={classNames(
                       "text-sm font-display", 

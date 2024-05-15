@@ -55,6 +55,7 @@ export const TireStrategy = (props) => {
         return (
           <div className="custom-tooltip">
             <p className="font-display">{label}</p>
+            <hr className="mb-4 mt-4"/>
             {payload.map((entry, index) => (
               <p key={index} style={{ color: tireTypeClasses[entry.name.replace(/[0-9]/g, '')] }}>
                 {capitalizeFirstLetter(entry.name.replace(/[0-9]/g, ''))}: {entry.value}

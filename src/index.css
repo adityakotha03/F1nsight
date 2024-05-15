@@ -320,3 +320,11 @@ code {
     width: 15rem;
   }
 }
+
+
+.recharts-text {
+  fill: #f1f1f1;
+}
+.recharts-cartesian-grid line {
+  stroke: #666666
+}
