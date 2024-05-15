@@ -2,15 +2,15 @@ import React, { useState } from 'react';
 import { HashRouter as Router, Routes, Route } from 'react-router-dom';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { fas } from '@fortawesome/free-solid-svg-icons';
+import { fab } from '@fortawesome/free-brands-svg-icons'
 import SupportPopup from './components/SupportPopup';
 import { Header, FooterDetails, RacePage, DriverStandings, ConstructorStandings, RaceResultsPage } from './components';
 
-library.add(fas);
+library.add(fas, fab);
 
 function App() {
   const currentYear = new Date().getFullYear();
   const [selectedYear, setSelectedYear] = useState(currentYear);
-  const [showPopup, setShowPopup] = useState(true);
 
   return (
     <Router>
@@ -21,7 +21,6 @@ function App() {
         <Route path="/driver-standings" element={<DriverStandings selectedYear={selectedYear} />} />
         <Route path="/race/:raceId" element={<RacePage />} />
       </Routes>
-      {showPopup && <SupportPopup onClose={() => setShowPopup(false)} />}
       <FooterDetails></FooterDetails>
     </Router>
   );
