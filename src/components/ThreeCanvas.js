@@ -203,7 +203,7 @@ export const ThreeCanvas = ({ MapFile, locData, driverColor, driverSelected, dri
                       key={number} 
                       className={classNames(
                         "font-display ease-in-out", 
-                        driverDetails.n_gear === number ? 'text-xl' : 'text-neutral-500',
+                        driverDetails.n_gear === number ? 'text-xl' : 'text-neutral-400',
                       )}
                     >
                       {number}
@@ -219,14 +219,14 @@ export const ThreeCanvas = ({ MapFile, locData, driverColor, driverSelected, dri
                   <p className="font-display max-sm:text-[2.4rem] sm:text-[6.4rem] leading-none">{unit === 'km/h' ? driverDetails.speed : Math.round(driverDetails.speed * 0.621371)}</p>
                   <div className="flex gap-16 uppercase text-[1rem] tracking-sm">
                     <button 
-                      className={`${unit === 'km/h' ? '' : 'text-neutral-500'}`}
+                      className={`${unit === 'km/h' ? '' : 'text-neutral-400'}`}
                       onClick={() => handleUnitChange('km/h')}
                     >
                       km/h
                     </button>
                     /
                     <button 
-                      className={`${unit === 'mph' ? '' : 'text-neutral-500'}`}
+                      className={`${unit === 'mph' ? '' : 'text-neutral-400'}`}
                       onClick={() => handleUnitChange('mph')}
                     >
                       mph

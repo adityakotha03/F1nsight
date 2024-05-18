@@ -96,7 +96,7 @@ export const Header = (props) => {
                         <div className="select__label tracking-xs uppercase">
                             Season Results
                         </div>
-                        <FontAwesomeIcon icon="caret-down" className="select__icon text-neutral-500 fa-lg" />
+                        <FontAwesomeIcon icon="caret-down" className="select__icon text-neutral-400 fa-lg" />
                     </button>
                     <RaceSelector 
                         races={races} 

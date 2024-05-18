@@ -9,10 +9,6 @@
     font-family: "Bungee", sans-serif;
     height: 4.8rem;
     border: 1px solid theme(colors.neutral.500);
-  
-    option {
-        color: inherit;
-    }
     
     @media (max-width: 639px) {
         width: 100%;
@@ -44,4 +40,11 @@
         flex-grow: 1;
         width: 100%;
     }
+}
+
+select {
+    color: theme(colors.neutral.950);
+}
+select option {
+    color: theme(colors.neutral.950);
 }

@@ -61,9 +61,6 @@
   font-family: "Bungee", sans-serif;
   height: 4.8rem;
   border: 1px solid #737373;
-  option {
-    color: inherit;
-  }
   @media (max-width: 639px) {
     width: 100%;
   }
@@ -96,6 +93,14 @@
 
     width: 100%;
   }
+}
+
+select {
+  color: #0a0a0a;
+}
+
+select option {
+  color: #0a0a0a;
 }
 
 /*
@@ -1385,6 +1390,11 @@ input[type="range"]::-ms-fill-lower {
 .my-8 {
   margin-top: .8rem;
   margin-bottom: .8rem;
+}
+
+.my-16 {
+  margin-top: 1.6rem;
+  margin-bottom: 1.6rem;
 }
 
 .-mb-10 {
@@ -3795,6 +3805,11 @@ input[type="range"]::-ms-fill-lower {
   color: rgb(212 212 212 / var(--tw-text-opacity));
 }
 
+.text-neutral-400 {
+  --tw-text-opacity: 1;
+  color: rgb(163 163 163 / var(--tw-text-opacity));
+}
+
 .text-neutral-500 {
   --tw-text-opacity: 1;
   color: rgb(115 115 115 / var(--tw-text-opacity));
@@ -4676,24 +4691,12 @@ code {
   margin-top: -3.2rem;
 }
 
-.even\:mb-24:nth-child(even) {
-  margin-bottom: 2.4rem;
-}
-
-.even\:ml-\[8rem\]:nth-child(even) {
-  margin-left: 8rem;
-}
-
-.even\:mb-16:nth-child(even) {
-  margin-bottom: 1.6rem;
-}
-
 .even\:mb-8:nth-child(even) {
   margin-bottom: .8rem;
 }
 
-.even\:-mt-28:nth-child(even) {
-  margin-top: -2.8rem;
+.even\:ml-\[8rem\]:nth-child(even) {
+  margin-left: 8rem;
 }
 
 .even\:bg-gray-50:nth-child(even) {

@@ -183,7 +183,7 @@ export function RacePage() {
       <Loading className="mt-[20rem] mb-[20rem]" message={`Loading ${raceName} ${year} Race`} />
     ) : (
     <div className="pt-[22rem] sm:pt-[9.6rem]">
-      {raceName && <p className="heading-2 text-center text-neutral-500 mb-32">{raceName} {year}</p>}
+      {raceName && <p className="heading-2 text-center text-neutral-400 mb-32">{raceName} {year}</p>}
       <div className="race-display mb-64 relative">
         <ul className="flex flex-col absolute top-1 left-1 z-10">
           {raceResults.map((result, index) => (
@@ -229,19 +229,19 @@ export function RacePage() {
                   <div className="race-controls__speed gradient-border-extreme flex text-xs max-sm:flex-col sm:items-center sm:justify-center gap-16 py-16 px-32 tracking-sm uppercase text-center">
                     <p>Playback Speed:</p>
                     <button
-                      className={classNames("tracking-sm uppercase", { 'text-neutral-500': speedFactor !== 4})}
+                      className={classNames("tracking-sm uppercase", { 'text-neutral-400': speedFactor !== 4})}
                       onClick={() => setSpeedFactor(4)}
                     >
                       Normal
                     </button>
                     <button
-                      className={classNames("tracking-sm uppercase", { 'text-neutral-500': speedFactor !== 1.5})}
+                      className={classNames("tracking-sm uppercase", { 'text-neutral-400': speedFactor !== 1.5})}
                       onClick={() => setSpeedFactor(1.5)}
                     >
                       Push Push
                     </button>
                     <button
-                      className={classNames("tracking-sm uppercase", { 'text-neutral-500': speedFactor !== 0.2})}
+                      className={classNames("tracking-sm uppercase", { 'text-neutral-400': speedFactor !== 0.2})}
                       onClick={() => setSpeedFactor(0.2)}
                     >
                       DRS 
@@ -332,7 +332,7 @@ export function RacePage() {
               </div>
             </div>
           )}
-          <h3 className="heading-4 mb-16 text-neutral-500">Starting Grid</h3>
+          <h3 className="heading-4 mb-16 text-neutral-400">Starting Grid</h3>
           <div className="bg-glow bg-glow--large p-32 h-fit">
             <ul className="flex flex-col w-fit m-auto">
               {startingGrid
@@ -344,7 +344,7 @@ export function RacePage() {
                   >
                     <div className={classNames(
                       "text-sm font-display", 
-                      driverCode === driversDetails[gridPosition.driver_number] ? "text-neutral-200" : "text-neutral-500"
+                      driverCode === driversDetails[gridPosition.driver_number] ? "text-neutral-200" : "text-neutral-400"
                       )}
                     >
                       P{gridPosition.position}
@@ -368,9 +368,9 @@ export function RacePage() {
           <TireStrategy drivers={drivers} raceResults={raceResults} driverCode={driverSelected ? driversDetails[driverNumber] : null} driverColor={driversColor[driverCode]} />
           {!driverSelected && (
             <>
-              <h3 className="heading-4 mb-16 mt-32 text-neutral-500">Fastest Laps</h3> 
+              <h3 className="heading-4 mb-16 mt-32 text-neutral-400">Fastest Laps</h3> 
               <div className="bg-glow bg-glow--large h-fit p-32 mb-16">
-                <div className="grid grid-cols-3 gap-4 mb-16  text-neutral-500">
+                <div className="grid grid-cols-3 gap-4 mb-16  text-neutral-400">
                   <span className="tracking-xs uppercase">Driver</span> 
                   <span className="tracking-xs uppercase text-center">Time</span> 
                   <span className="tracking-xs uppercase text-right">Lap</span> 
@@ -385,7 +385,7 @@ export function RacePage() {
                       <li key={index} className="grid grid-cols-3 gap-4 mb-8">
                         <div>
                           <span className="font-display">{result.Driver.code}</span>
-                          <span className="text-sm ml-8 text-neutral-500 tracking-xs max-sm:hidden">{result.Constructor.name}</span>
+                          <span className="text-sm ml-8 text-neutral-400 tracking-xs max-sm:hidden">{result.Constructor.name}</span>
                         </div>
                         <span className="text-center">{result.FastestLap.Time.time}</span>
                         <span className="text-right">{result.FastestLap.lap}</span>

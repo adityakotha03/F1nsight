@@ -52,11 +52,11 @@ export function RaceResultsPage({ selectedYear }) {
           {raceDetails.map((race, index) => (
             <>
             <li key={index} className='max-sm:w-3/4 m-auto'>
-              <div className='text-center mb-16'>
-                <h2 className='uppercase gradient-text-light tracking-sm  leading-none font-bold'>
+              <div className='text-center mb-12'>
+                <h2 className='uppercase tracking-sm leading-none font-bold'>
                   {race.season} {race.raceName}
                 </h2>
-                <div className='text-sm text-neutral-500 tracking-sm leading-none'>
+                <div className='text-sm text-neutral-400 tracking-sm leading-none'>
                   {formatTime(race.date, race.time)}
                 </div>
               </div>
@@ -78,7 +78,7 @@ export function RaceResultsPage({ selectedYear }) {
                       />
                     ))}
                   </ul>
-                  {/* <a className="text-sm block text-center mt-16 text-neutral-500" href="/">full weekend results <FontAwesomeIcon icon="fa-arrow-up-right-from-square" /></a> */}
+                  {/* <a className="text-sm block text-center mt-16 text-neutral-400" href="/">full weekend results <FontAwesomeIcon icon="fa-arrow-up-right-from-square" /></a> */}
                 </>
               )}
             </li>
