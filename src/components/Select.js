@@ -28,7 +28,7 @@ export const Select = (props) => {
             <label htmlFor={inputId} className="select__label tracking-xs uppercase">
                 {label}
             </label>
-            <FontAwesomeIcon icon="caret-down" className="select__icon text-neutral-500 fa-lg" />
+            <FontAwesomeIcon icon="caret-down" className="select__icon text-neutral-400 fa-lg" />
         </div>
     );
 };

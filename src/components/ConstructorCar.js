@@ -20,7 +20,7 @@ export const ConstructorCar = (props) => {
             <div className="flex flex-col items-center">
                 <div div className="flex items-end mb-4">
                     <div className="h-1 w-32 border-b-[1px] border-solid border-neutral-500" />
-                    <div className="font-display text-24 leading-none -mb-4 mx-8 text-neutral-500">
+                    <div className="font-display text-24 leading-none -mb-4 mx-8 text-neutral-400">
                         {index + 1}
                     </div>
                     <div className="h-1 w-32 border-b-[1px] border-solid border-neutral-500" />

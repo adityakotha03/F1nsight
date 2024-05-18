@@ -14,7 +14,7 @@ export const Loading = ({className, message}) => {
     
     return (
         <div className={classNames(className, "loading-animation relative w-fit m-auto")}>
-            <div className="loading-animation__title uppercase tracking-wide text-center pt-4 text-neutral-500">
+            <div className="loading-animation__title uppercase tracking-wide text-center pt-4 text-neutral-400">
                 {message ? message : "Loading"}
             </div>
             <Lottie 
