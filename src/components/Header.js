@@ -30,16 +30,47 @@ export const Header = (props) => {
         };
     }, []);
 
+    // useEffect(() => {
+    //     const fetchRaces = async () => {
+    //     const response = await fetch(`https://api.openf1.org/v1/meetings?year=${selectedYear}`);
+    //     if (response.ok) {
+    //         const data = await response.json();
+    //         setRaces(data);
+    //     }
+    //     };
+
+    //     fetchRaces();
+    // }, [selectedYear]);
+
     useEffect(() => {
-        const fetchRaces = async () => {
-        const response = await fetch(`https://api.openf1.org/v1/meetings?year=${selectedYear}`);
-        if (response.ok) {
-            const data = await response.json();
-            setRaces(data);
-        }
+        const fetchRacesAndSessions = async () => {
+            try {
+                // Fetch races
+                const racesResponse = await fetch(`https://api.openf1.org/v1/meetings?year=${selectedYear}`);
+                if (!racesResponse.ok) {
+                    throw new Error('Failed to fetch races');
+                }
+                const racesData = await racesResponse.json();
+
+                // Fetch sessions
+                const sessionsResponse = await fetch(`https://api.openf1.org/v1/sessions?year=${selectedYear}&session_name=Race`);
+                if (!sessionsResponse.ok) {
+                    throw new Error('Failed to fetch sessions');
+                }
+                const sessionsData = await sessionsResponse.json();
+
+                // Filter races based on meeting_key presence in sessions
+                const filteredRaces = racesData.filter(race => 
+                    sessionsData.some(session => session.meeting_key === race.meeting_key)
+                );
+
+                setRaces(filteredRaces);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
         };
 
-        fetchRaces();
+        fetchRacesAndSessions();
     }, [selectedYear]);
 
     const handleYearChange = (e) => {
