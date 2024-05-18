@@ -110,7 +110,7 @@ export const Header = (props) => {
             </div>
 
             <nav 
-                className="global-header__sub-nav text-center
+                className="global-header__sub-nav text-center flex justify-center
                     border-b-2 border-neutral-800 bg-neutral-900/90 backdrop-blur-sm shadow-xl
                     ease-in-out duration-300 uppercase tracking-xs"
                 style={{
