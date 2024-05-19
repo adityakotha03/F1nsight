@@ -262,7 +262,7 @@ export function RacePage() {
           /> 
         ) : (
           <div className="track-preview">
-            <video src={animatedMap} loop autoPlay muted className="w-full h-full object-cover"></video>
+            <video src={animatedMap} loop autoPlay muted playsInline className="w-full h-full object-cover"></video>
           </div>
         )}          
       </div>
