@@ -1224,6 +1224,14 @@ input[type="range"]::-ms-fill-lower {
   right: -1rem;
 }
 
+.-right-12 {
+  right: -1.2rem;
+}
+
+.-right-8 {
+  right: -.8rem;
+}
+
 .-top-1 {
   top: -0.1rem;
 }
@@ -1306,14 +1314,6 @@ input[type="range"]::-ms-fill-lower {
 
 .top-4 {
   top: .4rem;
-}
-
-.-right-12 {
-  right: -1.2rem;
-}
-
-.-right-8 {
-  right: -.8rem;
 }
 
 .-z-10 {
@@ -1489,6 +1489,10 @@ input[type="range"]::-ms-fill-lower {
   margin-bottom: 1.6rem;
 }
 
+.mb-18 {
+  margin-bottom: 1.8rem;
+}
+
 .mb-2 {
   margin-bottom: 0.2rem;
 }
@@ -1605,6 +1609,10 @@ input[type="range"]::-ms-fill-lower {
   margin-top: 0.15rem;
 }
 
+.mt-12 {
+  margin-top: 1.2rem;
+}
+
 .mt-16 {
   margin-top: 1.6rem;
 }
@@ -1643,14 +1651,6 @@ input[type="range"]::-ms-fill-lower {
 
 .mt-\[20rem\] {
   margin-top: 20rem;
-}
-
-.mt-12 {
-  margin-top: 1.2rem;
-}
-
-.mb-18 {
-  margin-bottom: 1.8rem;
 }
 
 .block {
@@ -4491,7 +4491,7 @@ code {
 /* season results pages */
 
 .navLink {
-  color: #525252;
+  color: #a3a3a3;
 }
 
 .navLink.active {

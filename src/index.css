@@ -195,7 +195,7 @@ code {
 
 /* season results pages */
 .navLink {
-  color: theme('colors.neutral.600');
+  color: theme('colors.neutral.400');
 }
 .navLink.active {
   color: theme('colors.neutral.300');
