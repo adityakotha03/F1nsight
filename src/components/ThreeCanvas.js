@@ -188,21 +188,21 @@ export const ThreeCanvas = ({ MapFile, locData, driverColor, driverSelected, dri
   };
 
   return (
-    <div className='relative'>
-      <div ref={mountRef} className="canvas-container" />
+    <div className="relative">
+      <div ref={mountRef} className="canvas-container max-sm:pointer-events-none" />
       {controls}
       {driverSelected &&
         <div className="driver-data absolute top-1 right-1" ref={infoRef}>
           {(infoRef.current && driverDetails) ? (
             <div className="p-16 shadow-xl bg-neutral-800/90 backdrop-blur-sm">
               <div className="flex flex-col">
-                <p className="uppercase text-[1rem] tracking-sm">Gear</p>
+                <p className="uppercase text-[1rem] tracking-sm leading-none">Gear</p>
                 <div className="flex items-center justify-between">
                   {[1,2,3,4,5,6,7,8].map((number, index) => (
                     <p 
                       key={number} 
                       className={classNames(
-                        "font-display ease-in-out", 
+                        "font-display ease-in-out leading-none", 
                         driverDetails.n_gear === number ? 'text-xl' : 'text-neutral-400',
                       )}
                     >
@@ -245,10 +245,10 @@ export const ThreeCanvas = ({ MapFile, locData, driverColor, driverSelected, dri
               <div className="flex flex-col">
                 <p className="uppercase text-[1rem] tracking-sm">Throttle</p>
                 <div className="shadow-lg mb-8 bg-emerald-950">
-                  <div className="bg-gradient-to-r from-emerald-700 to-emerald-400 h-24 ease-in-out" style={{width: `${driverDetails.throttle}%`}} />
+                  <div className="bg-gradient-to-r from-emerald-700 to-emerald-400 h-12 ease-in-out" style={{width: `${driverDetails.throttle}%`}} />
                 </div>
                 <div className="shadow-lg bg-rose-950">
-                  <div className="bg-gradient-to-r from-rose-800 to-rose-600 h-24 ease-in-out" style={{width: `${driverDetails.brake}%`}} />
+                  <div className="bg-gradient-to-r from-rose-800 to-rose-600 h-12 ease-in-out" style={{width: `${driverDetails.brake}%`}} />
                 </div>
                 <p className="uppercase text-[1rem] tracking-sm">Brake</p>
               </div>

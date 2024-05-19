@@ -6,11 +6,14 @@ import { Select } from './Select';
 
 import { RaceSelector } from './RaceSelector';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import classNames from 'classnames';
 
 export const Header = (props) => {
     const { setSelectedYear, selectedYear, currentYear } = props;
 
-    const [subNavOpenOpen, setSubNavOpen] = useState(false);
+    const [navOpen, setNavOpen] = useState(false);
+    const [isLarge, setIsLarge] = useState(false);
+    const [subNavOpen, setSubNavOpen] = useState(false);
     const [page, setPage] = useState('Race Results');
     const [pagePath, setpagePath] = useState('/');
     const [races, setRaces] = useState([]);
@@ -24,9 +27,17 @@ export const Header = (props) => {
                 setSubNavOpen(false);
             }
         };
+        const handleResize = () => {
+            setIsLarge(window.innerWidth > 768)
+        };
+
+        handleResize();
+
         document.addEventListener('click', handleOutsideClick);
+        window.addEventListener('resize', handleResize);
         return () => {
             document.removeEventListener('click', handleOutsideClick);
+            window.removeEventListener('resize', handleResize);
         };
     }, []);
 
@@ -56,6 +67,7 @@ export const Header = (props) => {
 
     const handleNavLinkClick = (page) => {
         setSubNavOpen(false);
+        setNavOpen(false);
         setPage(page);
 
         if (page === 'Race Results') {
@@ -75,38 +87,51 @@ export const Header = (props) => {
 
                 <div className="global-header__main-nav__left">
                     <a href="/"><Logo height={48}/></a>
-                    <Select label="Year" value={selectedYear} onChange={handleYearChange}>
-                        {generateYears(2023).map((year) => (
-                        <option key={year} value={year}>{year}</option>
-                        ))}
-                    </Select>
+                    <div className="flex items-center gap-8">
+                        {(navOpen || isLarge) && (
+                            <Select label="Year" value={selectedYear} onChange={handleYearChange}>
+                                {generateYears(2023).map((year) => (
+                                <option key={year} value={year}>{year}</option>
+                                ))}
+                            </Select>
+                        )}
+                        <button className={classNames("shadow-lg bg-glow py-[1.2rem] px-16 border-[1px] border-solid border-neutral-800", {'hidden': isLarge})} onClick={() => setNavOpen(!navOpen)}>
+                            {!navOpen ? <FontAwesomeIcon icon="bars" /> : <FontAwesomeIcon icon="xmark" />}
+                        </button>
+                    </div>
                 </div>
-
-                <div className="global-header__main-nav__right flex max-sm:flex-col">
-                    <button 
-                        className="select select--style-for-button text-left max-md:w-full"
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            setSubNavOpen(!subNavOpenOpen);
-                        }}
-                    >
-                        <div className="select__input bg-glow bg-neutral-800/10 leading-none min-w-[18rem]">
-                            {isRaceSelected ? '---' : page}
-                        </div>
-                        <div className="select__label tracking-xs uppercase">
-                            Season Results
-                        </div>
-                        <FontAwesomeIcon icon="caret-down" className="select__icon text-neutral-400 fa-lg" />
-                    </button>
-                    <RaceSelector 
-                        races={races} 
-                        selectedYear={selectedYear} 
-                        setIsRaceSelected={setIsRaceSelected} 
-                        isRaceSelected={isRaceSelected}
-                        pagePath={pagePath}
-                        page={page}
-                    />
-                </div>
+                
+                {(navOpen || isLarge) && (
+                    <div className="global-header__main-nav__right flex max-sm:flex-col">
+                        <button 
+                            className="select select--style-for-button text-left max-md:w-full"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                setSubNavOpen(!subNavOpen);
+                            }}
+                        >
+                            <div className="select__input bg-glow bg-neutral-800/10 leading-none min-w-[18rem]">
+                                {isRaceSelected ? '---' : page}
+                            </div>
+                            <div className="select__label tracking-xs uppercase">
+                                Season Results
+                            </div>
+                            <FontAwesomeIcon icon="caret-down" className="select__icon text-neutral-400 fa-lg" />
+                        </button>
+                        <RaceSelector 
+                            races={races} 
+                            selectedYear={selectedYear} 
+                            setIsRaceSelected={() => {
+                                setIsRaceSelected()
+                                setNavOpen(false)
+                            }} 
+                            isRaceSelected={isRaceSelected}
+                            pagePath={pagePath}
+                            page={page}
+                        />
+                    </div>
+                )}
+                
             </div>
 
             <nav 
@@ -114,9 +139,9 @@ export const Header = (props) => {
                     border-b-2 border-neutral-800 bg-neutral-900/90 backdrop-blur-sm shadow-xl
                     ease-in-out duration-300 uppercase tracking-xs"
                 style={{
-                    opacity: subNavOpenOpen ? '1' : '0',
-                    pointerEvents: subNavOpenOpen ? 'initial' : 'none',
-                    height: subNavOpenOpen ? 'inherit' : '1rem', 
+                    opacity: subNavOpen ? '1' : '0',
+                    pointerEvents: subNavOpen ? 'initial' : 'none',
+                    height: subNavOpen ? 'inherit' : '1rem', 
                 }}
                 ref={navRef}
             >

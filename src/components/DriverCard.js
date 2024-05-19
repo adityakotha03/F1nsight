@@ -33,15 +33,10 @@ export const DriverCard = (props) => {
                         </div>
                     }
                 >
-                    <span className="fa-layers fa-fw">
-                        <FontAwesomeIcon icon="circle" className="text-neutral-700 fa-xs" />
-                        <FontAwesomeIcon 
-                            icon={startPosition > endPosition ? "circle-up" : "circle-down"} 
-                            inverse 
-                            transform="shrink-2" 
-                            className={classNames("fa-xs", startPosition > endPosition ? "text-emerald-500" : "text-rose-500")} 
-                        />
-                    </span>
+                    <FontAwesomeIcon 
+                        icon={startPosition > endPosition ? "circle-up" : "circle-down"} 
+                        className={classNames("fa-xs", startPosition > endPosition ? "text-emerald-500" : "text-rose-500")} 
+                    />
                 </Popover>
             )
         }
@@ -100,7 +95,7 @@ export const DriverCard = (props) => {
                 </div>
             )}
             
-            <div className="popover-wrapper flex flex-col absolute -right-10">
+            <div className="popover-wrapper flex flex-col items-center absolute -right-8">
                 {fastestLap?.rank === "1" && (
                     <Popover
                         aria-labelledby="default-popover"
@@ -136,8 +131,8 @@ export const DriverCard = (props) => {
                             </div>
                         }
                     >
-                        <span className="fa-layers fa-fw">
-                            <FontAwesomeIcon icon="circle" />
+                        <span className="fa-layers fa-fw fa-xs">
+                            <FontAwesomeIcon icon="circle"  />
                             <FontAwesomeIcon icon="clock" className="text-violet-600" inverse transform="shrink-2" />
                         </span>
                     </Popover>
