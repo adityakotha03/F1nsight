@@ -20,6 +20,19 @@ export const Header = (props) => {
     const [isRaceSelected, setIsRaceSelected] = useState(false);
 
     const navRef = useRef(null);
+    const headerRef = useRef(null);
+
+    useEffect(() => {
+        const handleOutsideClick = (event) => {
+            if (headerRef.current && !headerRef.current.contains(event.target)) {
+                setNavOpen(false);
+            }
+        };
+        document.addEventListener('click', handleOutsideClick);
+        return () => {
+            document.removeEventListener('click', handleOutsideClick);
+        };
+    }, [headerRef]);
 
     useEffect(() => {
         const handleOutsideClick = (event) => {
@@ -27,16 +40,21 @@ export const Header = (props) => {
                 setSubNavOpen(false);
             }
         };
+        document.addEventListener('click', handleOutsideClick);
+        return () => {
+            document.removeEventListener('click', handleOutsideClick);
+        };
+    }, [navRef]);
+    
+    useEffect(() => {
         const handleResize = () => {
             setIsLarge(window.innerWidth > 768)
         };
 
         handleResize();
 
-        document.addEventListener('click', handleOutsideClick);
         window.addEventListener('resize', handleResize);
         return () => {
-            document.removeEventListener('click', handleOutsideClick);
             window.removeEventListener('resize', handleResize);
         };
     }, []);
@@ -113,8 +131,8 @@ export const Header = (props) => {
     };
 
     return (
-        <header className="global-header">
-            <div className="global-header__main-nav shadow-lg bg-glow bg-neutral-800/90 backdrop-blur-sm">
+        <header className="global-header" ref={headerRef}>
+            <div className="global-header__main-nav shadow-lg bg-glow bg-neutral-800/90 backdrop-blur-sm" >
 
                 <div className="global-header__main-nav__left">
                     <a href="/"><Logo height={48}/></a>
@@ -152,17 +170,13 @@ export const Header = (props) => {
                         <RaceSelector 
                             races={races} 
                             selectedYear={selectedYear} 
-                            setIsRaceSelected={() => {
-                                setIsRaceSelected()
-                                setNavOpen(false)
-                            }} 
+                            setIsRaceSelected={setIsRaceSelected} 
                             isRaceSelected={isRaceSelected}
                             pagePath={pagePath}
                             page={page}
                         />
                     </div>
                 )}
-                
             </div>
 
             <nav 
