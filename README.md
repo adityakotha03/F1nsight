@@ -36,7 +36,7 @@ Contributions to F1nsight are always welcome! Whether it's improving the codebas
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under our custom license. For more details, please refer to the LICENSE file.
 
 ## Acknowledgements
 
