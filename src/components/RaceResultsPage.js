@@ -44,7 +44,7 @@ export function RaceResultsPage({ selectedYear }) {
 
   return (
     <div className="global-container">
-      <h1 className="heading-2 text-center mb-64 mt-64 text-neutral-300">Race Results</h1>
+      <h1 className="heading-2 text-center mb-40 text-neutral-400">Race Results</h1>
       {isLoading ? (
         <Loading className="mt-[20rem] mb-[20rem]" message={`Loading ${selectedYear} Race Results`} />
       ) : (
@@ -52,14 +52,6 @@ export function RaceResultsPage({ selectedYear }) {
           {raceDetails.map((race, index) => (
             <>
             <li key={index} className='max-sm:w-3/4 m-auto'>
-              <div className='text-center mb-12'>
-                <h2 className='uppercase tracking-sm leading-none font-bold'>
-                  {race.season} {race.raceName}
-                </h2>
-                <div className='text-sm text-neutral-400 tracking-sm leading-none'>
-                  {formatTime(race.date, race.time)}
-                </div>
-              </div>
               {race.results && race.results.length > 0 && (
                 <>
                   <ul className="flex flex-col sm:flex-row align-center justify-center gap-20">
@@ -81,6 +73,14 @@ export function RaceResultsPage({ selectedYear }) {
                   {/* <a className="text-sm block text-center mt-16 text-neutral-400" href="/">full weekend results <FontAwesomeIcon icon="fa-arrow-up-right-from-square" /></a> */}
                 </>
               )}
+              <div className='text-center mb-24 mt-12'>
+                <h2 className='uppercase tracking-sm leading-none mb-4 font-bold'>
+                  {race.season} {race.raceName}
+                </h2>
+                <div className='text-sm text-neutral-400 tracking-sm leading-none'>
+                  {formatTime(race.date, race.time)}
+                </div>
+              </div>
             </li>
             <div className={classNames("divider-glow-medium mb-24",  {"mt-32" : !race.results})} />
             </>

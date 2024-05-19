@@ -21,7 +21,7 @@ export function ConstructorStandings({ selectedYear }) {
 
   return (
     <div className="global-container">
-      <h2 className="heading-2 text-center mb-64 mt-64 text-neutral-300">Constructor Standings</h2>
+      <h2 className="heading-2 text-center mb-40 text-neutral-400">Constructor Standings</h2>
       {isLoading ? (
         <Loading className="mt-[20rem] mb-[20rem]" message={`Loading ${selectedYear} Constructor Standings`} />
       ) : (

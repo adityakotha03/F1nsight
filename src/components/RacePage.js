@@ -23,13 +23,14 @@ export function RacePage() {
   const [driverNumber, setDriverNumber] = useState('');
   const [driversColor, setDriversColor] = useState({});
   const [startingGrid, setStartingGrid] = useState([]);
+  const [animatedMap, setAnimatedMap] = useState('');
   const [MapPath, setMapPath] = useState('');
   const [raceResults, setRaceResults] = useState([]);
   const [locData, setLocData] = useState({});
   const [activeButtonIndex, setActiveButtonIndex] = useState(null);
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
-  const [speedFactor, setSpeedFactor] = useState(1.5);
+  const [speedFactor, setSpeedFactor] = useState(0.2);
   const [isPaused, setIsPaused] = useState(false);
   const [haloView, setHaloView] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -78,6 +79,7 @@ export function RacePage() {
 
         const circuitId = locationMap[location];
         setMapPath(`${process.env.PUBLIC_URL + "/map/" + circuitId + ".gltf"}`);
+        setAnimatedMap(`${process.env.PUBLIC_URL + "/mapsAnimated/" + circuitId + "Animated.mp4"}`);
 
         if (circuitId) {
           const results = await fetchRaceResultsByCircuit(year, circuitId);
@@ -182,8 +184,11 @@ export function RacePage() {
     isLoading ? (
       <Loading className="mt-[20rem] mb-[20rem]" message={`Loading ${raceName} ${year} Race`} />
     ) : (
-    <div className="pt-[22rem] sm:pt-[9.6rem]">
-      {raceName && <p className="heading-2 text-center text-neutral-400 mb-32">{raceName} {year}</p>}
+    <div className="pt-[10rem]">
+      {raceName && <p className="heading-2 text-center text-neutral-400  mb-32">{raceName} {year}</p>}
+      {!driverSelected && (
+        <div className="w-full tracking-xs text-center text-neutral-400 gradient-border-extreme py-4 px-32 leading-none">Select driver from the leaderboard to activate race mode</div>
+      )}
       <div className="race-display mb-64 relative">
         <ul className="flex flex-col absolute top-1 left-1 z-10">
           {raceResults.map((result, index) => (
@@ -209,53 +214,57 @@ export function RacePage() {
             </button>
           ))}
         </ul>
-        <ThreeCanvas 
-          MapFile={MapPath} 
-          locData={locData}
-          driverSelected={driverSelected}
-          driverCode={driverCode}
-          driverColor={driversColor[driverCode]}
-          isPaused={isPaused}
-          haloView={haloView}
-          controls={
-            <div className="relative z-10">
-              {driverSelected ? (
-                <div className="race-controls">
-                  <button className="race-controls__play gradient-border-extreme py-16 px-32" onClick={() => setIsPaused(false)}><FontAwesomeIcon icon="play" /></button>
-                  <button className="race-controls__pause gradient-border-extreme py-16 px-32" onClick={() => setIsPaused(true)}><FontAwesomeIcon icon="pause" /></button>
-                  <button className="race-controls__view gradient-border-extreme py-16 px-32 tracking-sm uppercase text-xs" onClick={() => setHaloView(!haloView)}>
-                    {haloView ? 'Sky View' : 'Halo View'}
-                  </button>
-                  <div className="race-controls__speed gradient-border-extreme flex text-xs max-sm:flex-col sm:items-center sm:justify-center gap-16 py-16 px-32 tracking-sm uppercase text-center">
-                    <p>Playback Speed:</p>
-                    <button
-                      className={classNames("tracking-sm uppercase", { 'text-neutral-400': speedFactor !== 4})}
-                      onClick={() => setSpeedFactor(4)}
-                    >
-                      Normal
+        {(driverSelected && location === 'Sakhir') || location !== 'Sakhir'  ? (
+          <ThreeCanvas 
+            MapFile={MapPath} 
+            locData={locData}
+            driverSelected={driverSelected}
+            driverCode={driverCode}
+            driverColor={driversColor[driverCode]}
+            isPaused={isPaused}
+            haloView={haloView}
+            controls={
+              <div className="relative z-10">
+                {driverSelected && (
+                  <div className="race-controls">
+                    <button className="race-controls__play gradient-border-extreme py-16 px-32" onClick={() => setIsPaused(false)}><FontAwesomeIcon icon="play" /></button>
+                    <button className="race-controls__pause gradient-border-extreme py-16 px-32" onClick={() => setIsPaused(true)}><FontAwesomeIcon icon="pause" /></button>
+                    <button className="race-controls__view gradient-border-extreme py-16 px-32 tracking-sm uppercase text-xs" onClick={() => setHaloView(!haloView)}>
+                      {haloView ? 'Sky View' : 'Halo View'}
                     </button>
-                    <button
-                      className={classNames("tracking-sm uppercase", { 'text-neutral-400': speedFactor !== 1.5})}
-                      onClick={() => setSpeedFactor(1.5)}
-                    >
-                      Push Push
-                    </button>
-                    <button
-                      className={classNames("tracking-sm uppercase", { 'text-neutral-400': speedFactor !== 0.2})}
-                      onClick={() => setSpeedFactor(0.2)}
-                    >
-                      DRS 
-                    </button> 
+                    <div className="race-controls__speed gradient-border-extreme flex text-xs max-sm:flex-col sm:items-center sm:justify-center gap-16 py-16 px-32 tracking-sm uppercase text-center">
+                      <p>Playback Speed:</p>
+                      <button
+                        className={classNames("tracking-sm uppercase", { 'text-neutral-400': speedFactor !== 4})}
+                        onClick={() => setSpeedFactor(4)}
+                      >
+                        Normal
+                      </button>
+                      <button
+                        className={classNames("tracking-sm uppercase", { 'text-neutral-400': speedFactor !== 1.5})}
+                        onClick={() => setSpeedFactor(1.5)}
+                      >
+                        Push Push
+                      </button>
+                      <button
+                        className={classNames("tracking-sm uppercase", { 'text-neutral-400': speedFactor !== 0.2})}
+                        onClick={() => setSpeedFactor(0.2)}
+                      >
+                        DRS 
+                      </button> 
+                    </div>
                   </div>
-                </div>
-              ) : (
-                <div className="w-full tracking-xs text-center gradient-border-extreme py-16 px-32">Select driver from the leadboard to activate race mode</div>
-              )}
-              
-            </div>
-          }
-          speedFactor={speedFactor}
-        />    
+                )}
+                
+              </div>
+            }
+            speedFactor={speedFactor}
+          /> 
+        ) : (
+          <div className="track-preview">
+            <video src={animatedMap} loop autoPlay muted className="w-full h-full object-cover"></video>
+          </div>
+        )}          
       </div>
 
       <div className="page-container-centered flex flex-col sm:flex-row gap-16 mt-32">
@@ -283,7 +292,6 @@ export function RacePage() {
                 </div>
               </div>
               <div className="bg-glow bg-glow--large px-16 pt-16 pb-24">
-
                 <div className="flex items-start justify-between">
                   <div>
                     <div className="uppercase tracking-xs text-xs">Finshed</div>

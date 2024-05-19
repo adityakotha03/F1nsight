@@ -4,7 +4,6 @@ import { getDriverStandings } from '../utils/api';
 import { ConstructorDriver } from './ConstructorDriver';
 import { Loading } from "./Loading"
 
-
 export function DriverStandings({ selectedYear }) {
   const [standings, setStandings] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -24,7 +23,7 @@ export function DriverStandings({ selectedYear }) {
 
   return (
     <div className="global-container">
-      <h2 className="heading-2 text-center mb-64 mt-64 text-neutral-300">Driver Standings</h2>
+      <h2 className="heading-2 text-center mb-40 text-neutral-400">Driver Standings</h2>
       {isLoading ? (
         <Loading className="mt-[20rem] mb-[20rem]" message={`Loading ${selectedYear} Driver Standings`} />
       ) : (
