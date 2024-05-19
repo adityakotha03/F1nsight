@@ -36,7 +36,7 @@ Contributions to F1nsight are always welcome! Whether it's improving the codebas
 
 ## License
 
-This project is licensed under our custom license. For more details, please refer to the LICENSE file.
+This project is licensed under our custom license. For more details, please refer to the [LICENSE](https://github.com/adityakotha03/F1nsight?tab=License-1-ov-file).
 
 ## Acknowledgements
 
