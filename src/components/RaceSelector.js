@@ -5,7 +5,7 @@ import { Select } from './Select';
 export const RaceSelector = ({ races, selectedYear, pagePath, setIsRaceSelected, isRaceSelected }) => {
   const navigate = useNavigate();
 
-  const [selectValue, setSelectValue] = useState('');
+  const [selectValue, setSelectValue] = useState(localStorage.getItem('selectValue') || '');
 
   const handleRaceChange = (e) => {
     if (e.target.value === "") {
@@ -15,6 +15,7 @@ export const RaceSelector = ({ races, selectedYear, pagePath, setIsRaceSelected,
       setIsRaceSelected(true);
       const race = races.find(r => r.meeting_name === e.target.value);
       setSelectValue(race.meeting_name);
+      localStorage.setItem('selectValue', race.meeting_name);
       if (race) {
         navigate(
           `/race/${race.meeting_key}`, 
@@ -32,8 +33,11 @@ export const RaceSelector = ({ races, selectedYear, pagePath, setIsRaceSelected,
   };
 
   useEffect(() => {
+    console.log(selectValue);
+    console.log(isRaceSelected);
     if (!isRaceSelected) { 
       setSelectValue('');
+      localStorage.removeItem('selectValue');
     };
   }, [isRaceSelected]);
 
