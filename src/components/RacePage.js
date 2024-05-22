@@ -3,9 +3,9 @@ import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useLocation } from 'react-router-dom';
 import { Loading } from "./Loading"
+import { Select } from './Select';
 
-import { fetchDriversAndTires, fetchRaceResultsByCircuit } from '../utils/api';
-import { fetchLocationData } from '../utils/api';
+import { fetchDriversAndTires, fetchRaceResultsByCircuit, fetchQualifyingResultsByCircuit, fetchLocationData } from '../utils/api';
 
 import { DriverCard } from './DriverCard';
 import {ThreeCanvas} from './ThreeCanvas.js'
@@ -34,6 +34,13 @@ export function RacePage() {
   const [isPaused, setIsPaused] = useState(false);
   const [haloView, setHaloView] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedSession, setSelectedSession] = useState('Race');
+
+  const handleOptionChange = (event) => {
+    setSelectedSession(event.target.value);
+};
+
+console.log(selectedSession);
   
   const selectedDriverData = drivers.find(obj => obj['acronym'] === driverCode);
   const selectedDriverRaceData = raceResults.find(obj => obj['number'] === driverNumber);
@@ -71,76 +78,145 @@ export function RacePage() {
           "Barcelona": "catalunya",
           "Lusail": "losail",
           "Yas Island": "yas_marina"
-        };        
-    
-        // Check if the country is in the map and replace it if it is
+        };  
 
         setIsLoading(true);
-
+        
         const circuitId = locationMap[location];
-        setMapPath(`${process.env.PUBLIC_URL + "/map/" + circuitId + ".gltf"}`);
-        setAnimatedMap(`${process.env.PUBLIC_URL + "/mapsAnimated/" + circuitId + "Animated.mp4"}`);
-
-        if (circuitId) {
-          const results = await fetchRaceResultsByCircuit(year, circuitId);
-          setRaceResults(results);
-        }
-
         const sessionsResponse = await fetch(`https://api.openf1.org/v1/sessions?meeting_key=${meetingKey}`);
         const sessionsData = await sessionsResponse.json();
-        const raceSession = sessionsData.find(session => session.session_name === "Race");
-        if (!raceSession) throw new Error('Race session not found');
-        const sessionKey = raceSession.session_key;
     
-        const [driverDetailsData, startingGridData, driversData, lapsData] = await Promise.all([
-          fetch(`https://api.openf1.org/v1/drivers?session_key=${sessionKey}`).then(res => res.json()),
-          fetch(`https://api.openf1.org/v1/position?session_key=${sessionKey}`).then(res => res.json()),
-          fetchDriversAndTires(sessionKey),
-          fetch(`https://api.openf1.org/v1/laps?session_key=${sessionKey}`).then(res => res.json())
-        ]);
-    
-        const driverDetailsMap = driverDetailsData.reduce((acc, driver) => ({
-          ...acc,
-          [driver.driver_number]: driver.name_acronym
-        }), {});
-    
-        setDriversDetails(driverDetailsMap);
+        if(selectedSession === 'Race'){
 
-        const driverColorMap = driverDetailsData.reduce((acc, driver) => ({
-          ...acc,
-          [driver.name_acronym]: driver.team_colour
-        }), {});
+          setIsLoading(true);
+          
+          setMapPath(`${process.env.PUBLIC_URL + "/map/" + circuitId + ".gltf"}`);
+          setAnimatedMap(`${process.env.PUBLIC_URL + "/mapsAnimated/" + circuitId + "Animated.mp4"}`);
 
-        setDriversColor(driverColorMap);
+          if (circuitId) {
+            const results = await fetchRaceResultsByCircuit(year, circuitId);
+            setRaceResults(results);
+          }
 
-        const latestDate = startingGridData[0].date;
-        const firstDifferentDate = startingGridData.find(item => item.date !== latestDate)?.date;
-        const date = new Date(firstDifferentDate);
-        date.setMinutes(date.getMinutes() - 1);
-        const updatedDate = date.toISOString();
+          const raceSession = sessionsData.find(session => session.session_name === "Race");
+          if (!raceSession) throw new Error('Race session not found');
+          const sessionKey = raceSession.session_key;
 
-        setStartTime(updatedDate);
-        setEndTime(startingGridData[startingGridData.length - 1].date);
+          const [driverDetailsData, startingGridData, driversData, lapsData] = await Promise.all([
+            fetch(`https://api.openf1.org/v1/drivers?session_key=${sessionKey}`).then(res => res.json()),
+            fetch(`https://api.openf1.org/v1/position?session_key=${sessionKey}`).then(res => res.json()),
+            fetchDriversAndTires(sessionKey),
+            fetch(`https://api.openf1.org/v1/laps?session_key=${sessionKey}`).then(res => res.json())
+          ]);
+      
+          const driverDetailsMap = driverDetailsData.reduce((acc, driver) => ({
+            ...acc,
+            [driver.driver_number]: driver.name_acronym
+          }), {});
+      
+          setDriversDetails(driverDetailsMap);
+  
+          const driverColorMap = driverDetailsData.reduce((acc, driver) => ({
+            ...acc,
+            [driver.name_acronym]: driver.team_colour
+          }), {});
+  
+          setDriversColor(driverColorMap);
+  
+          const latestDate = startingGridData[0].date;
+          const firstDifferentDate = startingGridData.find(item => item.date !== latestDate)?.date;
+          const date = new Date(firstDifferentDate);
+          date.setMinutes(date.getMinutes() - 1);
+          const updatedDate = date.toISOString();
+  
+          setStartTime(updatedDate);
+          setEndTime(startingGridData[startingGridData.length - 1].date);
+  
+          const earliestDateTime = startingGridData[0]?.date;
+          const filteredStartingGrid = startingGridData.filter(item => item.date === earliestDateTime);
+          setStartingGrid(filteredStartingGrid);
+      
+          setDrivers(driversData);
+      
+          setLaps(lapsData.map(lap => ({
+            ...lap,
+            driver_acronym: driverDetailsMap[lap.driver_number]
+          })));
 
-        const earliestDateTime = startingGridData[0]?.date;
-        const filteredStartingGrid = startingGridData.filter(item => item.date === earliestDateTime);
-        setStartingGrid(filteredStartingGrid);
-    
-        setDrivers(driversData);
-    
-        setLaps(lapsData.map(lap => ({
-          ...lap,
-          driver_acronym: driverDetailsMap[lap.driver_number]
-        })));
+          setIsLoading(false);
+        }
+
+        else if (selectedSession === 'Qualifying'){
+
+          setIsLoading(true);
+
+          setMapPath(`${process.env.PUBLIC_URL + "/map/" + circuitId + ".gltf"}`);
+          setAnimatedMap(`${process.env.PUBLIC_URL + "/mapsAnimated/" + circuitId + "Animated.mp4"}`);
+
+          if (circuitId) {
+            const results = await fetchQualifyingResultsByCircuit(year, circuitId);
+            setRaceResults(results);
+            console.log(results);
+          }
+
+          const raceSession = sessionsData.find(session => session.session_name === "Qualifying");
+          if (!raceSession) throw new Error('Race session not found');
+          const sessionKey = raceSession.session_key;
+
+          const [driverDetailsData, startingGridData, driversData, lapsData] = await Promise.all([
+            fetch(`https://api.openf1.org/v1/drivers?session_key=${sessionKey}`).then(res => res.json()),
+            fetch(`https://api.openf1.org/v1/position?session_key=${sessionKey}`).then(res => res.json()),
+            fetchDriversAndTires(sessionKey),
+            fetch(`https://api.openf1.org/v1/laps?session_key=${sessionKey}`).then(res => res.json())
+          ]);
+      
+          const driverDetailsMap = driverDetailsData.reduce((acc, driver) => ({
+            ...acc,
+            [driver.driver_number]: driver.name_acronym
+          }), {});
+      
+          setDriversDetails(driverDetailsMap);
+  
+          const driverColorMap = driverDetailsData.reduce((acc, driver) => ({
+            ...acc,
+            [driver.name_acronym]: driver.team_colour
+          }), {});
+  
+          setDriversColor(driverColorMap);
+  
+          const latestDate = startingGridData[0].date;
+          const firstDifferentDate = startingGridData.find(item => item.date !== latestDate)?.date;
+          const date = new Date(firstDifferentDate);
+          date.setMinutes(date.getMinutes() - 1);
+          const updatedDate = date.toISOString();
+  
+          setStartTime(updatedDate);
+          setEndTime(startingGridData[startingGridData.length - 1].date);
+  
+          const earliestDateTime = startingGridData[0]?.date;
+          const filteredStartingGrid = startingGridData.filter(item => item.date === earliestDateTime);
+          setStartingGrid(filteredStartingGrid);
+      
+          setDrivers(driversData);
+      
+          setLaps(lapsData.map(lap => ({
+            ...lap,
+            driver_acronym: driverDetailsMap[lap.driver_number]
+          })));
+
+          setIsLoading(false);
+          
+        }
+        
       } catch (error) {
         console.error("Error fetching data:", error);
       }
 
-      setIsLoading(false);
+      
     };    
 
     fetchData();
-  }, [meetingKey, year, location]);
+  }, [meetingKey, year, location, selectedSession]);
 
   const handleDriverSelectionClick = (index) => {
     // console.log(raceResults[index].Driver.code); // Log the driver code
@@ -182,10 +258,16 @@ export function RacePage() {
 
   return (
     isLoading ? (
-      <Loading className="mt-[20rem] mb-[20rem]" message={`Loading ${raceName} ${year} Race`} />
+      <Loading className="mt-[20rem] mb-[20rem]" message={`Loading ${raceName} ${year} ${selectedSession}`} />
     ) : (
     <div className="pt-[10rem]">
       {raceName && <p className="heading-2 text-center text-neutral-400  mb-32">{raceName} {year}</p>}
+      
+      <Select label="Select Session" onChange={handleOptionChange} value={selectedSession}>
+        <option value="Race">Race</option>
+        <option value="Qualifying">Qualifying</option>
+      </Select>
+
       {!driverSelected && (
         <div className="w-full tracking-xs text-center text-neutral-400 gradient-border-extreme py-4 px-32 leading-none">Select driver from the leaderboard to activate race mode</div>
       )}
@@ -374,7 +456,7 @@ export function RacePage() {
         <div className="sm:grow-0">
           <LapChart laps={laps} setLaps={() => setLaps} driversDetails={driversDetails} driversColor={driversColor} raceResults={raceResults} className="lap-chart" driverCode={driverSelected ? driversDetails[driverNumber] : null} />
           <TireStrategy drivers={drivers} raceResults={raceResults} driverCode={driverSelected ? driversDetails[driverNumber] : null} driverColor={driversColor[driverCode]} />
-          {!driverSelected && (
+          {!driverSelected && (selectedSession === 'Race') &&(
             <>
               <h3 className="heading-4 mb-16 mt-32 text-neutral-400">Fastest Laps</h3> 
               <div className="bg-glow bg-glow--large h-fit p-32 mb-16">

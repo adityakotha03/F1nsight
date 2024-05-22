@@ -33,8 +33,6 @@ export const RaceSelector = ({ races, selectedYear, pagePath, setIsRaceSelected,
   };
 
   useEffect(() => {
-    console.log(selectValue);
-    console.log(isRaceSelected);
     if (!isRaceSelected) { 
       setSelectValue('');
       localStorage.removeItem('selectValue');

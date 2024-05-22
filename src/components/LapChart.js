@@ -91,7 +91,7 @@ export const LapChart = (props) => {
                     const lapForDriver = laps.find(lap => lap.lap_number === lapNumber && driversDetails[lap.driver_number] === acronym);
                     if (lapForDriver) {
                         const lapDurationInSeconds = parseFloat(lapForDriver.lap_duration);
-                        if (!isNaN(lapDurationInSeconds) && lapDurationInSeconds > 0 && lapDurationInSeconds >= lowerBound && lapDurationInSeconds <= upperBound) {
+                        if (!isNaN(lapDurationInSeconds) && lapDurationInSeconds > 0 && lapDurationInSeconds <= 180 && lapDurationInSeconds >= lowerBound && lapDurationInSeconds <= upperBound) {
                             // Convert lap duration from seconds to minutes and exclude outliers
                             lapDataForAllDrivers[acronym] = (lapDurationInSeconds / 60).toFixed(5);
                         }
