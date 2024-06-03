@@ -6,10 +6,22 @@ import { Popover } from "flowbite-react";
 import { useInView } from "framer-motion";
 
 export const DriverCard = (props) => {
-    const { className, driver, driverColor, fastestLap, startPosition, endPosition, isActive, layoutSmall, time, year, hasHover, index, mobileSmall} = props;
+    const { className, driver, driverColor, stint, fastestLap, startPosition, endPosition, isActive, layoutSmall, time, year, hasHover, index, mobileSmall} = props;
 
     const ref = useRef(null);
     const isInView = useInView(ref, { once: true });
+
+    const getTireCompound = (driverCode, lap) => {
+        const driverStint = stint?.find(item => item.acronym === driverCode);
+        if (driverStint && driverStint.tires) {
+            for (const tire of driverStint.tires){
+                if(lap <= tire.lap_end){
+                    return tire.compound;
+                }
+            }
+        }
+        return '?';
+    } 
 
     const positionMovement = () => {
         if ( startPosition !== endPosition ) {
@@ -117,7 +129,7 @@ export const DriverCard = (props) => {
                                     </div>
                                     <div className="flex flex-col items-center">
                                         <span className="text-sm">Tyre</span>
-                                        <span className="font-display">?</span>
+                                        <span className="font-display">{getTireCompound(driver.code, fastestLap.lap).charAt(0)}</span>
                                     </div>
                                 </div>
 
