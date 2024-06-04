@@ -273,198 +273,212 @@ export function RacePage() {
       <Loading className="mt-[20rem] mb-[20rem]" message={`Loading ${raceName} ${year} ${selectedSession}`} />
     ) : (
     <div className="pt-[10rem]">
-      {raceName && <p className="heading-2 text-center text-neutral-400  mb-32">{raceName} {year}</p>}
-      
-      <Select label="Select Session" onChange={handleOptionChange} value={selectedSession}>
-        <option value="Race">Race</option>
-        <option value="Qualifying">Qualifying</option>
-      </Select>
 
-      {!driverSelected && (
-        <div className="w-full tracking-xs text-center text-neutral-400 gradient-border-extreme py-4 px-32 leading-none">Select driver from the leaderboard to activate race mode</div>
-      )}
-      <div className="race-display mb-64 relative">
-        <ul className="flex flex-col absolute top-1 left-1 z-10">
-          {raceResults.map((result, index) => (
-            <button 
-              key={index}
-              className="block w-full mb-2 relative"
-              onClick={() => handleDriverSelectionClick(index)}
-            >
-              <DriverCard 
-                hasHover
-                isActive={activeButtonIndex === index}
-                index={index}
-                driver={result.Driver}
-                stint={drivers}
-                driverColor={driversColor[driverCode]}
-                startPosition={parseInt(result.grid, 10)}
-                endPosition={parseInt(result.position,10)}
-                year={year}
-                time={result.Time?.time || result.status}
-                fastestLap={result.FastestLap}
-                layoutSmall={index > 2}
-                mobileSmall
-              />
-            </button>
-          ))}
-        </ul>
-        {(driverSelected && location === 'Sakhir') || location !== 'Sakhir'  ? (
-          <ThreeCanvas 
-            MapFile={MapPath} 
-            locData={locData}
-            driverSelected={driverSelected}
-            driverCode={driverCode}
-            driverColor={driversColor[driverCode]}
-            isPaused={isPaused}
-            haloView={haloView}
-            controls={
-              <div className="relative z-10">
-                {driverSelected && (
-                  <div className="race-controls">
-                    <button className="race-controls__play gradient-border-extreme py-16 px-32" onClick={() => setIsPaused(false)}><FontAwesomeIcon icon="play" /></button>
-                    <button className="race-controls__pause gradient-border-extreme py-16 px-32" onClick={() => setIsPaused(true)}><FontAwesomeIcon icon="pause" /></button>
-                    <button className="race-controls__view gradient-border-extreme py-16 px-32 tracking-sm uppercase text-xs" onClick={() => setHaloView(!haloView)}>
-                      {haloView ? 'Sky View' : 'Halo View'}
-                    </button>
-                    <div className="race-controls__speed gradient-border-extreme flex text-xs max-sm:flex-col sm:items-center sm:justify-center gap-16 py-16 px-32 tracking-sm uppercase text-center">
-                      <p>Playback Speed:</p>
-                      <button
-                        className={classNames("tracking-sm uppercase", { 'text-neutral-400': speedFactor !== 4})}
-                        onClick={() => setSpeedFactor(4)}
-                      >
-                        Normal
-                      </button>
-                      <button
-                        className={classNames("tracking-sm uppercase", { 'text-neutral-400': speedFactor !== 1.5})}
-                        onClick={() => setSpeedFactor(1.5)}
-                      >
-                        Push Push
-                      </button>
-                      <button
-                        className={classNames("tracking-sm uppercase", { 'text-neutral-400': speedFactor !== 0.2})}
-                        onClick={() => setSpeedFactor(0.2)}
-                      >
-                        DRS 
-                      </button> 
-                    </div>
-                  </div>
-                )}
-                
-              </div>
-            }
-            speedFactor={speedFactor}
-          /> 
-        ) : (
-          <div className="track-preview">
-            <video src={animatedMap} loop autoPlay muted playsInline className="w-full h-full object-cover"></video>
-          </div>
-        )}          
+      <div className="flex flex-col items-center justify-center mb-32">
+        {raceName && <p className="heading-2 text-center text-neutral-400 mb-8">{raceName} {year}</p>}
+        <Select className="w-fit" label="Select Session" onChange={handleOptionChange} value={selectedSession}>
+          <option value="Race">Race</option>
+          <option value="Qualifying">Qualifying</option>
+        </Select>
       </div>
 
-      <div className="page-container-centered flex flex-col sm:flex-row gap-16 mt-32">
-        <div className="sm:w-[26rem]">
-          {driverSelected && (
-            <div className="mb-32">
-              <div className="flex items-end relative">
-                <img 
-                  alt="" 
-                  src={`${process.env.PUBLIC_URL + "/images/" + year + "/drivers/" + selectedDriverData.acronym + ".png"}`}
-                  width={120} 
-                  height={120} 
-                  className="-ml-8"
+      {selectedSession === 'Race' && (
+        <>
+
+        {!driverSelected && (
+          <div className="w-full tracking-xs text-center text-neutral-400 gradient-border-extreme py-4 px-32 leading-none">Select driver from the leaderboard to activate race mode</div>
+        )}
+
+        <div className="race-display mb-64 relative">
+          <ul className="flex flex-col absolute top-1 left-1 z-10">
+            {raceResults.map((result, index) => (
+              <button 
+                key={index}
+                className="block w-full mb-2 relative"
+                onClick={() => handleDriverSelectionClick(index)}
+              >
+                <DriverCard 
+                  hasHover
+                  isActive={activeButtonIndex === index}
+                  index={index}
+                  driver={result.Driver}
+                  stint={drivers}
+                  driverColor={driversColor[driverCode]}
+                  startPosition={parseInt(result.grid, 10)}
+                  endPosition={parseInt(result.position,10)}
+                  year={year}
+                  time={result.Time?.time || result.status}
+                  fastestLap={result.FastestLap}
+                  layoutSmall={index > 2}
+                  mobileSmall
                 />
-                <img 
-                    alt="" 
-                    className="absolute -bottom-16 left-32"
-                    src={`${process.env.PUBLIC_URL + "/images/" + year + "/cars/" + selectedDriverRaceData.Constructor.constructorId + ".png"}`}
-                    width={150} 
-                />
-                <div className="-ml-32 w-full">
-                  <h3 className="tracking-xs text-sm uppercase gradient-text-medium -mb-8">{selectedDriverData.first_name}</h3>
-                  <h3 className="font-display gradient-text-light text-[2rem]">{selectedDriverData.last_name}</h3>
-                  <p className="font-display gradient-text-dark text-[6.4rem] mr-16 leading-none text-right">{selectedDriverData.driver_number}</p>
-                </div>
-              </div>
-              <div className="bg-glow bg-glow--large px-16 pt-16 pb-24">
-                <div className="flex items-start justify-between">
-                  <div>
-                    <div className="uppercase tracking-xs text-xs">Finshed</div>
-                    <div>
-                      <span className="font-display text-[3.2rem]">{selectedDriverRaceData.position}</span>
-                      <span className="uppercase tracking-xs text-xs ml-4">
-                        {selectedDriverRaceData.status === "Finished" ? selectedDriverRaceData.Time.time : selectedDriverRaceData.status}
-                      </span>
+              </button>
+            ))}
+          </ul>
+
+          {(driverSelected && location === 'Sakhir') || location !== 'Sakhir'  ? (
+            <ThreeCanvas 
+              MapFile={MapPath} 
+              locData={locData}
+              driverSelected={driverSelected}
+              driverCode={driverCode}
+              driverColor={driversColor[driverCode]}
+              isPaused={isPaused}
+              haloView={haloView}
+              controls={
+                <div className="relative z-10">
+                  {driverSelected && (
+                    <div className="race-controls">
+                      <button className="race-controls__play gradient-border-extreme py-16 px-32" onClick={() => setIsPaused(false)}><FontAwesomeIcon icon="play" /></button>
+                      <button className="race-controls__pause gradient-border-extreme py-16 px-32" onClick={() => setIsPaused(true)}><FontAwesomeIcon icon="pause" /></button>
+                      <button className="race-controls__view gradient-border-extreme py-16 px-32 tracking-sm uppercase text-xs" onClick={() => setHaloView(!haloView)}>
+                        {haloView ? 'Sky View' : 'Halo View'}
+                      </button>
+                      <div className="race-controls__speed gradient-border-extreme flex text-xs max-sm:flex-col sm:items-center sm:justify-center gap-16 py-16 px-32 tracking-sm uppercase text-center">
+                        <p>Playback Speed:</p>
+                        <button
+                          className={classNames("tracking-sm uppercase", { 'text-neutral-400': speedFactor !== 4})}
+                          onClick={() => setSpeedFactor(4)}
+                        >
+                          Normal
+                        </button>
+                        <button
+                          className={classNames("tracking-sm uppercase", { 'text-neutral-400': speedFactor !== 1.5})}
+                          onClick={() => setSpeedFactor(1.5)}
+                        >
+                          Push Push
+                        </button>
+                        <button
+                          className={classNames("tracking-sm uppercase", { 'text-neutral-400': speedFactor !== 0.2})}
+                          onClick={() => setSpeedFactor(0.2)}
+                        >
+                          DRS 
+                        </button> 
+                      </div>
                     </div>
-                  </div>
-                  <div className="text-right">
-                    <div className="uppercase tracking-xs text-xs">Started</div>
-                    <div className="font-display text-[3.2rem]">{selectedDriverRaceData.grid}</div>
-                  </div>
+                  )}
+                  
                 </div>
-
-                <div className="divider-glow-dark mt-16 mb-10" />
-
-                <p className="font-display text-center mb-16">fastest lap</p>
-
-                <div className="flex items-center justify-between">
-                  <div>
-                    <div className="uppercase tracking-xs text-xs">Time</div>
-                    <div className="font-display">{selectedDriverRaceData.FastestLap.Time.time}</div>
-                  </div>
-                  <div className="text-right">
-                    <div className="uppercase tracking-xs text-xs">Lap</div>
-                    <div className="font-display">{selectedDriverRaceData.FastestLap.lap}</div>
-                  </div>
-                </div>
-
-                <div className="flex items-center justify-between mt-16">
-                  <div>
-                    <div className="uppercase tracking-xs text-xs">avg speed</div>
-                    <div>
-                      <span className="font-display">{selectedDriverRaceData.FastestLap.AverageSpeed.speed}</span>
-                      <span className="uppercase tracking-xs text-xs">{selectedDriverRaceData.FastestLap.AverageSpeed.units}</span>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <div className="uppercase tracking-xs text-xs">Rank</div>
-                    <div className="font-display">{selectedDriverRaceData.FastestLap.rank}</div>
-                  </div>
-                </div>
-
-              </div>
+              }
+              speedFactor={speedFactor}
+            /> 
+          ) : (
+            <div className="track-preview">
+              <video src={animatedMap} loop autoPlay muted playsInline className="w-full h-full object-cover"></video>
             </div>
-          )}
-          <h3 className="heading-4 mb-16 text-neutral-400">Starting Grid</h3>
-          <div className="bg-glow bg-glow--large p-32 h-fit">
-            <ul className="flex flex-col w-fit m-auto">
-              {startingGrid
-                .sort((a, b) => a.position - b.position)
-                .map((gridPosition, index) => (
-                  <li 
-                    key={index} 
-                    className="text-center w-fit even:-mt-32 even:ml-[8rem] even:mb-8"
-                  >
-                    <div className={classNames(
-                      "text-sm font-display", 
-                      driverCode === driversDetails[gridPosition.driver_number] ? "text-neutral-200" : "text-neutral-400"
-                      )}
-                    >
-                      P{gridPosition.position}
-                    </div>
-                    <div className={classNames(
-                      "border-x-2 border-t-2 border-solid px-4 pt-4 w-64 font-display",
-                      driverCode === driversDetails[gridPosition.driver_number] ? "border-neutral-200" : " border-neutral-500"
-                      )}
-                      style={{color: driverCode === driversDetails[gridPosition.driver_number] ? `#${driversColor[driverCode]}` : "#737373"}}
-                    >
-                      {driversDetails[gridPosition.driver_number]}
-                    </div> 
-                  </li>
-                ))}
-            </ul>
-          </div>
+          )}          
         </div>
+        
+        </>
+      )}
+
+
+      <div className="page-container-centered flex flex-col justify-center sm:flex-row gap-16 mt-32">
+        {selectedSession === 'Race' && (
+          <div className="sm:w-[26rem]">
+            {driverSelected && (
+              <div className="mb-32">
+                <div className="flex items-end relative">
+                  <img 
+                    alt="" 
+                    src={`${process.env.PUBLIC_URL + "/images/" + year + "/drivers/" + selectedDriverData.acronym + ".png"}`}
+                    width={120} 
+                    height={120} 
+                    className="-ml-8"
+                  />
+                  <img 
+                      alt="" 
+                      className="absolute -bottom-16 left-32"
+                      src={`${process.env.PUBLIC_URL + "/images/" + year + "/cars/" + selectedDriverRaceData.Constructor.constructorId + ".png"}`}
+                      width={150} 
+                  />
+                  <div className="-ml-32 w-full">
+                    <h3 className="tracking-xs text-sm uppercase gradient-text-medium -mb-8">{selectedDriverData.first_name}</h3>
+                    <h3 className="font-display gradient-text-light text-[2rem]">{selectedDriverData.last_name}</h3>
+                    <p className="font-display gradient-text-dark text-[6.4rem] mr-16 leading-none text-right">{selectedDriverData.driver_number}</p>
+                  </div>
+                </div>
+                <div className="bg-glow bg-glow--large px-16 pt-16 pb-24">
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <div className="uppercase tracking-xs text-xs">Finshed</div>
+                      <div>
+                        <span className="font-display text-[3.2rem]">{selectedDriverRaceData.position}</span>
+                        <span className="uppercase tracking-xs text-xs ml-4">
+                          {selectedDriverRaceData.status === "Finished" ? selectedDriverRaceData.Time.time : selectedDriverRaceData.status}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className="uppercase tracking-xs text-xs">Started</div>
+                      <div className="font-display text-[3.2rem]">{selectedDriverRaceData.grid}</div>
+                    </div>
+                  </div>
+
+                  <div className="divider-glow-dark mt-16 mb-10" />
+
+                  <p className="font-display text-center mb-16">fastest lap</p>
+
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <div className="uppercase tracking-xs text-xs">Time</div>
+                      <div className="font-display">{selectedDriverRaceData.FastestLap.Time.time}</div>
+                    </div>
+                    <div className="text-right">
+                      <div className="uppercase tracking-xs text-xs">Lap</div>
+                      <div className="font-display">{selectedDriverRaceData.FastestLap.lap}</div>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between mt-16">
+                    <div>
+                      <div className="uppercase tracking-xs text-xs">avg speed</div>
+                      <div>
+                        <span className="font-display">{selectedDriverRaceData.FastestLap.AverageSpeed.speed}</span>
+                        <span className="uppercase tracking-xs text-xs">{selectedDriverRaceData.FastestLap.AverageSpeed.units}</span>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className="uppercase tracking-xs text-xs">Rank</div>
+                      <div className="font-display">{selectedDriverRaceData.FastestLap.rank}</div>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            )}
+
+            <h3 className="heading-4 mb-16 text-neutral-400">Starting Grid</h3>
+            <div className="bg-glow bg-glow--large p-32 h-fit">
+              <ul className="flex flex-col w-fit m-auto">
+                {startingGrid
+                  .sort((a, b) => a.position - b.position)
+                  .map((gridPosition, index) => (
+                    <li 
+                      key={index} 
+                      className="text-center w-fit even:-mt-32 even:ml-[8rem] even:mb-8"
+                    >
+                      <div className={classNames(
+                        "text-sm font-display", 
+                        driverCode === driversDetails[gridPosition.driver_number] ? "text-neutral-200" : "text-neutral-400"
+                        )}
+                      >
+                        P{gridPosition.position}
+                      </div>
+                      <div className={classNames(
+                        "border-x-2 border-t-2 border-solid px-4 pt-4 w-64 font-display",
+                        driverCode === driversDetails[gridPosition.driver_number] ? "border-neutral-200" : " border-neutral-500"
+                        )}
+                        style={{color: driverCode === driversDetails[gridPosition.driver_number] ? `#${driversColor[driverCode]}` : "#737373"}}
+                      >
+                        {driversDetails[gridPosition.driver_number]}
+                      </div> 
+                    </li>
+                  ))}
+              </ul>
+            </div>
+          </div>
+        )}
 
         <div className="sm:grow-0">
           <LapChart laps={laps} setLaps={() => setLaps} driversDetails={driversDetails} driversColor={driversColor} raceResults={raceResults} className="lap-chart" driverCode={driverSelected ? driversDetails[driverNumber] : null} />

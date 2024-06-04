@@ -8,6 +8,7 @@ export const Select = (props) => {
         id,
         label,
         value,
+        unstyled,
         ...rest
     } = props;
 
@@ -17,11 +18,15 @@ export const Select = (props) => {
         <div
             className={classNames(className, "select", {
                 'select--has-value': value !== "",
+                'select--unstyled': unstyled,
             })}
         >
             <select
                 {...rest}
-                className="select__input bg-glow bg-neutral-800/10"
+                className={classNames('select__input', {
+                    'bg-neutral-800/10 bg-glow': !unstyled,
+                    'bg-transparent border-0': unstyled,
+                })}
                 id={inputId}
                 value={value}
             />
