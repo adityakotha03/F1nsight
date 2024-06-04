@@ -34,7 +34,9 @@ export function RacePage() {
   const [isPaused, setIsPaused] = useState(false);
   const [haloView, setHaloView] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [selectedSession, setSelectedSession] = useState('Race');
+  const [selectedSession, setSelectedSession] = useState('Qualifying');
+  const [hasRaceSession, sethasRaceSession] = useState(false);
+  const [hasQualifyingSession, sethasQualifyingSession] = useState(false);
 
   const handleOptionChange = (event) => {
     setSelectedSession(event.target.value);
@@ -85,7 +87,12 @@ export function RacePage() {
         const circuitId = locationMap[location];
         const sessionsResponse = await fetch(`https://api.openf1.org/v1/sessions?meeting_key=${meetingKey}`);
         const sessionsData = await sessionsResponse.json();
-    
+        
+        const hasRaceSession = sessionsData.some(session => session.session_name === 'Race');
+        sethasRaceSession(hasRaceSession);
+        const hasQualifyingSession = sessionsData.some(session => session.session_name === 'Qualifying');
+        sethasQualifyingSession(hasQualifyingSession);
+        
         if(selectedSession === 'Race'){
 
           setIsLoading(true);
@@ -277,8 +284,8 @@ export function RacePage() {
       <div className="flex flex-col items-center justify-center mb-32">
         {raceName && <p className="heading-2 text-center text-neutral-400 mb-8">{raceName} {year}</p>}
         <Select className="w-fit" label="Select Session" onChange={handleOptionChange} value={selectedSession}>
-          <option value="Race">Race</option>
-          <option value="Qualifying">Qualifying</option>
+            {hasRaceSession && <option value="Race">Race</option>}
+            {hasQualifyingSession && <option value="Qualifying">Qualifying</option>}
         </Select>
       </div>
 

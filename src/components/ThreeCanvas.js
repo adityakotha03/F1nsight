@@ -43,8 +43,7 @@ export const ThreeCanvas = ({ MapFile, locData, driverColor, driverSelected, dri
 		// document.body.appendChild( stats.dom );
 
     const camera = new THREE.PerspectiveCamera(75, mountRef.current.clientWidth / mountRef.current.clientHeight, 0.1, 1000);
-    camera.position.z = 7;
-    camera.position.y = -7;
+    camera.position.set(0, -7, 10);
 
     const renderer = new THREE.WebGLRenderer();
     renderer.setSize(mountRef.current.clientWidth, mountRef.current.clientHeight);
@@ -78,6 +77,18 @@ export const ThreeCanvas = ({ MapFile, locData, driverColor, driverSelected, dri
         map.scale.set(0.1, 0.1, 0.1);
         map.rotation.x = Math.PI / 2; // causing orbit issue in canvas
         scene.add(map);
+
+        // // Calculate the bounding box of the map
+        // const box = new THREE.Box3().setFromObject(map);
+        // const center = box.getCenter(new THREE.Vector3());
+
+        // // Update camera position to be at the center of the map
+        // camera.position.set(center.x, center.y, center.z + 10);
+
+        // // Update the target of the OrbitControls to the center of the map
+        // control.target.set(center.x, center.y, center.z);
+        // control.update(); // Apply the changes to the controls
+
       }, undefined, error => console.error(error));
     }
 
