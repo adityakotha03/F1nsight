@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { fetchRaceDetails } from '../utils/api';
 
-import { DriverCard } from './DriverCard';
+import { RaceResultItem } from './RaceResultItem';
 import { Loading } from "./Loading"
 import classNames from 'classnames';
 
@@ -43,20 +43,19 @@ export function RaceResultsPage({ selectedYear }) {
 // console.log(raceDetails);
 
   return (
-    <div className="global-container">
+    <div className="race-results global-container">
       <h1 className="heading-2 text-center mb-40 text-neutral-400">Race Results</h1>
       {isLoading ? (
         <Loading className="mt-[20rem] mb-[20rem]" message={`Loading ${selectedYear} Race Results`} />
       ) : (
-        <ul className=''>
+        <ul className="race-result">
           {raceDetails.map((race, index) => (
-            <>
-            <li key={index} className='max-sm:w-3/4 m-auto'>
-              {race.results && race.results.length > 0 && (
-                <>
-                  <ul className="flex flex-col sm:flex-row align-center justify-center gap-20">
-                    {race.results.map((result, resultIndex) => (
-                      <DriverCard 
+            <li key={index}>
+              {race.results ? (
+                <ul className="race-results__list flex justify-center">
+                  {race.results.map((result, resultIndex) => (
+                      <RaceResultItem 
+                        className={`race-results__list__item-${resultIndex + 1}`}
                         carNumber={result.number}
                         driver={result.driver}
                         fastestLap={result.fastestLap}
@@ -67,13 +66,19 @@ export function RaceResultsPage({ selectedYear }) {
                         status={result.status}
                         time={result.time}
                         year={selectedYear}
+                        wireframe={race.results.length === 0}
                       />
-                    ))}
-                  </ul>
-                  {/* <a className="text-sm block text-center mt-16 text-neutral-400" href="/">full weekend results <FontAwesomeIcon icon="fa-arrow-up-right-from-square" /></a> */}
-                </>
+                  ))}
+                </ul>
+              ) : (
+                <div className="flex justify-center">
+                  <img alt="" src={`${process.env.PUBLIC_URL + "/images/podium.png"}`} width={324} />
+                </div>
               )}
               <div className='text-center mb-24 mt-12'>
+                <div className='uppercase text-sm text-neutral-400 tracking-sm leading-none mb-4 mt-24'>
+                  {`Round ${index + 1}`}
+                </div>
                 <h2 className='uppercase tracking-sm leading-none mb-4 font-bold'>
                   {race.season} {race.raceName}
                 </h2>
@@ -81,9 +86,8 @@ export function RaceResultsPage({ selectedYear }) {
                   {formatTime(race.date, race.time)}
                 </div>
               </div>
+              <div className={classNames("divider-glow-medium mb-16",  {"mt-32" : !race.results})} />
             </li>
-            <div className={classNames("divider-glow-medium mb-24",  {"mt-32" : !race.results})} />
-            </>
           ))}
         </ul>
       )}
