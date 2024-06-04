@@ -80,7 +80,7 @@ export function RaceResultsPage({ selectedYear }) {
                   {`Round ${index + 1}`}
                 </div>
                 <p className='uppercase text-sm tracking-sm leading-none mb-4 font-bold'>
-                  {race.season} {race.raceName}
+                  {race.raceName}
                 </p>
                 <div className='text-xs text-neutral-400 tracking-sm leading-none'>
                   {formatTime(race.date, race.time)}
