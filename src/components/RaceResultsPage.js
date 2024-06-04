@@ -76,13 +76,13 @@ export function RaceResultsPage({ selectedYear }) {
                 </div>
               )}
               <div className='text-center mb-24 mt-12'>
-                <div className='uppercase text-sm text-neutral-400 tracking-sm leading-none mb-4 mt-24'>
+                <div className='uppercase text-xs text-neutral-400 tracking-sm leading-none mb-4 mt-24'>
                   {`Round ${index + 1}`}
                 </div>
-                <h2 className='uppercase tracking-sm leading-none mb-4 font-bold'>
+                <p className='uppercase text-sm tracking-sm leading-none mb-4 font-bold'>
                   {race.season} {race.raceName}
-                </h2>
-                <div className='text-sm text-neutral-400 tracking-sm leading-none'>
+                </p>
+                <div className='text-xs text-neutral-400 tracking-sm leading-none'>
                   {formatTime(race.date, race.time)}
                 </div>
               </div>
