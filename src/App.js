@@ -4,7 +4,7 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 import { fas } from '@fortawesome/free-solid-svg-icons';
 import { fab } from '@fortawesome/free-brands-svg-icons'
 import SupportPopup from './components/SupportPopup';
-import { Header, FooterDetails, RacePage, DriverStandings, ConstructorStandings, RaceResultsPage } from './components';
+import { Header, FooterDetails, RacePage, DriverStandings, ConstructorStandings, RaceResultsPage, LandingPage } from './components';
 
 library.add(fas, fab);
 
@@ -16,7 +16,8 @@ function App() {
     <Router>
       <Header setSelectedYear={setSelectedYear} selectedYear={selectedYear} currentYear={currentYear} />
       <Routes>
-        <Route exact path="/" element={<RaceResultsPage selectedYear={selectedYear} />} />
+        <Route exact path="/" element={<LandingPage />} />
+        <Route path="/race-results" element={<RaceResultsPage selectedYear={selectedYear} />} />
         <Route path="/constructor-standings" element={<ConstructorStandings selectedYear={selectedYear} />} />
         <Route path="/driver-standings" element={<DriverStandings selectedYear={selectedYear} />} />
         <Route path="/race/:raceId" element={<RacePage />} />

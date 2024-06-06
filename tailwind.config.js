@@ -5,6 +5,16 @@ module.exports = {
     'node_modules/flowbite-react/lib/esm/**/*.js',
   ],
   theme: {
+    borderRadius: {
+      'none': '0',
+      'sm': '.4rem',
+      DEFAULT: '.8rem',
+      'md': '1.2rem',
+      'lg': '1.6rem',
+      'full': '9999px',
+      'large': '2rem',
+      'xlarge': '3.2rem',
+    },
     extend: {
       fontFamily: {
         display: 'Bungee, ui-serif', // Adds a new `font-display` class
@@ -15,6 +25,12 @@ module.exports = {
       screens: {
         xs: '480px',
       },
+      colors: {
+        plum: {
+          300: '#835897',
+          500: '#5F0B84',
+        },
+      }
     },
     fontSize: {
       xs: '1rem',

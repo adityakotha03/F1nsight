@@ -16,7 +16,7 @@ export const DriverCard = (props) => {
             return (
                 <Popover
                     aria-labelledby="default-popover"
-                    className="bg-glow gradient-border p-4 bg-neutral-950 z-[10]"
+                    className="bg-glow border-neutral-400 border-[.1rem] p-4 bg-neutral-950 rounded-md z-[10]"
                     trigger="hover"
                     placement="top"
                     // open={true}
@@ -47,9 +47,12 @@ export const DriverCard = (props) => {
         <div 
             className={classNames(
                 className, 
-                'driver-card flex items-center bg-glow gradient-border relative',
-                { 'driver-card--canvas': mobileSmall},
-                isActive ? "bg-glow--active" : hasHover ? "bg-glow--hover" : ""
+                'driver-card flex items-center bg-glow relative rounded-r-sm',
+                { 
+                    'driver-card--canvas': mobileSmall,
+                },
+                isActive ? "bg-glow--active" : hasHover ? "bg-glow--hover" : "",
+                layoutSmall ? 'rounded-r-sm' : 'rounded-r-md',
             )}
             style={{borderColor: isActive && `#${driverColor}`}}
         >
@@ -99,14 +102,14 @@ export const DriverCard = (props) => {
                 {fastestLap?.rank === "1" && (
                     <Popover
                         aria-labelledby="default-popover"
-                        className="bg-glow gradient-border p-4 bg-neutral-950 z-[10]"
+                        className="bg-glow border-plum-500 border-[.1rem] rounded-md p-4 bg-neutral-950 z-[10]"
                         trigger="hover"
                         placement="top"
                         // open={true}
                         arrow={false}
                         content={
                             <div className="p-4">
-                                <div className="bg-neutral-500 text-center font-display">
+                                <div className="bg-plum-500 text-center font-display rounded">
                                     {fastestLap.Time.time}
                                 </div>
 
@@ -133,7 +136,7 @@ export const DriverCard = (props) => {
                     >
                         <span className="fa-layers fa-fw fa-xs">
                             <FontAwesomeIcon icon="circle"  />
-                            <FontAwesomeIcon icon="clock" className="text-violet-600" inverse transform="shrink-2" />
+                            <FontAwesomeIcon icon="clock" className="text-plum-500" inverse transform="shrink-2" />
                         </span>
                     </Popover>
                 )}
