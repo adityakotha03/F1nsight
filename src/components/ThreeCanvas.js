@@ -78,16 +78,19 @@ export const ThreeCanvas = ({ MapFile, locData, driverColor, driverSelected, dri
         map.rotation.x = Math.PI / 2; // causing orbit issue in canvas
         scene.add(map);
 
-        // // Calculate the bounding box of the map
-        // const box = new THREE.Box3().setFromObject(map);
-        // const center = box.getCenter(new THREE.Vector3());
+        // Calculate the bounding box of the map
+        const box = new THREE.Box3().setFromObject(map);
+        const center = box.getCenter(new THREE.Vector3());
 
-        // // Update camera position to be at the center of the map
-        // camera.position.set(center.x, center.y, center.z + 10);
+        // const boxHelper = new THREE.Box3Helper(box, 0xff0000); // Red color for the box
+        // scene.add(boxHelper);
+        
+        // Update camera position to be at the center of the map
+        camera.position.set(center.x, center.y, center.z + 7);
 
-        // // Update the target of the OrbitControls to the center of the map
-        // control.target.set(center.x, center.y, center.z);
-        // control.update(); // Apply the changes to the controls
+        // Update the target of the OrbitControls to the center of the map
+        control.target.set(center.x, center.y, center.z);
+        control.update(); // Apply the changes to the controls
 
       }, undefined, error => console.error(error));
     }
@@ -107,15 +110,18 @@ export const ThreeCanvas = ({ MapFile, locData, driverColor, driverSelected, dri
       if (haloView) {
         carModel.add(camera); 
         camera.position.set(0, 0.6, 0.1);
-        camera.rotation.set(Math.PI/8, Math.PI, 0);
-        control.enablePan = false;
-        control.enableRotate = false;
-        control.enableZoom = false;
+        camera.rotation.set(Math.PI / 8, Math.PI, 0);
+
+        // Disable controls in halo view
+        control.enabled = false;
       }
       else{
+        carModel.remove(camera);
+        camera.rotation.set(0, 0, 0);
         control.enablePan = true;
         control.enableRotate = true;
         control.enableZoom = true;
+        control.update();
       }
       
       carModel.traverse(object => {
@@ -142,6 +148,7 @@ export const ThreeCanvas = ({ MapFile, locData, driverColor, driverSelected, dri
       if (carModel && locData.length > 0 && driverSelected && !carModel.userData.tweenActive && !isPaused) {
         const newPosition = locData.shift();
         setCarPosition(newPosition);
+        // camera.position.set(newPosition.x, newPosition.y, 10);
 
         carModel.userData.tweenActive = true;
         const initialPosition = { x: carModel.position.x, y: carModel.position.y, z: carModel.position.z }; // Store initial position
@@ -167,7 +174,7 @@ export const ThreeCanvas = ({ MapFile, locData, driverColor, driverSelected, dri
           tween.start();        
       }
 
-      setCanvasWidth()
+      //setCanvasWidth()
       renderer.render(scene, camera);
       requestAnimationFrame(animate);
       stats.update();
