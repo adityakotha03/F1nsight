@@ -1929,6 +1929,10 @@ input[type="range"]::-ms-fill-lower {
   margin-top: 9rem;
 }
 
+.-mb-\[20rem\] {
+  margin-bottom: -20rem;
+}
+
 .block {
   display: block;
 }

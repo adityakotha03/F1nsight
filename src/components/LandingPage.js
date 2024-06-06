@@ -53,7 +53,7 @@ export function LandingPage() {
           <p className="heading-3">Interactive Telemetry Viewer</p>
           <p className="uppercase text-plum-300 tracking-sm mb-24">Enjoy Our state-of-the-art interactive canvas</p>
           
-          <div className="landing-section-viewer__content md:flex md:items-start">
+          <div className="landing-section-viewer__content md:flex md:items-start -mb-[20rem]">
             <div className="grow">
               <p className="text-sm uppercase text-neutral-400 tracking-sm">Select a Driver</p>
               <p className="mb-24">Monitor their race progress lap by lap.</p>
