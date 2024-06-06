@@ -1,3 +1,458 @@
+import axios from 'axios';
+
+const BASE_URL = 'http://ergast.com/api/f1';
+
+export const fetchDriversList = async () => {
+  const response = await fetchWithCache(`${BASE_URL}/drivers.json?limit=1000`); // Adjust limit as needed
+  return response.MRData.DriverTable.Drivers.map(driver => ({
+      id: driver.driverId,
+      name: `${driver.givenName} ${driver.familyName}`
+  }));
+};
+
+const fetchData = async (url) => {
+    const response = await fetch(url);
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    return response.json();
+};
+
+// Simple in-memory cache
+const cache = {};
+
+const fetchWithCache = async (url) => {
+    if (cache[url]) {
+        return cache[url];
+    }
+    const data = await fetchData(url);
+    cache[url] = data;
+    return data;
+};
+
+export const fetchDriverStats = async (driverId1, driverId2) => {
+    const fetchDriverData = async (driverId) => {
+        try {
+            // Fetch all seasons the driver has participated in
+            const seasonsResponse = await fetchWithCache(`${BASE_URL}/drivers/${driverId}/seasons.json`);
+            const seasons = seasonsResponse.MRData.SeasonTable.Seasons.map(season => season.season);
+
+            let finalStandings = {};
+            let posAfterRace = {};
+            let racePosition = {};
+            let qualiPosition = {};
+            let totalWins = 0;
+            let totalPodiums = 0;
+            let totalPoles = 0;
+
+            // Collect promises for fetching data in parallel
+            const standingsPromises = seasons.map(year =>
+                fetchWithCache(`${BASE_URL}/${year}/drivers/${driverId}/driverStandings.json`)
+            );
+
+            const raceResultsPromises = seasons.map(year =>
+                fetchWithCache(`${BASE_URL}/${year}/drivers/${driverId}/results.json`)
+            );
+
+            const qualifyingResultsPromises = seasons.map(year =>
+                fetchWithCache(`${BASE_URL}/${year}/drivers/${driverId}/qualifying.json`)
+            );
+
+            const [standingsResponses, raceResultsResponses, qualifyingResultsResponses] = await Promise.all([
+                Promise.all(standingsPromises),
+                Promise.all(raceResultsPromises),
+                Promise.all(qualifyingResultsPromises)
+            ]);
+
+            // Process standings responses
+            standingsResponses.forEach((response, index) => {
+                const year = seasons[index];
+                const standings = response.MRData.StandingsTable.StandingsLists[0].DriverStandings[0];
+                finalStandings[year] = {
+                    year: year,
+                    position: standings.position,
+                    points: standings.points
+                };
+            });
+
+            // Process race results and position after race
+            raceResultsResponses.forEach((response, index) => {
+                const year = seasons[index];
+                const raceResults = response.MRData.RaceTable.Races;
+                racePosition[year] = { year: year, positions: {} };
+                posAfterRace[year] = { year: year, pos: {} };
+
+                let cumulativePoints = 0;
+                raceResults.forEach(race => {
+                    const raceName = race.raceName;
+                    const raceResult = race.Results[0];
+                    const position = raceResult.position;
+                    const points = parseFloat(raceResult.points);
+                    cumulativePoints += points;
+
+                    racePosition[year].positions[raceName] = position;
+                    posAfterRace[year].pos[raceName] = {
+                        positionInDriverStandings: raceResult.Driver.position,
+                        points: cumulativePoints
+                    };
+
+                    if (position === '1') totalWins++;
+                    if (['1', '2', '3'].includes(position)) totalPodiums++;
+                });
+            });
+
+            // Process qualifying results
+            qualifyingResultsResponses.forEach((response, index) => {
+                const year = seasons[index];
+                const qualifyingResults = response.MRData.RaceTable.Races;
+                qualiPosition[year] = { year: year, positions: {} };
+
+                qualifyingResults.forEach(race => {
+                    const raceName = race.raceName;
+                    const qualifyingResult = race.QualifyingResults[0];
+                    const position = qualifyingResult.position;
+
+                    qualiPosition[year].positions[raceName] = position;
+                    if (position === '1') totalPoles++;
+                });
+            });
+
+            return {
+                driverId: driverId,
+                finalStandings,
+                posAfterRace,
+                racePosition,
+                qualiPosition,
+                totalWins,
+                totalPodiums,
+                totalPoles
+            };
+
+        } catch (error) {
+            console.error(`Error fetching data for driver ${driverId}:`, error);
+            return null;
+        }
+    };
+
+    const driver1Data = await fetchDriverData(driverId1);
+    const driver2Data = await fetchDriverData(driverId2);
+
+    return { driver1: driver1Data, driver2: driver2Data };
+};
+
+
+
+// export const fetchDriverStats = async (driverId1, driverId2) => {
+//   const BASE_URL = 'http://ergast.com/api/f1';
+//   const fetchDriverData = async (driverId) => {
+//     try {
+//       const seasonsResponse = await axios.get(`${BASE_URL}/drivers/${driverId}/seasons.json`);
+//       const seasons = seasonsResponse.data.MRData.SeasonTable.Seasons.map(season => season.season);
+
+//       let finalStandings = {};
+//       let posAfterRace = {};
+//       let racePosition = {};
+//       let qualiPosition = {};
+//       let totalWins = 0;
+//       let totalPodiums = 0;
+//       let totalPoles = 0;
+
+//       const standingsPromises = seasons.map(year =>
+//         axios.get(`${BASE_URL}/${year}/drivers/${driverId}/driverStandings.json`)
+//       );
+
+//       const raceResultsPromises = seasons.map(year =>
+//         axios.get(`${BASE_URL}/${year}/drivers/${driverId}/results.json`)
+//       );
+
+//       const qualifyingResultsPromises = seasons.map(year =>
+//         axios.get(`${BASE_URL}/${year}/drivers/${driverId}/qualifying.json`)
+//       );
+
+//       const [standingsResponses, raceResultsResponses, qualifyingResultsResponses] = await Promise.all([
+//         Promise.all(standingsPromises),
+//         Promise.all(raceResultsPromises),
+//         Promise.all(qualifyingResultsPromises)
+//       ]);
+
+//       standingsResponses.forEach((response, index) => {
+//         const year = seasons[index];
+//         const standings = response.data.MRData.StandingsTable.StandingsLists[0].DriverStandings[0];
+//         finalStandings[year] = {
+//             year: year,
+//             position: standings.position,
+//             points: standings.points
+//         };
+//       });
+
+//       raceResultsResponses.forEach((response, index) => {
+//         const year = seasons[index];
+//         const raceResults = response.data.MRData.RaceTable.Races;
+//         racePosition[year] = { year: year, positions: {} };
+//         posAfterRace[year] = { year: year, pos: {} };
+
+//         let cumulativePoints = 0;
+//         raceResults.forEach(race => {
+//             const raceName = race.raceName;
+//             const raceResult = race.Results[0];
+//             const position = raceResult.position;
+//             const points = parseFloat(raceResult.points);
+//             cumulativePoints += points;
+
+//             racePosition[year].positions[raceName] = position;
+//             posAfterRace[year].pos[raceName] = {
+//                 positionInDriverStandings: raceResult.Driver.position,
+//                 points: cumulativePoints
+//             };
+
+//             if (position === '1') totalWins++;
+//             if (['1', '2', '3'].includes(position)) totalPodiums++;
+//         });
+//       });
+
+//       qualifyingResultsResponses.forEach((response, index) => {
+//         const year = seasons[index];
+//         const qualifyingResults = response.data.MRData.RaceTable.Races;
+//         qualiPosition[year] = { year: year, positions: {} };
+
+//         qualifyingResults.forEach(race => {
+//             const raceName = race.raceName;
+//             const qualifyingResult = race.QualifyingResults[0];
+//             const position = qualifyingResult.position;
+
+//             qualiPosition[year].positions[raceName] = position;
+//             if (position === '1') totalPoles++;
+//         });
+//       });
+
+//       return {
+//         driverId: driverId,
+//         finalStandings,
+//         posAfterRace,
+//         racePosition,
+//         qualiPosition,
+//         totalWins,
+//         totalPodiums,
+//         totalPoles
+//       };
+
+//     } catch (error) {
+//       console.error(`Error fetching data for driver ${driverId}:`, error);
+//       return null;
+//     }
+//   };
+
+//   const driver1Data = await fetchDriverData(driverId1);
+//   const driver2Data = await fetchDriverData(driverId2);
+//   console.log("Fetching done");
+//   return { driver1: driver1Data, driver2: driver2Data };
+// };
+
+
+
+// export const fetchDriverStats = async (driverId1, driverId2) => {
+//   const BASE_URL = 'http://ergast.com/api/f1';
+//   const fetchDriverData = async (driverId) => {
+//       try {
+//           const seasonsResponse = await fetch(`${BASE_URL}/drivers/${driverId}/seasons.json`);
+//           const seasonsResponsedata = await seasonsResponse.json();
+//           const seasons = seasonsResponsedata.MRData.SeasonTable.Seasons.map(season => season.season);
+
+//           let finalStandings = {};
+//           let posAfterRace = {};
+//           let racePosition = {};
+//           let qualiPosition = {};
+//           let totalWins = 0;
+//           let totalPodiums = 0;
+//           let totalPoles = 0;
+
+//           for (let year of seasons) {
+//               const standingsResponse = await fetch(`${BASE_URL}/${year}/drivers/${driverId}/driverStandings.json`);
+//               const standingsResponsedata = await standingsResponse.json();
+//               const standings = standingsResponsedata.MRData.StandingsTable.StandingsLists[0].DriverStandings[0];
+//               finalStandings[year] = {
+//                   year: year,
+//                   position: standings.position,
+//                   points: standings.points
+//               };
+
+//               const raceResultsResponse = await fetch(`${BASE_URL}/${year}/drivers/${driverId}/results.json`);
+//               const raceResultsResponsedata = await raceResultsResponse.json();
+//               const raceResults = raceResultsResponsedata.MRData.RaceTable.Races;
+
+//               racePosition[year] = { year: year, positions: {} };
+//               posAfterRace[year] = { year: year, pos: {} };
+
+//               let cumulativePoints = 0;
+
+//               for (let race of raceResults) {
+//                   const raceName = race.raceName;
+//                   const raceResult = race.Results[0];
+//                   const position = raceResult.position;
+//                   const points = parseFloat(raceResult.points);
+//                   cumulativePoints += points;
+
+//                   racePosition[year].positions[raceName] = position;
+//                   posAfterRace[year].pos[raceName] = {
+//                       positionInDriverStandings: raceResult.Driver.position,
+//                       points: cumulativePoints
+//                   };
+
+//                   if (position === '1') totalWins++;
+//                   if (['1', '2', '3'].includes(position)) totalPodiums++;
+//               }
+
+//               const qualifyingResultsResponse = await fetch(`${BASE_URL}/${year}/drivers/${driverId}/qualifying.json`);
+//               const qualifyingResultsResponsedata = await qualifyingResultsResponse.json();
+//               const qualifyingResults = qualifyingResultsResponsedata.MRData.RaceTable.Races;
+
+//               qualiPosition[year] = { year: year, positions: {} };
+
+//               for (let race of qualifyingResults) {
+//                   const raceName = race.raceName;
+//                   const qualifyingResult = race.QualifyingResults[0];
+//                   const position = qualifyingResult.position;
+
+//                   qualiPosition[year].positions[raceName] = position;
+//                   if (position === '1') totalPoles++;
+//               }
+//           }
+
+//           return {
+//               driverId: driverId,
+//               finalStandings,
+//               posAfterRace,
+//               racePosition,
+//               qualiPosition,
+//               totalWins,
+//               totalPodiums,
+//               totalPoles
+//           };
+
+//       } catch (error) {
+//           console.error(`Error fetching data for driver ${driverId}:`, error);
+//           return null;
+//       }
+//   };
+
+//   const driver1Data = await fetchDriverData(driverId1);
+//   const driver2Data = await fetchDriverData(driverId2);
+
+//   return { driver1: driver1Data, driver2: driver2Data };
+// };
+
+  // export const fetchDriverStats = async (driverId, selectedYear) => {
+  //   const baseURL = `https://ergast.com/api/f1/${selectedYear}/drivers/${driverId}`;
+  //   const urls = {
+  //     raceResultsUrl: `${baseURL}/results.json`,
+  //     qualiResultsUrl: `${baseURL}/qualifying.json`
+  //   };
+  //   try {
+  //     const [raceResponse, qualiResponse] = await Promise.all([
+  //       fetch(urls.raceResultsUrl),
+  //       fetch(urls.qualiResultsUrl)
+  //     ]);
+  
+  //     if (!raceResponse.ok || !qualiResponse.ok) {
+  //       throw new Error('Failed to fetch data');
+  //     }
+  
+  //     const [raceData, qualiData] = await Promise.all([
+  //       raceResponse.json(),
+  //       qualiResponse.json()
+  //     ]);
+
+  //     console.log(qualiResponse);
+
+  //     const raceResults = raceData.MRData.RaceTable.Races;
+  //     const qualifyingResults = qualiData.MRData.RaceTable.Races;
+
+  //     let totalWins = 0;
+  //     // let totalPoints = 0;
+  //     const raceStandings = [];
+  //     const qualifyingStandings = [];
+  //     const pointsperRace = [];
+
+  //     raceResults.forEach(race => {
+  //       const raceResult = race.Results[0];
+  //       const position = raceResult.position;
+  //       const points = parseFloat(raceResult.points);
+  //       const raceName = race.raceName;
+
+  //       raceStandings.push({ raceName, position });
+  //       pointsperRace.push({ raceName, points });
+  //       // totalPoints += points;
+  //       if (position === '1') {
+  //         totalWins++;
+  //       }
+  //     });
+
+  //     qualifyingResults.forEach(race => {
+  //       const qualifyingResult = race.QualifyingResults[0];
+  //       const position = qualifyingResult.position;
+  //       const raceName = race.raceName;
+
+  //       qualifyingStandings.push({ raceName, position });
+  //     });
+
+  //     return {
+  //       raceStandings,
+  //       qualifyingStandings,
+  //       pointsperRace,
+  //       totalWins
+  //     };
+
+  //   } catch(error) {
+  //     console.error('Failed to fetch data', error);
+  //   }
+  //   return [];
+  // }
+  
+  export const fetchDriverStandings = async (driverId) => {
+    const url = `https://ergast.com/api/f1/drivers/${driverId}/driverStandings.json`;
+    try {
+      const response  = await fetch(url);
+      if(response.ok){
+        const data = await response.json();
+        console.log(data);
+      } else {
+        console.error('Failed to f data');
+      }
+    } catch (error){
+      console.error('Failed to fetch data');
+    }
+  }
+
+  export const fetchDriverResults = async (driverId) => {
+    const url = `https://ergast.com/api/f1/drivers/${driverId}/results.json`;
+    try {
+      const response  = await fetch(url);
+      if(response.ok){
+        const data = await response.json();
+        console.log(data);
+      } else {
+        console.error('Failed to f data');
+      }
+    } catch (error){
+      console.error('Failed to fetch data');
+    }
+  }
+
+  export const fetchDriverQualifying = async (driverId) => {
+    const url = `https://ergast.com/api/f1/drivers/${driverId}/qualifying.json`;
+    try {
+      const response  = await fetch(url);
+      if(response.ok){
+        const data = await response.json();
+        console.log(data);
+      } else {
+        console.error('Failed to f data');
+      }
+    } catch (error){
+      console.error('Failed to fetch data');
+    }
+  }
+  
   export const fetchRaceDetails = async (selectedYear) => {
     const url = `https://ergast.com/api/f1/${selectedYear}.json`;
     try {

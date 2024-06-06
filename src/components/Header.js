@@ -123,8 +123,12 @@ export const Header = (props) => {
             setpagePath('/');
         } else if (page === 'Constructor Standings') {
             setpagePath('/constructor-standings');
-        } else {
+        } else if (page === 'Driver Standing') {
             setpagePath('/driver-standings');
+        } else if (page === 'Teammates Comparison') {
+            setpagePath('/teammates-comparison');
+        } else {
+            setpagePath('/driver-comparison');
         }
 
         setIsRaceSelected(false);
@@ -193,6 +197,8 @@ export const Header = (props) => {
                 <NavLink activeclassname="active" className="navLink" to="/" onClick={() => handleNavLinkClick('Race Results')}>Race Results</NavLink>
                 <NavLink activeclassname="active" className="navLink" to="/constructor-standings" onClick={() => handleNavLinkClick('Constructor Standings')}>Constructor Standings</NavLink>
                 <NavLink activeclassname="active" className="navLink" to="/driver-standings" onClick={() => handleNavLinkClick('Driver Standing')}>Driver Standings</NavLink>
+                <NavLink activeclassname="active" className="navLink" to="/teammates-comparison" onClick={() => handleNavLinkClick('Teammates Comparison')}>Teammates Comparison</NavLink>
+                <NavLink activeclassname="active" className="navLink" to="/driver-comparison" onClick={() => handleNavLinkClick('Driver Comparison')}>Drivers Comparison</NavLink>
             </nav>
         </header>
     );
