@@ -14,7 +14,7 @@ export const Header = (props) => {
     const [navOpen, setNavOpen] = useState(false);
     const [isLarge, setIsLarge] = useState(false);
     const [subNavOpen, setSubNavOpen] = useState(false);
-    const [page, setPage] = useState('Race Results');
+    const [page, setPage] = useState('Home');
     const [pagePath, setpagePath] = useState('/');
     const [races, setRaces] = useState([]);
     const [isRaceSelected, setIsRaceSelected] = useState(false);
@@ -114,15 +114,19 @@ export const Header = (props) => {
         return years;
     };
 
+    console.log({page})
+
     const handleNavLinkClick = (page) => {
         setSubNavOpen(false);
         setNavOpen(false);
         setPage(page);
 
         if (page === 'Race Results') {
-            setpagePath('/');
+            setpagePath('/race-results');
         } else if (page === 'Constructor Standings') {
             setpagePath('/constructor-standings');
+        } else if (page === 'Home') {
+            setpagePath('/');
         } else {
             setpagePath('/driver-standings');
         }
@@ -135,7 +139,7 @@ export const Header = (props) => {
             <div className="global-header__main-nav shadow-lg bg-glow bg-neutral-800/90 backdrop-blur-sm" >
 
                 <div className="global-header__main-nav__left">
-                    <a href="/"><Logo height={48}/></a>
+                    <a href="/"><Logo height={48} onClick={() => handleNavLinkClick('Home')}/></a>
                     <div className="flex items-center gap-8">
                         {(navOpen || isLarge) && (
                             <Select label="Year" value={selectedYear} onChange={handleYearChange}>
@@ -144,7 +148,7 @@ export const Header = (props) => {
                                 ))}
                             </Select>
                         )}
-                        <button className={classNames("shadow-lg bg-glow py-[1.2rem] px-16 border-[1px] border-solid border-neutral-800", {'hidden': isLarge})} onClick={() => setNavOpen(!navOpen)}>
+                        <button className={classNames("shadow-lg bg-glow py-[1.2rem] px-16 border-[1px] border-solid border-neutral-800 rounded-md", {'hidden': isLarge})} onClick={() => setNavOpen(!navOpen)}>
                             {!navOpen ? <FontAwesomeIcon icon="bars" /> : <FontAwesomeIcon icon="xmark" />}
                         </button>
                     </div>
@@ -160,7 +164,7 @@ export const Header = (props) => {
                             }}
                         >
                             <div className="select__input bg-glow bg-neutral-800/10 leading-none min-w-[18rem]">
-                                {isRaceSelected ? '---' : page}
+                                {isRaceSelected || page ==='Home' ? '---' : page}
                             </div>
                             <div className="select__label tracking-xs uppercase">
                                 Season Results
@@ -190,7 +194,7 @@ export const Header = (props) => {
                 }}
                 ref={navRef}
             >
-                <NavLink activeclassname="active" className="navLink" to="/" onClick={() => handleNavLinkClick('Race Results')}>Race Results</NavLink>
+                <NavLink activeclassname="active" className="navLink" to="/race-results" onClick={() => handleNavLinkClick('Race Results')}>Race Results</NavLink>
                 <NavLink activeclassname="active" className="navLink" to="/constructor-standings" onClick={() => handleNavLinkClick('Constructor Standings')}>Constructor Standings</NavLink>
                 <NavLink activeclassname="active" className="navLink" to="/driver-standings" onClick={() => handleNavLinkClick('Driver Standing')}>Driver Standings</NavLink>
             </nav>

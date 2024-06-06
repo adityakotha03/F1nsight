@@ -38,6 +38,8 @@ export function RacePage() {
   const selectedDriverData = drivers.find(obj => obj['acronym'] === driverCode);
   const selectedDriverRaceData = raceResults.find(obj => obj['number'] === driverNumber);
 
+  console.log(startingGrid)
+
   useEffect(() => {
     const fetchData = async () => {
       if (!meetingKey) return;
@@ -194,7 +196,7 @@ export function RacePage() {
           {raceResults.map((result, index) => (
             <button 
               key={index}
-              className="block w-full mb-2 relative"
+              className="block w-full mb-2 relative "
               onClick={() => handleDriverSelectionClick(index)}
             >
               <DriverCard 
@@ -291,7 +293,7 @@ export function RacePage() {
                   <p className="font-display gradient-text-dark text-[6.4rem] mr-16 leading-none text-right">{selectedDriverData.driver_number}</p>
                 </div>
               </div>
-              <div className="bg-glow bg-glow--large px-16 pt-16 pb-24">
+              <div className="bg-glow bg-glow--large px-24 pt-24 pb-24 rounded-xlarge">
                 <div className="flex items-start justify-between">
                   <div>
                     <div className="uppercase tracking-xs text-xs">Finshed</div>
@@ -310,7 +312,7 @@ export function RacePage() {
 
                 <div className="divider-glow-dark mt-16 mb-10" />
 
-                <p className="font-display text-center mb-16">fastest lap</p>
+                <p className="font-display text-center mb-16 ml-24">fastest lap</p>
 
                 <div className="flex items-center justify-between">
                   <div>
@@ -340,12 +342,13 @@ export function RacePage() {
               </div>
             </div>
           )}
-          <h3 className="heading-4 mb-16 text-neutral-400">Starting Grid</h3>
-          <div className="bg-glow bg-glow--large p-32 h-fit">
+          <h3 className="heading-4 mb-16 text-neutral-400 ml-24">Starting Grid</h3>
+          <div className="bg-glow bg-glow--large p-32 h-fit rounded-xlarge">
             <ul className="flex flex-col w-fit m-auto">
               {startingGrid
                 .sort((a, b) => a.position - b.position)
-                .map((gridPosition, index) => (
+                .map((gridPosition, index) => {
+                return (
                   <li 
                     key={index} 
                     className="text-center w-fit even:-mt-32 even:ml-[8rem] even:mb-8"
@@ -365,8 +368,9 @@ export function RacePage() {
                     >
                       {driversDetails[gridPosition.driver_number]}
                     </div> 
-                  </li>
-                ))}
+                  </li>)
+}
+                )}
             </ul>
           </div>
         </div>
@@ -376,9 +380,9 @@ export function RacePage() {
           <TireStrategy drivers={drivers} raceResults={raceResults} driverCode={driverSelected ? driversDetails[driverNumber] : null} driverColor={driversColor[driverCode]} />
           {!driverSelected && (
             <>
-              <h3 className="heading-4 mb-16 mt-32 text-neutral-400">Fastest Laps</h3> 
-              <div className="bg-glow bg-glow--large h-fit p-32 mb-16">
-                <div className="grid grid-cols-3 gap-4 mb-16  text-neutral-400">
+              <h3 className="heading-4 mb-16 mt-32 text-neutral-400 ml-24">Fastest Laps</h3> 
+              <div className="bg-glow bg-glow--large h-fit p-32 mb-16 rounded-xlarge">
+                <div className="grid grid-cols-3 gap-4 mb-16 text-neutral-400">
                   <span className="tracking-xs uppercase">Driver</span> 
                   <span className="tracking-xs uppercase text-center">Time</span> 
                   <span className="tracking-xs uppercase text-right">Lap</span> 
