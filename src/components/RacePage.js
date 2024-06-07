@@ -348,26 +348,64 @@ export function RacePage() {
               {startingGrid
                 .sort((a, b) => a.position - b.position)
                 .map((gridPosition, index) => {
+                
+                const getCarTopView = (driver) => {
+                  // temporary situation ... can we get the constructor name with the driver data?
+                  if (driver === "HAM") return "mercedes";
+                  if (driver === "RUS") return "mercedes";
+                  if (driver === "ZHO") return "sauber";
+                  if (driver === "BOT") return "sauber";
+                  if (driver === "VER") return "red_bull";
+                  if (driver === "PER") return "red_bull";
+                  if (driver === "LEC") return "ferrari";
+                  if (driver === "SAI") return "ferrari";
+                  if (driver === "RIC") return "rb";
+                  if (driver === "TSU") return "rb";
+                  if (driver === "NOR") return "mclaren";
+                  if (driver === "PIA") return "mclaren";
+                  if (driver === "STR") return "aston_martin";
+                  if (driver === "ALO") return "aston_martin";
+                  if (driver === "SAR") return "williams";
+                  if (driver === "ALB") return "williams";
+                  if (driver === "GAS") return "alpine";
+                  if (driver === "OCO") return "alpine";
+                  if (driver === "MAG") return "haas";
+                  if (driver === "HUL") return "haas";
+                }
+                
                 return (
                   <li 
                     key={index} 
-                    className="text-center w-fit even:-mt-32 even:ml-[8rem] even:mb-8"
+                    className="text-center w-fit even:-mt-[8rem] even:ml-[6rem] even:mb-8 relative group"
                   >
                     <div className={classNames(
-                      "text-sm font-display", 
-                      driverCode === driversDetails[gridPosition.driver_number] ? "text-neutral-200" : "text-neutral-400"
+                        "border-x-2 border-t-2 border-solid w-48 font-display h-32 ml-4",
+                        driverCode === driversDetails[gridPosition.driver_number] ? `border-neutral-[#${driversColor[driverCode]}]` : " border-neutral-700"
                       )}
-                    >
-                      P{gridPosition.position}
-                    </div>
+                    />
+
+                    <img 
+                      alt="" 
+                      className="-mt-32 drop-shadow-[0_0_14px_rgba(0,0,0,0.75)]"
+                      src={`${process.env.PUBLIC_URL + "/images/" + year + "/carTopView/" + getCarTopView(driversDetails[gridPosition.driver_number]) + ".png"}`}
+                      width={56} 
+                    />
+
                     <div className={classNames(
-                      "border-x-2 border-t-2 border-solid px-4 pt-4 w-64 font-display",
-                      driverCode === driversDetails[gridPosition.driver_number] ? "border-neutral-200" : " border-neutral-500"
+                        "font-display leading-none text-18",
+                        "absolute top-1/2 -translate-y-1/2",
+                        "flex flex-col",
+                        "group-odd:right-[90%] group-even:left-[90%]",
+                        "group-odd:items-end group-even:items-start",
                       )}
-                      style={{color: driverCode === driversDetails[gridPosition.driver_number] ? `#${driversColor[driverCode]}` : "#737373"}}
                     >
-                      {driversDetails[gridPosition.driver_number]}
-                    </div> 
+                      <p className="text-neutral-600">P{gridPosition.position}</p>
+                      <p style={{
+                        color: driverCode === driversDetails[gridPosition.driver_number] ? `#${driversColor[driverCode]}` : driverCode ? "text-neutral-400" : "#f1f1f1"
+                      }}>
+                          {driversDetails[gridPosition.driver_number]}
+                      </p>
+                    </div>
                   </li>)
 }
                 )}

@@ -40,14 +40,14 @@ export const RaceResultItem = (props) => {
                             {fastestLap?.rank === "1" && (
                                 <Popover
                                     aria-labelledby="default-popover"
-                                    className="bg-glow gradient-border p-4 bg-neutral-950 z-[10]"
+                                    className="bg-glow border-2 border-plum-500 p-4 bg-neutral-950 z-[10] rounded-md"
                                     trigger="hover"
                                     placement="top"
                                     // open={true}
                                     arrow={false}
                                     content={
                                         <div className="p-4">
-                                            <div className="bg-neutral-500 text-center font-display">
+                                            <div className="bg-plum-500 text-center font-display rounded-sm">
                                                 {fastestLap.Time.time}
                                             </div>
 
