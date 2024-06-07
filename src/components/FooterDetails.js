@@ -38,7 +38,7 @@ export const FooterDetails = ({ className }) => {
                         image="adityaF1"
                         firstName="Aditya"
                         lastName="Kotha"
-                        car="mercedes"
+                        car="f1nsight-sideview"
                         className="max-md:mt-16"
                         points={
                             <div className="flex item-center">
