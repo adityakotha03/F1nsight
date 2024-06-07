@@ -369,14 +369,14 @@ code {
   margin-bottom: -.4rem;
   z-index: 1;
   .stand {
-    padding-bottom: .4rem;
+    padding-bottom: .8rem;
     padding-top: 1.6rem;
     width: 100%;
     background: #171717;
   }
   img {
     position: absolute;
-    bottom: 6.4rem;
+    bottom: 6.8rem;
     left: .4rem;
     height: 9rem;
     width: 9rem;
@@ -427,7 +427,7 @@ code {
   left: .9rem;
   position: absolute;
   transform: skew(2rad);
-  top: -.4rem;
+  top: 0;
   width: 100%;
 }
 
@@ -450,7 +450,7 @@ code {
   left: -.9rem;
   position: absolute;
   transform: skew(-2rad);
-  top: 0;
+  top: .4rem;
   width: 100%;
 }
 
