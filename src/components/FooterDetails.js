@@ -18,7 +18,7 @@ export const FooterDetails = ({ className }) => {
                         image="antoniF1"
                         firstName="Antoni"
                         lastName="Commodore"
-                        car="ferrari"
+                        car="f1nsight-sideview"
                         points={
                             <div className="flex item-center">
                             <a href="https://www.linkedin.com/in/antonicommodore/" className="icon-link" style={{ marginLeft: '10px' }}>

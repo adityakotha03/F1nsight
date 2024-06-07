@@ -387,7 +387,11 @@ export function RacePage() {
                     <img 
                       alt="" 
                       className="-mt-32 drop-shadow-[0_0_14px_rgba(0,0,0,0.75)]"
-                      src={`${process.env.PUBLIC_URL + "/images/" + year + "/carTopView/" + getCarTopView(driversDetails[gridPosition.driver_number]) + ".png"}`}
+                      src={
+                        year > 2023 ? 
+                        `${process.env.PUBLIC_URL + "/images/" + year + "/carTopView/" + getCarTopView(driversDetails[gridPosition.driver_number]) + ".png"}` : 
+                        `${process.env.PUBLIC_URL + "/images/f1nsight-topview.png"}`
+                      }
                       width={56} 
                     />
 
