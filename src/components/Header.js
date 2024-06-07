@@ -167,7 +167,7 @@ export const Header = (props) => {
                                 {isRaceSelected || page ==='Home' ? '---' : page}
                             </div>
                             <div className="select__label tracking-xs uppercase">
-                                Season Results
+                                Season Standings
                             </div>
                             <FontAwesomeIcon icon="caret-down" className="select__icon text-neutral-400 fa-lg" />
                         </button>
