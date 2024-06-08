@@ -9,15 +9,18 @@ export function LandingPage() {
   return (
     <div className="global-container relative ">
 
+      {/* Hero */}
       <div className="landing-hero drop-shadow-lg mb-32">
         <h1 className="heading-1 max-lg:px-16 lg:px-64 text-center pt-32">Your Ultimate Destination for F1 Data and Analysis</h1>
         <img alt="" src={`${process.env.PUBLIC_URL + "/images/liverySide.png"}`} />
       </div>
 
+      {/* Intro */}
       <div className="landing-section-intro max-md:h-[20rem] md:h-[12rem] flex items-center justify-center text-center">
-        <p className="z-10 relative w-[75%] max-sm:mr-32">Dive into the world of Formula 1 with our comprehensive suite of tools and insights designed to enhance your understanding and appreciation of the sport.</p>
+        <p className="text-18 z-10 relative w-[75%] max-sm:mr-32">Dive into the world of Formula 1 with our comprehensive suite of tools and insights designed to enhance your understanding and appreciation of the sport.</p>
       </div>
 
+      {/* beyond the track */}
       <div className="landing-section-features flex item-start relative">
         <div className="landing-section-content">
         
@@ -26,7 +29,7 @@ export function LandingPage() {
             <img alt="" src={`${process.env.PUBLIC_URL + "/images/tireStrat.png"}`} />
           </div>
 
-          <div className="relative">
+          <div className="relative z-10">
             <p className="uppercase text-plum-300 tracking-sm md:mt-24">beyond the track</p>
             <p className="heading-3 mb-24">Data, Insights, Action</p>
 
@@ -43,11 +46,11 @@ export function LandingPage() {
             <p className="mb-24">Track the drivers setting the pace each race.</p>
           </div>
 
-          <img className="absolute translate-x-[25%] -translate-y-[50%] top-full" alt="" src={`${process.env.PUBLIC_URL + "/images/liveryFrontSide.png"}`} />
-
+          <img className="absolute translate-x-[10%] max-md:-translate-y-[20%] md:-translate-y-[50%] top-full" alt="" src={`${process.env.PUBLIC_URL + "/images/liveryFrontSide.png"}`} />
         </div>
       </div>
 
+      {/* Interactive Telemetry Viewer */}
       <div className="landing-section-viewer">
         <div className="landing-section-viewer__wrapper">
           <p className="heading-3">Interactive Telemetry Viewer</p>
@@ -69,6 +72,7 @@ export function LandingPage() {
         </div>
       </div>
 
+      {/* Contact Us */}
       <div className="landing-section-contact mx-16 flex items-center mb-[12rem]">
         <img className="landing-section-contact__media mb-24" alt="" src={`${process.env.PUBLIC_URL + "/images/liveryTopView.png"}`} />
         

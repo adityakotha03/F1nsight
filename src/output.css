@@ -90,11 +90,11 @@
 }
 
 .landing-section-intro:after {
-  background: rgb(137, 15, 213, .5);
+  background: linear-gradient(90deg, rgba(137,15,213,0) 0%, rgba(137,15,213,0.5) 25%);
   content: '';
   position: absolute;
   right: 3.2rem;
-  left: -3.2rem;
+  left: -15rem;
   bottom: 0;
   -webkit-backdrop-filter: blur(12px);
           backdrop-filter: blur(12px);
@@ -157,8 +157,11 @@
 
 .landing-section-features {
   position: relative;
-  padding-top: 10rem;
+  padding-top: 5rem;
   z-index: 10;
+  @media (min-width: 768px) {
+    padding-top: 10rem;
+  }
 }
 
 .landing-section-features:after {
@@ -2359,6 +2362,21 @@ input[type="range"]::-ms-fill-lower {
 
 .translate-x-\[25\%\] {
   --tw-translate-x: 25%;
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+}
+
+.-translate-y-\[10\%\] {
+  --tw-translate-y: -10%;
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+}
+
+.translate-x-\[10\%\] {
+  --tw-translate-x: 10%;
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+}
+
+.-translate-y-\[20\%\] {
+  --tw-translate-y: -20%;
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
 }
 
@@ -7383,6 +7401,11 @@ code {
     width: 100%;
   }
 
+  .max-md\:-translate-y-\[20\%\] {
+    --tw-translate-y: -20%;
+    transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+  }
+
   .max-md\:flex-col {
     flex-direction: column;
   }
@@ -7584,6 +7607,11 @@ code {
 
   .md\:max-w-xl {
     max-width: 36rem;
+  }
+
+  .md\:-translate-y-\[50\%\] {
+    --tw-translate-y: -50%;
+    transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
   }
 
   .md\:flex-row {
