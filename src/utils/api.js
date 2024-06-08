@@ -46,7 +46,7 @@ export const fetchDriverStats = async (driverId1, driverId2) => {
       const dataResponse1 = await fetch(`https://praneeth7781.github.io/f1nsight-api-2/drivers/${driverId}.json`);
       if(dataResponse1.ok){
         const data1 = await dataResponse1.json();
-        console.log("here", data1);
+        // console.log("here", data1);
         return data1;
       }else{
         console.log("Failed to fetch data");
@@ -138,12 +138,17 @@ export const fetchDriverStats = async (driverId1, driverId2) => {
 //                 const year = seasons[index];
 //                 const qualifyingResults = response.MRData.RaceTable.Races;
 //                 qualiPosition[year] = { year: year, positions: {} };
+//                 driverQualifyingTimes[year] = { year : year, QualiTimes : {}};
 
 //                 qualifyingResults.forEach(race => {
 //                     const raceName = race.raceName;
 //                     const qualifyingResult = race.QualifyingResults[0];
 //                     const position = qualifyingResult.position;
-
+//                     // driverQualifyingTimes.push({
+//                     //   race: race.raceName,
+//                     //   QualiTimes: [race.QualifyingResults[0].Q1 || 'N/A', race.QualifyingResults[0].Q2 || 'N/A', race.QualifyingResults[0].Q3 || 'N/A']
+//                     // });
+//                     driverQualifyingTimes[year].QualiTimes[raceName] = [race.QualifyingResults[0].Q1 || 'N/A', race.QualifyingResults[0].Q2 || 'N/A', race.QualifyingResults[0].Q3 || 'N/A'];
 //                     qualiPosition[year].positions[raceName] = position;
 //                     if (position === '1') totalPoles++;
 //                 });
@@ -155,6 +160,7 @@ export const fetchDriverStats = async (driverId1, driverId2) => {
 //                 posAfterRace,
 //                 racePosition,
 //                 qualiPosition,
+//                 driverQualifyingTimes,
 //                 totalWins,
 //                 totalPodiums,
 //                 totalPoles
@@ -167,10 +173,13 @@ export const fetchDriverStats = async (driverId1, driverId2) => {
 //     };
 
 //     const driver1Data = await fetchDriverData(driverId1);
+//     driversDone++;
 //     createAndDownloadFile(driver1Data, `${driverId1}.json`);
-//     const driver2Data = await fetchDriverData(driverId2);
+//     console.log(driversDone," done ", driverId1);
+//     // const driver2Data = await fetchDriverData(driverId2);
+//     // createAndDownloadFile(driver2Data, `${driverId2}.json`);
 //     // createAndDownloadFile({ driver1: driver1Data, driver2: driver2Data }, 'driverComparisonData.json');
-//     return { driver1: driver1Data, driver2: driver2Data };
+//     return { driver1: driver1Data, driver2: driver1Data };
 // };
 
 

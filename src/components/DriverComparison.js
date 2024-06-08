@@ -29,7 +29,7 @@ export function DriverComparison(){
             setIsLoading(true);
             if(driver1 && driver2){
                 const DriversData = await fetchDriverStats(driver1, driver2);
-                console.log("blah", DriversData);
+                // console.log("blah", DriversData);
                 setDriver1Data(DriversData.driver1);
                 setDriver2Data(DriversData.driver2);
             }
