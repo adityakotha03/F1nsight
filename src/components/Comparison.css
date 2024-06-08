@@ -1,0 +1,40 @@
+.comparison-container {
+    margin-top: 20px;
+  }
+  
+  .comparison-title {
+    color: white;
+    font-size: 24px;
+  }
+  
+  .comparison-table {
+    width: 100%;
+    border-collapse: collapse;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    background: linear-gradient(45deg, #151515, #232323);
+  }
+  
+  .table-header {
+    background-color: #303030;
+    color: #fff;
+    font-weight: bold;
+  }
+  
+  .table-row {
+    background-color: #2a2a2a;
+    color: #fff;
+    transition: background-color 0.3s ease;
+  }
+  
+  .table-row:hover {
+    background-color: #1c1c1c;
+  }
+  
+  table th,
+  table td {
+    padding: 12px;
+    text-align: center;
+  }
+  

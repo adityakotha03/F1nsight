@@ -18,7 +18,9 @@
     "flowbite": "^2.3.0",
     "flowbite-react": "^0.7.8",
     "framer-motion": "^11.0.28",
+    "fs": "^0.0.1-security",
     "react": "^18.2.0",
+    "react-chartjs-2": "^5.2.0",
     "react-dom": "^18.2.0",
     "react-lottie": "^1.2.4",
     "react-router-dom": "^6.22.3",
@@ -29,7 +31,7 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "set PORT=3006 && react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",

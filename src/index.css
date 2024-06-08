@@ -1,6 +1,7 @@
 @import "./components/Header.css";
 @import "./components/LandingPage.css";
 @import "./components/Select.css";
+@import "./components/Comparison.css";
 
 @tailwind base;
 @tailwind components;

@@ -51,6 +51,24 @@ export const FooterDetails = ({ className }) => {
                             </div>
                         }
                         />
+                    <ConstructorDriver 
+                        year={2024}
+                        image="PraneethF1"
+                        firstName="Mani"
+                        lastName="Praneeth"
+                        car="mercedes"
+                        className="max-md:mt-16"
+                        points={
+                            <div className="flex item-center">
+                            <a href="https://www.linkedin.com/in/aditya-kotha-59a010241/" className="icon-link" style={{ marginLeft: '10px' }}>
+                                <FaLinkedin size={24} />
+                            </a>
+                            <a href="https://github.com/adityakotha03" className="icon-link" style={{ marginLeft: '10px' }}>
+                                <FaGithub size={24} />
+                            </a>
+                            </div>
+                        }
+                        />
                 </div>
             </div>
             <div className="flex flex-col items-center md:items-end gap-2 md:text-right">

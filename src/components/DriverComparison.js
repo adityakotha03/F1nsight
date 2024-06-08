@@ -29,6 +29,7 @@ export function DriverComparison(){
             setIsLoading(true);
             if(driver1 && driver2){
                 const DriversData = await fetchDriverStats(driver1, driver2);
+                console.log("blah", DriversData);
                 setDriver1Data(DriversData.driver1);
                 setDriver2Data(DriversData.driver2);
             }
@@ -41,6 +42,7 @@ export function DriverComparison(){
     const handleCompare = () => {
         setDriver1(inputdriver1.value);
         setDriver2(inputdriver2.value);
+        console.log("herewego", driver1);
         setInputDriver1('');
         setInputDriver2('');
     };
@@ -48,7 +50,7 @@ export function DriverComparison(){
     const customStyles = {
         option: (provided) => ({
             ...provided,
-            color: 'black' // Set text color to black
+            color: 'black'
         })
     };
 
@@ -153,11 +155,51 @@ export function DriverComparison(){
         </div>
       );
 
+    const renderFinalStandings = () => {
+        
+        const allYears = new Set([
+            ...Object.keys(driver1Data.finalStandings),
+            ...Object.keys(driver2Data.finalStandings)
+        ])
+        
+        return (
+            <table className='comparison-table'>
+                <thead>
+                    <tr className='table-header'>
+                    <th>Year</th>
+                    <th>{driversList.find(q => q.id === driver1Data.driverId).name}</th>
+                    <th>{driversList.find(q => q.id === driver2Data.driverId).name}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {[...allYears].map((year) => (
+                    <tr key={year} className='table-row'>
+                        <td>{year}</td>
+                        <td>
+                        {driver1Data.finalStandings[year] ? (
+                            `${driver1Data.finalStandings[year].position} (${driver1Data.finalStandings[year].points} points)`
+                        ) : (
+                            "DNC"
+                        )}
+                        </td>
+                        <td>
+                        {driver2Data.finalStandings[year] ? (
+                            `${driver2Data.finalStandings[year].position} (${driver2Data.finalStandings[year].points} points)`
+                        ) : (
+                            "DNC"
+                        )}
+                        </td>
+                    </tr>
+                    ))}
+                </tbody>
+            </table>
+        );
+    };
     return(
         <div className='global-container'>
             <h2 className='heading-2 text-center mb-40 text-neutral-400'>Drivers Comparison</h2>
             {isLoading ? (
-                <Loading className="mt-[20rem] mb-[20rem]" message={`Comparing ${driver1} and ${driver2}`} />
+                <Loading className="mt-[20rem] mb-[20rem]" message={`Comparing ${driversList.find(q=> q.id === driver1).name} and ${driversList.find(q=> q.id === driver2).name}`} />
             ) : (
                 <div>
                     <Select
@@ -187,11 +229,13 @@ export function DriverComparison(){
                     <button onClick={handleCompare} type='submit'>Compare</button>
                     {driver1Data && driver2Data && (
                         <div>
-                            <h2>Driver 1 vs Driver 2</h2>
-                            <div className='driver-stats'>
-                                {renderDriverStats(driver1Data, driver1)}
-                                {renderDriverStats(driver2Data, driver2)}
+                            <div className='comparison-container'>
+                                <h2 className='heading-2 text-center mb-40 text-neutral-400'>{driversList.find(q=> q.id === driver1).name} vs {driversList.find(q=> q.id === driver2).name}</h2>
+                                <h3 className="comparison-title">Final Standings</h3>
+                                {renderFinalStandings()}
                             </div>
+                            {renderDriverStats(driver1Data, driversList.find(q=> q.id === driver1).name)}
+                            {renderDriverStats(driver2Data, driversList.find(q=> q.id === driver2).name)}
                         </div>
                     )}
                 </div>

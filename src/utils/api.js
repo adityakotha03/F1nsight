@@ -1,5 +1,3 @@
-import axios from 'axios';
-
 const BASE_URL = 'http://ergast.com/api/f1';
 
 export const fetchDriversList = async () => {
@@ -8,6 +6,18 @@ export const fetchDriversList = async () => {
       id: driver.driverId,
       name: `${driver.givenName} ${driver.familyName}`
   }));
+};
+
+const createAndDownloadFile = (data, filename) => {
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
 };
 
 const fetchData = async (url) => {
@@ -31,114 +41,137 @@ const fetchWithCache = async (url) => {
 };
 
 export const fetchDriverStats = async (driverId1, driverId2) => {
-    const fetchDriverData = async (driverId) => {
-        try {
-            // Fetch all seasons the driver has participated in
-            const seasonsResponse = await fetchWithCache(`${BASE_URL}/drivers/${driverId}/seasons.json`);
-            const seasons = seasonsResponse.MRData.SeasonTable.Seasons.map(season => season.season);
+  const fetchDriverData = async (driverId) => {
+    try{
+      const dataResponse1 = await fetch(`https://praneeth7781.github.io/f1nsight-api-2/drivers/${driverId}.json`);
+      if(dataResponse1.ok){
+        const data1 = await dataResponse1.json();
+        console.log("here", data1);
+        return data1;
+      }else{
+        console.log("Failed to fetch data");
+      }
+      // console.log(dataResponse.json());
+    } catch(error){
+      console.log(error);
+    }
+  }
+  const driverData1 = await fetchDriverData(driverId1);
+  const driverData2 = await fetchDriverData(driverId2);
+  console.log("yay",driverData1);
+  return {driver1: driverData1, driver2: driverData2};
+}
 
-            let finalStandings = {};
-            let posAfterRace = {};
-            let racePosition = {};
-            let qualiPosition = {};
-            let totalWins = 0;
-            let totalPodiums = 0;
-            let totalPoles = 0;
+// export const fetchDriverStats = async (driverId1, driverId2) => {
+//     const fetchDriverData = async (driverId) => {
+//         try {
+//             // Fetch all seasons the driver has participated in
+//             const seasonsResponse = await fetchWithCache(`${BASE_URL}/drivers/${driverId}/seasons.json`);
+//             const seasons = seasonsResponse.MRData.SeasonTable.Seasons.map(season => season.season);
 
-            // Collect promises for fetching data in parallel
-            const standingsPromises = seasons.map(year =>
-                fetchWithCache(`${BASE_URL}/${year}/drivers/${driverId}/driverStandings.json`)
-            );
+//             let finalStandings = {};
+//             let posAfterRace = {};
+//             let racePosition = {};
+//             let qualiPosition = {};
+//             let totalWins = 0;
+//             let totalPodiums = 0;
+//             let totalPoles = 0;
 
-            const raceResultsPromises = seasons.map(year =>
-                fetchWithCache(`${BASE_URL}/${year}/drivers/${driverId}/results.json`)
-            );
+//             // Collect promises for fetching data in parallel
+//             const standingsPromises = seasons.map(year =>
+//                 fetchWithCache(`${BASE_URL}/${year}/drivers/${driverId}/driverStandings.json`)
+//             );
 
-            const qualifyingResultsPromises = seasons.map(year =>
-                fetchWithCache(`${BASE_URL}/${year}/drivers/${driverId}/qualifying.json`)
-            );
+//             const raceResultsPromises = seasons.map(year =>
+//                 fetchWithCache(`${BASE_URL}/${year}/drivers/${driverId}/results.json`)
+//             );
 
-            const [standingsResponses, raceResultsResponses, qualifyingResultsResponses] = await Promise.all([
-                Promise.all(standingsPromises),
-                Promise.all(raceResultsPromises),
-                Promise.all(qualifyingResultsPromises)
-            ]);
+//             const qualifyingResultsPromises = seasons.map(year =>
+//                 fetchWithCache(`${BASE_URL}/${year}/drivers/${driverId}/qualifying.json`)
+//             );
 
-            // Process standings responses
-            standingsResponses.forEach((response, index) => {
-                const year = seasons[index];
-                const standings = response.MRData.StandingsTable.StandingsLists[0].DriverStandings[0];
-                finalStandings[year] = {
-                    year: year,
-                    position: standings.position,
-                    points: standings.points
-                };
-            });
+//             const [standingsResponses, raceResultsResponses, qualifyingResultsResponses] = await Promise.all([
+//                 Promise.all(standingsPromises),
+//                 Promise.all(raceResultsPromises),
+//                 Promise.all(qualifyingResultsPromises)
+//             ]);
 
-            // Process race results and position after race
-            raceResultsResponses.forEach((response, index) => {
-                const year = seasons[index];
-                const raceResults = response.MRData.RaceTable.Races;
-                racePosition[year] = { year: year, positions: {} };
-                posAfterRace[year] = { year: year, pos: {} };
+//             // Process standings responses
+//             standingsResponses.forEach((response, index) => {
+//                 const year = seasons[index];
+//                 const standings = response.MRData.StandingsTable.StandingsLists[0].DriverStandings[0];
+//                 finalStandings[year] = {
+//                     year: year,
+//                     position: standings.position,
+//                     points: standings.points
+//                 };
+//             });
 
-                let cumulativePoints = 0;
-                raceResults.forEach(race => {
-                    const raceName = race.raceName;
-                    const raceResult = race.Results[0];
-                    const position = raceResult.position;
-                    const points = parseFloat(raceResult.points);
-                    cumulativePoints += points;
+//             // Process race results and position after race
+//             raceResultsResponses.forEach((response, index) => {
+//                 const year = seasons[index];
+//                 const raceResults = response.MRData.RaceTable.Races;
+//                 racePosition[year] = { year: year, positions: {} };
+//                 posAfterRace[year] = { year: year, pos: {} };
 
-                    racePosition[year].positions[raceName] = position;
-                    posAfterRace[year].pos[raceName] = {
-                        positionInDriverStandings: raceResult.Driver.position,
-                        points: cumulativePoints
-                    };
+//                 let cumulativePoints = 0;
+//                 raceResults.forEach(race => {
+//                     const raceName = race.raceName;
+//                     const raceResult = race.Results[0];
+//                     const position = raceResult.position;
+//                     const points = parseFloat(raceResult.points);
+//                     cumulativePoints += points;
 
-                    if (position === '1') totalWins++;
-                    if (['1', '2', '3'].includes(position)) totalPodiums++;
-                });
-            });
+//                     racePosition[year].positions[raceName] = position;
+//                     posAfterRace[year].pos[raceName] = {
+//                         positionInDriverStandings: raceResult.Driver.position,
+//                         points: cumulativePoints
+//                     };
 
-            // Process qualifying results
-            qualifyingResultsResponses.forEach((response, index) => {
-                const year = seasons[index];
-                const qualifyingResults = response.MRData.RaceTable.Races;
-                qualiPosition[year] = { year: year, positions: {} };
+//                     if (position === '1') totalWins++;
+//                     if (['1', '2', '3'].includes(position)) totalPodiums++;
+//                 });
+//             });
 
-                qualifyingResults.forEach(race => {
-                    const raceName = race.raceName;
-                    const qualifyingResult = race.QualifyingResults[0];
-                    const position = qualifyingResult.position;
+//             // Process qualifying results
+//             qualifyingResultsResponses.forEach((response, index) => {
+//                 const year = seasons[index];
+//                 const qualifyingResults = response.MRData.RaceTable.Races;
+//                 qualiPosition[year] = { year: year, positions: {} };
 
-                    qualiPosition[year].positions[raceName] = position;
-                    if (position === '1') totalPoles++;
-                });
-            });
+//                 qualifyingResults.forEach(race => {
+//                     const raceName = race.raceName;
+//                     const qualifyingResult = race.QualifyingResults[0];
+//                     const position = qualifyingResult.position;
 
-            return {
-                driverId: driverId,
-                finalStandings,
-                posAfterRace,
-                racePosition,
-                qualiPosition,
-                totalWins,
-                totalPodiums,
-                totalPoles
-            };
+//                     qualiPosition[year].positions[raceName] = position;
+//                     if (position === '1') totalPoles++;
+//                 });
+//             });
 
-        } catch (error) {
-            console.error(`Error fetching data for driver ${driverId}:`, error);
-            return null;
-        }
-    };
+//             return {
+//                 driverId: driverId,
+//                 finalStandings,
+//                 posAfterRace,
+//                 racePosition,
+//                 qualiPosition,
+//                 totalWins,
+//                 totalPodiums,
+//                 totalPoles
+//             };
 
-    const driver1Data = await fetchDriverData(driverId1);
-    const driver2Data = await fetchDriverData(driverId2);
+//         } catch (error) {
+//             console.error(`Error fetching data for driver ${driverId}:`, error);
+//             return null;
+//         }
+//     };
 
-    return { driver1: driver1Data, driver2: driver2Data };
-};
+//     const driver1Data = await fetchDriverData(driverId1);
+//     createAndDownloadFile(driver1Data, `${driverId1}.json`);
+//     const driver2Data = await fetchDriverData(driverId2);
+//     // createAndDownloadFile({ driver1: driver1Data, driver2: driver2Data }, 'driverComparisonData.json');
+//     return { driver1: driver1Data, driver2: driver2Data };
+// };
 
 
 
