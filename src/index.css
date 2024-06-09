@@ -1,6 +1,3 @@
-@import "./components/Header.css";
-@import "./components/Select.css";
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -22,45 +19,12 @@ body {
   font-size: 1.6rem;
   font-weight: 400;
   margin: 0;
+  overflow-x: hidden;
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
-}
-
-.heading-1, .heading-2, .heading-3, .heading-4, .heading-5, .heading-6 {
-  font-weight: 400;
-  line-height: 1;
-}
-
-.heading-1 {
-  font-family: "Bungee", sans-serif;
-  font-size: 4.8rem;
-}
-.heading-2 {
-  font-family: "Bungee", sans-serif;
-  font-size: 3.2rem;
-}
-.heading-3 {
-  font-family: "Bungee", sans-serif;
-  font-size: 2.8rem;
-}
-.heading-4 {
-  font-family: "Bungee", sans-serif;
-  font-size: 2rem;
-}
-.heading-5 {
-  font-family: "Lato", sans-serif;
-  font-size: 2rem;
-  letter-spacing: 1.4rem;
-  text-transform: uppercase;
-}
-.heading-6 {
-  font-family: "Lato", sans-serif;
-  font-size: 1.6rem;
-  letter-spacing: 1.2rem;
-  text-transform: uppercase;
 }
 
 /* ------- */
@@ -74,12 +38,14 @@ code {
     margin: 0 auto;
   }
 }
+
 .page-container-centered {
   margin: 0 auto;
   max-width: 120rem;
   padding: 0 2.4rem;
 }
 
+/* backgrounds */
 .bg-glow {
   box-shadow: inset 0 0 2.4rem 0 rgba(255, 255, 255, .25), 0 0 2.4rem 0 rgba(0, 0, 0, .5);
 }
@@ -103,6 +69,7 @@ code {
   box-shadow: inset 0 0 1rem 0 rgba(255, 255, 255, .25), 0 0 2.4rem 0 rgba(0, 0, 0, .5);
 }
 
+/* dividers */
 .divider-glow {
   border-top: .1rem solid theme('colors.neutral.600');
   background: radial-gradient(ellipse at top, theme('colors.neutral.600') 0%, transparent 64%);
@@ -120,6 +87,7 @@ code {
   width: 100%;
 }
 
+/* Text colors */
 .gradient-text-dark {
   background: -webkit-linear-gradient(theme('colors.neutral.700'), theme('colors.neutral.800'));
   -webkit-background-clip: text;
@@ -136,6 +104,7 @@ code {
   -webkit-text-fill-color: transparent;
 }
 
+/* border */
 .gradient-border {
   border-width: .1rem;
   border-style: solid;
@@ -148,13 +117,7 @@ code {
   box-shadow: inset 0 0 2.4rem 0 rgba(255, 255, 255, .25), 0 0 3.2rem 0 rgba(255, 255, 255, .25);
 }
 
-.vertical-divider {
-  width: .2rem;
-  margin-right: 3.2rem;
-  margin-left: 3.2rem;
-  background: linear-gradient(to bottom, theme('colors.neutral.600'), theme('colors.neutral.500'));
-}
-
+/* background highlight gradients */
 .radial-gradient {
   opacity: .05;
   position: absolute;
@@ -178,20 +141,6 @@ code {
 /* Custom Classes */
 /* -------------- */
 
-/* tire strategy */
-.tire-compound--soft {
-  filter: url(#inset-shadow-soft);
-  fill: #230000;
-  border: 1px solid #ffffff;
-}
-.tire-compound--medium {
-  filter: url(#inset-shadow-medium);
-  fill: #372e00;
-}
-.tire-compound--hard {
-  filter: url(#inset-shadow-hard);
-  fill: #242424;
-}
 
 /* season results pages */
 .navLink {
@@ -201,132 +150,7 @@ code {
   color: theme('colors.neutral.300');
 }
 
-/* loading animation */
-.loading-animation__title {
-  backdrop-filter: blur(12px);
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: linear-gradient(90deg, rgba(31,31,31,0) 0%, rgba(31,31,31,.7) 15%, rgba(31,31,31,.7) 5%, rgba(31,31,31,0) 100%);
-  text-align: center;
-  z-index: 1;
-  width: 150%;
-  @media (min-width: 480px) {
-    height: 3.2rem;
-    white-space: nowrap;
-    width: initial;
-  }
-}
-.loading-animation__title:before {
-  content: '';
-  background: radial-gradient(ellipse at bottom , theme('colors.neutral.900') 0%, transparent 50%);
-  height: 1rem;
-  width: 100%;
-  position: absolute;
-    bottom: 100%;
-    left: 0;
-}
-.loading-animation__title:after {
-  content: '';
-  background: radial-gradient(ellipse at top , theme('colors.neutral.900') 0%, transparent 50%);
-  height: 1rem;
-  width: 100%;
-  position: absolute;
-    top: 100%;
-    left: 0;
-}
-
-/* driver card */
-.driver-card--canvas {
-  background-color: rgba(0, 0, 0, .5);
-  backdrop-filter: blur(12px);
-  @media (max-width: 639px) {
-    margin-bottom: 0;
-  }
-}
-
-/* race canvas and controls */
-.canvas-container {
-  position: relative;
-  height: 678px;
-  width: 100%;
-  overflow: hidden;
-  @media (min-width: 768px) {
-    height: 656px;
-  }
-}
-
-.canvas-container:after,
-.track-preview:after {
-  content: '';
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  pointer-events: none;
-  box-shadow: inset 0 0 20rem 0 rgba(255, 255, 255, .3), 0 0 2.4rem 0 rgba(0, 0, 0, .5);
-}
-
-.track-preview {
-  height: 65.5rem;
-  opacity: .6;
-  @media (max-width: 639px) {
-    height: 68rem;
-  }
-}
-
-.race-controls {
-  display: grid;
-  grid-template-columns: auto auto 50%;
-  grid-template-areas:
-    "play pause view"
-    "speed speed speed"
-  ;
-
-  @media (min-width: 1280px) {
-    grid-template-columns: auto auto auto 50%;
-    grid-template-areas:
-      "play pause view speed"
-    ;
-  }
-}
-
-.race-controls__play { grid-area: play; }
-.race-controls__pause { grid-area: pause; }
-.race-controls__speed { grid-area: speed; }
-.race-controls__view { grid-area: view; }
-
-
-/* lap chart */
-.recharts-cartesian-axis-tick-value {
-  font-size: 1rem;
-  letter-spacing: .2rem;
-}
-.recharts-default-tooltip,
-.custom-tooltip {
-  background-color: rgba(0, 0, 0, .5) !important;
-  backdrop-filter: blur(12px);
-  border: .1rem solid transparent !important;
-  border-image: linear-gradient(to bottom, theme('colors.neutral.600'), theme('colors.neutral.500')) 1;
-  padding: .8rem;
-}
-.recharts-tooltip-label {
-  font-family: "Bungee", sans-serif;
-}
-
-/* footer */
-.footer-details {
-  .constructor-driver-card__person {
-    width: 10rem;
-  }
-  .constructor-driver-card__car {
-    width: 15rem;
-  }
-}
-
-
+/* overriddes for recharts */
 .recharts-text {
   fill: #f1f1f1;
 }

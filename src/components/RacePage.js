@@ -47,6 +47,8 @@ export function RacePage() {
   const selectedDriverData = drivers.find(obj => obj['acronym'] === driverCode);
   const selectedDriverRaceData = raceResults.find(obj => obj['number'] === driverNumber);
 
+  console.log(startingGrid)
+
   useEffect(() => {
     const fetchData = async () => {
       if (!meetingKey) return;
@@ -277,11 +279,10 @@ export function RacePage() {
 
   return (
     isLoading ? (
-      <Loading className="mt-[20rem] mb-[20rem]" message={`Loading ${raceName} ${year} ${selectedSession}`} />
+      <Loading className="mt-[20rem] mb-[20rem]" message={`Loading ${raceName} ${year} Race`} />
     ) : (
     <div className="pt-[10rem]">
-
-      <div className="flex flex-col items-center justify-center mb-32">
+    <div className="flex flex-col items-center justify-center mb-32">
         {raceName && <p className="heading-2 text-center text-neutral-400 mb-8">{raceName} {year}</p>}
         <Select className="w-fit" label="Select Session" onChange={handleOptionChange} value={selectedSession}>
             {hasRaceSession && <option value="Race">Race</option>}
@@ -291,90 +292,87 @@ export function RacePage() {
 
       {selectedSession === 'Race' && (
         <>
-
-        {!driverSelected && (
-          <div className="w-full tracking-xs text-center text-neutral-400 gradient-border-extreme py-4 px-32 leading-none">Select driver from the leaderboard to activate race mode</div>
-        )}
-
-        <div className="race-display mb-64 relative">
-          <ul className="flex flex-col absolute top-1 left-1 z-10">
-            {raceResults.map((result, index) => (
-              <button 
-                key={index}
-                className="block w-full mb-2 relative"
-                onClick={() => handleDriverSelectionClick(index)}
-              >
-                <DriverCard 
-                  hasHover
-                  isActive={activeButtonIndex === index}
-                  index={index}
-                  driver={result.Driver}
-                  stint={drivers}
-                  driverColor={driversColor[driverCode]}
-                  startPosition={parseInt(result.grid, 10)}
-                  endPosition={parseInt(result.position,10)}
-                  year={year}
-                  time={result.Time?.time || result.status}
-                  fastestLap={result.FastestLap}
-                  layoutSmall={index > 2}
-                  mobileSmall
-                />
-              </button>
-            ))}
-          </ul>
-
-          {(driverSelected && location === 'Sakhir') || location !== 'Sakhir'  ? (
-            <ThreeCanvas 
-              MapFile={MapPath} 
-              locData={locData}
-              driverSelected={driverSelected}
-              driverCode={driverCode}
-              driverColor={driversColor[driverCode]}
-              isPaused={isPaused}
-              haloView={haloView}
-              controls={
-                <div className="relative z-10">
-                  {driverSelected && (
-                    <div className="race-controls">
-                      <button className="race-controls__play gradient-border-extreme py-16 px-32" onClick={() => setIsPaused(false)}><FontAwesomeIcon icon="play" /></button>
-                      <button className="race-controls__pause gradient-border-extreme py-16 px-32" onClick={() => setIsPaused(true)}><FontAwesomeIcon icon="pause" /></button>
-                      <button className="race-controls__view gradient-border-extreme py-16 px-32 tracking-sm uppercase text-xs" onClick={() => setHaloView(!haloView)}>
-                        {haloView ? 'Sky View' : 'Halo View'}
+      {raceName && <p className="heading-2 text-center text-neutral-400  mb-32">{raceName} {year}</p>}
+      {!driverSelected && (
+        <div className="w-full tracking-xs text-center text-neutral-400 gradient-border-extreme py-4 px-32 leading-none">Select driver from the leaderboard to activate race mode</div>
+      )}
+      <div className="race-display mb-64 relative">
+        <ul className="flex flex-col absolute top-1 left-1 z-10">
+          {raceResults.map((result, index) => (
+            <button 
+              key={index}
+              className="block w-full mb-2 relative "
+              onClick={() => handleDriverSelectionClick(index)}
+            >
+              <DriverCard 
+                hasHover
+                isActive={activeButtonIndex === index}
+                index={index}
+                driver={result.Driver}
+                driverColor={driversColor[driverCode]}
+                startPosition={parseInt(result.grid, 10)}
+                endPosition={parseInt(result.position,10)}
+                year={year}
+                time={result.Time?.time || result.status}
+                fastestLap={result.FastestLap}
+                layoutSmall={index > 2}
+                mobileSmall
+              />
+            </button>
+          ))}
+        </ul>
+        {(driverSelected && location === 'Sakhir') || location !== 'Sakhir'  ? (
+          <ThreeCanvas 
+            MapFile={MapPath} 
+            locData={locData}
+            driverSelected={driverSelected}
+            driverCode={driverCode}
+            driverColor={driversColor[driverCode]}
+            isPaused={isPaused}
+            haloView={haloView}
+            controls={
+              <div className="relative z-10">
+                {driverSelected && (
+                  <div className="race-controls">
+                    <button className="race-controls__play gradient-border-extreme py-16 px-32" onClick={() => setIsPaused(false)}><FontAwesomeIcon icon="play" /></button>
+                    <button className="race-controls__pause gradient-border-extreme py-16 px-32" onClick={() => setIsPaused(true)}><FontAwesomeIcon icon="pause" /></button>
+                    <button className="race-controls__view gradient-border-extreme py-16 px-32 tracking-sm uppercase text-xs" onClick={() => setHaloView(!haloView)}>
+                      {haloView ? 'Sky View' : 'Halo View'}
+                    </button>
+                    <div className="race-controls__speed gradient-border-extreme flex text-xs max-sm:flex-col sm:items-center sm:justify-center gap-16 py-16 px-32 tracking-sm uppercase text-center">
+                      <p>Playback Speed:</p>
+                      <button
+                        className={classNames("tracking-sm uppercase", { 'text-neutral-400': speedFactor !== 4})}
+                        onClick={() => setSpeedFactor(4)}
+                      >
+                        Normal
                       </button>
-                      <div className="race-controls__speed gradient-border-extreme flex text-xs max-sm:flex-col sm:items-center sm:justify-center gap-16 py-16 px-32 tracking-sm uppercase text-center">
-                        <p>Playback Speed:</p>
-                        <button
-                          className={classNames("tracking-sm uppercase", { 'text-neutral-400': speedFactor !== 4})}
-                          onClick={() => setSpeedFactor(4)}
-                        >
-                          Normal
-                        </button>
-                        <button
-                          className={classNames("tracking-sm uppercase", { 'text-neutral-400': speedFactor !== 1.5})}
-                          onClick={() => setSpeedFactor(1.5)}
-                        >
-                          Push Push
-                        </button>
-                        <button
-                          className={classNames("tracking-sm uppercase", { 'text-neutral-400': speedFactor !== 0.2})}
-                          onClick={() => setSpeedFactor(0.2)}
-                        >
-                          DRS 
-                        </button> 
-                      </div>
+                      <button
+                        className={classNames("tracking-sm uppercase", { 'text-neutral-400': speedFactor !== 1.5})}
+                        onClick={() => setSpeedFactor(1.5)}
+                      >
+                        Push Push
+                      </button>
+                      <button
+                        className={classNames("tracking-sm uppercase", { 'text-neutral-400': speedFactor !== 0.2})}
+                        onClick={() => setSpeedFactor(0.2)}
+                      >
+                        DRS 
+                      </button> 
                     </div>
-                  )}
-                  
-                </div>
-              }
-              speedFactor={speedFactor}
-            /> 
-          ) : (
-            <div className="track-preview">
-              <video src={animatedMap} loop autoPlay muted playsInline className="w-full h-full object-cover"></video>
-            </div>
-          )}          
-        </div>
+                  </div>
+                )}
+                
+              </div>
+            }
+            speedFactor={speedFactor}
+          /> 
+        ) : (
+          <div className="track-preview">
+            <video src={animatedMap} loop autoPlay muted playsInline className="w-full h-full object-cover"></video>
+          </div>
+        )}          
+      </div>
         
         </>
       )}
@@ -404,11 +402,12 @@ export function RacePage() {
                     <h3 className="font-display gradient-text-light text-[2rem]">{selectedDriverData.last_name}</h3>
                     <p className="font-display gradient-text-dark text-[6.4rem] mr-16 leading-none text-right">{selectedDriverData.driver_number}</p>
                   </div>
-                </div>
-                <div className="bg-glow bg-glow--large px-16 pt-16 pb-24">
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <div className="uppercase tracking-xs text-xs">Finshed</div>
+
+              </div>
+              <div className="bg-glow bg-glow--large px-24 pt-24 pb-24 rounded-xlarge">
+                <div className="flex items-start justify-between">
+                  <div>
+                    <div className="uppercase tracking-xs text-xs">Finshed</div>
                       <div>
                         <span className="font-display text-[3.2rem]">{selectedDriverRaceData.position}</span>
                         <span className="uppercase tracking-xs text-xs ml-4">
@@ -424,7 +423,7 @@ export function RacePage() {
 
                   <div className="divider-glow-dark mt-16 mb-10" />
 
-                  <p className="font-display text-center mb-16">fastest lap</p>
+                <p className="font-display text-center mb-16 ml-24">fastest lap</p>
 
                   <div className="flex items-center justify-between">
                     <div>
@@ -450,40 +449,81 @@ export function RacePage() {
                       <div className="font-display">{selectedDriverRaceData.FastestLap.rank}</div>
                     </div>
                   </div>
-
                 </div>
-              </div>
-            )}
-
-            <h3 className="heading-4 mb-16 text-neutral-400">Starting Grid</h3>
-            <div className="bg-glow bg-glow--large p-32 h-fit">
-              <ul className="flex flex-col w-fit m-auto">
-                {startingGrid
-                  .sort((a, b) => a.position - b.position)
-                  .map((gridPosition, index) => (
-                    <li 
-                      key={index} 
-                      className="text-center w-fit even:-mt-32 even:ml-[8rem] even:mb-8"
-                    >
-                      <div className={classNames(
-                        "text-sm font-display", 
-                        driverCode === driversDetails[gridPosition.driver_number] ? "text-neutral-200" : "text-neutral-400"
-                        )}
-                      >
-                        P{gridPosition.position}
-                      </div>
-                      <div className={classNames(
-                        "border-x-2 border-t-2 border-solid px-4 pt-4 w-64 font-display",
-                        driverCode === driversDetails[gridPosition.driver_number] ? "border-neutral-200" : " border-neutral-500"
-                        )}
-                        style={{color: driverCode === driversDetails[gridPosition.driver_number] ? `#${driversColor[driverCode]}` : "#737373"}}
-                      >
-                        {driversDetails[gridPosition.driver_number]}
-                      </div> 
-                    </li>
-                  ))}
-              </ul>
             </div>
+          )}
+          <h3 className="heading-4 mb-16 text-neutral-400 ml-24">Starting Grid</h3>
+          <div className="bg-glow bg-glow--large p-32 h-fit rounded-xlarge">
+            <ul className="flex flex-col w-fit m-auto">
+              {startingGrid
+                .sort((a, b) => a.position - b.position)
+                .map((gridPosition, index) => {
+                
+                const getCarTopView = (driver) => {
+                  // temporary situation ... can we get the constructor name with the driver data?
+                  if (driver === "HAM") return "mercedes";
+                  if (driver === "RUS") return "mercedes";
+                  if (driver === "ZHO") return "sauber";
+                  if (driver === "BOT") return "sauber";
+                  if (driver === "VER") return "red_bull";
+                  if (driver === "PER") return "red_bull";
+                  if (driver === "LEC") return "ferrari";
+                  if (driver === "SAI") return "ferrari";
+                  if (driver === "RIC") return "rb";
+                  if (driver === "TSU") return "rb";
+                  if (driver === "NOR") return "mclaren";
+                  if (driver === "PIA") return "mclaren";
+                  if (driver === "STR") return "aston_martin";
+                  if (driver === "ALO") return "aston_martin";
+                  if (driver === "SAR") return "williams";
+                  if (driver === "ALB") return "williams";
+                  if (driver === "GAS") return "alpine";
+                  if (driver === "OCO") return "alpine";
+                  if (driver === "MAG") return "haas";
+                  if (driver === "HUL") return "haas";
+                }
+                
+                return (
+                  <li 
+                    key={index} 
+                    className="text-center w-fit even:-mt-[8rem] even:ml-[6rem] even:mb-8 relative group"
+                  >
+                    <div className={classNames(
+                        "border-x-2 border-t-2 border-solid w-48 font-display h-32 ml-4",
+                        driverCode === driversDetails[gridPosition.driver_number] ? `border-neutral-[#${driversColor[driverCode]}]` : " border-neutral-700"
+                      )}
+                    />
+
+                    <img 
+                      alt="" 
+                      className="-mt-32 drop-shadow-[0_0_14px_rgba(0,0,0,0.75)]"
+                      src={
+                        year > 2023 ? 
+                        `${process.env.PUBLIC_URL + "/images/" + year + "/carTopView/" + getCarTopView(driversDetails[gridPosition.driver_number]) + ".png"}` : 
+                        `${process.env.PUBLIC_URL + "/images/f1nsight-topview.png"}`
+                      }
+                      width={56} 
+                    />
+
+                    <div className={classNames(
+                        "font-display leading-none text-18",
+                        "absolute top-1/2 -translate-y-1/2",
+                        "flex flex-col",
+                        "group-odd:right-[90%] group-even:left-[90%]",
+                        "group-odd:items-end group-even:items-start",
+                      )}
+                    >
+                      <p className="text-neutral-600">P{gridPosition.position}</p>
+                      <p style={{
+                        color: driverCode === driversDetails[gridPosition.driver_number] ? `#${driversColor[driverCode]}` : driverCode ? "text-neutral-400" : "#f1f1f1"
+                      }}>
+                          {driversDetails[gridPosition.driver_number]}
+                      </p>
+                    </div>
+                  </li>)
+}
+                )}
+            </ul>
           </div>
         )}
 
@@ -492,9 +532,10 @@ export function RacePage() {
           <TireStrategy drivers={drivers} raceResults={raceResults} driverCode={driverSelected ? driversDetails[driverNumber] : null} driverColor={driversColor[driverCode]} />
           {!driverSelected && (selectedSession === 'Race') &&(
             <>
-              <h3 className="heading-4 mb-16 mt-32 text-neutral-400">Fastest Laps</h3> 
-              <div className="bg-glow bg-glow--large h-fit p-32 mb-16">
-                <div className="grid grid-cols-4 gap-4 mb-16  text-neutral-400">
+              <h3 className="heading-4 mb-16 mt-32 text-neutral-400 ml-24">Fastest Laps</h3> 
+              <div className="bg-glow bg-glow--large h-fit p-32 mb-16 rounded-xlarge">
+                <div className="grid grid-cols-3 gap-4 mb-16 text-neutral-400">
+
                   <span className="tracking-xs uppercase">Driver</span> 
                   <span className="tracking-xs uppercase text-left">Time</span> 
                   <span className="tracking-xs uppercase text-center">Lap</span> 

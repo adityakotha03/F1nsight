@@ -1,0 +1,35 @@
+/* loading animation */
+.loading-animation__title {
+    backdrop-filter: blur(12px);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: linear-gradient(90deg, rgba(31,31,31,0) 0%, rgba(31,31,31,.7) 15%, rgba(31,31,31,.7) 5%, rgba(31,31,31,0) 100%);
+    text-align: center;
+    z-index: 1;
+    width: 150%;
+    @media (min-width: 480px) {
+      height: 3.2rem;
+      white-space: nowrap;
+      width: initial;
+    }
+  }
+  .loading-animation__title:before {
+    content: '';
+    background: radial-gradient(ellipse at bottom , theme('colors.neutral.900') 0%, transparent 50%);
+    height: 1rem;
+    width: 100%;
+    position: absolute;
+      bottom: 100%;
+      left: 0;
+  }
+  .loading-animation__title:after {
+    content: '';
+    background: radial-gradient(ellipse at top , theme('colors.neutral.900') 0%, transparent 50%);
+    height: 1rem;
+    width: 100%;
+    position: absolute;
+      top: 100%;
+      left: 0;
+  }

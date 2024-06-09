@@ -40,7 +40,7 @@ export const RaceSelector = ({ races, selectedYear, pagePath, setIsRaceSelected,
   }, [isRaceSelected]);
 
   return (
-    <Select label="Race" onChange={handleRaceChange} value={selectValue}>
+    <Select label="Select Track" onChange={handleRaceChange} value={selectValue}>
         <option value="">---</option>
         {races.map((race) => (
           <option key={race.meeting_key} value={race.meeting_name}>{race.meeting_name}</option>
