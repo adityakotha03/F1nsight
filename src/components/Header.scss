@@ -8,9 +8,9 @@
 
 .global-header__main-nav {
     display: flex;
-    gap: theme(spacing.8);
+    gap: .8rem;
     flex-direction: column;
-    padding: theme(spacing.8) theme(spacing.16);
+    padding: .8rem 1.6rem;
     @media (min-width: 768px) {
         align-items: center;
         flex-direction: row;
@@ -22,12 +22,12 @@
     align-items: center;
     display: flex;
     flex-direction: column;
-    gap: theme(spacing.16);
+    gap: 1.6rem;
     justify-content: space-between;
-    padding: theme(spacing.16);
+    padding: 1.6rem;
     width: 100%;
     @media (min-width: 640px) {
-        gap: theme(spacing.32);
+        gap: 3.2rem;
         flex-direction: row;
         justify-content: center;
     }
@@ -36,13 +36,13 @@
 .global-header__main-nav__left {
     display: flex;
     align-items: center;
-    gap: theme(spacing.16);
+    gap: 1.6rem;
     justify-content: space-between;
     width: 100%;
 }
 
 .global-header__main-nav__right {
-    gap: theme(spacing.16);
+    gap: 1.6rem;
     justify-content: space-between;
-    gap: theme(spacing.8);
+    gap: .8rem;
 }

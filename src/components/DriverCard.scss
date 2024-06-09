@@ -1,0 +1,8 @@
+/* driver card */
+.driver-card--canvas {
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(12px);
+    @media (max-width: 639px) {
+        margin-bottom: 0;
+    }
+}

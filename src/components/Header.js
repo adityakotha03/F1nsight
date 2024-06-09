@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { NavLink } from 'react-router-dom';
+import classNames from 'classnames';
 
 import { ReactComponent as Logo} from './f1nsight.svg';
 import { Select } from './Select';
 
 import { RaceSelector } from './RaceSelector';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import classNames from 'classnames';
 
 export const Header = (props) => {
     const { setSelectedYear, selectedYear, currentYear } = props;

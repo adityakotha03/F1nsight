@@ -4,7 +4,9 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 import { fas } from '@fortawesome/free-solid-svg-icons';
 import { fab } from '@fortawesome/free-brands-svg-icons'
 import SupportPopup from './components/SupportPopup';
-import { Header, FooterDetails, RacePage, DriverStandings, ConstructorStandings, RaceResultsPage, LandingPage } from './components';
+import { Header, Footer, RacePage, DriverStandings, ConstructorStandings, RaceResultsPage, LandingPage } from './components';
+
+import './App.scss';
 
 library.add(fas, fab);
 
@@ -22,7 +24,7 @@ function App() {
         <Route path="/driver-standings" element={<DriverStandings selectedYear={selectedYear} />} />
         <Route path="/race/:raceId" element={<RacePage />} />
       </Routes>
-      <FooterDetails></FooterDetails>
+      <Footer />
     </Router>
   );
 }
