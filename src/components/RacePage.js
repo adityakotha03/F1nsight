@@ -34,7 +34,7 @@ export function RacePage() {
   const [isPaused, setIsPaused] = useState(false);
   const [haloView, setHaloView] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [selectedSession, setSelectedSession] = useState('Qualifying');
+  const [selectedSession, setSelectedSession] = useState('Race');
   const [hasRaceSession, sethasRaceSession] = useState(false);
   const [hasQualifyingSession, sethasQualifyingSession] = useState(false);
 
@@ -105,6 +105,7 @@ export function RacePage() {
           if (circuitId) {
             const results = await fetchRaceResultsByCircuit(year, circuitId);
             setRaceResults(results);
+            // console.log(results);
           }
 
           const raceSession = sessionsData.find(session => session.session_name === "Race");
@@ -458,30 +459,16 @@ export function RacePage() {
                 .sort((a, b) => a.position - b.position)
                 .map((gridPosition, index) => {
                 
+                // Create a lookup map for the constructors
+                const constructorMap = raceResults.reduce((acc, result) => {
+                  acc[result.Driver.code] = result.Constructor.constructorId;
+                  return acc;
+                }, {});
+
                 const getCarTopView = (driver) => {
-                  // temporary situation ... can we get the constructor name with the driver data?
-                  if (driver === "HAM") return "mercedes";
-                  if (driver === "RUS") return "mercedes";
-                  if (driver === "ZHO") return "sauber";
-                  if (driver === "BOT") return "sauber";
-                  if (driver === "VER") return "red_bull";
-                  if (driver === "PER") return "red_bull";
-                  if (driver === "LEC") return "ferrari";
-                  if (driver === "SAI") return "ferrari";
-                  if (driver === "RIC") return "rb";
-                  if (driver === "TSU") return "rb";
-                  if (driver === "NOR") return "mclaren";
-                  if (driver === "PIA") return "mclaren";
-                  if (driver === "STR") return "aston_martin";
-                  if (driver === "ALO") return "aston_martin";
-                  if (driver === "SAR") return "williams";
-                  if (driver === "ALB") return "williams";
-                  if (driver === "GAS") return "alpine";
-                  if (driver === "OCO") return "alpine";
-                  if (driver === "MAG") return "haas";
-                  if (driver === "HUL") return "haas";
-                }
-                
+                  return constructorMap[driver];
+                };
+
                 return (
                   <li 
                     key={index} 
@@ -519,11 +506,12 @@ export function RacePage() {
                           {driversDetails[gridPosition.driver_number]}
                       </p>
                     </div>
-                  </li>)}
-                )}
-            </ul>
-          </div>
-          </div>
+                  </li>
+                );
+              })}
+          </ul>
+        </div>
+        </div>
         )}
 
         <div className="sm:grow-0">
