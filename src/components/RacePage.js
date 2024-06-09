@@ -38,7 +38,7 @@ export function RacePage() {
   const selectedDriverData = drivers.find(obj => obj['acronym'] === driverCode);
   const selectedDriverRaceData = raceResults.find(obj => obj['number'] === driverNumber);
 
-  console.log(startingGrid)
+  // console.log(startingGrid)
 
   useEffect(() => {
     const fetchData = async () => {

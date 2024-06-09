@@ -1,3 +1,118 @@
+  const BASE_URL = 'http://ergast.com/api/f1';
+
+export const fetchDriversList = async () => {
+  const response = await fetchWithCache(`${BASE_URL}/drivers.json?limit=1000`); // Adjust limit as needed
+  return response.MRData.DriverTable.Drivers.map(driver => ({
+      id: driver.driverId,
+      name: `${driver.givenName} ${driver.familyName}`
+  }));
+};
+
+const createAndDownloadFile = (data, filename) => {
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+};
+
+const fetchData = async (url) => {
+    const response = await fetch(url);
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    return response.json();
+};
+
+// Simple in-memory cache
+const cache = {};
+
+const fetchWithCache = async (url) => {
+    if (cache[url]) {
+        return cache[url];
+    }
+    const data = await fetchData(url);
+    cache[url] = data;
+    return data;
+};
+
+export const fetchDriverStats = async (driverId1, driverId2) => {
+  const fetchDriverData = async (driverId) => {
+    try{
+      const dataResponse1 = await fetch(`https://praneeth7781.github.io/f1nsight-api-2/drivers/${driverId}.json`);
+      if(dataResponse1.ok){
+        const data1 = await dataResponse1.json();
+        // console.log("here", data1);
+        return data1;
+      }else{
+        console.log("Failed to fetch data");
+      }
+      // console.log(dataResponse.json());
+    } catch(error){
+      console.log(error);
+    }
+  }
+  const driverData1 = await fetchDriverData(driverId1);
+  const driverData2 = await fetchDriverData(driverId2);
+  console.log("yay",driverData1);
+  return {driver1: driverData1, driver2: driverData2};
+}
+
+export const fetchDriverStandings = async (driverId) => {
+  const url = `https://ergast.com/api/f1/drivers/${driverId}/driverStandings.json`;
+  try {
+    const response  = await fetch(url);
+    if(response.ok){
+      const data = await response.json();
+      console.log(data);
+    } else {
+      console.error('Failed to f data');
+    }
+  } catch (error){
+    console.error('Failed to fetch data');
+  }
+}
+
+export const fetchDriverResults = async (driverId) => {
+  const url = `https://ergast.com/api/f1/drivers/${driverId}/results.json`;
+  try {
+    const response  = await fetch(url);
+    if(response.ok){
+      const data = await response.json();
+      console.log(data);
+    } else {
+      console.error('Failed to f data');
+    }
+  } catch (error){
+    console.error('Failed to fetch data');
+  }
+}
+
+export const fetchDriverQualifying = async (driverId) => {
+  const url = `https://ergast.com/api/f1/drivers/${driverId}/qualifying.json`;
+  try {
+    const response  = await fetch(url);
+    if(response.ok){
+      const data = await response.json();
+      console.log(data);
+    } else {
+      console.error('Failed to f data');
+    }
+  } catch (error){
+    console.error('Failed to fetch data');
+  }
+}
+
+
+
+
+
+  
+  
   export const fetchRaceDetails = async (selectedYear) => {
     const url = `https://ergast.com/api/f1/${selectedYear}.json`;
     try {

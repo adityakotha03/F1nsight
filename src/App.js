@@ -5,6 +5,8 @@ import { fas } from '@fortawesome/free-solid-svg-icons';
 import { fab } from '@fortawesome/free-brands-svg-icons'
 import SupportPopup from './components/SupportPopup';
 import { Header, FooterDetails, RacePage, DriverStandings, ConstructorStandings, RaceResultsPage, LandingPage } from './components';
+import { DriverComparison } from './components/DriverComparison';
+import TeammatesComparison from './components/TeammatesComparison';
 
 library.add(fas, fab);
 
@@ -19,6 +21,8 @@ function App() {
         <Route exact path="/" element={<LandingPage />} />
         <Route path="/race-results" element={<RaceResultsPage selectedYear={selectedYear} />} />
         <Route path="/constructor-standings" element={<ConstructorStandings selectedYear={selectedYear} />} />
+        <Route path="/teammates-comparison" element={<TeammatesComparison />}/>
+        <Route path="/driver-comparison" element={<DriverComparison selectedYear={selectedYear} />} />
         <Route path="/driver-standings" element={<DriverStandings selectedYear={selectedYear} />} />
         <Route path="/race/:raceId" element={<RacePage />} />
       </Routes>
