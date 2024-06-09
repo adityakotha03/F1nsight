@@ -186,6 +186,19 @@ export const fetchRaceResultsByCircuit = async (year, circuitId) => {
   }
 };
 
+export const fetchQualifyingResultsByCircuit = async(year, circuitId) => {
+  try {
+    const url = `https://ergast.com/api/f1/${year}/circuits/${circuitId}/qualifying.json`;
+    const response = await fetch(url);
+    const data = await response.json();
+    const results = data.MRData.RaceTable.Races[0]?.QualifyingResults;
+    return results || [];
+  } catch (error) {
+    console.error("Error fetching race results:", error);
+    return [];
+  }
+};
+
 function scaleCoordinates(x, y, scale_factor) {
   return [x / scale_factor, y / scale_factor];
 }
