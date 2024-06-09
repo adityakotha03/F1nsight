@@ -45,6 +45,10 @@ export const ThreeCanvas = ({ MapFile, locData, driverColor, driverSelected, dri
     const camera = new THREE.PerspectiveCamera(75, mountRef.current.clientWidth / mountRef.current.clientHeight, 0.1, 1000);
     camera.position.set(0, -7, 10);
 
+    const haloCamera = new THREE.PerspectiveCamera(75, mountRef.current.clientWidth / mountRef.current.clientHeight, 0.1, 1000);
+    haloCamera.position.set(0, 0.6, 0.1);
+    haloCamera.rotation.set(Math.PI / 8, Math.PI, 0);
+
     const renderer = new THREE.WebGLRenderer();
     renderer.setSize(mountRef.current.clientWidth, mountRef.current.clientHeight);
     mountRef.current.appendChild(renderer.domElement);
@@ -84,10 +88,16 @@ export const ThreeCanvas = ({ MapFile, locData, driverColor, driverSelected, dri
 
         // const boxHelper = new THREE.Box3Helper(box, 0xff0000); // Red color for the box
         // scene.add(boxHelper);
+
+        // const min = box.min;
+        // const max = box.max;
+        // camera.position.set(min.x+1, min.y+1, min.z + 5);
+
+        // control.target.set((min.x + max.x) / 2, (min.y + max.y) / 2, (min.z + max.z) / 2);
+        // control.update();
         
         // Update camera position to be at the center of the map
         camera.position.set(center.x, center.y, center.z + 7);
-
         // Update the target of the OrbitControls to the center of the map
         control.target.set(center.x, center.y, center.z);
         control.update(); // Apply the changes to the controls
@@ -105,23 +115,16 @@ export const ThreeCanvas = ({ MapFile, locData, driverColor, driverSelected, dri
       carModel.position.set(carPosition.x, carPosition.y, carPosition.z);
       if(driverSelected && locData.length > 0){
         scene.add(carModel);
+        carModel.add(haloCamera);
       }
 
       if (haloView) {
-        carModel.add(camera); 
-        camera.position.set(0, 0.6, 0.1);
-        camera.rotation.set(Math.PI / 8, Math.PI, 0);
-
-        // Disable controls in halo view
         control.enabled = false;
       }
       else{
-        carModel.remove(camera);
-        camera.rotation.set(0, 0, 0);
         control.enablePan = true;
         control.enableRotate = true;
         control.enableZoom = true;
-        control.update();
       }
       
       carModel.traverse(object => {
@@ -175,7 +178,7 @@ export const ThreeCanvas = ({ MapFile, locData, driverColor, driverSelected, dri
       }
 
       //setCanvasWidth()
-      renderer.render(scene, camera);
+      renderer.render(scene, haloView ? haloCamera : camera);
       requestAnimationFrame(animate);
       stats.update();
     };
