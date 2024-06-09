@@ -52,7 +52,7 @@ export function RaceResultsPage({ selectedYear }) {
           {raceDetails.map((race, index) => (
             <li key={index}>
               {race.results ? (
-                <ul className="race-results__list flex justify-center">
+                <ul className="race-results__list">
                   {race.results.map((result, resultIndex) => (
                       <RaceResultItem 
                         className={`race-results__list__item-${resultIndex + 1}`}

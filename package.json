@@ -5,8 +5,8 @@
   "homepage": "https://f1nsight.com",
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.5.1",
-    "@fortawesome/free-solid-svg-icons": "^6.5.1",
     "@fortawesome/free-brands-svg-icons": "^6.5.1",
+    "@fortawesome/free-solid-svg-icons": "^6.5.1",
     "@fortawesome/react-fontawesome": "^0.2.0",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
@@ -22,6 +22,7 @@
     "react-router-dom": "^6.22.3",
     "react-scripts": "5.0.1",
     "recharts": "^2.12.4",
+    "sass": "^1.77.4",
     "three": "^0.163.0",
     "web-vitals": "^2.1.4"
   },
@@ -54,6 +55,7 @@
   "devDependencies": {
     "autoprefixer": "^10.4.19",
     "gh-pages": "^6.1.1",
+    "postcss": "^8.4.38",
     "postcss-import": "^16.1.0",
     "postcss-nesting": "^12.1.1",
     "tailwindcss": "^3.4.3"

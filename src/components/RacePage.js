@@ -270,7 +270,7 @@ export function RacePage() {
       </div>
 
       <div className="page-container-centered flex flex-col sm:flex-row gap-16 mt-32">
-        <div className="sm:w-[26rem]">
+        <div className="sm:w-[30rem]">
           {driverSelected && (
             <div className="mb-32">
               <div className="flex items-end relative">
