@@ -47,7 +47,7 @@ export function RacePage() {
   const selectedDriverData = drivers.find(obj => obj['acronym'] === driverCode);
   const selectedDriverRaceData = raceResults.find(obj => obj['number'] === driverNumber);
 
-  console.log(startingGrid)
+  // console.log(startingGrid)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -165,7 +165,7 @@ export function RacePage() {
           if (circuitId) {
             const results = await fetchQualifyingResultsByCircuit(year, circuitId);
             setRaceResults(results);
-            console.log(results);
+            // console.log(results);
           }
 
           const raceSession = sessionsData.find(session => session.session_name === "Qualifying");
@@ -279,7 +279,7 @@ export function RacePage() {
 
   return (
     isLoading ? (
-      <Loading className="mt-[20rem] mb-[20rem]" message={`Loading ${raceName} ${year} Race`} />
+      <Loading className="mt-[20rem] mb-[20rem]" message={`Loading ${raceName} ${year} ${selectedSession}`} />
     ) : (
     <div className="pt-[10rem]">
     <div className="flex flex-col items-center justify-center mb-32">
@@ -292,7 +292,6 @@ export function RacePage() {
 
       {selectedSession === 'Race' && (
         <>
-      {raceName && <p className="heading-2 text-center text-neutral-400  mb-32">{raceName} {year}</p>}
       {!driverSelected && (
         <div className="w-full tracking-xs text-center text-neutral-400 gradient-border-extreme py-4 px-32 leading-none">Select driver from the leaderboard to activate race mode</div>
       )}
@@ -520,10 +519,10 @@ export function RacePage() {
                           {driversDetails[gridPosition.driver_number]}
                       </p>
                     </div>
-                  </li>)
-}
+                  </li>)}
                 )}
             </ul>
+          </div>
           </div>
         )}
 
