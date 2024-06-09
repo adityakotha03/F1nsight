@@ -82,7 +82,7 @@ export const Header = (props) => {
                 const racesData = await racesResponse.json();
 
                 // Fetch sessions
-                const sessionsResponse = await fetch(`https://api.openf1.org/v1/sessions?year=${selectedYear}&session_name=Qualifying`);
+                const sessionsResponse = await fetch(`https://api.openf1.org/v1/sessions?year=${selectedYear}&session_name=Race`);
                 if (!sessionsResponse.ok) {
                     throw new Error('Failed to fetch sessions');
                 }
@@ -114,7 +114,7 @@ export const Header = (props) => {
         return years;
     };
 
-    console.log({page})
+    // console.log({page})
 
     const handleNavLinkClick = (page) => {
         setSubNavOpen(false);
