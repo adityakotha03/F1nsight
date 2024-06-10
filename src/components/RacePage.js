@@ -521,7 +521,7 @@ export function RacePage() {
             <>
               <h3 className="heading-4 mb-16 mt-32 text-neutral-400 ml-24">Fastest Laps</h3> 
               <div className="bg-glow bg-glow--large h-fit p-32 mb-16 rounded-xlarge">
-                <div className="grid grid-cols-3 gap-4 mb-16 text-neutral-400">
+                <div className="grid grid-cols-4 gap-4 mb-16 text-neutral-400">
 
                   <span className="tracking-xs uppercase">Driver</span> 
                   <span className="tracking-xs uppercase text-left">Time</span> 
