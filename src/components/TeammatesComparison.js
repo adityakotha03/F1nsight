@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo} from 'react';
 import axios from 'axios';
 import { Select } from './Select';
 import { Loading } from './Loading';
+import { HeadToHeadChart } from './HeadToHeadChart';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 
@@ -338,7 +339,7 @@ const F1HeadToHead = () => {
                 </th>
               </tr>
             </thead>
-            <tbody>
+            {/* <tbody>
               <tr>
                 <td>{memoizedHeadToHeadData.driver1QualifyingWins}{ambQ? "*" : ''}</td>
                 <td>Qualifying</td>
@@ -359,13 +360,9 @@ const F1HeadToHead = () => {
                 <td>Driver Standings</td>
                 <td>{memoizedHeadToHeadData.driver2Position}</td>
               </tr>
-              <tr>
-                <td>{memoizedHeadToHeadData.driver1QualifyingTimes[0].race}</td>
-                <td>Driver Standings</td>
-                <td>{memoizedHeadToHeadData.driver2QualifyingTimes[0].race}</td>
-              </tr>
-            </tbody>
+            </tbody> */}
           </table>
+          <HeadToHeadChart headToHeadData={memoizedHeadToHeadData} />
           <p>{ambQ || ambR ? "* denotes that the drivers have not competed against each other this season" : ''}</p>
           <h1>Qualifying Lap Times Comparision</h1>
           <ResponsiveContainer width="100%" height={400}>

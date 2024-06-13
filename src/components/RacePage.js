@@ -8,7 +8,7 @@ import { fetchDriversAndTires, fetchRaceResultsByCircuit } from '../utils/api';
 import { fetchLocationData } from '../utils/api';
 
 import { DriverCard } from './DriverCard';
-import {ThreeCanvas} from './ThreeCanvas.js'
+import {ThreeCanvas} from './ThreeCanvas.js';
 import { LapChart } from './LapChart';
 import { TireStrategy } from './TireStrategy';
 
