@@ -1758,8 +1758,16 @@ input[type="range"]::-ms-fill-lower {
   width: max-content;
 }
 
+.w-\[22\.4rem\] {
+  width: 22.4rem;
+}
+
 .min-w-\[18rem\] {
   min-width: 18rem;
+}
+
+.min-w-\[22\.4rem\] {
+  min-width: 22.4rem;
 }
 
 .max-w-2xl {
@@ -6304,10 +6312,6 @@ code {
     margin-top: 1.6rem;
   }
 
-  .max-md\:mt-32 {
-    margin-top: 3.2rem;
-  }
-
   .max-md\:hidden {
     display: none;
   }
@@ -6416,8 +6420,8 @@ code {
     width: 20rem;
   }
 
-  .sm\:w-\[30rem\] {
-    width: 30rem;
+  .sm\:w-\[26rem\] {
+    width: 26rem;
   }
 
   .sm\:max-w-\[80\%\] {
@@ -6434,10 +6438,6 @@ code {
 
   .sm\:items-center {
     align-items: center;
-  }
-
-  .sm\:justify-end {
-    justify-content: flex-end;
   }
 
   .sm\:justify-center {
@@ -6541,16 +6541,8 @@ code {
     flex-direction: row;
   }
 
-  .md\:flex-col-reverse {
-    flex-direction: column-reverse;
-  }
-
   .md\:items-start {
     align-items: flex-start;
-  }
-
-  .md\:items-end {
-    align-items: flex-end;
   }
 
   .md\:items-center {

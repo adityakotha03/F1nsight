@@ -16,6 +16,7 @@
     display: grid;
     grid-template-columns: 10.8rem 10.8rem 10.8rem;
     grid-template-areas: "item-2 item-1 item-3";
+    justify-content: center;
     width: 100%;
 }
 
