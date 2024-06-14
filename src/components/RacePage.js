@@ -453,7 +453,7 @@ export function RacePage() {
             </div>
           )}
           <h3 className="heading-4 mb-16 text-neutral-400 ml-24">Starting Grid</h3>
-          <div className="bg-glow bg-glow--large p-32 h-fit rounded-xlarge">
+          <div className="bg-glow bg-glow--large p-32 h-fit rounded-xlarge min-w-[22.4rem]">
             <ul className="flex flex-col w-fit m-auto">
               {startingGrid
                 .sort((a, b) => a.position - b.position)
