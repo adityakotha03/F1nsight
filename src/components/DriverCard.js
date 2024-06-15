@@ -101,7 +101,7 @@ export const DriverCard = (props) => {
             {mobileSmall && (
                 <div className="md:hidden">
                     <div className="flex items-center text-xs font-display">
-                        <p className="w-24 bg-neutral-600 ">P{endPosition}</p>
+                        <p className="w-24 bg-neutral-600 py-1">P{endPosition}</p>
                         <p className="pl-8">{driver.code}</p>
                     </div>
                     <div>

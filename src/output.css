@@ -1758,10 +1758,6 @@ input[type="range"]::-ms-fill-lower {
   width: max-content;
 }
 
-.w-\[22\.4rem\] {
-  width: 22.4rem;
-}
-
 .min-w-\[18rem\] {
   min-width: 18rem;
 }
@@ -1956,10 +1952,6 @@ input[type="range"]::-ms-fill-lower {
 
 .grid-flow-col {
   grid-auto-flow: column;
-}
-
-.grid-cols-3 {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
 .grid-cols-4 {
