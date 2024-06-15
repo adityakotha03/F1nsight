@@ -1,11 +1,11 @@
 /* race canvas and controls */
 .canvas-container {
   position: relative;
-  height: 678px;
+  height: 680px;
   width: 100%;
   overflow: hidden;
   @media (min-width: 768px) {
-    height: 656px;
+    height: 616px;
   }
 }
 
