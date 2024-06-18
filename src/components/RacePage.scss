@@ -22,10 +22,10 @@
 }
 
 .track-preview {
-  height: 65.5rem;
+  height: 68rem;
   opacity: .6;
-  @media (max-width: 639px) {
-    height: 68rem;
+  @media (min-width: 768px) {
+    height: 61.6rem;
   }
 }
 
