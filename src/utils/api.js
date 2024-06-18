@@ -1,4 +1,4 @@
-  const BASE_URL = 'http://ergast.com/api/f1';
+const BASE_URL = 'http://ergast.com/api/f1';
 
 export const fetchDriversList = async () => {
   const response = await fetchWithCache(`${BASE_URL}/drivers.json?limit=1000`); // Adjust limit as needed
@@ -6,18 +6,6 @@ export const fetchDriversList = async () => {
       id: driver.driverId,
       name: `${driver.givenName} ${driver.familyName}`
   }));
-};
-
-const createAndDownloadFile = (data, filename) => {
-  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = filename;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
 };
 
 const fetchData = async (url) => {
@@ -58,7 +46,6 @@ export const fetchDriverStats = async (driverId1, driverId2) => {
   }
   const driverData1 = await fetchDriverData(driverId1);
   const driverData2 = await fetchDriverData(driverId2);
-  console.log("yay",driverData1);
   return {driver1: driverData1, driver2: driverData2};
 }
 

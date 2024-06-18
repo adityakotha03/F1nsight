@@ -1,15 +1,14 @@
-import React, { useState, useEffect, useMemo} from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import axios from 'axios';
 import { Select } from './Select';
 import { Loading } from './Loading';
 import { HeadToHeadChart } from './HeadToHeadChart';
+import { fetchDriverStats } from '../utils/api';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-
 
 const F1HeadToHead = () => {
   const [year, setYear] = useState('');
   const [team, setTeam] = useState('');
-  const [teams, setTeams] = useState([]);
   const [drivers, setDrivers] = useState([]);
   const [selectedDriver1, setSelectedDriver1] = useState('');
   const [selectedDriver2, setSelectedDriver2] = useState('');
@@ -21,12 +20,12 @@ const F1HeadToHead = () => {
   const [ambR, setAmbR] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(()=>{
+  useEffect(() => {
     const fetchTeams = async () => {
-      if(year && !teamCache[year]) {
+      if (year && !teamCache[year]) {
         const response = await axios.get(`https://ergast.com/api/f1/${year}/constructors.json`);
         const constructors = response.data.MRData.ConstructorTable.Constructors;
-        setTeamCache((prevCache) => ({...prevCache, [year]: constructors}));
+        setTeamCache((prevCache) => ({ ...prevCache, [year]: constructors }));
       }
     };
     fetchTeams();
@@ -51,62 +50,47 @@ const F1HeadToHead = () => {
     const fetchedDrivers = response.data.MRData.DriverTable.Drivers;
     setDrivers(fetchedDrivers);
     setShowDriverSelectors(fetchedDrivers.length > 2);
-    fetchDriverData(selectedTeam, fetchedDrivers);
+    fetchDriverData(fetchedDrivers);
   };
 
-  const fetchDriverData = async (team, drivers) => {
-    //setIsLoading(true);
-    // console.log("Fetching driver data", drivers);
-    const driverPromises = drivers.map(async (driver) => {
-      const driverId = driver.driverId;
-      const [qualifyingResponse, raceResponse, standingsResponse] = await Promise.all([
-        axios.get(`https://ergast.com/api/f1/${year}/drivers/${driverId}/qualifying.json`),
-        axios.get(`https://ergast.com/api/f1/${year}/drivers/${driverId}/results.json`),
-        axios.get(`https://ergast.com/api/f1/${year}/drivers/${driverId}/driverStandings.json`)
-      ]);
-
-      const qualifyingResults = qualifyingResponse.data.MRData.RaceTable.Races;
-      const raceResults = raceResponse.data.MRData.RaceTable.Races;
-      const standings = standingsResponse.data.MRData.StandingsTable.StandingsLists[0].DriverStandings[0];
-
+  const fetchDriverData = async (drivers) => {
+    const driverPromises = drivers.map(driver => driver.driverId);
+    const driverResults = await fetchDriverStats(driverPromises[0], driverPromises[1]);
+    
+    const filterDataByYear = (data, year) => {
+      console.log(data);
       return {
-        driverId,
-        qualifyingResults,
-        raceResults,
-        points: standings.points,
-        position: standings.position,
+        qualifyingTimes: data.driverQualifyingTimes[year] || {},
+        racePosition: data.racePosition[year] || {},
+        posAfterRace: data.posAfterRace[year] || {},
       };
-    });
+    };
 
-    const driverResults = await Promise.all(driverPromises);
-    const driverResultsMap = driverResults.reduce((acc, data) => {
-      acc[data.driverId] = data;
-      return acc;
-    }, {});
+    const filteredDriver1Data = filterDataByYear(driverResults.driver1, year);
+    const filteredDriver2Data = filterDataByYear(driverResults.driver2, year);
+
+    const driverResultsMap = {
+      [driverResults.driver1.driverId]: filteredDriver1Data,
+      [driverResults.driver2.driverId]: filteredDriver2Data
+    };
 
     setDriverData(driverResultsMap);
     if (drivers.length === 2) {
-      // console.log("rcb");
       await calculateHeadToHead(driverResultsMap, drivers[0].driverId, drivers[1].driverId, drivers);
     }
-    //setIsLoading(false);
   };
 
   const handleDriver1Change = async (e) => {
     setSelectedDriver1(e.target.value);
     if (selectedDriver2) {
-      //setIsLoading(true);
       await calculateHeadToHead(driverData, e.target.value, selectedDriver2, drivers);
-      //setIsLoading(false);
     }
   };
 
   const handleDriver2Change = async (e) => {
     setSelectedDriver2(e.target.value);
     if (selectedDriver1) {
-      //setIsLoading(true);
       await calculateHeadToHead(driverData, selectedDriver1, e.target.value, drivers);
-      //setIsLoading(false);
     }
   };
 
@@ -114,9 +98,7 @@ const F1HeadToHead = () => {
     setAmbQ(true);
     setAmbR(true);
     if (drivers.length < 2) return;
-    // const driver1Id = drivers[0].driverId;
-    // const driver2Id = drivers[1].driverId;
-    // console.log("Entered", drivers.find(d => d.driverId === driver1Id));
+
     const driver1QualiPos = [];
     const driver2QualiPos = [];
     const driver1RacePos = [];
@@ -128,74 +110,66 @@ const F1HeadToHead = () => {
 
     const driver1QualifyingTimes = [];
     const driver2QualifyingTimes = [];
-    const driver1AverageSpeeds = [];
-    const driver2AverageSpeeds = [];
 
+    const processQualifyingResults = (qualifyingResults) => {
+      if (!qualifyingResults) return { qualifyingPos: [], qualifyingTimes: [] };
 
-    driverResults[driver1Id].qualifyingResults.forEach((race) => {
-      const driver1Qualifying = parseInt(race.QualifyingResults[0].position);
-      driver1QualiPos.push({raceName: race.raceName, pos: driver1Qualifying});
-      // console.log("Kolaveri", race.QualifyingResults[0].Q1);
-      driver1QualifyingTimes.push({
-        race: race.raceName,
-        QualiTimes: [race.QualifyingResults[0].Q1 || 'N/A', race.QualifyingResults[0].Q2 || 'N/A', race.QualifyingResults[0].Q3 || 'N/A']
+      const qualifyingPos = [];
+      const qualifyingTimes = [];
+
+      Object.keys(qualifyingResults.QualiTimes).forEach((raceName) => {
+        const times = qualifyingResults.QualiTimes[raceName];
+        qualifyingPos.push({ raceName, pos: times });
+        qualifyingTimes.push({
+          race: raceName,
+          QualiTimes: [times[0] || 'N/A', times[1] || 'N/A', times[2] || 'N/A']
+        });
       });
-    //   console.log(race);
-    });
-    driverResults[driver2Id].qualifyingResults.forEach((race) => {
-        const driver2Qualifying = parseInt(race.QualifyingResults[0].position);
-        driver2QualiPos.push({raceName: race.raceName, pos: driver2Qualifying});
-        driver2QualifyingTimes.push({
-          race: race.raceName,
-          QualiTimes: [race.QualifyingResults[0].Q1 || 'N/A', race.QualifyingResults[0].Q2 || 'N/A', race.QualifyingResults[0].Q3 || 'N/A']
-        });
-    });
 
-    driver1QualiPos.forEach(race1 => {
-        let race2 = driver2QualiPos.find(el => el.raceName === race1.raceName);
-        if(race2){
-            setAmbQ(false);
-            if (race1.pos < race2.pos) driver1QualifyingWins++;
-            if (race2.pos < race1.pos) driver2QualifyingWins++;
-        }
-    });
+      return { qualifyingPos, qualifyingTimes };
+    };
 
+    const processRaceResults = (raceResults) => {
+      if (!raceResults) return { racePos: [] };
 
-    driverResults[driver1Id].raceResults.forEach((race) => {
-      const driver1Race = parseInt(race.Results[0].position);
-      driver1RacePos.push({raceName: race.raceName, pos: driver1Race});
-      if (race.Results[0].FastestLap && race.Results[0].FastestLap.AverageSpeed) {
-        driver1AverageSpeeds.push({
-          race: race.raceName,
-          speed: parseFloat(race.Results[0].FastestLap.AverageSpeed.speed)
-        });
+      const racePos = [];
+
+      Object.keys(raceResults.positions).forEach((raceName) => {
+        const result = raceResults.positions[raceName];
+        const racePosition = parseInt(result);
+        racePos.push({ raceName, pos: racePosition });
+      });
+
+      return { racePos };
+    };
+
+    const { qualifyingPos: driver1QualifyingPos, qualifyingTimes: driver1QualifyingTimesProcessed } = processQualifyingResults(driverResults[driver1Id]?.qualifyingTimes);
+    const { qualifyingPos: driver2QualifyingPos, qualifyingTimes: driver2QualifyingTimesProcessed } = processQualifyingResults(driverResults[driver2Id]?.qualifyingTimes);
+
+    driver1QualifyingPos.forEach(race1 => {
+      let race2 = driver2QualifyingPos.find(el => el.raceName === race1.raceName);
+      if (race2) {
+        setAmbQ(false);
+        if (race1.pos < race2.pos) driver1QualifyingWins++;
+        if (race2.pos < race1.pos) driver2QualifyingWins++;
       }
     });
+
+    const { racePos: driver1RacePosProcessed } = processRaceResults(driverResults[driver1Id]?.racePosition);
+    const { racePos: driver2RacePosProcessed } = processRaceResults(driverResults[driver2Id]?.racePosition);
     
-    driverResults[driver2Id].raceResults.forEach((race) => {
-        const driver2Race = parseInt(race.Results[0].position);
-        driver2RacePos.push({raceName: race.raceName, pos: driver2Race});
-        if (race.Results[0].FastestLap && race.Results[0].FastestLap.AverageSpeed) {
-          driver2AverageSpeeds.push({
-            race: race.raceName,
-            speed: parseFloat(race.Results[0].FastestLap.AverageSpeed.speed)
-          });
-        }
+    driver1RacePosProcessed.forEach(race1 => {
+      let race2 = driver2RacePosProcessed.find(el => el.raceName === race1.raceName);
+      if (race2) {
+        setAmbR(false);
+        if (race1.pos < race2.pos) driver1RaceWins++;
+        if (race2.pos < race1.pos) driver2RaceWins++;
+      }
     });
 
-    driver1RacePos.forEach(race1 => {
-        let race2 = driver2RacePos.find(el => el.raceName === race1.raceName);
-        if(race2){
-            setAmbR(false);
-            // console.log(race1, race2);
-            if (race1.pos < race2.pos) driver1RaceWins++;
-            if (race2.pos < race1.pos) driver2RaceWins++;
-        }
-    });
+    const driver1TotalPoints = driverResults[driver1Id]?.posAfterRace.pos[Object.keys(driverResults[driver1Id]?.posAfterRace.pos).pop()]?.points || 0;
+    const driver2TotalPoints = driverResults[driver2Id]?.posAfterRace.pos[Object.keys(driverResults[driver2Id]?.posAfterRace.pos).pop()]?.points || 0;
 
-    // if(driver1QualiPos.length !== driver2QualiPos.length) setAmbQ(true);
-    // if(driver1RacePos.length !== driver2RacePos.length) setAmbR(true);
-    
     setHeadToHeadData({
       driver1: drivers.find(d => d.driverId === driver1Id).givenName + ' ' + drivers.find(d => d.driverId === driver1Id).familyName,
       driver2: drivers.find(d => d.driverId === driver2Id).givenName + ' ' + drivers.find(d => d.driverId === driver2Id).familyName,
@@ -205,58 +179,53 @@ const F1HeadToHead = () => {
       driver2QualifyingWins,
       driver1RaceWins,
       driver2RaceWins,
-      driver1Points: driverResults[driver1Id].points,
-      driver2Points: driverResults[driver2Id].points,
-      driver1Position: driverResults[driver1Id].position,
-      driver2Position: driverResults[driver2Id].position,
-      driver1QualifyingTimes,
-      driver2QualifyingTimes,
-      driver1AverageSpeeds,
-      driver2AverageSpeeds
+      driver1Points: driver1TotalPoints,
+      driver2Points: driver2TotalPoints,
+      driver1Position: driverResults[driver1Id]?.position,
+      driver2Position: driverResults[driver2Id]?.position,
+      driver1QualifyingTimes: driver1QualifyingTimesProcessed,
+      driver2QualifyingTimes: driver2QualifyingTimesProcessed
     });
-    return;
   };
 
   const memoizedHeadToHeadData = useMemo(() => headToHeadData, [headToHeadData]);
   console.log(memoizedHeadToHeadData);
-
-
+  
   const prepareChartData = () => {
     if (!memoizedHeadToHeadData) return [];
-    const races = memoizedHeadToHeadData.driver1QualifyingTimes.map((q, index) => {
-        const driver2Race = memoizedHeadToHeadData.driver2QualifyingTimes.find(r => r.race === q.race);
-        if (driver2Race && driver2Race.race === q.race) {
-            const getTime = (times) => {
-                const validTimes = times.filter(t => t !== 'N/A');
-                if (validTimes.length === 3) return validTimes[2];
-                if (validTimes.length === 2) return validTimes[1];
-                if (validTimes.length === 1) return validTimes[0];
-                return null;
-            };
+    const races = memoizedHeadToHeadData.driver1QualifyingTimes.map((q) => {
+      const driver2Race = memoizedHeadToHeadData.driver2QualifyingTimes.find(r => r.race === q.race);
+      if (driver2Race && driver2Race.race === q.race) {
+        const getTime = (times) => {
+          const validTimes = times.filter(t => t !== 'N/A');
+          if (validTimes.length === 3) return validTimes[2];
+          if (validTimes.length === 2) return validTimes[1];
+          if (validTimes.length === 1) return validTimes[0];
+          return null;
+        };
 
-            const bestTime1 = getTime(q.QualiTimes);
-            const bestTime2 = getTime(driver2Race.QualiTimes);
+        const bestTime1 = getTime(q.QualiTimes);
+        const bestTime2 = getTime(driver2Race.QualiTimes);
 
-            const convertToSeconds = (time) => {
-                const [minutes, seconds] = time.split(':');
-                const [secs, millis] = seconds.split('.');
-                return parseInt(minutes) * 60 + parseInt(secs) + parseInt(millis) / 1000;
-            };
+        const convertToSeconds = (time) => {
+          const [minutes, seconds] = time.split(':');
+          const [secs, millis] = seconds.split('.');
+          return parseInt(minutes) * 60 + parseInt(secs) + parseInt(millis) / 1000;
+        };
 
-            return {
-                race: q.race,
-                [memoizedHeadToHeadData.driver1Code]: bestTime1 ? convertToSeconds(bestTime1) : null,
-                [memoizedHeadToHeadData.driver2Code]: bestTime2 ? convertToSeconds(bestTime2) : null,
-            };
-        }
-        return null;
+        return {
+          race: q.race,
+          [memoizedHeadToHeadData.driver1Code]: bestTime1 ? convertToSeconds(bestTime1) : null,
+          [memoizedHeadToHeadData.driver2Code]: bestTime2 ? convertToSeconds(bestTime2) : null,
+        };
+      }
+      return null;
     }).filter(item => item !== null);
     return races;
-};
+  };
 
 
   const chartData = prepareChartData();
-  console.log(chartData);
 
   const yAxisLimits = useMemo(() => {
     if (!chartData.length) return [0, 10]; // default values if no data
