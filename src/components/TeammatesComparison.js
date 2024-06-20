@@ -62,7 +62,11 @@ const F1HeadToHead = () => {
       return {
         qualifyingTimes: data.driverQualifyingTimes[year] || {},
         racePosition: data.racePosition[year] || {},
+        qualiPosition: data.qualiPosition[year] || {},
         posAfterRace: data.posAfterRace[year] || {},
+        podiums: data.podiums[year] || {},
+        poles: data.poles[year] || {},
+        lastUpdate: data.lastUpdate
       };
     };
 
@@ -99,34 +103,25 @@ const F1HeadToHead = () => {
     setAmbR(true);
     if (drivers.length < 2) return;
 
-    const driver1QualiPos = [];
-    const driver2QualiPos = [];
-    const driver1RacePos = [];
-    const driver2RacePos = [];
     let driver1QualifyingWins = 0;
     let driver2QualifyingWins = 0;
     let driver1RaceWins = 0;
     let driver2RaceWins = 0;
 
-    const driver1QualifyingTimes = [];
-    const driver2QualifyingTimes = [];
-
     const processQualifyingResults = (qualifyingResults) => {
       if (!qualifyingResults) return { qualifyingPos: [], qualifyingTimes: [] };
 
-      const qualifyingPos = [];
       const qualifyingTimes = [];
 
       Object.keys(qualifyingResults.QualiTimes).forEach((raceName) => {
         const times = qualifyingResults.QualiTimes[raceName];
-        qualifyingPos.push({ raceName, pos: times });
         qualifyingTimes.push({
           race: raceName,
           QualiTimes: [times[0] || 'N/A', times[1] || 'N/A', times[2] || 'N/A']
         });
       });
 
-      return { qualifyingPos, qualifyingTimes };
+      return { qualifyingTimes };
     };
 
     const processRaceResults = (raceResults) => {
@@ -143,9 +138,26 @@ const F1HeadToHead = () => {
       return { racePos };
     };
 
-    const { qualifyingPos: driver1QualifyingPos, qualifyingTimes: driver1QualifyingTimesProcessed } = processQualifyingResults(driverResults[driver1Id]?.qualifyingTimes);
-    const { qualifyingPos: driver2QualifyingPos, qualifyingTimes: driver2QualifyingTimesProcessed } = processQualifyingResults(driverResults[driver2Id]?.qualifyingTimes);
+    const processQualiResults = (qualiResults) => {
+      if (!qualiResults) return { qualiPos: [] };
 
+      const qualiPos = [];
+
+      Object.keys(qualiResults.positions).forEach((raceName) => {
+        const result = qualiResults.positions[raceName];
+        const racePosition = parseInt(result);
+        qualiPos.push({ raceName, pos: racePosition });
+      });
+
+      return { qualiPos };
+    };
+
+    const { qualifyingTimes: driver1QualifyingTimesProcessed } = processQualifyingResults(driverResults[driver1Id]?.qualifyingTimes);
+    const { qualifyingTimes: driver2QualifyingTimesProcessed } = processQualifyingResults(driverResults[driver2Id]?.qualifyingTimes);
+
+    const { qualiPos: driver1QualifyingPos } = processQualiResults(driverResults[driver1Id]?.qualiPosition);
+    const { qualiPos: driver2QualifyingPos } = processQualiResults(driverResults[driver2Id]?.qualiPosition);
+    
     driver1QualifyingPos.forEach(race1 => {
       let race2 = driver2QualifyingPos.find(el => el.raceName === race1.raceName);
       if (race2) {
@@ -171,6 +183,7 @@ const F1HeadToHead = () => {
     const driver2TotalPoints = driverResults[driver2Id]?.posAfterRace.pos[Object.keys(driverResults[driver2Id]?.posAfterRace.pos).pop()]?.points || 0;
 
     setHeadToHeadData({
+      lastUpdate: driverResults[driver1Id]?.lastUpdate,
       driver1: drivers.find(d => d.driverId === driver1Id).givenName + ' ' + drivers.find(d => d.driverId === driver1Id).familyName,
       driver2: drivers.find(d => d.driverId === driver2Id).givenName + ' ' + drivers.find(d => d.driverId === driver2Id).familyName,
       driver1Code: drivers.find(d => d.driverId === driver1Id).code,
@@ -181,10 +194,16 @@ const F1HeadToHead = () => {
       driver2RaceWins,
       driver1Points: driver1TotalPoints,
       driver2Points: driver2TotalPoints,
-      driver1Position: driverResults[driver1Id]?.position,
-      driver2Position: driverResults[driver2Id]?.position,
+      driver1Podiums: Object.keys(driverResults[driver1Id]?.podiums).length,
+      driver2Podiums: Object.keys(driverResults[driver2Id]?.podiums).length,
+      driver1Poles: Object.keys(driverResults[driver1Id]?.poles).length,
+      driver2Poles: Object.keys(driverResults[driver2Id]?.poles).length,
       driver1QualifyingTimes: driver1QualifyingTimesProcessed,
-      driver2QualifyingTimes: driver2QualifyingTimesProcessed
+      driver2QualifyingTimes: driver2QualifyingTimesProcessed,
+      driver1QualifyingPosList: driverResults[driver1Id]?.qualiPosition.positions,
+      driver2QualifyingPosList: driverResults[driver2Id]?.qualiPosition.positions,
+      driver1RacePosList: driverResults[driver1Id]?.racePosition.positions,
+      driver2RacePosList: driverResults[driver2Id]?.racePosition.positions
     });
   };
 
@@ -234,7 +253,24 @@ const F1HeadToHead = () => {
     let maxVal = Math.max(...allValues);
     let padding = (maxVal - minVal) * 0.1; // 10% padding
     return [minVal - padding, maxVal + padding];
-}, [chartData]);
+  }, [chartData]);
+
+  const preparePositionChartData = (driver1PosList, driver2PosList, driver1Code, driver2Code) => {
+    const races = Object.keys(driver1PosList).map((raceName) => {
+      const driver1Pos = driver1PosList[raceName];
+      const driver2Pos = driver2PosList[raceName];
+  
+      return {
+        race: raceName,
+        [driver1Code]: driver1Pos ? parseInt(driver1Pos) : null,
+        [driver2Code]: driver2Pos ? parseInt(driver2Pos) : null,
+      };
+    });
+    return races;
+  };  
+
+  // console.log(chartData);
+  // console.log(preparePositionChartData(memoizedHeadToHeadData.driver1QualifyingPosList, memoizedHeadToHeadData.driver2QualifyingPosList, memoizedHeadToHeadData.driver1Code, memoizedHeadToHeadData.driver2Code));
 
 
   return (
@@ -308,29 +344,8 @@ const F1HeadToHead = () => {
                 </th>
               </tr>
             </thead>
-            {/* <tbody>
-              <tr>
-                <td>{memoizedHeadToHeadData.driver1QualifyingWins}{ambQ? "*" : ''}</td>
-                <td>Qualifying</td>
-                <td>{memoizedHeadToHeadData.driver2QualifyingWins}{ambQ? "*" : ''}</td>
-              </tr>
-              <tr>
-                <td>{memoizedHeadToHeadData.driver1RaceWins}{ambR? "*" : ''}</td>
-                <td>Races</td>
-                <td>{memoizedHeadToHeadData.driver2RaceWins}{ambR? "*" : ''}</td>
-              </tr>
-              <tr>
-                <td>{memoizedHeadToHeadData.driver1Points}</td>
-                <td>Points</td>
-                <td>{memoizedHeadToHeadData.driver2Points}</td>
-              </tr>
-              <tr>
-                <td>{memoizedHeadToHeadData.driver1Position}</td>
-                <td>Driver Standings</td>
-                <td>{memoizedHeadToHeadData.driver2Position}</td>
-              </tr>
-            </tbody> */}
           </table>
+          <p>Last Updated {memoizedHeadToHeadData.lastUpdate}</p>
           <HeadToHeadChart headToHeadData={memoizedHeadToHeadData} />
           <p>{ambQ || ambR ? "* denotes that the drivers have not competed against each other this season" : ''}</p>
           <h1>Qualifying Lap Times Comparision</h1>
@@ -356,6 +371,28 @@ const F1HeadToHead = () => {
                   return `${minutes}:${seconds.toString().padStart(2, '0')}.${milliseconds.toString().padStart(3, '0')}`;
                 }}
               />
+              <Line type="monotone" dataKey={memoizedHeadToHeadData.driver1Code} stroke="#8884d8" connectNulls={true}/>
+              <Line type="monotone" dataKey={memoizedHeadToHeadData.driver2Code} stroke="#82ca9d" connectNulls={true}/>
+            </LineChart>
+          </ResponsiveContainer>
+          <h1>Qualifying Positions Comparison</h1>
+          <ResponsiveContainer width="100%" height={400}>
+            <LineChart data={preparePositionChartData(memoizedHeadToHeadData.driver1QualifyingPosList, memoizedHeadToHeadData.driver2QualifyingPosList, memoizedHeadToHeadData.driver1Code, memoizedHeadToHeadData.driver2Code)} margin={{ top: 20, right: 30 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#444444" />
+              <XAxis dataKey="raceName" />
+              <YAxis reversed={true} domain={[1, 'dataMax']} />
+              <Tooltip />
+              <Line type="monotone" dataKey={memoizedHeadToHeadData.driver1Code} stroke="#8884d8" connectNulls={true}/>
+              <Line type="monotone" dataKey={memoizedHeadToHeadData.driver2Code} stroke="#82ca9d" connectNulls={true}/>
+            </LineChart>
+          </ResponsiveContainer>
+          <h1>Race Positions Comparison</h1>
+          <ResponsiveContainer width="100%" height={400}>
+            <LineChart data={preparePositionChartData(memoizedHeadToHeadData.driver1RacePosList, memoizedHeadToHeadData.driver2RacePosList, memoizedHeadToHeadData.driver1Code, memoizedHeadToHeadData.driver2Code)} margin={{ top: 20, right: 30 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#444444" />
+              <XAxis dataKey="raceName" />
+              <YAxis reversed={true} domain={[1, 'dataMax']} />
+              <Tooltip />
               <Line type="monotone" dataKey={memoizedHeadToHeadData.driver1Code} stroke="#8884d8" connectNulls={true}/>
               <Line type="monotone" dataKey={memoizedHeadToHeadData.driver2Code} stroke="#82ca9d" connectNulls={true}/>
             </LineChart>

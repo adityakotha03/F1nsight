@@ -21,9 +21,14 @@ export const HeadToHeadChart = ({ headToHeadData }) => {
       driver2: headToHeadData.driver2Points
     },
     {
-      name: 'Driver Standings',
-      driver1: headToHeadData.driver1Position,
-      driver2: headToHeadData.driver2Position
+      name: 'Podiums',
+      driver1: headToHeadData.driver1Podiums,
+      driver2: headToHeadData.driver2Podiums
+    },
+    {
+      name: 'Poles',
+      driver1: headToHeadData.driver1Poles,
+      driver2: headToHeadData.driver2Poles
     }
   ], [headToHeadData]);
 
