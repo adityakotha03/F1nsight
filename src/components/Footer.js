@@ -4,14 +4,14 @@ import classNames from 'classnames';
 import { FaGithub, FaLinkedin, FaGlobe, FaInstagram } from 'react-icons/fa';
 import { ConstructorDriver } from './ConstructorDriver';
 
-export const FooterDetails = ({ className }) => {
+export const Footer = ({ className }) => {
     return (
         <div
-            className={classNames("footer-details flex items-center max-md:flex-col md:justify-between bg-glow bg-glow--large px-16 p-32 mt-64", className)}
+            className={classNames("footer flex justify-center flex-col bg-glow bg-glow--large px-16 p-32 mt-64", className)}
         >   
-            <div className="flex flex-col md:flex-col-reverse">   
-                <p className="tracking-sm text-neutral-400 text-sm text-center md:mt-16">Creators</p>    
-                <div className="flex max-md:flex-col items-center md:items-end">
+            <div className="flex flex-col justify-center">   
+                <p className="tracking-sm text-neutral-400 text-sm text-center md:mt-16 mb-16">Creators</p>    
+                <div className="flex max-md:flex-col max-md:items-center md:justify-center">
                     <ConstructorDriver 
                         className=""
                         year={2024}
@@ -32,7 +32,7 @@ export const FooterDetails = ({ className }) => {
                             </a>
                             </div>
                         }
-                        />
+                    />
                     <ConstructorDriver 
                         year={2024}
                         image="adityaF1"
@@ -50,7 +50,7 @@ export const FooterDetails = ({ className }) => {
                             </a>
                             </div>
                         }
-                        />
+                    />
                     <ConstructorDriver 
                         year={2024}
                         image="PraneethF1"
@@ -68,12 +68,12 @@ export const FooterDetails = ({ className }) => {
                             </a>
                             </div>
                         }
-                        />
+                    />
                 </div>
             </div>
-            <div className="flex flex-col items-center md:items-end gap-2 md:text-right">
-                <p className="tracking-sm text-neutral-400 text-sm max-md:mt-32">Enjoy our work? Follow us here:</p>
-                <div className="flex items-center justify-center sm:justify-end gap-32 mt-16 mb-16">
+            <div className="flex flex-col items-center gap-2 md:text-right mt-32">
+                <p className="tracking-sm text-neutral-400 text-sm">Enjoy our work? Follow us here:</p>
+                <div className="flex items-center gap-32 mt-16 mb-16">
                     <a href="https://www.instagram.com/f1nsight1/" target="_blank" rel="noopener noreferrer"
                         className="flex items-center gap-2">
                         <FaInstagram size={24} />
