@@ -40,9 +40,11 @@ export function RacePage() {
 
   const handleOptionChange = (event) => {
     setSelectedSession(event.target.value);
-};
+  };
 
-// console.log(selectedSession);
+  // console.log(selectedSession);
+
+  const animatedLocations = ['Sakhir', 'Suzuka', 'Melbourne', "Monaco" ];
   
   const selectedDriverData = drivers.find(obj => obj['acronym'] === driverCode);
   const selectedDriverRaceData = raceResults.find(obj => obj['number'] === driverNumber);
@@ -321,7 +323,7 @@ export function RacePage() {
             </button>
           ))}
         </ul>
-        {(driverSelected && location === 'Sakhir') || location !== 'Sakhir'  ? (
+        {(driverSelected && animatedLocations.includes(location)) || !animatedLocations.includes(location) ? (
           <ThreeCanvas 
             MapFile={MapPath} 
             locData={locData}
