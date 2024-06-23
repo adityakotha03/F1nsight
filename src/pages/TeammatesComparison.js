@@ -19,6 +19,7 @@ export const TeammatesComparison = () => {
   const [ambQ, setAmbQ] = useState(true);
   const [ambR, setAmbR] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
+  const [teamColor, setTeamColor] = useState('');
 
   useEffect(() => {
     const fetchTeams = async () => {
@@ -30,6 +31,11 @@ export const TeammatesComparison = () => {
       }
     };
     fetchTeams();
+    setShowDriverSelectors(false);
+    setSelectedDriver1('');
+    setSelectedDriver2('');
+    setAmbQ(true);
+    setAmbR(true);
   }, [year, teamCache]);
 
   const teamsMemo = useMemo(() => teamCache[year] || [], [year, teamCache]);
@@ -41,7 +47,6 @@ export const TeammatesComparison = () => {
     setDrivers([]);
     setDriverData({});
     setHeadToHeadData(null);
-    setShowDriverSelectors(false);
   };
 
   const handleTeamChange = async (e) => {
@@ -50,8 +55,14 @@ export const TeammatesComparison = () => {
     const response = await axios.get(`https://praneeth7781.github.io/f1nsight-api-2/constructors/${year}/${selectedTeam}.json`);
     const fetchedDrivers = response.data;
     setDrivers(fetchedDrivers);
-    setShowDriverSelectors(fetchedDrivers.length > 2);
-    fetchDriverData(fetchedDrivers);
+
+    if(fetchedDrivers.length > 2){
+      setShowDriverSelectors(true);
+    }
+    else{
+      fetchDriverData(fetchedDrivers);
+      setShowDriverSelectors(false);
+    }
   };
 
   const fetchDriverData = async (drivers) => {
@@ -59,7 +70,7 @@ export const TeammatesComparison = () => {
     const driverResults = await fetchDriverStats(driverPromises[0], driverPromises[1]);
     
     const filterDataByYear = (data, year) => {
-      console.log(data);
+      // console.log(data);
       return {
         qualifyingTimes: data.driverQualifyingTimes[year] || {},
         racePosition: data.racePosition[year] || {},
@@ -80,28 +91,37 @@ export const TeammatesComparison = () => {
     };
 
     setDriverData(driverResultsMap);
-    if (drivers.length === 2) {
+    if (drivers.length >= 2) {
+      const colorsResponse = await axios.get('https://praneeth7781.github.io/f1nsight-api-2/colors/drivers.json');
+      const teamColors = colorsResponse.data;
+
+      // Get the color for the selected team and year
+      setTeamColor(teamColors[year][drivers[0].driverId]);
       await calculateHeadToHead(driverResultsMap, drivers[0].driverId, drivers[1].driverId, drivers);
     }
   };
 
   const handleDriver1Change = async (e) => {
     setSelectedDriver1(e.target.value);
+
     if (selectedDriver2) {
-      await calculateHeadToHead(driverData, e.target.value, selectedDriver2, drivers);
+      const driver1Data = drivers.find(driver => driver.driverId === e.target.value);
+      const driver2Data = drivers.find(driver => driver.driverId === selectedDriver2);
+      await fetchDriverData([driver1Data, driver2Data]);
     }
   };
 
   const handleDriver2Change = async (e) => {
     setSelectedDriver2(e.target.value);
+
     if (selectedDriver1) {
-      await calculateHeadToHead(driverData, selectedDriver1, e.target.value, drivers);
+      const driver1Data = drivers.find(driver => driver.driverId === selectedDriver1);
+      const driver2Data = drivers.find(driver => driver.driverId === e.target.value);
+      await fetchDriverData([driver1Data, driver2Data]);
     }
   };
 
   const calculateHeadToHead = async (driverResults, driver1Id, driver2Id, drivers) => {
-    setAmbQ(true);
-    setAmbR(true);
     if (drivers.length < 2) return;
 
     let driver1QualifyingWins = 0;
@@ -195,21 +215,21 @@ export const TeammatesComparison = () => {
       driver2RaceWins,
       driver1Points: driver1TotalPoints,
       driver2Points: driver2TotalPoints,
-      driver1Podiums: Object.keys(driverResults[driver1Id]?.podiums).length,
-      driver2Podiums: Object.keys(driverResults[driver2Id]?.podiums).length,
-      driver1Poles: Object.keys(driverResults[driver1Id]?.poles).length,
-      driver2Poles: Object.keys(driverResults[driver2Id]?.poles).length,
+      driver1Podiums: Object.keys(driverResults[driver1Id]?.podiums || {}).length,
+      driver2Podiums: Object.keys(driverResults[driver2Id]?.podiums || {}).length,
+      driver1Poles: Object.keys(driverResults[driver1Id]?.poles || {}).length,
+      driver2Poles: Object.keys(driverResults[driver2Id]?.poles || {}).length,
       driver1QualifyingTimes: driver1QualifyingTimesProcessed,
       driver2QualifyingTimes: driver2QualifyingTimesProcessed,
-      driver1QualifyingPosList: driverResults[driver1Id]?.qualiPosition.positions,
-      driver2QualifyingPosList: driverResults[driver2Id]?.qualiPosition.positions,
-      driver1RacePosList: driverResults[driver1Id]?.racePosition.positions,
-      driver2RacePosList: driverResults[driver2Id]?.racePosition.positions
+      driver1QualifyingPosList: driverResults[driver1Id]?.qualiPosition.positions || {},
+      driver2QualifyingPosList: driverResults[driver2Id]?.qualiPosition.positions || {},
+      driver1RacePosList: driverResults[driver1Id]?.racePosition.positions || {},
+      driver2RacePosList: driverResults[driver2Id]?.racePosition.positions || {}
     });
   };
 
   const memoizedHeadToHeadData = useMemo(() => headToHeadData, [headToHeadData]);
-  console.log(memoizedHeadToHeadData);
+  // console.log(memoizedHeadToHeadData);
   
   const prepareChartData = () => {
     if (!memoizedHeadToHeadData) return [];
@@ -245,7 +265,6 @@ export const TeammatesComparison = () => {
   };
 
   const chartData = prepareChartData();
-  console.log('lol', chartData);
 
   const yAxisLimits = useMemo(() => {
     if (!chartData.length) return [0, 10]; // default values if no data
@@ -389,16 +408,16 @@ const CustomizedYAxisTick = ({ x, y, payload }) => {
             {driverLockup(memoizedHeadToHeadData.driver2Code, memoizedHeadToHeadData.driver2)}
           </div>
 
+          {(ambQ || ambR) &&( 
+            <p className="text-center text-sm tracking-xs gradient-text-light mb-32">
+              The drivers have not competed against each other this season
+            </p>
+          )}
 
           <p className="text-center text-sm tracking-xs gradient-text-light mb-32">
             Last Updated {memoizedHeadToHeadData.lastUpdate}
           </p>
           <HeadToHeadChart headToHeadData={memoizedHeadToHeadData} />
-          {(ambQ || ambR) &&( 
-            <p className="text-center text-sm tracking-xs gradient-text-light mb-32">
-              * denotes that the drivers have not competed against each other this season
-            </p>
-          )}
 
           <h3 className="heading-4 mb-16 text-neutral-400 ml-24">Qualifying Lap Times Comparision</h3>
           <div className="bg-glow-large rounded-lg mb-64 p-8 md:px-32 md:pt-16 md:pb-32">
@@ -427,7 +446,7 @@ const CustomizedYAxisTick = ({ x, y, payload }) => {
                   // }} 
                 />
                 <Tooltip 
-                  labelFormatter={(name) => chartData[name].race}
+                  labelFormatter={(name) => chartData[name] && chartData[name].race ? chartData[name].race : name} 
                   formatter={(value) => {
                     const minutes = Math.floor(value / 60);
                     const totalSeconds = (value % 60);
@@ -451,7 +470,7 @@ const CustomizedYAxisTick = ({ x, y, payload }) => {
                 <XAxis tick={<CustomizedAxisTick />} />
                 <YAxis reversed={true} domain={[1, 'dataMax']} />
                 <Tooltip 
-                  labelFormatter={(name) => chartData[name].race} 
+                  labelFormatter={(name) => chartData[name] && chartData[name].race ? chartData[name].race : name} 
                   formatter={(value) => {
                     return `P${value}`;
                   }}
@@ -471,7 +490,7 @@ const CustomizedYAxisTick = ({ x, y, payload }) => {
                 <XAxis tick={<CustomizedAxisTick />} />
                 <YAxis reversed={true} domain={[1, 'dataMax']} />
                 <Tooltip 
-                  labelFormatter={(name) => chartData[name].race} 
+                  labelFormatter={(name) => chartData[name] && chartData[name].race ? chartData[name].race : name} 
                   formatter={(value) => {
                     return `P${value}`;
                   }}
