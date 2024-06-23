@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import axios from 'axios';
-import { Select } from './Select';
-import { Loading } from './Loading';
-import { HeadToHeadChart } from './HeadToHeadChart';
 import { fetchDriverStats } from '../utils/api';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area, BarChart, Legend, Bar, ComposedChart } from 'recharts';
 
-const F1HeadToHead = () => {
+import { HeadToHeadChart, Select, Loading } from '../components';
+import classNames from 'classnames';
+
+export const TeammatesComparison = () => {
   const [year, setYear] = useState('');
   const [team, setTeam] = useState('');
   const [drivers, setDrivers] = useState([]);
@@ -243,8 +243,8 @@ const F1HeadToHead = () => {
     return races;
   };
 
-
   const chartData = prepareChartData();
+  console.log('lol', chartData);
 
   const yAxisLimits = useMemo(() => {
     if (!chartData.length) return [0, 10]; // default values if no data
@@ -269,13 +269,72 @@ const F1HeadToHead = () => {
     return races;
   };  
 
+const driverLockup = (driverId, driverName) => {
+  const driverSplitName = driverName.split(" ");
+  return (
+    <div className="-mt-32 relative text-center">
+      <img 
+        alt="" 
+        src={`${process.env.PUBLIC_URL + "/images/2024/drivers/" + driverId + ".png"}`}
+        width={150} 
+        height={150} 
+      />
+      <div className="absolute top-full leading-none w-full mt-8">
+        <div className="text-sm tracking-sm uppercase text-gradient-light">{driverSplitName[0]}</div>
+        <div className="font-display text-gradient-light">{driverSplitName[1]}</div>
+      </div>
+    </div>
+  )
+}
+
+
+const CustomizedAxisTick = ({ x, y, payload }) => {
+  return (
+    <g transform={`translate(${x},${y})`}>
+      <text
+        x={0}
+        y={0}
+        dy={16}
+        textAnchor="end"
+        fill="#666"
+        transform="rotate(-15) translate(8,0)"
+        fontSize={12}
+      >
+        GP {payload.value + 1}
+      </text>
+    </g>
+  );
+};
+
+const CustomizedYAxisTick = ({ x, y, payload }) => {
+  const minutes = Math.floor(payload.value / 60);
+  const seconds = Math.floor(payload.value % 60);
+  const milliseconds = Math.round((payload.value - Math.floor(payload.value)) * 1000);
+  return (
+    <g transform={`translate(${x},${y})`}>
+      <text
+        x={0}
+        y={0}
+        dy={16}
+        textAnchor="end"
+        fill="#666"
+        transform="rotate(-15) translate(-8,-12)"
+        fontSize={12}
+      >
+        {`${minutes}:${seconds.toString().padStart(2, '0')}.${milliseconds.toString().padStart(3, '0')}`}
+      </text>
+    </g>
+  );
+};
+
   // console.log(chartData);
   // console.log(preparePositionChartData(memoizedHeadToHeadData.driver1QualifyingPosList, memoizedHeadToHeadData.driver2QualifyingPosList, memoizedHeadToHeadData.driver1Code, memoizedHeadToHeadData.driver2Code));
 
 
   return (
     <div className='global-container'>
-      <div className='flex items-center gap-8'>
+
+      <div className="flex items-center justify-center gap-8">
         <Select label="Year" value={year} onChange={handleYearChange}>
           <option value="">Select Year</option>
           {[...Array(50).keys()].map(i => (
@@ -289,9 +348,10 @@ const F1HeadToHead = () => {
           ))}
         </Select>
       </div>
+
       {showDriverSelectors && (
-        <div>
-          <p>This team had more than 2 drivers competing this season. Please select two drivers to compare.</p>
+        <div className="flex flex-col items-center justify-center gap-8">
+          <p className="pt-24 pb-16">This team had more than 2 drivers competing this season. Please select two drivers to compare.</p>
           <div className='flex items-center gap-8'>
             <Select label="Driver 1" value={selectedDriver1} onChange={handleDriver1Change}>
               <option value="">Select Driver</option>
@@ -310,99 +370,121 @@ const F1HeadToHead = () => {
           </div>
         </div>
       )}
+
       {isLoading ? (
         <Loading className="mt-[20rem] mb-[20rem]" message={`Comparing selected drivers`} />
       ) : (
-        <div>
+        <div className="max-md:px-8">
+
         {memoizedHeadToHeadData && (
-          <div>
-          <table>
-            <thead>
-              <tr>
-                <th>
-                  <div style={{textAlign : 'center'}}>
-                    <img 
-                      alt="" 
-                      src={`${process.env.PUBLIC_URL + "/images/2024/drivers/" + memoizedHeadToHeadData.driver1Code + ".png"}`}
-                      width={150} 
-                      height={150} 
-                    />
-                    <div className='font-display pl-16 mr-4'>{memoizedHeadToHeadData.driver1}</div>
-                  </div>
-                </th>
-                <th className="font-display pl-16 mr-4" style={{textAlign : 'center'}}>HEAD-TO-HEAD</th>
-                <th>
-                  <div style={{textAlign : 'center'}}>
-                    <img 
-                      alt="" 
-                      src={`${process.env.PUBLIC_URL + "/images/2024/drivers/" + memoizedHeadToHeadData.driver2Code + ".png"}`}
-                      width={150} 
-                      height={150} 
-                    />
-                    <div className='font-display pl-16 mr-4'>{memoizedHeadToHeadData.driver2}</div>
-                  </div>
-                </th>
-              </tr>
-            </thead>
-          </table>
-          <p>Last Updated {memoizedHeadToHeadData.lastUpdate}</p>
-          <HeadToHeadChart headToHeadData={memoizedHeadToHeadData} />
-          <p>{ambQ || ambR ? "* denotes that the drivers have not competed against each other this season" : ''}</p>
-          <h1>Qualifying Lap Times Comparision</h1>
-          <ResponsiveContainer width="100%" height={400}>
-            <LineChart data={chartData} margin={{ top: 20, right: 30 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#444444" />
-              <XAxis dataKey="race" />
-              <YAxis 
-                domain={yAxisLimits} 
-                tickFormatter={(value) => {
-                  const minutes = Math.floor(value / 60);
-                  const seconds = Math.floor(value % 60);
-                  const milliseconds = Math.round((value - Math.floor(value)) * 1000);
-                  return `${minutes}:${seconds.toString().padStart(2, '0')}.${milliseconds.toString().padStart(3, '0')}`;
-                }} 
-              />
-              <Tooltip 
-                formatter={(value) => {
-                  const minutes = Math.floor(value / 60);
-                  const totalSeconds = (value % 60);
-                  const seconds = Math.floor(totalSeconds);
-                  const milliseconds = Math.round((totalSeconds - seconds) * 1000);
-                  return `${minutes}:${seconds.toString().padStart(2, '0')}.${milliseconds.toString().padStart(3, '0')}`;
-                }}
-              />
-              <Line type="monotone" dataKey={memoizedHeadToHeadData.driver1Code} stroke="#8884d8" connectNulls={true}/>
-              <Line type="monotone" dataKey={memoizedHeadToHeadData.driver2Code} stroke="#82ca9d" connectNulls={true}/>
-            </LineChart>
-          </ResponsiveContainer>
-          <h1>Qualifying Positions Comparison</h1>
-          <ResponsiveContainer width="100%" height={400}>
-            <LineChart data={preparePositionChartData(memoizedHeadToHeadData.driver1QualifyingPosList, memoizedHeadToHeadData.driver2QualifyingPosList, memoizedHeadToHeadData.driver1Code, memoizedHeadToHeadData.driver2Code)} margin={{ top: 20, right: 30 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#444444" />
-              <XAxis dataKey="raceName" />
-              <YAxis reversed={true} domain={[1, 'dataMax']} />
-              <Tooltip />
-              <Line type="monotone" dataKey={memoizedHeadToHeadData.driver1Code} stroke="#8884d8" connectNulls={true}/>
-              <Line type="monotone" dataKey={memoizedHeadToHeadData.driver2Code} stroke="#82ca9d" connectNulls={true}/>
-            </LineChart>
-          </ResponsiveContainer>
-          <h1>Race Positions Comparison</h1>
-          <ResponsiveContainer width="100%" height={400}>
-            <LineChart data={preparePositionChartData(memoizedHeadToHeadData.driver1RacePosList, memoizedHeadToHeadData.driver2RacePosList, memoizedHeadToHeadData.driver1Code, memoizedHeadToHeadData.driver2Code)} margin={{ top: 20, right: 30 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#444444" />
-              <XAxis dataKey="raceName" />
-              <YAxis reversed={true} domain={[1, 'dataMax']} />
-              <Tooltip />
-              <Line type="monotone" dataKey={memoizedHeadToHeadData.driver1Code} stroke="#8884d8" connectNulls={true}/>
-              <Line type="monotone" dataKey={memoizedHeadToHeadData.driver2Code} stroke="#82ca9d" connectNulls={true}/>
-            </LineChart>
-          </ResponsiveContainer>
+        <>
+          <div className="flex items-center justify-between bg-glow rounded-[2.4rem] mb-64 mt-96 md:w-1/2 m-auto relative">
+            {driverLockup(memoizedHeadToHeadData.driver1Code, memoizedHeadToHeadData.driver1)}
+            <div 
+              className="text-center leading-none bg-glow p-16 rounded-md absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 -z-[1]">
+              <p className="font-display gradient-text-light">{team}</p>
+              <p className="text-sm tracking-xs gradient-text-light">HEAD-TO-HEAD</p>
+            </div>
+            {driverLockup(memoizedHeadToHeadData.driver2Code, memoizedHeadToHeadData.driver2)}
           </div>
+
+
+          <p className="text-center text-sm tracking-xs gradient-text-light mb-32">
+            Last Updated {memoizedHeadToHeadData.lastUpdate}
+          </p>
+          <HeadToHeadChart headToHeadData={memoizedHeadToHeadData} />
+          {(ambQ || ambR) &&( 
+            <p className="text-center text-sm tracking-xs gradient-text-light mb-32">
+              * denotes that the drivers have not competed against each other this season
+            </p>
+          )}
+
+          <h3 className="heading-4 mb-16 text-neutral-400 ml-24">Qualifying Lap Times Comparision</h3>
+          <div className="bg-glow-large rounded-lg mb-64 p-8 md:px-32 md:pt-16 md:pb-32">
+            <ResponsiveContainer width="100%" height={400}>
+              <BarChart width={730} height={250} data={chartData} margin={{ top: 20, right: 30 }}>
+                <defs>
+                  <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#8884d8" stopOpacity={1}/>
+                    <stop offset="95%" stopColor="#8884d8" stopOpacity={0}/>
+                  </linearGradient>
+                  <linearGradient id="colorPv" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#82ca9d" stopOpacity={1}/>
+                    <stop offset="95%" stopColor="#82ca9d" stopOpacity={0}/>
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="#444444" />
+                <XAxis tick={<CustomizedAxisTick />} />
+                <YAxis 
+                  domain={yAxisLimits} 
+                  tick={<CustomizedYAxisTick />}
+                  // tickFormatter={(value) => {
+                  //   const minutes = Math.floor(value / 60);
+                  //   const seconds = Math.floor(value % 60);
+                  //   const milliseconds = Math.round((value - Math.floor(value)) * 1000);
+                  //   return `${minutes}:${seconds.toString().padStart(2, '0')}.${milliseconds.toString().padStart(3, '0')}`;
+                  // }} 
+                />
+                <Tooltip 
+                  labelFormatter={(name) => chartData[name].race}
+                  formatter={(value) => {
+                    const minutes = Math.floor(value / 60);
+                    const totalSeconds = (value % 60);
+                    const seconds = Math.floor(totalSeconds);
+                    const milliseconds = Math.round((totalSeconds - seconds) * 1000);
+                    return `${minutes}:${seconds.toString().padStart(2, '0')}.${milliseconds.toString().padStart(3, '0')}`;
+                  }}
+                />
+                <Legend verticalAlign="top" height={32} />
+                <Bar dataKey={memoizedHeadToHeadData.driver1Code} fillOpacity={1} fill="url(#colorUv)" connectNulls={true} />
+                <Bar dataKey={memoizedHeadToHeadData.driver2Code} fillOpacity={1} fill="url(#colorPv)" connectNulls={true} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+
+          <h3 className="heading-4 mb-16 text-neutral-400 ml-24">Qualifying Positions Comparison</h3>
+          <div className="bg-glow-large rounded-lg mb-64 p-8 md:px-32 md:pt-16 md:pb-32">
+            <ResponsiveContainer width="100%" height={400}>
+              <LineChart data={preparePositionChartData(memoizedHeadToHeadData.driver1QualifyingPosList, memoizedHeadToHeadData.driver2QualifyingPosList, memoizedHeadToHeadData.driver1Code, memoizedHeadToHeadData.driver2Code)} margin={{ top: 20, right: 30 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#444444" />
+                <XAxis tick={<CustomizedAxisTick />} />
+                <YAxis reversed={true} domain={[1, 'dataMax']} />
+                <Tooltip 
+                  labelFormatter={(name) => chartData[name].race} 
+                  formatter={(value) => {
+                    return `P${value}`;
+                  }}
+                />
+                <Legend verticalAlign="top" height={32} />
+                <Line type="monotone" dataKey={memoizedHeadToHeadData.driver1Code} stroke="#8884d8" connectNulls={true}/>
+                <Line type="monotone" dataKey={memoizedHeadToHeadData.driver2Code} stroke="#82ca9d" connectNulls={true}/>
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+
+          <h3 className="heading-4 mb-16 text-neutral-400 ml-24">Race Positions Comparison</h3>
+          <div className="bg-glow-large rounded-lg mb-96 p-8 md:px-32 md:pt-16 md:pb-32">
+            <ResponsiveContainer width="100%" height={400}>
+              <LineChart data={preparePositionChartData(memoizedHeadToHeadData.driver1RacePosList, memoizedHeadToHeadData.driver2RacePosList, memoizedHeadToHeadData.driver1Code, memoizedHeadToHeadData.driver2Code)} margin={{ top: 20, right: 30 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#444444" />
+                <XAxis tick={<CustomizedAxisTick />} />
+                <YAxis reversed={true} domain={[1, 'dataMax']} />
+                <Tooltip 
+                  labelFormatter={(name) => chartData[name].race} 
+                  formatter={(value) => {
+                    return `P${value}`;
+                  }}
+                />
+                <Legend verticalAlign="top" height={32} />
+                <Line type="monotone" dataKey={memoizedHeadToHeadData.driver1Code} stroke="#8884d8" connectNulls={true}/>
+                <Line type="monotone" dataKey={memoizedHeadToHeadData.driver2Code} stroke="#82ca9d" connectNulls={true}/>
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        </>
       )}
       </div>
       )}
     </div>
   );
 };
-
-export default F1HeadToHead;

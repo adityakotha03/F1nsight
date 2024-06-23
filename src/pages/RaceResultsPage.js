@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { fetchRaceDetails } from '../utils/api';
-
-import { RaceResultItem } from './RaceResultItem';
-import { Loading } from "./Loading"
 import classNames from 'classnames';
+
+import { RaceResultItem, Loading } from '../components';
 
 
 export function RaceResultsPage({ selectedYear }) {

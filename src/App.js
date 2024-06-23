@@ -4,9 +4,8 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 import { fas } from '@fortawesome/free-solid-svg-icons';
 import { fab } from '@fortawesome/free-brands-svg-icons'
 import SupportPopup from './components/SupportPopup';
-import { Header, Footer, RacePage, DriverStandings, ConstructorStandings, RaceResultsPage, LandingPage } from './components';
-import { DriverComparison } from './components/DriverComparison';
-import TeammatesComparison from './components/TeammatesComparison';
+import { Header, Footer } from './components';
+import { DriverComparison, TeammatesComparison, RacePage, LandingPage, RaceResultsPage, DriverStandings, ConstructorStandings } from './pages'; 
 
 import './App.scss';
 

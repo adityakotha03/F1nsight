@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { getConstructorStandings } from '../utils/api';
 
-import { ConstructorCar } from './ConstructorCar';
-import { Loading } from "./Loading"
+import { ConstructorCar, Loading } from '../components';
 
 export function ConstructorStandings({ selectedYear }) {
   const [standings, setStandings] = useState([]);

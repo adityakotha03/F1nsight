@@ -1,51 +1,51 @@
-import React, { useMemo } from 'react';
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, LabelList } from 'recharts';
+import classNames from 'classnames';
+import React from 'react';
 
 export const HeadToHeadChart = ({ headToHeadData }) => {
-  const data = useMemo(() => [
-    {
-      name: 'Qualifying Wins',
-      driver1: headToHeadData.driver1QualifyingWins,
-      driver2: headToHeadData.driver2QualifyingWins,
-      amb: headToHeadData.ambQ
-    },
-    {
-      name: 'Race Wins',
-      driver1: headToHeadData.driver1RaceWins,
-      driver2: headToHeadData.driver2RaceWins,
-      amb: headToHeadData.ambR
-    },
-    {
-      name: 'Points',
-      driver1: headToHeadData.driver1Points,
-      driver2: headToHeadData.driver2Points
-    },
-    {
-      name: 'Podiums',
-      driver1: headToHeadData.driver1Podiums,
-      driver2: headToHeadData.driver2Podiums
-    },
-    {
-      name: 'Poles',
-      driver1: headToHeadData.driver1Poles,
-      driver2: headToHeadData.driver2Poles
+  const FillMath = (d1, d2, driver) => {
+    const total = d1 + d2;
+    const d1Percent = (d1 / total) * 100;
+    const d2Percent = (d2 / total) * 100;
+
+    if (driver === 'driver1') {
+      return `${d1Percent}%`;
+    } else {
+      return `${d2Percent}%`;
     }
-  ], [headToHeadData]);
+  }
+
+  const StatLine = ( stat, d1Data, d2Data ) => {
+    const d1Color = d1Data > d2Data ? 'bg-neutral-300' : 'bg-neutral-700';
+    const d2Color = d2Data > d1Data ? 'bg-neutral-300' : 'bg-neutral-700';
+    return (
+      <>
+      <h6 className="text-center mb-8">{stat}</h6>
+      <div className="flex items-center mb-24">
+        <div className="flex items-center gap-8 w-1/2">
+          <div className="font-display gradient-text-light">{d1Data}</div>
+          <div className="grow bg-glow-sm rounded-l-[.8rem] h-32 flex justify-end overflow-hidden">
+            <div className={classNames("h-full", d1Color)} style={{width: FillMath(d1Data, d2Data, 'driver1')}} />
+          </div>
+        </div>
+        <div className="flex flex-row-reverse items-center gap-8 w-1/2">
+          <div className="font-display gradient-text-light">{d2Data}</div>
+          <div className="grow bg-glow-sm rounded-r-[.8rem] h-32 flex overflow-hidden">
+            <div className={classNames("h-full", d2Color)} style={{width: FillMath(d1Data, d2Data, 'driver2')}} />
+          </div>
+        </div>
+      </div>
+      </>
+    )
+  }
 
   return (
-    <ResponsiveContainer width="100%" height={400}>
-        <BarChart data={data} layout="vertical" margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-          <XAxis type="number" hide={true} />
-          <YAxis type="category" dataKey="name" width={150} />
-          <Tooltip />
-          <Bar dataKey="driver1" fill="#4e73df" barSize={20}>
-            <LabelList dataKey="driver1" position="insideLeft" offset={10} fill="#fff" />
-          </Bar>
-          <Bar dataKey="driver2" fill="#e74a3b" barSize={20}>
-            <LabelList dataKey="driver2" position="insideRight" offset={10} fill="#fff" />
-          </Bar>
-        </BarChart>
-      </ResponsiveContainer>
+    <div className="mb-64 md:w-1/2 m-auto">
+    {StatLine('Qualifying Wins', headToHeadData.driver1QualifyingWins, headToHeadData.driver2QualifyingWins)}
+    {StatLine('Race Wins', headToHeadData.driver1RaceWins, headToHeadData.driver2RaceWins)}
+    {StatLine('Points', headToHeadData.driver1Points, headToHeadData.driver2Points)}
+    {StatLine('Podiums', headToHeadData.driver1Podiums, headToHeadData.driver2Podiums)}
+    {StatLine('Poles', headToHeadData.driver1Poles, headToHeadData.driver2Poles)}
+    </div>
   );
 };
 

@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { getDriverStandings } from '../utils/api';
 
-import { ConstructorDriver } from './ConstructorDriver';
-import { Loading } from "./Loading"
+import { ConstructorDriver, Loading } from '../components';
 
 export function DriverStandings({ selectedYear }) {
   const [standings, setStandings] = useState([]);

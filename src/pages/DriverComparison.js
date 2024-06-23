@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { fetchDriverStats, fetchDriversList } from '../utils/api';
-import { Loading } from "./Loading"
+import { Loading } from "../components"
 import Select from 'react-select';
 
 export function DriverComparison(){

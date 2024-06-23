@@ -1,6 +1,7 @@
 import Lottie from 'react-lottie';
-import animationData from '../lotties/loading.json';
 import classNames from 'classnames';
+
+import animationData from '../lotties/loading.json';
 
 export const Loading = ({className, message}) => {
     const defaultOptions = {
