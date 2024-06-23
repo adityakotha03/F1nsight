@@ -23,8 +23,9 @@ export const TeammatesComparison = () => {
   useEffect(() => {
     const fetchTeams = async () => {
       if (year && !teamCache[year]) {
-        const response = await axios.get(`https://ergast.com/api/f1/${year}/constructors.json`);
-        const constructors = response.data.MRData.ConstructorTable.Constructors;
+        const response = await axios.get(`https://praneeth7781.github.io/f1nsight-api-2/constructors/${year}.json`);
+        const constructors = response.data;
+        console.log(constructors);
         setTeamCache((prevCache) => ({ ...prevCache, [year]: constructors }));
       }
     };
@@ -46,8 +47,8 @@ export const TeammatesComparison = () => {
   const handleTeamChange = async (e) => {
     const selectedTeam = e.target.value;
     setTeam(selectedTeam);
-    const response = await axios.get(`https://ergast.com/api/f1/${year}/constructors/${selectedTeam}/drivers.json`);
-    const fetchedDrivers = response.data.MRData.DriverTable.Drivers;
+    const response = await axios.get(`https://praneeth7781.github.io/f1nsight-api-2/constructors/${year}/${selectedTeam}.json`);
+    const fetchedDrivers = response.data;
     setDrivers(fetchedDrivers);
     setShowDriverSelectors(fetchedDrivers.length > 2);
     fetchDriverData(fetchedDrivers);
