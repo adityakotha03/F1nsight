@@ -26,7 +26,6 @@ export const TeammatesComparison = () => {
       if (year && !teamCache[year]) {
         const response = await axios.get(`https://praneeth7781.github.io/f1nsight-api-2/constructors/${year}.json`);
         const constructors = response.data;
-        console.log(constructors);
         setTeamCache((prevCache) => ({ ...prevCache, [year]: constructors }));
       }
     };
@@ -96,7 +95,7 @@ export const TeammatesComparison = () => {
       const teamColors = colorsResponse.data;
 
       // Get the color for the selected team and year
-      setTeamColor(teamColors[year][drivers[0].driverId]);
+      setTeamColor(`#${teamColors[year][drivers[0].driverId]}`);
       await calculateHeadToHead(driverResultsMap, drivers[0].driverId, drivers[1].driverId, drivers);
     }
   };
@@ -417,7 +416,7 @@ const CustomizedYAxisTick = ({ x, y, payload }) => {
           <p className="text-center text-sm tracking-xs gradient-text-light mb-32">
             Last Updated {memoizedHeadToHeadData.lastUpdate}
           </p>
-          <HeadToHeadChart headToHeadData={memoizedHeadToHeadData} />
+          <HeadToHeadChart headToHeadData={memoizedHeadToHeadData} color={teamColor} />
 
           <h3 className="heading-4 mb-16 text-neutral-400 ml-24">Qualifying Lap Times Comparision</h3>
           <div className="bg-glow-large rounded-lg mb-64 p-8 md:px-32 md:pt-16 md:pb-32">
