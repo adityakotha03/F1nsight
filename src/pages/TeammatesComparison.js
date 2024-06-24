@@ -96,6 +96,7 @@ export const TeammatesComparison = () => {
 
       // Get the color for the selected team and year
       setTeamColor(`#${teamColors[year][drivers[0].driverId]}`);
+      console.log(teamColors);
       await calculateHeadToHead(driverResultsMap, drivers[0].driverId, drivers[1].driverId, drivers);
     }
   };
