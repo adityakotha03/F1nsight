@@ -40,7 +40,6 @@ export function DriverComparison(){
     const handleCompare = () => {
         setDriver1(inputdriver1.value);
         setDriver2(inputdriver2.value);
-        console.log("herewego", driver1);
         setInputDriver1('');
         setInputDriver2('');
     };

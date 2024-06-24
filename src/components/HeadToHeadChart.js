@@ -1,6 +1,8 @@
 import classNames from 'classnames';
 import React from 'react';
 
+import { darkenColor } from '../utils/darkenColor';
+
 export const HeadToHeadChart = ({ headToHeadData, color }) => {
   const FillMath = (d1, d2, driver) => {
     const total = d1 + d2;
@@ -14,27 +16,9 @@ export const HeadToHeadChart = ({ headToHeadData, color }) => {
     }
   };
 
-  const lightenColor = (hex, percent) => {
-    let color = hex.startsWith('#') ? hex.slice(1) : hex;
-    let num = parseInt(color, 16),
-        amt = Math.round(2.55 * percent),
-        R = (num >> 16) + amt,
-        G = (num >> 8 & 0x00FF) + amt,
-        B = (num & 0x0000FF) + amt;
-
-    return '#' + (
-        0x1000000 +
-        (R < 255 ? R : 255) * 0x10000 +
-        (G < 255 ? G : 255) * 0x100 +
-        (B < 255 ? B : 255)
-    ).toString(16).slice(1);
-  };
-
-  const darkColor = lightenColor(color, 50);
-
   const StatLine = ( stat, d1Data, d2Data ) => {
-    const d1Color = d1Data > d2Data ? color : darkColor;
-    const d2Color = d2Data > d1Data ? color : darkColor;
+    const d1Color = d1Data > d2Data ? color : `${color}40`;
+    const d2Color = d2Data > d1Data ? color : `${color}40`;
     return (
       <>
         <h6 className="text-center mb-8">{stat}</h6>

@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import axios from 'axios';
-import { fetchDriverStats } from '../utils/api';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area, BarChart, Legend, Bar, ComposedChart } from 'recharts';
-
-import { HeadToHeadChart, Select, Loading } from '../components';
 import classNames from 'classnames';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area, BarChart, Legend, Bar, ComposedChart } from 'recharts';
+import axios from 'axios';
+
+import { fetchDriverStats } from '../utils/api';
+import { lightenColor } from '../utils/lightenColor';
+import { HeadToHeadChart, Select, Loading } from '../components';
 
 export const TeammatesComparison = () => {
   const [year, setYear] = useState('');
@@ -102,7 +103,7 @@ export const TeammatesComparison = () => {
 
       // Get the color for the selected team and year
       setTeamColor(`#${teamColors[year][drivers[0].driverId]}`);
-      console.log(teamColors);
+      // console.log({teamColors});
       await calculateHeadToHead(driverResultsMap, drivers[0].driverId, drivers[1].driverId, drivers);
     }
   };
@@ -247,7 +248,7 @@ export const TeammatesComparison = () => {
   };
 
   const memoizedHeadToHeadData = useMemo(() => headToHeadData, [headToHeadData]);
-  console.log(memoizedHeadToHeadData);
+  // console.log(memoizedHeadToHeadData);
   
   const prepareChartData = () => {
     if (!memoizedHeadToHeadData) return [];
@@ -325,8 +326,7 @@ const driverLockup = (driverId, driverName) => {
   )
 }
 
-
-const CustomizedAxisTick = ({ x, y, payload }) => {
+const CustomizedXAxisTick = ({ x, y, payload }) => {
   return (
     <g transform={`translate(${x},${y})`}>
       <text
@@ -365,6 +365,26 @@ const CustomizedYAxisTick = ({ x, y, payload }) => {
   );
 };
 
+const GridRow = (label, driver1, driver2, title) => {
+  const driver1SplitName = driver1.split(" ");
+  const driver2SplitName = driver2.split(" ")
+
+  return (
+    <>
+      <div className={classNames("grid grid-cols-3 gap-4 mb-16 text-neutral-400 items-center", {'text-xs': title})}>
+        <span className="tracking-xs uppercase text-xs">{label}</span>
+        <span className="tracking-xs uppercase text-center">
+          {title ? driver1SplitName[1] : driver1}
+        </span>
+        <span className="tracking-xs uppercase text-center">
+          {title ? driver2SplitName[1] : driver2}
+        </span>
+      </div>
+      <div className='divider-glow-medium ' />
+    </>
+  );
+}
+
 const chartData_posGainorLost = useMemo(() => {
   if (!memoizedHeadToHeadData) return [];
   
@@ -382,7 +402,6 @@ const chartData_posGainorLost = useMemo(() => {
 
   // console.log(chartData);
   // console.log(preparePositionChartData(memoizedHeadToHeadData.driver1QualifyingPosList, memoizedHeadToHeadData.driver2QualifyingPosList, memoizedHeadToHeadData.driver1Code, memoizedHeadToHeadData.driver2Code));
-
 
   return (
     <div className='global-container'>
@@ -431,12 +450,17 @@ const chartData_posGainorLost = useMemo(() => {
 
         {memoizedHeadToHeadData && (
         <>
-          <div className="flex items-center justify-between bg-glow rounded-[2.4rem] mb-64 mt-96 md:w-1/2 m-auto relative">
+          <div 
+            className="flex items-center justify-between bg-glow rounded-[2.4rem] mb-64 mt-96 md:w-2/3 m-auto relative px-16"
+            style={{ backgroundColor: `${teamColor}40`, boxShadow: `inset 0 0 32px ${teamColor}, 0 0 2.4rem 0 rgba(0, 0, 0, .5)`}}
+          >
             {driverLockup(memoizedHeadToHeadData.driver1Code, memoizedHeadToHeadData.driver1)}
             <div 
-              className="text-center leading-none bg-glow p-16 rounded-md absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 -z-[1]">
-              <p className="font-display gradient-text-light">{team}</p>
+              className="text-center leading-none rounded-md absolute top-32 left-1/2 -translate-x-1/2 -z-[1] w-full"
+            >
+              <p className="font-display text-[2.4rem] gradient-text-light">{team}</p>
               <p className="text-sm tracking-xs gradient-text-light">HEAD-TO-HEAD</p>
+              <div className="divider-glow-dark mt-8" />
             </div>
             {driverLockup(memoizedHeadToHeadData.driver2Code, memoizedHeadToHeadData.driver2)}
           </div>
@@ -453,67 +477,31 @@ const chartData_posGainorLost = useMemo(() => {
           <HeadToHeadChart headToHeadData={memoizedHeadToHeadData} color={teamColor} />
 
           <h3 className="heading-4 mb-16 text-neutral-400 ml-24">Driver Statistics Comparison</h3>
-          <table className="table-auto w-full mb-32">
-            <thead>
-              <tr>
-                <th className="px-4 py-2">Metric</th>
-                <th className="px-4 py-2">{memoizedHeadToHeadData.driver1}</th>
-                <th className="px-4 py-2">{memoizedHeadToHeadData.driver2}</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td className="border px-4 py-2">Average Race Position</td>
-                <td className="border px-4 py-2">{memoizedHeadToHeadData.driver1AvgRacePosition}</td>
-                <td className="border px-4 py-2">{memoizedHeadToHeadData.driver2AvgRacePosition}</td>
-              </tr>
-              <tr>
-                <td className="border px-4 py-2">Average Qualifying Position</td>
-                <td className="border px-4 py-2">{memoizedHeadToHeadData.driver1AvgQualiPositions}</td>
-                <td className="border px-4 py-2">{memoizedHeadToHeadData.driver2AvgQualiPositions}</td>
-              </tr>
-              <tr>
-                <td className="border px-4 py-2">Win Rate</td>
-                <td className="border px-4 py-2">{memoizedHeadToHeadData.driver1_win_rates}</td>
-                <td className="border px-4 py-2">{memoizedHeadToHeadData.driver2_win_rates}</td>
-              </tr>
-              <tr>
-                <td className="border px-4 py-2">Podium Rate</td>
-                <td className="border px-4 py-2">{memoizedHeadToHeadData.driver1_podium_rates}</td>
-                <td className="border px-4 py-2">{memoizedHeadToHeadData.driver2_podium_rates}</td>
-              </tr>
-              <tr>
-                <td className="border px-4 py-2">Pole Rate</td>
-                <td className="border px-4 py-2">{memoizedHeadToHeadData.driver1_pole_rates}</td>
-                <td className="border px-4 py-2">{memoizedHeadToHeadData.driver2_pole_rates}</td>
-              </tr>
-            </tbody>
-          </table>
+          <div className="bg-glow-large rounded-lg mb-64 p-8 md:px-32 md:pt-16 md:pb-32"> 
+            {GridRow( " ", memoizedHeadToHeadData.driver1, memoizedHeadToHeadData.driver2, true)}
+            {GridRow( "Average Race Position", memoizedHeadToHeadData.driver1AvgRacePosition, memoizedHeadToHeadData.driver2AvgRacePosition)}
+            {GridRow( "Average Qualifying Position", memoizedHeadToHeadData.driver1AvgQualiPositions, memoizedHeadToHeadData.driver2AvgQualiPositions)}
+            {GridRow( "Win Rate", memoizedHeadToHeadData.driver1_win_rates, memoizedHeadToHeadData.driver2_win_rates)}
+            {GridRow( "Podium Rate", memoizedHeadToHeadData.driver1_podium_rates, memoizedHeadToHeadData.driver2_podium_rates)}
+            {GridRow( "Pole Rate", memoizedHeadToHeadData.driver1_pole_rates, memoizedHeadToHeadData.driver2_pole_rates)}
+          </div>
 
           <h3 className="heading-4 mb-16 text-neutral-400 ml-24">Positions Gained or Lost During Race</h3>
           <div className="bg-glow-large rounded-lg mb-64 p-8 md:px-32 md:pt-16 md:pb-32">
             <ResponsiveContainer width="100%" height={400}>
               <BarChart width={730} height={250} data={chartData_posGainorLost} margin={{ top: 20, right: 30 }}>
-                <defs>
-                  <linearGradient id="colorD1" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#8884d8" stopOpacity={1} />
-                    <stop offset="95%" stopColor="#8884d8" stopOpacity={0} />
-                  </linearGradient>
-                  <linearGradient id="colorD2" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#82ca9d" stopOpacity={1} />
-                    <stop offset="95%" stopColor="#82ca9d" stopOpacity={0} />
-                  </linearGradient>
-                </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="#444444" />
-                <XAxis dataKey="race" tick={{ fontSize: 12, fill: '#666' }} />
+                <XAxis tick={<CustomizedXAxisTick />} />
                 <YAxis tick={{ fontSize: 12, fill: '#666' }} />
-                <Tooltip
-                  labelFormatter={(name) => chartData_posGainorLost.find(d => d.race === name)?.race || name}
-                  formatter={(value) => value.toFixed(2)}
+                <Tooltip 
+                  labelFormatter={(name) => chartData[name] && chartData[name].race ? chartData[name].race : name} 
+                  formatter={(value) => {
+                    return value;
+                  }}
                 />
                 <Legend verticalAlign="top" height={36} />
-                <Bar dataKey={memoizedHeadToHeadData.driver1Code} fillOpacity={1} fill="url(#colorD1)" />
-                <Bar dataKey={memoizedHeadToHeadData.driver2Code} fillOpacity={1} fill="url(#colorD2)" />
+                <Bar dataKey={memoizedHeadToHeadData.driver1Code} fillOpacity={1} fill={teamColor} />
+                <Bar dataKey={memoizedHeadToHeadData.driver2Code} fillOpacity={1} fill={lightenColor(teamColor)} />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -524,16 +512,16 @@ const chartData_posGainorLost = useMemo(() => {
               <BarChart width={730} height={250} data={chartData} margin={{ top: 20, right: 30 }}>
                 <defs>
                   <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#8884d8" stopOpacity={1}/>
-                    <stop offset="95%" stopColor="#8884d8" stopOpacity={0}/>
+                    <stop offset="5%" stopColor={teamColor} stopOpacity={1}/>
+                    <stop offset="95%" stopColor={teamColor} stopOpacity={0}/>
                   </linearGradient>
                   <linearGradient id="colorPv" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#82ca9d" stopOpacity={1}/>
-                    <stop offset="95%" stopColor="#82ca9d" stopOpacity={0}/>
+                    <stop offset="5%" stopColor={lightenColor(teamColor)} stopOpacity={1}/>
+                    <stop offset="95%" stopColor={lightenColor(teamColor)} stopOpacity={0}/>
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="#444444" />
-                <XAxis tick={<CustomizedAxisTick />} />
+                <XAxis tick={<CustomizedXAxisTick />} />
                 <YAxis 
                   domain={yAxisLimits} 
                   tick={<CustomizedYAxisTick />}
@@ -566,7 +554,7 @@ const chartData_posGainorLost = useMemo(() => {
             <ResponsiveContainer width="100%" height={400}>
               <LineChart data={preparePositionChartData(memoizedHeadToHeadData.driver1QualifyingPosList, memoizedHeadToHeadData.driver2QualifyingPosList, memoizedHeadToHeadData.driver1Code, memoizedHeadToHeadData.driver2Code)} margin={{ top: 20, right: 30 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#444444" />
-                <XAxis tick={<CustomizedAxisTick />} />
+                <XAxis tick={<CustomizedXAxisTick />} />
                 <YAxis reversed={true} domain={[1, 'dataMax']} />
                 <Tooltip 
                   labelFormatter={(name) => chartData[name] && chartData[name].race ? chartData[name].race : name} 
@@ -575,8 +563,8 @@ const chartData_posGainorLost = useMemo(() => {
                   }}
                 />
                 <Legend verticalAlign="top" height={32} />
-                <Line type="monotone" dataKey={memoizedHeadToHeadData.driver1Code} stroke="#8884d8" connectNulls={true}/>
-                <Line type="monotone" dataKey={memoizedHeadToHeadData.driver2Code} stroke="#82ca9d" connectNulls={true}/>
+                <Line type="monotone" dataKey={memoizedHeadToHeadData.driver1Code} stroke={teamColor} connectNulls={true}/>
+                <Line type="monotone" dataKey={memoizedHeadToHeadData.driver2Code} stroke={lightenColor(teamColor)} connectNulls={true}/>
               </LineChart>
             </ResponsiveContainer>
           </div>
@@ -586,7 +574,7 @@ const chartData_posGainorLost = useMemo(() => {
             <ResponsiveContainer width="100%" height={400}>
               <LineChart data={preparePositionChartData(memoizedHeadToHeadData.driver1RacePosList, memoizedHeadToHeadData.driver2RacePosList, memoizedHeadToHeadData.driver1Code, memoizedHeadToHeadData.driver2Code)} margin={{ top: 20, right: 30 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#444444" />
-                <XAxis tick={<CustomizedAxisTick />} />
+                <XAxis tick={<CustomizedXAxisTick />} />
                 <YAxis reversed={true} domain={[1, 'dataMax']} />
                 <Tooltip 
                   labelFormatter={(name) => chartData[name] && chartData[name].race ? chartData[name].race : name} 
@@ -595,8 +583,8 @@ const chartData_posGainorLost = useMemo(() => {
                   }}
                 />
                 <Legend verticalAlign="top" height={32} />
-                <Line type="monotone" dataKey={memoizedHeadToHeadData.driver1Code} stroke="#8884d8" connectNulls={true}/>
-                <Line type="monotone" dataKey={memoizedHeadToHeadData.driver2Code} stroke="#82ca9d" connectNulls={true}/>
+                <Line type="monotone" dataKey={memoizedHeadToHeadData.driver1Code} stroke={teamColor} connectNulls={true}/>
+                <Line type="monotone" dataKey={memoizedHeadToHeadData.driver2Code} stroke={lightenColor(teamColor)} connectNulls={true}/>
               </LineChart>
             </ResponsiveContainer>
           </div>
