@@ -77,7 +77,13 @@ export const TeammatesComparison = () => {
         posAfterRace: data.posAfterRace[year] || {},
         podiums: data.podiums[year] || {},
         poles: data.poles[year] || {},
-        lastUpdate: data.lastUpdate
+        lastUpdate: data.lastUpdate,
+        positionsGainLost: data.positionsGainLost[year] || {},
+        avgRacePositions: data.avgRacePositions[year] || {},
+        avgQualiPositions: data.avgQualiPositions[year] || {},
+        win_rates: data.rates.wins[year] || {},
+        podium_rates: data.rates.podiums[year] || {},
+        pole_rates: data.rates.poles[year] || {}
       };
     };
 
@@ -224,12 +230,24 @@ export const TeammatesComparison = () => {
       driver1QualifyingPosList: driverResults[driver1Id]?.qualiPosition.positions || {},
       driver2QualifyingPosList: driverResults[driver2Id]?.qualiPosition.positions || {},
       driver1RacePosList: driverResults[driver1Id]?.racePosition.positions || {},
-      driver2RacePosList: driverResults[driver2Id]?.racePosition.positions || {}
+      driver2RacePosList: driverResults[driver2Id]?.racePosition.positions || {},
+      driver1AvgRacePosition: parseFloat(driverResults[driver1Id]?.avgRacePositions || 0).toFixed(2),
+      driver2AvgRacePosition: parseFloat(driverResults[driver2Id]?.avgRacePositions || 0).toFixed(2),
+      driver1AvgQualiPositions: parseFloat(driverResults[driver1Id]?.avgQualiPositions || 0).toFixed(2),
+      driver2AvgQualiPositions: parseFloat(driverResults[driver2Id]?.avgQualiPositions || 0).toFixed(2),
+      driver1_win_rates: parseFloat(driverResults[driver1Id]?.win_rates || 0).toFixed(2),
+      driver2_win_rates: parseFloat(driverResults[driver2Id]?.win_rates || 0).toFixed(2),
+      driver1_podium_rates: parseFloat(driverResults[driver1Id]?.podium_rates || 0).toFixed(2),
+      driver2_podium_rates: parseFloat(driverResults[driver2Id]?.podium_rates || 0).toFixed(2),
+      driver1_pole_rates: parseFloat(driverResults[driver1Id]?.pole_rates || 0).toFixed(2),
+      driver2_pole_rates: parseFloat(driverResults[driver2Id]?.pole_rates || 0).toFixed(2),
+      driver1PositionsGainLost: driverResults[driver1Id]?.positionsGainLost || {},
+      driver2PositionsGainLost: driverResults[driver2Id]?.positionsGainLost || {}
     });
   };
 
   const memoizedHeadToHeadData = useMemo(() => headToHeadData, [headToHeadData]);
-  // console.log(memoizedHeadToHeadData);
+  console.log(memoizedHeadToHeadData);
   
   const prepareChartData = () => {
     if (!memoizedHeadToHeadData) return [];
@@ -347,6 +365,21 @@ const CustomizedYAxisTick = ({ x, y, payload }) => {
   );
 };
 
+const chartData_posGainorLost = useMemo(() => {
+  if (!memoizedHeadToHeadData) return [];
+  
+  return Object.keys(memoizedHeadToHeadData.driver1PositionsGainLost).map(race => {
+    const driver1Data = memoizedHeadToHeadData.driver1PositionsGainLost[race];
+    const driver2Data = memoizedHeadToHeadData.driver2PositionsGainLost[race];
+
+    return driver1Data !== undefined && driver2Data !== undefined ? {
+      race,
+      [memoizedHeadToHeadData.driver1Code]: driver1Data,
+      [memoizedHeadToHeadData.driver2Code]: driver2Data
+    } : null;
+  }).filter(item => item !== null);
+}, [memoizedHeadToHeadData]);
+
   // console.log(chartData);
   // console.log(preparePositionChartData(memoizedHeadToHeadData.driver1QualifyingPosList, memoizedHeadToHeadData.driver2QualifyingPosList, memoizedHeadToHeadData.driver1Code, memoizedHeadToHeadData.driver2Code));
 
@@ -419,6 +452,72 @@ const CustomizedYAxisTick = ({ x, y, payload }) => {
           </p>
           <HeadToHeadChart headToHeadData={memoizedHeadToHeadData} color={teamColor} />
 
+          <h3 className="heading-4 mb-16 text-neutral-400 ml-24">Driver Statistics Comparison</h3>
+          <table className="table-auto w-full mb-32">
+            <thead>
+              <tr>
+                <th className="px-4 py-2">Metric</th>
+                <th className="px-4 py-2">{memoizedHeadToHeadData.driver1}</th>
+                <th className="px-4 py-2">{memoizedHeadToHeadData.driver2}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td className="border px-4 py-2">Average Race Position</td>
+                <td className="border px-4 py-2">{memoizedHeadToHeadData.driver1AvgRacePosition}</td>
+                <td className="border px-4 py-2">{memoizedHeadToHeadData.driver2AvgRacePosition}</td>
+              </tr>
+              <tr>
+                <td className="border px-4 py-2">Average Qualifying Position</td>
+                <td className="border px-4 py-2">{memoizedHeadToHeadData.driver1AvgQualiPositions}</td>
+                <td className="border px-4 py-2">{memoizedHeadToHeadData.driver2AvgQualiPositions}</td>
+              </tr>
+              <tr>
+                <td className="border px-4 py-2">Win Rate</td>
+                <td className="border px-4 py-2">{memoizedHeadToHeadData.driver1_win_rates}</td>
+                <td className="border px-4 py-2">{memoizedHeadToHeadData.driver2_win_rates}</td>
+              </tr>
+              <tr>
+                <td className="border px-4 py-2">Podium Rate</td>
+                <td className="border px-4 py-2">{memoizedHeadToHeadData.driver1_podium_rates}</td>
+                <td className="border px-4 py-2">{memoizedHeadToHeadData.driver2_podium_rates}</td>
+              </tr>
+              <tr>
+                <td className="border px-4 py-2">Pole Rate</td>
+                <td className="border px-4 py-2">{memoizedHeadToHeadData.driver1_pole_rates}</td>
+                <td className="border px-4 py-2">{memoizedHeadToHeadData.driver2_pole_rates}</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3 className="heading-4 mb-16 text-neutral-400 ml-24">Positions Gained or Lost During Race</h3>
+          <div className="bg-glow-large rounded-lg mb-64 p-8 md:px-32 md:pt-16 md:pb-32">
+            <ResponsiveContainer width="100%" height={400}>
+              <BarChart width={730} height={250} data={chartData_posGainorLost} margin={{ top: 20, right: 30 }}>
+                <defs>
+                  <linearGradient id="colorD1" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#8884d8" stopOpacity={1} />
+                    <stop offset="95%" stopColor="#8884d8" stopOpacity={0} />
+                  </linearGradient>
+                  <linearGradient id="colorD2" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#82ca9d" stopOpacity={1} />
+                    <stop offset="95%" stopColor="#82ca9d" stopOpacity={0} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="#444444" />
+                <XAxis dataKey="race" tick={{ fontSize: 12, fill: '#666' }} />
+                <YAxis tick={{ fontSize: 12, fill: '#666' }} />
+                <Tooltip
+                  labelFormatter={(name) => chartData_posGainorLost.find(d => d.race === name)?.race || name}
+                  formatter={(value) => value.toFixed(2)}
+                />
+                <Legend verticalAlign="top" height={36} />
+                <Bar dataKey={memoizedHeadToHeadData.driver1Code} fillOpacity={1} fill="url(#colorD1)" />
+                <Bar dataKey={memoizedHeadToHeadData.driver2Code} fillOpacity={1} fill="url(#colorD2)" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+          
           <h3 className="heading-4 mb-16 text-neutral-400 ml-24">Qualifying Lap Times Comparision</h3>
           <div className="bg-glow-large rounded-lg mb-64 p-8 md:px-32 md:pt-16 md:pb-32">
             <ResponsiveContainer width="100%" height={400}>
