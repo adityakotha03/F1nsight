@@ -445,11 +445,11 @@ const chartData_posGainorLost = useMemo(() => {
         <>
           <div 
             className="flex items-center justify-between bg-glow rounded-[2.4rem] mb-64 mt-96 md:w-2/3 m-auto relative px-16"
-            style={{ backgroundColor: `${teamColor}40`, boxShadow: `inset 0 0 32px ${teamColor}, 0 0 2.4rem 0 rgba(0, 0, 0, .5)`}}
+            style={{ backgroundColor: `#${teamColor}40`, boxShadow: `inset 0 0 32px #${teamColor}, 0 0 2.4rem 0 rgba(0, 0, 0, .5)`}}
           >
             {driverLockup(memoizedHeadToHeadData.driver1Code, memoizedHeadToHeadData.driver1)}
             <div 
-              className="text-center leading-none rounded-md absolute top-32 left-1/2 -translate-x-1/2 -z-[1] w-full"
+              className="text-center leading-none rounded-md absolute top-16 md:top-32 left-1/2 -translate-x-1/2 -z-[1] w-full"
             >
               <p className="font-display text-[2.4rem] gradient-text-light">{team}</p>
               <p className="text-sm tracking-xs gradient-text-light">HEAD-TO-HEAD</p>
@@ -467,7 +467,7 @@ const chartData_posGainorLost = useMemo(() => {
           <p className="text-center text-sm tracking-xs gradient-text-light mb-32">
             Last Updated {memoizedHeadToHeadData.lastUpdate}
           </p>
-          <HeadToHeadChart headToHeadData={memoizedHeadToHeadData} color={teamColor} />
+          <HeadToHeadChart headToHeadData={memoizedHeadToHeadData} color={`#${teamColor}`} />
 
           <h3 className="heading-4 mb-16 text-neutral-400 ml-24">Driver Statistics Comparison</h3>
           <div className="bg-glow-large rounded-lg mb-64 p-8 md:px-32 md:pt-16 md:pb-32"> 
@@ -493,7 +493,7 @@ const chartData_posGainorLost = useMemo(() => {
                   }}
                 />
                 <Legend verticalAlign="top" height={36} />
-                <Bar dataKey={memoizedHeadToHeadData.driver1Code} fillOpacity={1} fill={teamColor} />
+                <Bar dataKey={memoizedHeadToHeadData.driver1Code} fillOpacity={1} fill={`#${teamColor}`} />
                 <Bar dataKey={memoizedHeadToHeadData.driver2Code} fillOpacity={1} fill={lightenColor(teamColor)} />
               </BarChart>
             </ResponsiveContainer>
@@ -505,8 +505,8 @@ const chartData_posGainorLost = useMemo(() => {
               <BarChart width={730} height={250} data={chartData} margin={{ top: 20, right: 30 }}>
                 <defs>
                   <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor={teamColor} stopOpacity={1}/>
-                    <stop offset="95%" stopColor={teamColor} stopOpacity={0}/>
+                    <stop offset="5%" stopColor={`#${teamColor}`} stopOpacity={1}/>
+                    <stop offset="95%" stopColor={`#${teamColor}`} stopOpacity={0}/>
                   </linearGradient>
                   <linearGradient id="colorPv" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%" stopColor={lightenColor(teamColor)} stopOpacity={1}/>
@@ -536,7 +536,7 @@ const chartData_posGainorLost = useMemo(() => {
                   }}
                 />
                 <Legend verticalAlign="top" height={32} />
-                <Bar dataKey={memoizedHeadToHeadData.driver1Code} fillOpacity={1} fill={teamColor} connectNulls={true} />
+                <Bar dataKey={memoizedHeadToHeadData.driver1Code} fillOpacity={1} fill={`#${teamColor}`} connectNulls={true} />
                 <Bar dataKey={memoizedHeadToHeadData.driver2Code} fillOpacity={1} fill={lightenColor(teamColor)} connectNulls={true} />
               </BarChart>
             </ResponsiveContainer>
@@ -556,7 +556,7 @@ const chartData_posGainorLost = useMemo(() => {
                   }}
                 />
                 <Legend verticalAlign="top" height={32} />
-                <Line type="monotone" dataKey={memoizedHeadToHeadData.driver1Code} stroke={teamColor} connectNulls={true}/>
+                <Line type="monotone" dataKey={memoizedHeadToHeadData.driver1Code} stroke={`#${teamColor}`} connectNulls={true}/>
                 <Line type="monotone" dataKey={memoizedHeadToHeadData.driver2Code} stroke={lightenColor(teamColor)} connectNulls={true}/>
               </LineChart>
             </ResponsiveContainer>
@@ -576,7 +576,7 @@ const chartData_posGainorLost = useMemo(() => {
                   }}
                 />
                 <Legend verticalAlign="top" height={32} />
-                <Line type="monotone" dataKey={memoizedHeadToHeadData.driver1Code} stroke={teamColor} connectNulls={true}/>
+                <Line type="monotone" dataKey={memoizedHeadToHeadData.driver1Code} stroke={`#${teamColor}`} connectNulls={true}/>
                 <Line type="monotone" dataKey={memoizedHeadToHeadData.driver2Code} stroke={lightenColor(teamColor)} connectNulls={true}/>
               </LineChart>
             </ResponsiveContainer>
