@@ -232,16 +232,16 @@ export const TeammatesComparison = () => {
       driver2QualifyingPosList: driverResults[driver2Id]?.qualiPosition.positions || {},
       driver1RacePosList: driverResults[driver1Id]?.racePosition.positions || {},
       driver2RacePosList: driverResults[driver2Id]?.racePosition.positions || {},
-      driver1AvgRacePosition: parseFloat(driverResults[driver1Id]?.avgRacePositions || 0).toFixed(2),
-      driver2AvgRacePosition: parseFloat(driverResults[driver2Id]?.avgRacePositions || 0).toFixed(2),
-      driver1AvgQualiPositions: parseFloat(driverResults[driver1Id]?.avgQualiPositions || 0).toFixed(2),
-      driver2AvgQualiPositions: parseFloat(driverResults[driver2Id]?.avgQualiPositions || 0).toFixed(2),
-      driver1_win_rates: parseFloat(driverResults[driver1Id]?.win_rates || 0).toFixed(2),
-      driver2_win_rates: parseFloat(driverResults[driver2Id]?.win_rates || 0).toFixed(2),
-      driver1_podium_rates: parseFloat(driverResults[driver1Id]?.podium_rates || 0).toFixed(2),
-      driver2_podium_rates: parseFloat(driverResults[driver2Id]?.podium_rates || 0).toFixed(2),
-      driver1_pole_rates: parseFloat(driverResults[driver1Id]?.pole_rates || 0).toFixed(2),
-      driver2_pole_rates: parseFloat(driverResults[driver2Id]?.pole_rates || 0).toFixed(2),
+      driver1AvgRacePosition: isNaN(parseFloat(driverResults[driver1Id]?.avgRacePositions)) ? "0.00" : parseFloat(driverResults[driver1Id]?.avgRacePositions).toFixed(2),
+      driver2AvgRacePosition: isNaN(parseFloat(driverResults[driver2Id]?.avgRacePositions)) ? "0.00" : parseFloat(driverResults[driver2Id]?.avgRacePositions).toFixed(2),
+      driver1AvgQualiPositions: isNaN(parseFloat(driverResults[driver1Id]?.avgQualiPositions)) ? "0.00" : parseFloat(driverResults[driver1Id]?.avgQualiPositions).toFixed(2),
+      driver2AvgQualiPositions: isNaN(parseFloat(driverResults[driver2Id]?.avgQualiPositions)) ? "0.00" : parseFloat(driverResults[driver2Id]?.avgQualiPositions).toFixed(2),
+      driver1_win_rates: isNaN(parseFloat(driverResults[driver1Id]?.win_rates)) ? "0.00" : parseFloat(driverResults[driver1Id]?.win_rates).toFixed(2),
+      driver2_win_rates: isNaN(parseFloat(driverResults[driver2Id]?.win_rates)) ? "0.00" : parseFloat(driverResults[driver2Id]?.win_rates).toFixed(2),
+      driver1_podium_rates: isNaN(parseFloat(driverResults[driver1Id]?.podium_rates)) ? "0.00" : parseFloat(driverResults[driver1Id]?.podium_rates).toFixed(2),
+      driver2_podium_rates: isNaN(parseFloat(driverResults[driver2Id]?.podium_rates)) ? "0.00" : parseFloat(driverResults[driver2Id]?.podium_rates).toFixed(2),
+      driver1_pole_rates: isNaN(parseFloat(driverResults[driver1Id]?.pole_rates)) ? "0.00" : parseFloat(driverResults[driver1Id]?.pole_rates).toFixed(2),
+      driver2_pole_rates: isNaN(parseFloat(driverResults[driver2Id]?.pole_rates)) ? "0.00" : parseFloat(driverResults[driver2Id]?.pole_rates).toFixed(2),
       driver1PositionsGainLost: driverResults[driver1Id]?.positionsGainLost || {},
       driver2PositionsGainLost: driverResults[driver2Id]?.positionsGainLost || {}
     });
@@ -543,8 +543,8 @@ const chartData_posGainorLost = useMemo(() => {
                   }}
                 />
                 <Legend verticalAlign="top" height={32} />
-                <Bar dataKey={memoizedHeadToHeadData.driver1Code} fillOpacity={1} fill="url(#colorUv)" connectNulls={true} />
-                <Bar dataKey={memoizedHeadToHeadData.driver2Code} fillOpacity={1} fill="url(#colorPv)" connectNulls={true} />
+                <Bar dataKey={memoizedHeadToHeadData.driver1Code} fillOpacity={1} fill={teamColor} connectNulls={true} />
+                <Bar dataKey={memoizedHeadToHeadData.driver2Code} fillOpacity={1} fill={lightenColor(teamColor)} connectNulls={true} />
               </BarChart>
             </ResponsiveContainer>
           </div>
