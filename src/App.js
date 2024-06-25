@@ -16,19 +16,23 @@ function App() {
   const [selectedYear, setSelectedYear] = useState(currentYear);
 
   return (
-    <Router>
-      <Header setSelectedYear={setSelectedYear} selectedYear={selectedYear} currentYear={currentYear} />
-      <Routes>
-        <Route exact path="/" element={<LandingPage />} />
-        <Route path="/race-results" element={<RaceResultsPage selectedYear={selectedYear} />} />
-        <Route path="/constructor-standings" element={<ConstructorStandings selectedYear={selectedYear} />} />
-        <Route path="/teammates-comparison" element={<TeammatesComparison />}/>
-        <Route path="/driver-comparison" element={<DriverComparison selectedYear={selectedYear} />} />
-        <Route path="/driver-standings" element={<DriverStandings selectedYear={selectedYear} />} />
-        <Route path="/race/:raceId" element={<RacePage />} />
-      </Routes>
-      <Footer />
-    </Router>
+    <div className="flex flex-col min-h-screen">
+      <Router>
+        <Header setSelectedYear={setSelectedYear} selectedYear={selectedYear} currentYear={currentYear} />
+        <div className="grow">
+          <Routes>
+            <Route exact path="/" element={<LandingPage />} />
+            <Route path="/race-results" element={<RaceResultsPage selectedYear={selectedYear} />} />
+            <Route path="/constructor-standings" element={<ConstructorStandings selectedYear={selectedYear} />} />
+            <Route path="/teammates-comparison" element={<TeammatesComparison />}/>
+            <Route path="/driver-comparison" element={<DriverComparison selectedYear={selectedYear} />} />
+            <Route path="/driver-standings" element={<DriverStandings selectedYear={selectedYear} />} />
+            <Route path="/race/:raceId" element={<RacePage />} />
+          </Routes>
+        </div>
+        <Footer />
+      </Router>
+    </div>
   );
 }
 
