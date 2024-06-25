@@ -305,6 +305,7 @@ export function RacePage() {
                 isActive={activeButtonIndex === index}
                 index={index}
                 driver={result.Driver}
+                stint={drivers}
                 driverColor={driversColor[driverCode]}
                 startPosition={parseInt(result.grid, 10)}
                 endPosition={parseInt(result.position,10)}
