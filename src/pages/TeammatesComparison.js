@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import axios from 'axios';
-import { fetchDriverStats } from '../utils/api';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area, BarChart, Legend, Bar, ComposedChart } from 'recharts';
-
-import { HeadToHeadChart, Select, Loading } from '../components';
 import classNames from 'classnames';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area, BarChart, Legend, Bar, ComposedChart } from 'recharts';
+import axios from 'axios';
+
+import { fetchDriverStats } from '../utils/api';
+import { lightenColor } from '../utils/lightenColor';
+import { HeadToHeadChart, Select, Loading } from '../components';
 
 export const TeammatesComparison = () => {
   const [year, setYear] = useState('');
@@ -26,7 +27,6 @@ export const TeammatesComparison = () => {
       if (year && !teamCache[year]) {
         const response = await axios.get(`https://praneeth7781.github.io/f1nsight-api-2/constructors/${year}.json`);
         const constructors = response.data;
-        // console.log(constructors);
         setTeamCache((prevCache) => ({ ...prevCache, [year]: constructors }));
       }
     };
@@ -224,7 +224,19 @@ export const TeammatesComparison = () => {
       driver1QualifyingPosList: driverResults[driver1Id]?.qualiPosition.positions || {},
       driver2QualifyingPosList: driverResults[driver2Id]?.qualiPosition.positions || {},
       driver1RacePosList: driverResults[driver1Id]?.racePosition.positions || {},
-      driver2RacePosList: driverResults[driver2Id]?.racePosition.positions || {}
+      driver2RacePosList: driverResults[driver2Id]?.racePosition.positions || {},
+      driver1AvgRacePosition: isNaN(parseFloat(driverResults[driver1Id]?.avgRacePositions)) ? "0.00" : parseFloat(driverResults[driver1Id]?.avgRacePositions).toFixed(2),
+      driver2AvgRacePosition: isNaN(parseFloat(driverResults[driver2Id]?.avgRacePositions)) ? "0.00" : parseFloat(driverResults[driver2Id]?.avgRacePositions).toFixed(2),
+      driver1AvgQualiPositions: isNaN(parseFloat(driverResults[driver1Id]?.avgQualiPositions)) ? "0.00" : parseFloat(driverResults[driver1Id]?.avgQualiPositions).toFixed(2),
+      driver2AvgQualiPositions: isNaN(parseFloat(driverResults[driver2Id]?.avgQualiPositions)) ? "0.00" : parseFloat(driverResults[driver2Id]?.avgQualiPositions).toFixed(2),
+      driver1_win_rates: isNaN(parseFloat(driverResults[driver1Id]?.win_rates)) ? "0.00" : parseFloat(driverResults[driver1Id]?.win_rates).toFixed(2),
+      driver2_win_rates: isNaN(parseFloat(driverResults[driver2Id]?.win_rates)) ? "0.00" : parseFloat(driverResults[driver2Id]?.win_rates).toFixed(2),
+      driver1_podium_rates: isNaN(parseFloat(driverResults[driver1Id]?.podium_rates)) ? "0.00" : parseFloat(driverResults[driver1Id]?.podium_rates).toFixed(2),
+      driver2_podium_rates: isNaN(parseFloat(driverResults[driver2Id]?.podium_rates)) ? "0.00" : parseFloat(driverResults[driver2Id]?.podium_rates).toFixed(2),
+      driver1_pole_rates: isNaN(parseFloat(driverResults[driver1Id]?.pole_rates)) ? "0.00" : parseFloat(driverResults[driver1Id]?.pole_rates).toFixed(2),
+      driver2_pole_rates: isNaN(parseFloat(driverResults[driver2Id]?.pole_rates)) ? "0.00" : parseFloat(driverResults[driver2Id]?.pole_rates).toFixed(2),
+      driver1PositionsGainLost: driverResults[driver1Id]?.positionsGainLost || {},
+      driver2PositionsGainLost: driverResults[driver2Id]?.positionsGainLost || {}
     });
   };
 
@@ -307,8 +319,7 @@ const driverLockup = (driverId, driverName) => {
   )
 }
 
-
-const CustomizedAxisTick = ({ x, y, payload }) => {
+const CustomizedXAxisTick = ({ x, y, payload }) => {
   return (
     <g transform={`translate(${x},${y})`}>
       <text
@@ -347,9 +358,43 @@ const CustomizedYAxisTick = ({ x, y, payload }) => {
   );
 };
 
+const GridRow = (label, driver1, driver2, title) => {
+  const driver1SplitName = driver1.split(" ");
+  const driver2SplitName = driver2.split(" ")
+
+  return (
+    <>
+      <div className={classNames("grid grid-cols-3 gap-4 mb-16 text-neutral-400 items-center", {'text-xs': title})}>
+        <span className="tracking-xs uppercase text-xs">{label}</span>
+        <span className="tracking-xs uppercase text-center">
+          {title ? driver1SplitName[1] : driver1}
+        </span>
+        <span className="tracking-xs uppercase text-center">
+          {title ? driver2SplitName[1] : driver2}
+        </span>
+      </div>
+      <div className='divider-glow-medium ' />
+    </>
+  );
+}
+
+const chartData_posGainorLost = useMemo(() => {
+  if (!memoizedHeadToHeadData) return [];
+  
+  return Object.keys(memoizedHeadToHeadData.driver1PositionsGainLost).map(race => {
+    const driver1Data = memoizedHeadToHeadData.driver1PositionsGainLost[race];
+    const driver2Data = memoizedHeadToHeadData.driver2PositionsGainLost[race];
+
+    return driver1Data !== undefined && driver2Data !== undefined ? {
+      race,
+      [memoizedHeadToHeadData.driver1Code]: driver1Data,
+      [memoizedHeadToHeadData.driver2Code]: driver2Data
+    } : null;
+  }).filter(item => item !== null);
+}, [memoizedHeadToHeadData]);
+
   // console.log(chartData);
   // console.log(preparePositionChartData(memoizedHeadToHeadData.driver1QualifyingPosList, memoizedHeadToHeadData.driver2QualifyingPosList, memoizedHeadToHeadData.driver1Code, memoizedHeadToHeadData.driver2Code));
-
 
   return (
     <div className='global-container'>
@@ -398,12 +443,17 @@ const CustomizedYAxisTick = ({ x, y, payload }) => {
 
         {memoizedHeadToHeadData && (
         <>
-          <div className="flex items-center justify-between bg-glow rounded-[2.4rem] mb-64 mt-96 md:w-1/2 m-auto relative">
+          <div 
+            className="flex items-center justify-between bg-glow rounded-[2.4rem] mb-64 mt-96 md:w-2/3 m-auto relative px-16"
+            style={{ backgroundColor: `${teamColor}40`, boxShadow: `inset 0 0 32px ${teamColor}, 0 0 2.4rem 0 rgba(0, 0, 0, .5)`}}
+          >
             {driverLockup(memoizedHeadToHeadData.driver1Code, memoizedHeadToHeadData.driver1)}
             <div 
-              className="text-center leading-none bg-glow p-16 rounded-md absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 -z-[1]">
-              <p className="font-display gradient-text-light">{team}</p>
+              className="text-center leading-none rounded-md absolute top-32 left-1/2 -translate-x-1/2 -z-[1] w-full"
+            >
+              <p className="font-display text-[2.4rem] gradient-text-light">{team}</p>
               <p className="text-sm tracking-xs gradient-text-light">HEAD-TO-HEAD</p>
+              <div className="divider-glow-dark mt-8" />
             </div>
             {driverLockup(memoizedHeadToHeadData.driver2Code, memoizedHeadToHeadData.driver2)}
           </div>
@@ -417,24 +467,54 @@ const CustomizedYAxisTick = ({ x, y, payload }) => {
           <p className="text-center text-sm tracking-xs gradient-text-light mb-32">
             Last Updated {memoizedHeadToHeadData.lastUpdate}
           </p>
-          <HeadToHeadChart headToHeadData={memoizedHeadToHeadData} />
+          <HeadToHeadChart headToHeadData={memoizedHeadToHeadData} color={teamColor} />
 
+          <h3 className="heading-4 mb-16 text-neutral-400 ml-24">Driver Statistics Comparison</h3>
+          <div className="bg-glow-large rounded-lg mb-64 p-8 md:px-32 md:pt-16 md:pb-32"> 
+            {GridRow( " ", memoizedHeadToHeadData.driver1, memoizedHeadToHeadData.driver2, true)}
+            {GridRow( "Average Race Position", memoizedHeadToHeadData.driver1AvgRacePosition, memoizedHeadToHeadData.driver2AvgRacePosition)}
+            {GridRow( "Average Qualifying Position", memoizedHeadToHeadData.driver1AvgQualiPositions, memoizedHeadToHeadData.driver2AvgQualiPositions)}
+            {GridRow( "Win Rate", memoizedHeadToHeadData.driver1_win_rates, memoizedHeadToHeadData.driver2_win_rates)}
+            {GridRow( "Podium Rate", memoizedHeadToHeadData.driver1_podium_rates, memoizedHeadToHeadData.driver2_podium_rates)}
+            {GridRow( "Pole Rate", memoizedHeadToHeadData.driver1_pole_rates, memoizedHeadToHeadData.driver2_pole_rates)}
+          </div>
+
+          <h3 className="heading-4 mb-16 text-neutral-400 ml-24">Positions Gained or Lost During Race</h3>
+          <div className="bg-glow-large rounded-lg mb-64 p-8 md:px-32 md:pt-16 md:pb-32">
+            <ResponsiveContainer width="100%" height={400}>
+              <BarChart width={730} height={250} data={chartData_posGainorLost} margin={{ top: 20, right: 30 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#444444" />
+                <XAxis tick={<CustomizedXAxisTick />} />
+                <YAxis tick={{ fontSize: 12, fill: '#666' }} />
+                <Tooltip 
+                  labelFormatter={(name) => chartData[name] && chartData[name].race ? chartData[name].race : name} 
+                  formatter={(value) => {
+                    return value;
+                  }}
+                />
+                <Legend verticalAlign="top" height={36} />
+                <Bar dataKey={memoizedHeadToHeadData.driver1Code} fillOpacity={1} fill={teamColor} />
+                <Bar dataKey={memoizedHeadToHeadData.driver2Code} fillOpacity={1} fill={lightenColor(teamColor)} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+          
           <h3 className="heading-4 mb-16 text-neutral-400 ml-24">Qualifying Lap Times Comparision</h3>
           <div className="bg-glow-large rounded-lg mb-64 p-8 md:px-32 md:pt-16 md:pb-32">
             <ResponsiveContainer width="100%" height={400}>
               <BarChart width={730} height={250} data={chartData} margin={{ top: 20, right: 30 }}>
                 <defs>
                   <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#8884d8" stopOpacity={1}/>
-                    <stop offset="95%" stopColor="#8884d8" stopOpacity={0}/>
+                    <stop offset="5%" stopColor={teamColor} stopOpacity={1}/>
+                    <stop offset="95%" stopColor={teamColor} stopOpacity={0}/>
                   </linearGradient>
                   <linearGradient id="colorPv" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#82ca9d" stopOpacity={1}/>
-                    <stop offset="95%" stopColor="#82ca9d" stopOpacity={0}/>
+                    <stop offset="5%" stopColor={lightenColor(teamColor)} stopOpacity={1}/>
+                    <stop offset="95%" stopColor={lightenColor(teamColor)} stopOpacity={0}/>
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="#444444" />
-                <XAxis tick={<CustomizedAxisTick />} />
+                <XAxis tick={<CustomizedXAxisTick />} />
                 <YAxis 
                   domain={yAxisLimits} 
                   tick={<CustomizedYAxisTick />}
@@ -456,8 +536,8 @@ const CustomizedYAxisTick = ({ x, y, payload }) => {
                   }}
                 />
                 <Legend verticalAlign="top" height={32} />
-                <Bar dataKey={memoizedHeadToHeadData.driver1Code} fillOpacity={1} fill="url(#colorUv)" connectNulls={true} />
-                <Bar dataKey={memoizedHeadToHeadData.driver2Code} fillOpacity={1} fill="url(#colorPv)" connectNulls={true} />
+                <Bar dataKey={memoizedHeadToHeadData.driver1Code} fillOpacity={1} fill={teamColor} connectNulls={true} />
+                <Bar dataKey={memoizedHeadToHeadData.driver2Code} fillOpacity={1} fill={lightenColor(teamColor)} connectNulls={true} />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -467,7 +547,7 @@ const CustomizedYAxisTick = ({ x, y, payload }) => {
             <ResponsiveContainer width="100%" height={400}>
               <LineChart data={preparePositionChartData(memoizedHeadToHeadData.driver1QualifyingPosList, memoizedHeadToHeadData.driver2QualifyingPosList, memoizedHeadToHeadData.driver1Code, memoizedHeadToHeadData.driver2Code)} margin={{ top: 20, right: 30 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#444444" />
-                <XAxis tick={<CustomizedAxisTick />} />
+                <XAxis tick={<CustomizedXAxisTick />} />
                 <YAxis reversed={true} domain={[1, 'dataMax']} />
                 <Tooltip 
                   labelFormatter={(name) => chartData[name] && chartData[name].race ? chartData[name].race : name} 
@@ -476,8 +556,8 @@ const CustomizedYAxisTick = ({ x, y, payload }) => {
                   }}
                 />
                 <Legend verticalAlign="top" height={32} />
-                <Line type="monotone" dataKey={memoizedHeadToHeadData.driver1Code} stroke="#8884d8" connectNulls={true}/>
-                <Line type="monotone" dataKey={memoizedHeadToHeadData.driver2Code} stroke="#82ca9d" connectNulls={true}/>
+                <Line type="monotone" dataKey={memoizedHeadToHeadData.driver1Code} stroke={teamColor} connectNulls={true}/>
+                <Line type="monotone" dataKey={memoizedHeadToHeadData.driver2Code} stroke={lightenColor(teamColor)} connectNulls={true}/>
               </LineChart>
             </ResponsiveContainer>
           </div>
@@ -487,7 +567,7 @@ const CustomizedYAxisTick = ({ x, y, payload }) => {
             <ResponsiveContainer width="100%" height={400}>
               <LineChart data={preparePositionChartData(memoizedHeadToHeadData.driver1RacePosList, memoizedHeadToHeadData.driver2RacePosList, memoizedHeadToHeadData.driver1Code, memoizedHeadToHeadData.driver2Code)} margin={{ top: 20, right: 30 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#444444" />
-                <XAxis tick={<CustomizedAxisTick />} />
+                <XAxis tick={<CustomizedXAxisTick />} />
                 <YAxis reversed={true} domain={[1, 'dataMax']} />
                 <Tooltip 
                   labelFormatter={(name) => chartData[name] && chartData[name].race ? chartData[name].race : name} 
@@ -496,8 +576,8 @@ const CustomizedYAxisTick = ({ x, y, payload }) => {
                   }}
                 />
                 <Legend verticalAlign="top" height={32} />
-                <Line type="monotone" dataKey={memoizedHeadToHeadData.driver1Code} stroke="#8884d8" connectNulls={true}/>
-                <Line type="monotone" dataKey={memoizedHeadToHeadData.driver2Code} stroke="#82ca9d" connectNulls={true}/>
+                <Line type="monotone" dataKey={memoizedHeadToHeadData.driver1Code} stroke={teamColor} connectNulls={true}/>
+                <Line type="monotone" dataKey={memoizedHeadToHeadData.driver2Code} stroke={lightenColor(teamColor)} connectNulls={true}/>
               </LineChart>
             </ResponsiveContainer>
           </div>

@@ -39,7 +39,7 @@ export function RaceResultsPage({ selectedYear }) {
     return `${formattedDate} ${formattedTimeCapitalized}`;
   };
   
-// console.log(raceDetails);
+console.log('wrferfvev', raceDetails);
 
   return (
     <div className="race-results global-container">
@@ -50,7 +50,7 @@ export function RaceResultsPage({ selectedYear }) {
         <ul className="race-result">
           {raceDetails.map((race, index) => (
             <li key={index}>
-              {race.results ? (
+              {race.results && race.results.length > 0 ? (
                 <ul className="race-results__list">
                   {race.results.map((result, resultIndex) => (
                       <RaceResultItem 
