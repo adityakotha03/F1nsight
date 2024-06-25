@@ -202,7 +202,7 @@ export const Header = (props) => {
                 <NavLink activeclassname="active" className="navLink" to="/constructor-standings" onClick={() => handleNavLinkClick('Constructor Standings')}>Constructor Standings</NavLink>
                 <NavLink activeclassname="active" className="navLink" to="/driver-standings" onClick={() => handleNavLinkClick('Driver Standing')}>Driver Standings</NavLink>
                 <NavLink activeclassname="active" className="navLink" to="/teammates-comparison" onClick={() => handleNavLinkClick('Teammates Comparison')}>Teammates Comparison</NavLink>
-                <NavLink activeclassname="active" className="navLink" to="/driver-comparison" onClick={() => handleNavLinkClick('Driver Comparison')}>Drivers Comparison</NavLink>
+                {/* <NavLink activeclassname="active" className="navLink" to="/driver-comparison" onClick={() => handleNavLinkClick('Driver Comparison')}>Drivers Comparison</NavLink> */}
             </nav>
         </header>
     );
