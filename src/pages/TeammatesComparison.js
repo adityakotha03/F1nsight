@@ -26,7 +26,7 @@ export const TeammatesComparison = () => {
       if (year && !teamCache[year]) {
         const response = await axios.get(`https://praneeth7781.github.io/f1nsight-api-2/constructors/${year}.json`);
         const constructors = response.data;
-        console.log(constructors);
+        // console.log(constructors);
         setTeamCache((prevCache) => ({ ...prevCache, [year]: constructors }));
       }
     };
@@ -78,7 +78,7 @@ export const TeammatesComparison = () => {
         posAfterRace: data.posAfterRace[year] || {},
         podiums: data.podiums[year] || {},
         poles: data.poles[year] || {},
-        lastUpdate: data.lastUpdate
+        lastUpdate: data.lastUpdate || 'N/A'
       };
     };
 
@@ -96,7 +96,7 @@ export const TeammatesComparison = () => {
       const teamColors = colorsResponse.data;
 
       // Get the color for the selected team and year
-      setTeamColor(teamColors[year][drivers[0].driverId]);
+      if(teamColors[year]) setTeamColor(teamColors[year][drivers[0].driverId]);
       await calculateHeadToHead(driverResultsMap, drivers[0].driverId, drivers[1].driverId, drivers);
     }
   };
@@ -294,7 +294,7 @@ const driverLockup = (driverId, driverName) => {
   return (
     <div className="-mt-32 relative text-center">
       <img 
-        alt="" 
+        alt="No Image Available" 
         src={`${process.env.PUBLIC_URL + "/images/2024/drivers/" + driverId + ".png"}`}
         width={150} 
         height={150} 

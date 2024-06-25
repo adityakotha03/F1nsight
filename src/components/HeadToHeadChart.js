@@ -40,8 +40,8 @@ export const HeadToHeadChart = ({ headToHeadData }) => {
 
   return (
     <div className="mb-64 md:w-1/2 m-auto">
-    {StatLine('Qualifying Wins', headToHeadData.driver1QualifyingWins, headToHeadData.driver2QualifyingWins)}
-    {StatLine('Race Wins', headToHeadData.driver1RaceWins, headToHeadData.driver2RaceWins)}
+    {StatLine('Qualifying', headToHeadData.driver1QualifyingWins, headToHeadData.driver2QualifyingWins)}
+    {StatLine('Race', headToHeadData.driver1RaceWins, headToHeadData.driver2RaceWins)}
     {StatLine('Points', headToHeadData.driver1Points, headToHeadData.driver2Points)}
     {StatLine('Podiums', headToHeadData.driver1Podiums, headToHeadData.driver2Podiums)}
     {StatLine('Poles', headToHeadData.driver1Poles, headToHeadData.driver2Poles)}
