@@ -53,7 +53,19 @@ export const TeammatesComparison = () => {
     const response = await axios.get(`https://praneeth7781.github.io/f1nsight-api-2/constructors/${year}/${selectedTeam}.json`);
     const fetchedDrivers = response.data;
     setDrivers(fetchedDrivers);
+    const colorsResponse = await axios.get('https://praneeth7781.github.io/f1nsight-api-2/colors/teams.json');
+    const teamColors = colorsResponse.data;
 
+    // Get the color for the selected team and year
+    if(teamColors[year]){
+      // console.log(teamColors[year]);
+      setTeamColor(teamColors[year][selectedTeam]);
+      // console.log(selectedTeam);
+      // console.log(teamColors[year][selectedTeam]);
+    } 
+    else{
+      setTeamColor('FFFFFF');
+    }
     if(fetchedDrivers.length > 2){
       setShowDriverSelectors(true);
     }
@@ -95,16 +107,18 @@ export const TeammatesComparison = () => {
     };
 
     if (drivers.length >= 2) {
-      const colorsResponse = await axios.get('https://praneeth7781.github.io/f1nsight-api-2/colors/drivers.json');
-      const teamColors = colorsResponse.data;
+      // const colorsResponse = await axios.get('https://praneeth7781.github.io/f1nsight-api-2/colors/teams.json');
+      // const teamColors = colorsResponse.data;
 
-      // Get the color for the selected team and year
-      if(teamColors[year]){
-        setTeamColor(teamColors[year][drivers[0].driverId]);
-      } 
-      else{
-        setTeamColor('FFFFFF');
-      }
+      // // Get the color for the selected team and year
+      // if(teamColors[year]){
+      //   setTeamColor(teamColors[year][team]);
+      //   console.log(team);
+      //   console.log(teamColors[year][team]);
+      // } 
+      // else{
+      //   setTeamColor('FFFFFF');
+      // }
       await calculateHeadToHead(driverResultsMap, drivers[0].driverId, drivers[1].driverId, drivers);
     }
   };
