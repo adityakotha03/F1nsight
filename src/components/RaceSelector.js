@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+
 import { Select } from './Select';
 
 export const RaceSelector = ({ races, selectedYear, pagePath, setIsRaceSelected, isRaceSelected }) => {

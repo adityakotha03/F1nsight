@@ -2,15 +2,9 @@ import classNames from 'classnames';
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useLocation } from 'react-router-dom';
-import { Loading } from "./Loading"
-import { Select } from './Select';
+import { fetchDriversAndTires, fetchRaceResultsByCircuit, fetchQualifyingResultsByCircuit, fetchLocationData } from '../utils/api.js';
 
-import { fetchDriversAndTires, fetchRaceResultsByCircuit, fetchQualifyingResultsByCircuit, fetchLocationData } from '../utils/api';
-
-import { DriverCard } from './DriverCard';
-import {ThreeCanvas} from './ThreeCanvas.js'
-import { LapChart } from './LapChart';
-import { TireStrategy } from './TireStrategy';
+import { DriverCard, Loading, Select, ThreeCanvas, LapChart, TireStrategy } from '../components';
 
 export function RacePage() {
   const { state } = useLocation();
@@ -311,6 +305,7 @@ export function RacePage() {
                 isActive={activeButtonIndex === index}
                 index={index}
                 driver={result.Driver}
+                stint={drivers}
                 driverColor={driversColor[driverCode]}
                 startPosition={parseInt(result.grid, 10)}
                 endPosition={parseInt(result.position,10)}
@@ -406,7 +401,7 @@ export function RacePage() {
                   </div>
 
               </div>
-              <div className="bg-glow bg-glow--large px-24 pt-24 pb-24 rounded-xlarge">
+              <div className="bg-glow bg-glow-large px-24 pt-24 pb-24 rounded-xlarge">
                 <div className="flex items-start justify-between">
                   <div>
                     <div className="uppercase tracking-xs text-xs">Finshed</div>
@@ -455,7 +450,7 @@ export function RacePage() {
             </div>
           )}
           <h3 className="heading-4 mb-16 text-neutral-400 ml-24">Starting Grid</h3>
-          <div className="bg-glow bg-glow--large p-32 h-fit rounded-xlarge min-w-[22.4rem]">
+          <div className="bg-glow-large p-32 h-fit rounded-xlarge min-w-[22.4rem]">
             <ul className="flex flex-col w-fit m-auto">
               {startingGrid
                 .sort((a, b) => a.position - b.position)
@@ -522,7 +517,7 @@ export function RacePage() {
           {!driverSelected && (selectedSession === 'Race') &&(
             <>
               <h3 className="heading-4 mb-16 mt-32 text-neutral-400 ml-24">Fastest Laps</h3> 
-              <div className="bg-glow bg-glow--large h-fit p-32 mb-16 rounded-xlarge">
+              <div className="bg-glow-large h-fit p-32 mb-16 rounded-xlarge">
                 <div className="grid grid-cols-4 gap-4 mb-16 text-neutral-400">
 
                   <span className="tracking-xs uppercase">Driver</span> 

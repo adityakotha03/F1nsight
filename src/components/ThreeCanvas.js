@@ -1,4 +1,5 @@
 import React, { useRef, useEffect, useState, useMemo } from 'react';
+import classNames from 'classnames';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
@@ -6,7 +7,6 @@ import TWEEN from '@tweenjs/tween.js';
 import Stats from 'three/addons/libs/stats.module.js';
 
 import { Loading } from "./Loading"
-import classNames from 'classnames';
 
 export const ThreeCanvas = ({ MapFile, locData, driverColor, driverSelected, driverCode, fastestLap, isPaused, haloView, controls, speedFactor }) => {
   const [driverDetails, setDriverDetails] = useState(null);

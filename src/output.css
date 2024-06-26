@@ -1,5 +1,5 @@
 /*
-! tailwindcss v3.4.4 | MIT License | https://tailwindcss.com
+! tailwindcss v3.4.3 | MIT License | https://tailwindcss.com
 */
 
 /*
@@ -1170,6 +1170,10 @@ input[type="range"]::-ms-fill-lower {
   top: 1rem;
 }
 
+.top-16 {
+  top: 1.6rem;
+}
+
 .top-2 {
   top: 0.2rem;
 }
@@ -1188,6 +1192,10 @@ input[type="range"]::-ms-fill-lower {
 
 .-z-10 {
   z-index: -10;
+}
+
+.-z-\[1\] {
+  z-index: -1;
 }
 
 .z-0 {
@@ -1373,6 +1381,10 @@ input[type="range"]::-ms-fill-lower {
   margin-bottom: .8rem;
 }
 
+.mb-96 {
+  margin-bottom: 9.6rem;
+}
+
 .mb-\[12rem\] {
   margin-bottom: 12rem;
 }
@@ -1489,6 +1501,10 @@ input[type="range"]::-ms-fill-lower {
   margin-top: .8rem;
 }
 
+.mt-96 {
+  margin-top: 9.6rem;
+}
+
 .mt-\[20rem\] {
   margin-top: 20rem;
 }
@@ -1523,6 +1539,10 @@ input[type="range"]::-ms-fill-lower {
 
 .table {
   display: table;
+}
+
+.table-row {
+  display: table-row;
 }
 
 .grid {
@@ -1629,6 +1649,10 @@ input[type="range"]::-ms-fill-lower {
 
 .max-h-\[90dvh\] {
   max-height: 90dvh;
+}
+
+.min-h-screen {
+  min-height: 100vh;
 }
 
 .w-1\/2 {
@@ -1954,12 +1978,20 @@ input[type="range"]::-ms-fill-lower {
   grid-auto-flow: column;
 }
 
+.grid-cols-3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
 .grid-cols-4 {
   grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
 .grid-cols-7 {
   grid-template-columns: repeat(7, minmax(0, 1fr));
+}
+
+.flex-row-reverse {
+  flex-direction: row-reverse;
 }
 
 .flex-col {
@@ -2142,6 +2174,10 @@ input[type="range"]::-ms-fill-lower {
   border-radius: .8rem;
 }
 
+.rounded-\[2\.4rem\] {
+  border-radius: 2.4rem;
+}
+
 .rounded-\[7px\] {
   border-radius: 7px;
 }
@@ -2180,6 +2216,11 @@ input[type="range"]::-ms-fill-lower {
   border-end-end-radius: 1.6rem;
 }
 
+.rounded-l-\[\.8rem\] {
+  border-top-left-radius: .8rem;
+  border-bottom-left-radius: .8rem;
+}
+
 .rounded-l-lg {
   border-top-left-radius: 1.6rem;
   border-bottom-left-radius: 1.6rem;
@@ -2193,6 +2234,11 @@ input[type="range"]::-ms-fill-lower {
 .rounded-l-none {
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
+}
+
+.rounded-r-\[\.8rem\] {
+  border-top-right-radius: .8rem;
+  border-bottom-right-radius: .8rem;
 }
 
 .rounded-r-lg {
@@ -3133,6 +3179,10 @@ input[type="range"]::-ms-fill-lower {
   padding: .6rem;
 }
 
+.p-8 {
+  padding: .8rem;
+}
+
 .px-12 {
   padding-left: 1.2rem;
   padding-right: 1.2rem;
@@ -3236,6 +3286,10 @@ input[type="range"]::-ms-fill-lower {
 .py-\[1\.2rem\] {
   padding-top: 1.2rem;
   padding-bottom: 1.2rem;
+}
+
+.pb-16 {
+  padding-bottom: 1.6rem;
 }
 
 .pb-2 {
@@ -3356,6 +3410,10 @@ input[type="range"]::-ms-fill-lower {
 
 .text-\[1rem\] {
   font-size: 1rem;
+}
+
+.text-\[2\.4rem\] {
+  font-size: 2.4rem;
 }
 
 .text-\[2rem\] {
@@ -4070,7 +4128,11 @@ code {
   box-shadow: inset 0 0 2.4rem 0 rgba(255, 255, 255, .25), 0 0 2.4rem 0 rgba(0, 0, 0, .5);
 }
 
-.bg-glow--large {
+.bg-glow-sm {
+  box-shadow: inset 0 0 1rem 0 rgba(255, 255, 255, .25), 0 0 2.4rem 0 rgba(0, 0, 0, .5);
+}
+
+.bg-glow-large {
   background-color: #242424;
   box-shadow: inset 0 0 4rem 0 rgba(255, 255, 255, .1), 0 0 2.4rem 0 rgba(0, 0, 0, .5);
   @media (min-width: 768px) {
@@ -4087,10 +4149,6 @@ code {
   border-width: 1px;
   border-style: solid;
   border-image: none !important;
-}
-
-.bg-glow--sm {
-  box-shadow: inset 0 0 1rem 0 rgba(255, 255, 255, .25), 0 0 2.4rem 0 rgba(0, 0, 0, .5);
 }
 
 /* dividers */
@@ -4129,7 +4187,7 @@ code {
 }
 
 .gradient-text-light {
-  background: -webkit-linear-gradient(#d4d4d4, #525252);
+  background: -webkit-linear-gradient(#d4d4d4, #737373);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -6328,6 +6386,11 @@ code {
   .max-md\:items-center {
     align-items: center;
   }
+
+  .max-md\:px-8 {
+    padding-left: .8rem;
+    padding-right: .8rem;
+  }
 }
 
 @media not all and (min-width: 640px) {
@@ -6471,6 +6534,10 @@ code {
 }
 
 @media (min-width: 768px) {
+  .md\:top-32 {
+    top: 3.2rem;
+  }
+
   .md\:mx-2 {
     margin-left: 0.2rem;
     margin-right: 0.2rem;
@@ -6510,6 +6577,14 @@ code {
 
   .md\:h-full {
     height: 100%;
+  }
+
+  .md\:w-1\/2 {
+    width: 50%;
+  }
+
+  .md\:w-2\/3 {
+    width: 66.666667%;
   }
 
   .md\:w-48 {
@@ -6570,6 +6645,19 @@ code {
 
   .md\:bg-transparent {
     background-color: transparent;
+  }
+
+  .md\:px-32 {
+    padding-left: 3.2rem;
+    padding-right: 3.2rem;
+  }
+
+  .md\:pb-32 {
+    padding-bottom: 3.2rem;
+  }
+
+  .md\:pt-16 {
+    padding-top: 1.6rem;
   }
 
   .md\:text-right {

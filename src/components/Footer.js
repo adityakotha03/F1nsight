@@ -2,12 +2,13 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import classNames from 'classnames';
 import { FaGithub, FaLinkedin, FaGlobe, FaInstagram } from 'react-icons/fa';
+
 import { ConstructorDriver } from './ConstructorDriver';
 
 export const Footer = ({ className }) => {
     return (
         <div
-            className={classNames("footer flex justify-center flex-col bg-glow bg-glow--large px-16 p-32 mt-64", className)}
+            className={classNames("footer flex justify-center flex-col bg-glow bg-glow-large px-16 p-32 mt-64", className)}
         >   
             <div className="flex flex-col justify-center">   
                 <p className="tracking-sm text-neutral-400 text-sm text-center md:mt-16 mb-16">Creators</p>    
