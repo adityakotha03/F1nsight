@@ -99,7 +99,12 @@ export const TeammatesComparison = () => {
       const teamColors = colorsResponse.data;
 
       // Get the color for the selected team and year
-      if(teamColors[year]) setTeamColor(teamColors[year][drivers[0].driverId]);
+      if(teamColors[year]){
+        setTeamColor(teamColors[year][drivers[0].driverId]);
+      } 
+      else{
+        setTeamColor('FFFFFF');
+      }
       await calculateHeadToHead(driverResultsMap, drivers[0].driverId, drivers[1].driverId, drivers);
     }
   };
@@ -407,6 +412,9 @@ const formatDate = (isoString) => {
   return date.toLocaleString();
 };
 
+const currentYear = new Date().getFullYear();
+const years = Array.from({ length: currentYear - 1975 + 1 }, (_, i) => currentYear - i);
+
   // console.log(chartData);
   // console.log(preparePositionChartData(memoizedHeadToHeadData.driver1QualifyingPosList, memoizedHeadToHeadData.driver2QualifyingPosList, memoizedHeadToHeadData.driver1Code, memoizedHeadToHeadData.driver2Code));
 
@@ -416,8 +424,8 @@ const formatDate = (isoString) => {
       <div className="flex items-center justify-center gap-8">
         <Select label="Year" value={year} onChange={handleYearChange}>
           <option value="">Select Year</option>
-          {[...Array(50).keys()].map(i => (
-            <option key={i} value={2024 - i}>{2024 - i}</option>
+          {years.map((year) => (
+            <option key={year} value={year}>{year}</option>
           ))}
         </Select>
         <Select label="Team" value={team} onChange={handleTeamChange} disabled={!year}>
