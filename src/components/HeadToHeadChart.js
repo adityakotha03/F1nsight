@@ -19,6 +19,7 @@ export const HeadToHeadChart = ({ headToHeadData, color }) => {
   const StatLine = ( stat, d1Data, d2Data ) => {
     const d1Color = d1Data > d2Data ? color : `${color}40`;
     const d2Color = d2Data > d1Data ? color : `${color}40`;
+    
     return (
       <>
         <h6 className="text-center mb-8">{stat}</h6>

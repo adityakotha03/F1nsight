@@ -13,7 +13,6 @@ export const TeammatesComparison = () => {
   const [drivers, setDrivers] = useState([]);
   const [selectedDriver1, setSelectedDriver1] = useState('');
   const [selectedDriver2, setSelectedDriver2] = useState('');
-  const [driverData, setDriverData] = useState({});
   const [headToHeadData, setHeadToHeadData] = useState(null);
   const [showDriverSelectors, setShowDriverSelectors] = useState(false);
   const [teamCache, setTeamCache] = useState({});
@@ -45,7 +44,6 @@ export const TeammatesComparison = () => {
     setYear(selectedYear);
     setTeam('');
     setDrivers([]);
-    setDriverData({});
     setHeadToHeadData(null);
   };
 
@@ -78,7 +76,13 @@ export const TeammatesComparison = () => {
         posAfterRace: data.posAfterRace[year] || {},
         podiums: data.podiums[year] || {},
         poles: data.poles[year] || {},
-        lastUpdate: data.lastUpdate || 'N/A'
+        lastUpdate: data.lastUpdate,
+        positionsGainLost: data.positionsGainLost[year] || {},
+        avgRacePositions: data.avgRacePositions[year] || {},
+        avgQualiPositions: data.avgQualiPositions[year] || {},
+        win_rates: data.rates.wins[year] || {},
+        podium_rates: data.rates.podiums[year] || {},
+        pole_rates: data.rates.poles[year] || {}
       };
     };
 
@@ -90,7 +94,6 @@ export const TeammatesComparison = () => {
       [driverResults.driver2.driverId]: filteredDriver2Data
     };
 
-    setDriverData(driverResultsMap);
     if (drivers.length >= 2) {
       const colorsResponse = await axios.get('https://praneeth7781.github.io/f1nsight-api-2/colors/drivers.json');
       const teamColors = colorsResponse.data;
@@ -105,6 +108,8 @@ export const TeammatesComparison = () => {
     setSelectedDriver1(e.target.value);
 
     if (selectedDriver2) {
+      setAmbQ(true);
+      setAmbR(true);
       const driver1Data = drivers.find(driver => driver.driverId === e.target.value);
       const driver2Data = drivers.find(driver => driver.driverId === selectedDriver2);
       await fetchDriverData([driver1Data, driver2Data]);
@@ -115,6 +120,8 @@ export const TeammatesComparison = () => {
     setSelectedDriver2(e.target.value);
 
     if (selectedDriver1) {
+      setAmbQ(true);
+      setAmbR(true);
       const driver1Data = drivers.find(driver => driver.driverId === selectedDriver1);
       const driver2Data = drivers.find(driver => driver.driverId === e.target.value);
       await fetchDriverData([driver1Data, driver2Data]);
@@ -200,8 +207,10 @@ export const TeammatesComparison = () => {
       }
     });
 
-    const driver1TotalPoints = driverResults[driver1Id]?.posAfterRace.pos[Object.keys(driverResults[driver1Id]?.posAfterRace.pos).pop()]?.points || 0;
-    const driver2TotalPoints = driverResults[driver2Id]?.posAfterRace.pos[Object.keys(driverResults[driver2Id]?.posAfterRace.pos).pop()]?.points || 0;
+    // console.log(driverResults);
+
+    const driver1TotalPoints = parseInt(driverResults[driver1Id]?.posAfterRace.pos[Object.keys(driverResults[driver1Id]?.posAfterRace.pos).pop()]?.points) || 0;
+    const driver2TotalPoints = parseInt(driverResults[driver2Id]?.posAfterRace.pos[Object.keys(driverResults[driver2Id]?.posAfterRace.pos).pop()]?.points) || 0;        
 
     setHeadToHeadData({
       lastUpdate: driverResults[driver1Id]?.lastUpdate,
@@ -393,6 +402,11 @@ const chartData_posGainorLost = useMemo(() => {
   }).filter(item => item !== null);
 }, [memoizedHeadToHeadData]);
 
+const formatDate = (isoString) => {
+  const date = new Date(isoString);
+  return date.toLocaleString();
+};
+
   // console.log(chartData);
   // console.log(preparePositionChartData(memoizedHeadToHeadData.driver1QualifyingPosList, memoizedHeadToHeadData.driver2QualifyingPosList, memoizedHeadToHeadData.driver1Code, memoizedHeadToHeadData.driver2Code));
 
@@ -465,7 +479,7 @@ const chartData_posGainorLost = useMemo(() => {
           )}
 
           <p className="text-center text-sm tracking-xs gradient-text-light mb-32">
-            Last Updated {memoizedHeadToHeadData.lastUpdate}
+            Last Updated {formatDate(memoizedHeadToHeadData.lastUpdate)}
           </p>
           <HeadToHeadChart headToHeadData={memoizedHeadToHeadData} color={`#${teamColor}`} />
 
