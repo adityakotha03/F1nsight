@@ -1,0 +1,71 @@
+import classNames from 'classnames';
+import React from 'react';
+
+export const StartingGrid = (props) => {
+    const { raceResults, startingGrid, year, driverCode, driversDetails, driversColor } = props;
+    return (
+      <>
+        <h3 className="heading-4 mb-16 text-neutral-400 ml-24">
+            Starting Grid
+        </h3>
+        <div className="bg-glow-large p-32 h-fit rounded-xlarge min-w-[22.4rem]">
+            <ul className="flex flex-col w-fit m-auto">
+              {startingGrid
+                .sort((a, b) => a.position - b.position)
+                .map((gridPosition, index) => {
+                
+                // Create a lookup map for the constructors
+                const constructorMap = raceResults.reduce((acc, result) => {
+                  acc[result.Driver.code] = result.Constructor.constructorId;
+                  return acc;
+                }, {});
+
+                const getCarTopView = (driver) => {
+                  return constructorMap[driver];
+                };
+
+                return (
+                  <li 
+                    key={index} 
+                    className="text-center w-fit even:-mt-[8rem] even:ml-[6rem] even:mb-8 relative group"
+                  >
+                    <div className={classNames(
+                        "border-x-2 border-t-2 border-solid w-48 font-display h-32 ml-4",
+                        driverCode === driversDetails[gridPosition.driver_number] ? `border-neutral-[#${driversColor[driverCode]}]` : " border-neutral-700"
+                      )}
+                    />
+
+                    <img 
+                      alt="" 
+                      className="-mt-32 drop-shadow-[0_0_14px_rgba(0,0,0,0.75)]"
+                      src={
+                        year > 2023 ? 
+                        `${process.env.PUBLIC_URL + "/images/" + year + "/carTopView/" + getCarTopView(driversDetails[gridPosition.driver_number]) + ".png"}` : 
+                        `${process.env.PUBLIC_URL + "/images/f1nsight-topview.png"}`
+                      }
+                      width={56} 
+                    />
+
+                    <div className={classNames(
+                        "font-display leading-none text-18",
+                        "absolute top-1/2 -translate-y-1/2",
+                        "flex flex-col",
+                        "group-odd:right-[90%] group-even:left-[90%]",
+                        "group-odd:items-end group-even:items-start",
+                      )}
+                    >
+                      <p className="text-neutral-600">P{gridPosition.position}</p>
+                      <p style={{
+                        color: driverCode === driversDetails[gridPosition.driver_number] ? `#${driversColor[driverCode]}` : driverCode ? "text-neutral-400" : "#f1f1f1"
+                      }}>
+                          {driversDetails[gridPosition.driver_number]}
+                      </p>
+                    </div>
+                  </li>
+                );
+              })}
+          </ul>
+        </div>
+      </>
+    );
+}

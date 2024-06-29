@@ -317,11 +317,14 @@ export const TeammatesComparison = () => {
 
 const driverLockup = (driverId, driverName) => {
   const driverSplitName = driverName.split(" ");
+  console.log(driverId);
   return (
     <div className="-mt-32 relative text-center">
       <img 
-        alt="No Image Available" 
-        src={`${process.env.PUBLIC_URL + "/images/2024/drivers/" + driverId + ".png"}`}
+        alt="NotAvailable" 
+        src={driverId ? 
+          `${process.env.PUBLIC_URL + "/images/2024/drivers/" + driverId +  ".png"}` 
+          : `${process.env.PUBLIC_URL + "/images/2024/drivers/default.png"}`}
         width={150} 
         height={150} 
       />
@@ -466,7 +469,7 @@ const years = Array.from({ length: currentYear - 1975 + 1 }, (_, i) => currentYe
         {memoizedHeadToHeadData && (
         <>
           <div 
-            className="flex items-center justify-between bg-glow rounded-[2.4rem] mb-64 mt-96 md:w-2/3 m-auto relative px-16"
+            className={classNames("group flex items-center justify-between bg-glow rounded-[2.4rem] mb-64 mt-96 md:w-2/3 m-auto relative px-16", {"first:scale-x-[-1]" : memoizedHeadToHeadData.driver1Code === undefined})}
             style={{ backgroundColor: `#${teamColor}40`, boxShadow: `inset 0 0 32px #${teamColor}, 0 0 2.4rem 0 rgba(0, 0, 0, .5)`}}
           >
             {driverLockup(memoizedHeadToHeadData.driver1Code, memoizedHeadToHeadData.driver1)}
