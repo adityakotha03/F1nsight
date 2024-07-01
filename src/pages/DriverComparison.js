@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { fetchDriverStats, fetchDriversList } from '../utils/api';
-import { Loading } from "../components"
+import { Loading, Select as CustomSelect } from "../components"
 import Select from 'react-select';
 
 export function DriverComparison(){
@@ -12,6 +12,9 @@ export function DriverComparison(){
     const [driver1Data, setDriver1Data] = useState(null);
     const [driver2Data, setDriver2Data] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
+
+    console.log("driver1", driver1);
+    console.log("driver2", driver2);
 
 
     useEffect(() => {
@@ -53,28 +56,21 @@ export function DriverComparison(){
 
     const renderDriverStats = (driverData, driverLabel) => (
         <div>
-            <h2>{driverLabel}</h2>
-            <h3>Final Standings</h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Year</th>
-                        <th>Position</th>
-                        <th>Points</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {Object.entries(driverData.finalStandings).map(([year, data]) => (
-                        <tr key={year}>
-                            <td>{year}</td>
-                            <td>{data.position}</td>
-                            <td>{data.points}</td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
+            <h1 className="heading-1">{driverLabel}</h1>
+            <h2 className="heading-2 mb-96">Final Standings</h2>
+
+            {Object.entries(driverData.finalStandings).map(([year, data]) => (
+                <div key={year} className="mb-16 flex flex-col items-end">
+                    <p className="font-display text-neutral-500">{year}</p>
+
+                    <div className="w-1/2 justify-between text-right">
+                        <p className="text-sm tracking-sm">Position</p>
+                        <p className="text-lg font-display">{data.position}</p>
+                    </div>
+                </div>
+            ))}
     
-            <h3>Race Positions</h3>
+            <h3 className="heading-3">Race Positions</h3>
             {Object.entries(driverData.racePosition).map(([year, data]) => (
                 <div key={year}>
                     <h4>{year}</h4>
@@ -96,7 +92,7 @@ export function DriverComparison(){
                     </table>
                 </div>
             ))}
-            <h3>Positions After Each Race</h3>
+            <h3 className="heading-3">Positions After Each Race</h3>
                 {Object.entries(driverData.posAfterRace).map(([year, data]) => (
                     <div key={year}>
                         <h4>{year}</h4>
@@ -120,7 +116,7 @@ export function DriverComparison(){
                         </table>
                     </div>
                 ))}
-            <h3>Qualifying Positions</h3>
+            <h3 className="heading-3">Qualifying Positions</h3>
             {Object.entries(driverData.qualiPosition).map(([year, data]) => (
                 <div key={year}>
                     <h4>{year}</h4>
@@ -143,7 +139,7 @@ export function DriverComparison(){
                 </div>
             ))}
     
-            <h3>Total Statistics</h3>
+            <h3 className="heading-3">Total Statistics</h3>
             <ul>
                 <li>Total Wins: {driverData.totalWins}</li>
                 <li>Total Podiums: {driverData.totalPodiums}</li>
@@ -205,12 +201,28 @@ export function DriverComparison(){
                         onChange={(selectedOption) => setInputDriver1(selectedOption)}
                         styles={customStyles}
                     />
+                    
                     <Select
                         placeholder="Select Driver 2"
                         options={driversList.map(driver => ({ value: driver.id, label: driver.name }))}
                         onChange={(selectedOption) => setInputDriver2(selectedOption)}
                         styles={customStyles}
                     />
+
+                    {/* <CustomSelect label="Select Driver 1" onChange={(selectedOption) => setInputDriver1(selectedOption)}>
+                        {driversList.map(driver => (
+                            <option key={driver.id} value={driver.id}>
+                                {driver.name}
+                            </option>
+                        ))} 
+                    </CustomSelect>
+                    <CustomSelect label="Select Driver 2" onChange={(selectedOption) => setInputDriver2(selectedOption)}>
+                        {driversList.map(driver => (
+                            <option key={driver.id} value={driver.id}>
+                                {driver.name}
+                            </option>
+                        ))} 
+                    </CustomSelect> */}
                     {/* <input
                         type='text'
                         placeholder='Enter Driver 1 ID'
@@ -227,12 +239,16 @@ export function DriverComparison(){
                     {driver1Data && driver2Data && (
                         <div>
                             <div className='comparison-container'>
-                                <h2 className='heading-2 text-center mb-40 text-neutral-400'>{driversList.find(q=> q.id === driver1).name} vs {driversList.find(q=> q.id === driver2).name}</h2>
+                                <h2 className='heading-2 text-center mb-40 text-neutral-400'>
+                                    {driversList.find(q=> q.id === driver1).name} vs {driversList.find(q=> q.id === driver2).name}
+                                </h2>
                                 <h3 className="comparison-title">Final Standings</h3>
                                 {renderFinalStandings()}
                             </div>
-                            {renderDriverStats(driver1Data, driversList.find(q=> q.id === driver1).name)}
-                            {renderDriverStats(driver2Data, driversList.find(q=> q.id === driver2).name)}
+                            <div className='flex justify-center'>
+                                {renderDriverStats(driver1Data, driversList.find(q=> q.id === driver1).name)}
+                                {renderDriverStats(driver2Data, driversList.find(q=> q.id === driver2).name)}
+                            </div>
                         </div>
                     )}
                 </div>

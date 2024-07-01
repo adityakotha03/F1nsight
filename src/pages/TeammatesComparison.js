@@ -110,15 +110,13 @@ export const TeammatesComparison = () => {
       // const colorsResponse = await axios.get('https://praneeth7781.github.io/f1nsight-api-2/colors/teams.json');
       // const teamColors = colorsResponse.data;
 
-      // // Get the color for the selected team and year
-      // if(teamColors[year]){
-      //   setTeamColor(teamColors[year][team]);
-      //   console.log(team);
-      //   console.log(teamColors[year][team]);
-      // } 
-      // else{
-      //   setTeamColor('FFFFFF');
-      // }
+      // Get the color for the selected team and year
+      if(teamColors[year]){
+        setTeamColor(teamColors[year][drivers[0].driverId]);
+      } 
+      else {
+        setTeamColor('5F0B84');
+      }
       await calculateHeadToHead(driverResultsMap, drivers[0].driverId, drivers[1].driverId, drivers);
     }
   };
@@ -332,12 +330,18 @@ export const TeammatesComparison = () => {
 const driverLockup = (driverId, driverName) => {
   const driverSplitName = driverName.split(" ");
   return (
-    <div className="-mt-32 relative text-center">
+    <div 
+      className="flex justify-center relative text-center group rounded-lg px-16"
+      style={{ boxShadow: "inset 0px 0px 32px 0px rgba(0,0,0,0.5)" }}
+    >
       <img 
-        alt="No Image Available" 
-        src={`${process.env.PUBLIC_URL + "/images/2024/drivers/" + driverId + ".png"}`}
+        alt="NotAvailable" 
+        src={year >= 2023 ? 
+          `${process.env.PUBLIC_URL + "/images/2024/drivers/" + driverId +  ".png"}` 
+          : `${process.env.PUBLIC_URL + "/images/2024/drivers/default.png"}`}
         width={150} 
         height={150} 
+        className={classNames("-mt-32", {"group-[:first-of-type]:scale-x-[-1]" : year <= 2023 })}
       />
       <div className="absolute top-full leading-none w-full mt-8">
         <div className="text-sm tracking-sm uppercase text-gradient-light">{driverSplitName[0]}</div>
@@ -480,16 +484,20 @@ const years = Array.from({ length: currentYear - 1975 + 1 }, (_, i) => currentYe
         {memoizedHeadToHeadData && (
         <>
           <div 
-            className="flex items-center justify-between bg-glow rounded-[2.4rem] mb-64 mt-96 md:w-2/3 m-auto relative px-16"
-            style={{ backgroundColor: `#${teamColor}40`, boxShadow: `inset 0 0 32px #${teamColor}, 0 0 2.4rem 0 rgba(0, 0, 0, .5)`}}
+              className="text-center leading-none mt-48 mb-48 w-1/2 m-auto"
+            >
+            <p className="font-display text-[2.4rem] gradient-text-light">{team}</p>
+            <p className="text-sm tracking-xs gradient-text-light">HEAD-TO-HEAD</p>
+            <div className="divider-glow-dark mt-8" />
+          </div>
+          <div 
+            className="flex items-center justify-center gap-64 mb-64 md:w-2/3 m-auto relative px-16"
           >
             {driverLockup(memoizedHeadToHeadData.driver1Code, memoizedHeadToHeadData.driver1)}
             <div 
-              className="text-center leading-none rounded-md absolute top-16 md:top-32 left-1/2 -translate-x-1/2 -z-[1] w-full"
+              className="text-center leading-none rounded-md absolute top-48 left-1/2 -translate-x-1/2 -z-[1] w-1/2"
             >
-              <p className="font-display text-[2.4rem] gradient-text-light">{team}</p>
-              <p className="text-sm tracking-xs gradient-text-light">HEAD-TO-HEAD</p>
-              <div className="divider-glow-dark mt-8" />
+              <p className="font-display text-[2.4rem] gradient-text-light">VS</p>
             </div>
             {driverLockup(memoizedHeadToHeadData.driver2Code, memoizedHeadToHeadData.driver2)}
           </div>
