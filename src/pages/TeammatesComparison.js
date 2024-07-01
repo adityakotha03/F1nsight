@@ -64,7 +64,7 @@ export const TeammatesComparison = () => {
       // console.log(teamColors[year][selectedTeam]);
     } 
     else{
-      setTeamColor('FFFFFF');
+      setTeamColor('5F0B84');
     }
     if(fetchedDrivers.length > 2){
       setShowDriverSelectors(true);
@@ -111,12 +111,12 @@ export const TeammatesComparison = () => {
       // const teamColors = colorsResponse.data;
 
       // Get the color for the selected team and year
-      if(teamColors[year]){
-        setTeamColor(teamColors[year][drivers[0].driverId]);
-      } 
-      else {
-        setTeamColor('5F0B84');
-      }
+      // if(teamColors[year]){
+      //   setTeamColor(teamColors[year][drivers[0].driverId]);
+      // } 
+      // else {
+      //   setTeamColor('5F0B84');
+      // }
       await calculateHeadToHead(driverResultsMap, drivers[0].driverId, drivers[1].driverId, drivers);
     }
   };
