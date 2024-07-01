@@ -12,7 +12,7 @@ export const Footer = ({ className }) => {
         >   
             <div className="flex flex-col justify-center">   
                 <p className="tracking-sm text-neutral-400 text-sm text-center md:mt-16 mb-16">Creators</p>    
-                <div className="flex max-md:flex-col max-md:items-center md:justify-center">
+                <div className="flex max-md:flex-col max-md:items-center md:justify-center gap-32">
                     <ConstructorDriver 
                         className=""
                         year={2024}

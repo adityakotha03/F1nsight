@@ -1,8 +1,6 @@
 import classNames from 'classnames';
 import React from 'react';
 
-import { darkenColor } from '../utils/darkenColor';
-
 export const HeadToHeadChart = ({ headToHeadData, color }) => {
   const FillMath = (d1, d2, driver) => {
     const total = d1 + d2;

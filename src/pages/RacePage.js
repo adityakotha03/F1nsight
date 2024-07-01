@@ -405,7 +405,7 @@ export function RacePage() {
             {selectedSession === "Race" && (
                 <>
                     {!driverSelected && (
-                        <div className="w-full tracking-xs text-center text-neutral-400 gradient-border-extreme py-4 px-32 leading-none">
+                        <div className="w-full tracking-xs text-center text-neutral-300 gradient-border-extreme py-8 px-32 leading-none">
                             Select driver from the leaderboard to activate race
                             mode
                         </div>
