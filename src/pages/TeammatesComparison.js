@@ -58,14 +58,12 @@ export const TeammatesComparison = () => {
 
     // Get the color for the selected team and year
     if(teamColors[year]){
-      // console.log(teamColors[year]);
       setTeamColor(teamColors[year][selectedTeam]);
-      // console.log(selectedTeam);
-      // console.log(teamColors[year][selectedTeam]);
     } 
     else{
       setTeamColor('5F0B84');
     }
+    
     if(fetchedDrivers.length > 2){
       setShowDriverSelectors(true);
     }
