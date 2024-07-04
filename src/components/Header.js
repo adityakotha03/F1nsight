@@ -1,111 +1,45 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { NavLink } from 'react-router-dom';
+import PropTypes from 'prop-types';
+
 import classNames from 'classnames';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { ReactComponent as Logo} from './f1nsight.svg';
 import { Select } from './Select';
-
 import { RaceSelector } from './RaceSelector';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { fetchRacesAndSessions } from '../utils/api';
 
-export const Header = (props) => {
-    const { setSelectedYear, selectedYear, currentYear } = props;
+export const Header = ({ setResultPage, setResultPagePath }) => {
 
-    const [navOpen, setNavOpen] = useState(false);
-    const [isLarge, setIsLarge] = useState(false);
-    const [subNavOpen, setSubNavOpen] = useState(false);
-    const [page, setPage] = useState('Home');
-    const [pagePath, setpagePath] = useState('/');
     const [races, setRaces] = useState([]);
-    const [isRaceSelected, setIsRaceSelected] = useState(false);
+    const [selectedYear, setSelectedYear] = useState([]);
+    const [isOpen, setIsOpen] = useState([]);
 
     const navRef = useRef(null);
     const headerRef = useRef(null);
 
     useEffect(() => {
-        const handleOutsideClick = (event) => {
-            if (headerRef.current && !headerRef.current.contains(event.target)) {
-                setNavOpen(false);
-            }
+        const fetchData = async () => {
+            const data = await fetchRacesAndSessions(selectedYear);
+            setRaces(data);
         };
-        document.addEventListener('click', handleOutsideClick);
-        return () => {
-            document.removeEventListener('click', handleOutsideClick);
-        };
-    }, [headerRef]);
-
-    useEffect(() => {
-        const handleOutsideClick = (event) => {
-            if (navRef.current && !navRef.current.contains(event.target)) {
-                setSubNavOpen(false);
-            }
-        };
-        document.addEventListener('click', handleOutsideClick);
-        return () => {
-            document.removeEventListener('click', handleOutsideClick);
-        };
-    }, [navRef]);
-    
-    useEffect(() => {
-        const handleResize = () => {
-            setIsLarge(window.innerWidth > 768)
-        };
-
-        handleResize();
-
-        window.addEventListener('resize', handleResize);
-        return () => {
-            window.removeEventListener('resize', handleResize);
-        };
-    }, []);
-
-    // useEffect(() => {
-    //     const fetchRaces = async () => {
-    //     const response = await fetch(`https://api.openf1.org/v1/meetings?year=${selectedYear}`);
-    //     if (response.ok) {
-    //         const data = await response.json();
-    //         setRaces(data);
-    //     }
-    //     };
-
-    //     fetchRaces();
-    // }, [selectedYear]);
-
-    useEffect(() => {
-        const fetchRacesAndSessions = async () => {
-            try {
-                // Fetch races
-                const racesResponse = await fetch(`https://api.openf1.org/v1/meetings?year=${selectedYear}`);
-                if (!racesResponse.ok) {
-                    throw new Error('Failed to fetch races');
-                }
-                const racesData = await racesResponse.json();
-
-                // Fetch sessions
-                const sessionsResponse = await fetch(`https://api.openf1.org/v1/sessions?year=${selectedYear}&session_name=Race`);
-                if (!sessionsResponse.ok) {
-                    throw new Error('Failed to fetch sessions');
-                }
-                const sessionsData = await sessionsResponse.json();
-
-                // Filter races based on meeting_key presence in sessions
-                const filteredRaces = racesData.filter(race => 
-                    sessionsData.some(session => session.meeting_key === race.meeting_key)
-                );
-
-                setRaces(filteredRaces);
-            } catch (error) {
-                console.error('Error fetching data:', error);
-            }
-        };
-
-        fetchRacesAndSessions();
+      
+        fetchData();
     }, [selectedYear]);
 
-    const handleYearChange = (e) => {
-        setSelectedYear(e.target.value);
+    const handleNavLinkClick = (page) => {
+        setResultPage(page);
+        if (page === 'Race Results') {
+            setResultPagePath('/race-results');
+        } else if (page === 'Constructor Standings') {
+            setResultPagePath('/constructor-standings');
+        } else if (page === 'Driver Standing') {
+            setResultPagePath('/driver-standings');
+        }
     };
 
+    const currentYear = new Date().getFullYear();
     const generateYears = (startYear) => {
         const years = [];
         for (let year = currentYear; year >= startYear; year--) {
@@ -114,96 +48,143 @@ export const Header = (props) => {
         return years;
     };
 
-    // console.log({page})
-
-    const handleNavLinkClick = (page) => {
-        setSubNavOpen(false);
-        setNavOpen(false);
-        setPage(page);
-
-        if (page === 'Race Results') {
-            setpagePath('/race-results');
-        } else if (page === 'Constructor Standings') {
-            setpagePath('/constructor-standings');
-        } else if (page === 'Home') {
-            setpagePath('/');
-        } else if (page === 'Driver Standing') {
-            setpagePath('/driver-standings');
-        } else if (page === 'Teammates Comparison') {
-            setpagePath('/teammates-comparison');
-        } else {
-            setpagePath('/driver-comparison');
-        }
-
-        setIsRaceSelected(false);
+    const handleYearChange = (e) => {
+        setSelectedYear(e.target.value);
     };
 
+    const toggleOpen = () => {
+        setIsOpen(!isOpen);
+    };
+
+    const raceSelectorContent = (
+        <>
+            <Select className="mb-8" label="Year" value={selectedYear} onChange={handleYearChange} fullWidth>
+                <option value="">---</option>
+                {generateYears(2023).map((year) => (
+                    <option key={year} value={year}>{year}</option>
+                ))}
+            </Select>
+            <RaceSelector 
+                races={races} 
+                selectedYear={selectedYear} 
+                onChange={toggleOpen}
+            />
+        </>
+    )
+    
+    const comparisonContent = (
+        <>
+            {/* <NavLink to="/driver-comparison" className="block px-4 py-2" onClick={toggleOpen}>Driver Comparison</NavLink> */}
+            <NavLink disabled to="/driver-comparison" className="block px-4 py-2 text-neutral-500">Driver Comparison - Coming Soon</NavLink>
+            <NavLink to="/teammates-comparison" className="block px-4 py-2" onClick={toggleOpen}>Teammates Comparison</NavLink>
+        </>
+    )
+    const resultsContent = (
+        <>
+             <NavLink 
+                to="/race-results" 
+                className="block px-4 py-2" 
+                onClick={() => {
+                    handleNavLinkClick('Race Results')
+                    toggleOpen()
+                }}
+                >Race Results</NavLink>
+            <NavLink 
+                to="/constructor-standings" 
+                className="block px-4 py-2 "
+                onClick={() => {
+                    handleNavLinkClick('Constructor Standings')
+                    toggleOpen()
+                }} 
+                >Constructor Standings</NavLink>
+            <NavLink 
+                to="/driver-standings" 
+                className="block px-4 py-2"
+                onClick={() => {
+                    handleNavLinkClick('Driver Standing')
+                    toggleOpen()
+                }}
+                >Driver Standings</NavLink>
+        </>
+    )
+    
     return (
+        <>
         <header className="global-header" ref={headerRef}>
-            <div className="global-header__main-nav shadow-lg bg-glow bg-neutral-800/90 backdrop-blur-sm" >
+            <div className="global-header__main-nav shadow-lg bg-glow bg-neutral-800/90 backdrop-blur-sm uppercase tracking-xs text-sm " >
 
                 <div className="global-header__main-nav__left">
-                    <a href="/"><Logo height={48} onClick={() => handleNavLinkClick('Home')}/></a>
-                    <div className="flex items-center gap-8">
-                        {(navOpen || isLarge) && (
-                            <Select label="Year" value={selectedYear} onChange={handleYearChange}>
-                                {generateYears(2023).map((year) => (
-                                <option key={year} value={year}>{year}</option>
-                                ))}
-                            </Select>
-                        )}
-                        <button className={classNames("shadow-lg bg-glow py-[1.2rem] px-16 border-[1px] border-solid border-neutral-800 rounded-md", {'hidden': isLarge})} onClick={() => setNavOpen(!navOpen)}>
-                            {!navOpen ? <FontAwesomeIcon icon="bars" /> : <FontAwesomeIcon icon="xmark" />}
+                    <a href="/"><Logo height={48} /></a>
+                </div>
+
+                {/* Mobile */}
+                <button className="md:hidden p-8" onClick={toggleOpen}>
+                    <FontAwesomeIcon icon="bars" className="fa-2x" />
+                </button>
+                
+                {/* Desktop */}
+                <div className="flex items-center gap-16 max-md:hidden">
+                    <div className="relative group w-max">
+                        <button className="global-header__main-nav__button py-12 px-24 rounded-[.8rem] uppercase">
+                            Results
+                            <FontAwesomeIcon icon="chevron-down" className='global-header__main-nav__button__icon' />
                         </button>
+                        <div className="absolute right-1 -mt-2 pt-12 w-max hidden group-hover:block">
+                            <div className="flex flex-col gap-8 p-16 rounded-md bg-glow bg-neutral-800 shadow-lg">
+                                {resultsContent}
+                            </div>
+                        </div>
+                    </div>
+                    <div className="relative group w-max">
+                        <button className="global-header__main-nav__button py-12 px-24 rounded-[.8rem] uppercase">
+                            Comparisons
+                            <FontAwesomeIcon icon="chevron-down" className='global-header__main-nav__button__icon' />
+                        </button>
+                        <div className="absolute right-1 -mt-2 pt-12 w-max hidden group-hover:block">
+                            <div className="flex flex-col gap-8 p-16 rounded-md bg-glow bg-neutral-800 shadow-lg">
+                                {comparisonContent}
+                            </div>
+                        </div>
+                    </div>
+                    <div className="relative group w-max">
+                        <button className="global-header__main-nav__button py-12 px-24 rounded-[.8rem] uppercase">Race Viewer</button>
+                        <div className="absolute right-1 -mt-2 pt-12 w-max hidden group-hover:block min-w-[20rem]">
+                            <div className="flex flex-col p-16 rounded-md bg-glow bg-neutral-800 shadow-lg">
+                                {raceSelectorContent}
+                            </div>
+                        </div>
                     </div>
                 </div>
-                
-                {(navOpen || isLarge) && (
-                    <div className="global-header__main-nav__right flex max-sm:flex-col">
-                        <button 
-                            className="select select--style-for-button text-left max-md:w-full"
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                setSubNavOpen(!subNavOpen);
-                            }}
-                        >
-                            <div className="select__input bg-glow bg-neutral-800/10 leading-none min-w-[18rem]">
-                                {isRaceSelected || page ==='Home' ? '---' : page}
-                            </div>
-                            <div className="select__label tracking-xs uppercase">
-                                Season Results
-                            </div>
-                            <FontAwesomeIcon icon="caret-down" className="select__icon text-neutral-400 fa-lg" />
-                        </button>
-                        <RaceSelector 
-                            races={races} 
-                            selectedYear={selectedYear} 
-                            setIsRaceSelected={setIsRaceSelected} 
-                            isRaceSelected={isRaceSelected}
-                            pagePath={pagePath}
-                            page={page}
-                        />
-                    </div>
-                )}
             </div>
-
-            <nav 
-                className="global-header__sub-nav text-center flex justify-center
-                    border-b-2 border-neutral-800 bg-neutral-900/90 backdrop-blur-sm shadow-xl
-                    ease-in-out duration-300 uppercase tracking-xs"
-                style={{
-                    opacity: subNavOpen ? '1' : '0',
-                    pointerEvents: subNavOpen ? 'initial' : 'none',
-                    height: subNavOpen ? 'inherit' : '1rem', 
-                }}
-                ref={navRef}
-            >
-                <NavLink activeclassname="active" className="navLink" to="/race-results" onClick={() => handleNavLinkClick('Race Results')}>Race Results</NavLink>
-                <NavLink activeclassname="active" className="navLink" to="/constructor-standings" onClick={() => handleNavLinkClick('Constructor Standings')}>Constructor Standings</NavLink>
-                <NavLink activeclassname="active" className="navLink" to="/driver-standings" onClick={() => handleNavLinkClick('Driver Standing')}>Driver Standings</NavLink>
-                <NavLink activeclassname="active" className="navLink" to="/teammates-comparison" onClick={() => handleNavLinkClick('Teammates Comparison')}>Teammates Comparison</NavLink>
-                {/* <NavLink activeclassname="active" className="navLink" to="/driver-comparison" onClick={() => handleNavLinkClick('Driver Comparison')}>Drivers Comparison</NavLink> */}
-            </nav>
         </header>
+
+        {/* Mobile */}
+        {isOpen && (
+            <div className="fixed top-[0] left-[0] w-full h-full bg-glow bg-neutral-900/95 backdrop-blur-sm md:hidden z-[1001] text-[2rem]">
+                <button className="absolute top-8 right-16 p-8" onClick={toggleOpen}>
+                    <FontAwesomeIcon icon="xmark" className="fa-2x" />
+                </button>
+                <div className="pt-64 px-32">
+                    <p className="font-display tracking-xs my-16 text-neutral-500">Results</p>
+                    <div className="flex flex-col gap-16">
+                        {resultsContent}
+                    </div>
+                    <p className="font-display tracking-xs my-16 text-neutral-500 mt-32">Comparisons</p>
+                    <div className="flex flex-col gap-16">
+                        {comparisonContent}
+                    </div>
+                    <p className="font-display tracking-xs my-16 text-neutral-500 mt-32">Race Viewer</p>
+                    <div className="flex flex-col gap-16">
+                        {raceSelectorContent}
+                    </div>
+                </div>
+            </div>
+        )}
+        </>
     );
+};
+
+Header.propTypes = {
+    setResultPage: PropTypes.func.isRequired,
+    setResultPagePath: PropTypes.func.isRequired,
 };

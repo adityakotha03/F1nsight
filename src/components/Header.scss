@@ -9,40 +9,25 @@
 .global-header__main-nav {
     display: flex;
     gap: .8rem;
-    flex-direction: column;
-    padding: .8rem 1.6rem;
-    @media (min-width: 768px) {
-        align-items: center;
-        flex-direction: row;
-        justify-content: space-between;
-    }
-}
-
-.global-header__sub-nav {
-    align-items: center;
-    display: flex;
-    flex-direction: column;
-    gap: 1.6rem;
     justify-content: space-between;
-    padding: 1.6rem;
-    width: 100%;
-    @media (min-width: 640px) {
-        gap: 3.2rem;
-        flex-direction: row;
-        justify-content: center;
-    }
+    padding: .8rem 1.6rem;
 }
 
 .global-header__main-nav__left {
-    display: flex;
-    align-items: center;
-    gap: 1.6rem;
-    justify-content: space-between;
-    width: 100%;
+
 }
 
 .global-header__main-nav__right {
-    gap: 1.6rem;
-    justify-content: space-between;
-    gap: .8rem;
+    
+}
+
+.global-header__main-nav__button {
+    position: relative;
+
+    &__icon {
+        position: absolute;
+        bottom:.4rem;
+        left: 50%;
+        transform: translateX(-50%);
+    }
 }

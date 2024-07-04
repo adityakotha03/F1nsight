@@ -23,6 +23,7 @@ import {
 
 export function RacePage() {
     const { state } = useLocation();
+    // console.log({state});
     const { raceName, meetingKey, year, location } = state || {};
     const [drivers, setDrivers] = useState([]);
     const [laps, setLaps] = useState([]);
