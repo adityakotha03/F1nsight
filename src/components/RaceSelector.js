@@ -1,19 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { Select } from './Select';
 
-export const RaceSelector = ({ races, selectedYear, pagePath, setIsRaceSelected, isRaceSelected }) => {
+export const RaceSelector = ({ races, selectedYear, onChange }) => {
   const navigate = useNavigate();
 
-  const [selectValue, setSelectValue] = useState(localStorage.getItem('selectValue') || '');
+  const [selectValue, setSelectValue] = useState('');
 
   const handleRaceChange = (e) => {
-    if (e.target.value === "") {
-      setIsRaceSelected(false);
-      navigate(pagePath);
-    } else {
-      setIsRaceSelected(true);
       const race = races.find(r => r.meeting_name === e.target.value);
       setSelectValue(race.meeting_name);
       localStorage.setItem('selectValue', race.meeting_name);
@@ -30,20 +25,13 @@ export const RaceSelector = ({ races, selectedYear, pagePath, setIsRaceSelected,
           }
         );
       }
-    }
+      onChange()
   };
 
-  useEffect(() => {
-    if (!isRaceSelected) { 
-      setSelectValue('');
-      localStorage.removeItem('selectValue');
-    };
-  }, [isRaceSelected]);
-
   return (
-    <Select label="Select Track" onChange={handleRaceChange} value={selectValue}>
+    <Select label="Select Track" onChange={handleRaceChange} value={selectValue} disabled={!!races === false} fullWidth>
         <option value="">---</option>
-        {races.map((race) => (
+        {races?.map((race) => (
           <option key={race.meeting_key} value={race.meeting_name}>{race.meeting_name}</option>
         ))}
     </Select>

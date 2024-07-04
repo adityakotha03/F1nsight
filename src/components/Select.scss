@@ -17,6 +17,10 @@
     @media (min-width: 640px) {
         width: max-content;
     }
+
+    &:disabled {
+        
+    }
 }
   
 .select__label {
@@ -26,13 +30,6 @@
     pointer-events: none;
     position: absolute;
     top: .8rem;
-}
-
-.select__icon {
-    position: absolute;
-    top: 1.2rem;
-    right: .8rem;
-    pointer-events: none;
 }
 
 .select--style-for-button .select__input {

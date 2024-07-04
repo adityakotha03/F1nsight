@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
@@ -9,10 +9,17 @@ export const Select = (props) => {
         label,
         value,
         unstyled,
+        fullWidth,
         ...rest
     } = props;
 
+    const [selectValue, setSelectValue] = useState('');
+
     const inputId = `select-input-${id}`;
+
+    useEffect(() => {
+        setSelectValue(value)
+    }, [value]);
 
     return (
         <div
@@ -26,14 +33,14 @@ export const Select = (props) => {
                 className={classNames('select__input', {
                     'bg-neutral-800/10 bg-glow': !unstyled,
                     'bg-transparent border-0': unstyled,
+                    'w-full': fullWidth,
                 })}
                 id={inputId}
-                value={value}
+                value={selectValue}
             />
             <label htmlFor={inputId} className="select__label tracking-xs uppercase">
                 {label}
             </label>
-            <FontAwesomeIcon icon="caret-down" className="select__icon text-neutral-400 fa-lg" />
         </div>
     );
 };

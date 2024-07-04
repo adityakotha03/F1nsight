@@ -18,11 +18,8 @@ export function DriverStandings({ selectedYear }) {
     fetchData();
   }, [selectedYear]);
 
-  // console.log(standings);
-
   return (
-    <div className="global-container">
-      <h2 className="heading-2 text-center mb-40 text-neutral-400">Driver Standings</h2>
+    <div className="max-w-[120rem] m-auto">
       {isLoading ? (
         <Loading className="mt-[20rem] mb-[20rem]" message={`Loading ${selectedYear} Driver Standings`} />
       ) : (
@@ -30,7 +27,7 @@ export function DriverStandings({ selectedYear }) {
           {standings.map((standing, index) => (
             <li key={index} className='w-full'>
               <ConstructorDriver 
-                className="mt-32"
+              className="mt-32"
                 image={standing.driverCode} 
                 car={standing.constructorId}
                 points={standing.points}

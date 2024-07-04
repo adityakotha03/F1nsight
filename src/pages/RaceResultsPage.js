@@ -13,6 +13,8 @@ export function RaceResultsPage({ selectedYear }) {
     const fetchData = async () => {
       setIsLoading(true);
       const details = await fetchRaceDetails(selectedYear);
+      console.log('details', details) 
+
       setRaceDetails(details);
       setIsLoading(false);
     };
@@ -39,19 +41,22 @@ export function RaceResultsPage({ selectedYear }) {
     return `${formattedDate} ${formattedTimeCapitalized}`;
   };
   
-console.log('wrferfvev', raceDetails);
-
   return (
-    <div className="race-results global-container">
-      <h1 className="heading-2 text-center mb-40 text-neutral-400">Race Results</h1>
+    <div className="race-results max-w-[120rem] m-auto">
       {isLoading ? (
         <Loading className="mt-[20rem] mb-[20rem]" message={`Loading ${selectedYear} Race Results`} />
       ) : (
         <ul className="race-result">
           {raceDetails.map((race, index) => (
-            <li key={index}>
+            <li 
+              key={index}
+              className={classNames(
+                  "bg-glow-dark rounded-[2.4rem] mt-56 px-32", 
+                  `${race.raceName}`
+              )}
+            >
               {race.results && race.results.length > 0 ? (
-                <ul className="race-results__list">
+                <ul className="race-results__list -mt-48">
                   {race.results.map((result, resultIndex) => (
                       <RaceResultItem 
                         className={`race-results__list__item-${resultIndex + 1}`}
@@ -70,7 +75,7 @@ console.log('wrferfvev', raceDetails);
                   ))}
                 </ul>
               ) : (
-                <div className="flex justify-center">
+                <div className="flex justify-center -mt-48">
                   <img alt="" src={`${process.env.PUBLIC_URL + "/images/podium.png"}`} width={324} />
                 </div>
               )}
@@ -78,14 +83,14 @@ console.log('wrferfvev', raceDetails);
                 <div className='uppercase text-xs text-neutral-400 tracking-sm leading-none mb-4 mt-24'>
                   {`Round ${index + 1}`}
                 </div>
-                <p className='uppercase text-sm tracking-sm leading-none mb-4 font-bold'>
+                <p className='font-display tracking-xs leading-none mb-4 font-bold'>
                   {race.raceName}
                 </p>
                 <div className='text-xs text-neutral-400 tracking-sm leading-none'>
                   {formatTime(race.date, race.time)}
                 </div>
               </div>
-              <div className={classNames("divider-glow-medium mb-16",  {"mt-32" : !race.results})} />
+              {/* <div className={classNames("divider-glow-medium mb-16",  {"mt-32" : !race.results})} /> */}
             </li>
           ))}
         </ul>

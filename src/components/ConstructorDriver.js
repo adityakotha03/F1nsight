@@ -55,7 +55,7 @@ export const ConstructorDriver = (props) => {
                                 transition: "all 1s cubic-bezier(0.17, 0.55, 0.55, 1)"
                             }}
                         />
-                        <span className="heading-1 z-10 gradient-text-light">{points}</span>
+                        <span className="font-display text-[4.8rem] leading-none z-10 gradient-text-light">{points}</span>
                     </div>
                 </div>
             </div>
