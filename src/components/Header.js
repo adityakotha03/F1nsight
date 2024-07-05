@@ -14,7 +14,7 @@ export const Header = ({ setResultPage, setResultPagePath }) => {
 
     const [races, setRaces] = useState([]);
     const [selectedYear, setSelectedYear] = useState([]);
-    const [isOpen, setIsOpen] = useState([]);
+    const [isOpen, setIsOpen] = useState(false);
 
     const navRef = useRef(null);
     const headerRef = useRef(null);
