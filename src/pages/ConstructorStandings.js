@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { getConstructorStandings } from '../utils/api';
 
 import { ConstructorCar, Loading } from '../components';
+import { useNavigate } from 'react-router-dom';
 
 export function ConstructorStandings({ selectedYear }) {
   const [standings, setStandings] = useState([]);
@@ -18,6 +19,19 @@ export function ConstructorStandings({ selectedYear }) {
     fetchData();
   }, [selectedYear]);
 
+  let navigate = useNavigate();
+  const navigateToTeamComp = (constructorId) => {
+    navigate(
+      '/teammates-comparison',
+      {
+        state: {
+          constructorId : constructorId,
+          selectedYear: selectedYear
+        }
+      }
+    );
+  };
+
   return (
     <div className="max-w-[45rem] m-auto">
       {isLoading ? (
@@ -25,7 +39,7 @@ export function ConstructorStandings({ selectedYear }) {
       ) : (
       <ul>
         {standings.map((standing, index) => (
-          <li key={index}>
+          <li key={index} onClick={()=> {navigateToTeamComp(standing.constructorId)}}>
             <ConstructorCar 
               image={standing.constructorId} 
               points={standing.points}
