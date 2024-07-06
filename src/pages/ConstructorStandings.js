@@ -39,7 +39,7 @@ export function ConstructorStandings({ selectedYear }) {
       ) : (
       <ul>
         {standings.map((standing, index) => (
-          <li key={index} onClick={()=> {navigateToTeamComp(standing.constructorId)}}>
+          <li key={index} className='clickable-hover' onClick={()=> {navigateToTeamComp(standing.constructorId)}}>
             <ConstructorCar 
               image={standing.constructorId} 
               points={standing.points}
