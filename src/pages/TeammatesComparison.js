@@ -6,10 +6,12 @@ import axios from 'axios';
 import { fetchDriverStats } from '../utils/api';
 import { lightenColor } from '../utils/lightenColor';
 import { HeadToHeadChart, Select, Loading } from '../components';
+import { useLocation } from 'react-router-dom';
 
 export const TeammatesComparison = () => {
-  const [year, setYear] = useState('');
-  const [team, setTeam] = useState('');
+  const {state} = useLocation();
+  const [year, setYear] = useState(state ? state.selectedYear : '');
+  const [team, setTeam] = useState(state? state.constructorId : '');
   const [drivers, setDrivers] = useState([]);
   const [selectedDriver1, setSelectedDriver1] = useState('');
   const [selectedDriver2, setSelectedDriver2] = useState('');
@@ -22,13 +24,19 @@ export const TeammatesComparison = () => {
   const [teamColor, setTeamColor] = useState('');
 
   useEffect(() => {
-    const fetchTeams = async () => {
-      if (year && !teamCache[year]) {
-        const response = await axios.get(`https://praneeth7781.github.io/f1nsight-api-2/constructors/${year}.json`);
-        const constructors = response.data;
-        setTeamCache((prevCache) => ({ ...prevCache, [year]: constructors }));
-      }
-    };
+    if(year !== ''){
+      submit(team);
+    }
+  }, [])
+
+  const fetchTeams = async () => {
+    if (year && !teamCache[year]) {
+      const response = await axios.get(`https://praneeth7781.github.io/f1nsight-api-2/constructors/${year}.json`);
+      const constructors = response.data;
+      setTeamCache((prevCache) => ({ ...prevCache, [year]: constructors }));
+    }
+  };
+  useEffect(() => {
     fetchTeams();
     setShowDriverSelectors(false);
     setSelectedDriver1('');
@@ -50,6 +58,10 @@ export const TeammatesComparison = () => {
   const handleTeamChange = async (e) => {
     const selectedTeam = e.target.value;
     setTeam(selectedTeam);
+    submit(selectedTeam);
+  };
+
+  const submit = async (selectedTeam) => {
     const response = await axios.get(`https://praneeth7781.github.io/f1nsight-api-2/constructors/${year}/${selectedTeam}.json`);
     const fetchedDrivers = response.data;
     setDrivers(fetchedDrivers);
