@@ -94,6 +94,19 @@ export const fetchDriverQualifying = async (driverId) => {
   }
 }
 
+export const fetchRaceMeetingKeys = async (selectedYear) => {
+  try {
+    const raceResponse = await fetch(`https://praneeth7781.github.io/f1nsight-api-2/races/races.json`);
+    if(!raceResponse.ok) {
+      throw new Error('Failed to fetch races');
+    }
+    const races = await raceResponse.json();
+    return races[selectedYear]
+  } catch(error) {
+    console.error('Error fetching data:', error);
+  }
+};
+
 // Header
 export const fetchRacesAndSessions = async (selectedYear) => {
   try {
@@ -161,7 +174,7 @@ const fetchRaceResults = async (selectedYear, raceId) => {
     const response = await fetch(resultsUrl);
     if (response.ok) {
       const data = await response.json();
-      console.log(data);
+      // console.log(data);
       const results = data.MRData.RaceTable.Races[0].Results.map(result => ({
         driver: result.Driver,
         fastestLap: result.FastestLap,
