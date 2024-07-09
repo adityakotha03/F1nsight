@@ -20,12 +20,14 @@ export const Header = ({ setResultPage, setResultPagePath }) => {
     const headerRef = useRef(null);
 
     useEffect(() => {
-        const fetchData = async () => {
-            const data = await fetchRacesAndSessions(selectedYear);
-            setRaces(data);
-        };
-      
-        fetchData();
+        if (selectedYear.length > 0) {
+            const fetchData = async () => {
+                const data = await fetchRacesAndSessions(selectedYear);
+                setRaces(data);
+            };
+          
+            fetchData();
+        }
     }, [selectedYear]);
 
     const handleNavLinkClick = (page) => {

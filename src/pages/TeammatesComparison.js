@@ -1,7 +1,8 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo} from 'react';
 import classNames from 'classnames';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area, BarChart, Legend, Bar, ComposedChart } from 'recharts';
 import axios from 'axios';
+import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis } from 'recharts';
 
 import { fetchDriverStats } from '../utils/api';
 import { lightenColor } from '../utils/lightenColor';
@@ -263,16 +264,16 @@ export const TeammatesComparison = () => {
       driver2QualifyingPosList: driverResults[driver2Id]?.qualiPosition.positions || {},
       driver1RacePosList: driverResults[driver1Id]?.racePosition.positions || {},
       driver2RacePosList: driverResults[driver2Id]?.racePosition.positions || {},
-      driver1AvgRacePosition: isNaN(parseFloat(driverResults[driver1Id]?.avgRacePositions)) ? "0.00" : parseFloat(driverResults[driver1Id]?.avgRacePositions).toFixed(2),
-      driver2AvgRacePosition: isNaN(parseFloat(driverResults[driver2Id]?.avgRacePositions)) ? "0.00" : parseFloat(driverResults[driver2Id]?.avgRacePositions).toFixed(2),
-      driver1AvgQualiPositions: isNaN(parseFloat(driverResults[driver1Id]?.avgQualiPositions)) ? "0.00" : parseFloat(driverResults[driver1Id]?.avgQualiPositions).toFixed(2),
-      driver2AvgQualiPositions: isNaN(parseFloat(driverResults[driver2Id]?.avgQualiPositions)) ? "0.00" : parseFloat(driverResults[driver2Id]?.avgQualiPositions).toFixed(2),
-      driver1_win_rates: isNaN(parseFloat(driverResults[driver1Id]?.win_rates)) ? "0.00" : parseFloat(driverResults[driver1Id]?.win_rates).toFixed(2),
-      driver2_win_rates: isNaN(parseFloat(driverResults[driver2Id]?.win_rates)) ? "0.00" : parseFloat(driverResults[driver2Id]?.win_rates).toFixed(2),
-      driver1_podium_rates: isNaN(parseFloat(driverResults[driver1Id]?.podium_rates)) ? "0.00" : parseFloat(driverResults[driver1Id]?.podium_rates).toFixed(2),
-      driver2_podium_rates: isNaN(parseFloat(driverResults[driver2Id]?.podium_rates)) ? "0.00" : parseFloat(driverResults[driver2Id]?.podium_rates).toFixed(2),
-      driver1_pole_rates: isNaN(parseFloat(driverResults[driver1Id]?.pole_rates)) ? "0.00" : parseFloat(driverResults[driver1Id]?.pole_rates).toFixed(2),
-      driver2_pole_rates: isNaN(parseFloat(driverResults[driver2Id]?.pole_rates)) ? "0.00" : parseFloat(driverResults[driver2Id]?.pole_rates).toFixed(2),
+      driver1AvgRacePosition: isNaN(parseFloat(driverResults[driver1Id]?.avgRacePositions)) ? 0.00 : parseFloat(driverResults[driver1Id]?.avgRacePositions).toFixed(2),
+      driver2AvgRacePosition: isNaN(parseFloat(driverResults[driver2Id]?.avgRacePositions)) ? 0.00 : parseFloat(driverResults[driver2Id]?.avgRacePositions).toFixed(2),
+      driver1AvgQualiPositions: isNaN(parseFloat(driverResults[driver1Id]?.avgQualiPositions)) ? 0.00 : parseFloat(driverResults[driver1Id]?.avgQualiPositions).toFixed(2),
+      driver2AvgQualiPositions: isNaN(parseFloat(driverResults[driver2Id]?.avgQualiPositions)) ? 0.00 : parseFloat(driverResults[driver2Id]?.avgQualiPositions).toFixed(2),
+      driver1_win_rates: isNaN(parseFloat(driverResults[driver1Id]?.win_rates)) ? 0.00 : parseFloat(driverResults[driver1Id]?.win_rates).toFixed(2),
+      driver2_win_rates: isNaN(parseFloat(driverResults[driver2Id]?.win_rates)) ? 0.00 : parseFloat(driverResults[driver2Id]?.win_rates).toFixed(2),
+      driver1_podium_rates: isNaN(parseFloat(driverResults[driver1Id]?.podium_rates)) ? 0.00 : parseFloat(driverResults[driver1Id]?.podium_rates).toFixed(2),
+      driver2_podium_rates: isNaN(parseFloat(driverResults[driver2Id]?.podium_rates)) ? 0.00 : parseFloat(driverResults[driver2Id]?.podium_rates).toFixed(2),
+      driver1_pole_rates: isNaN(parseFloat(driverResults[driver1Id]?.pole_rates)) ? 0.00 : parseFloat(driverResults[driver1Id]?.pole_rates).toFixed(2),
+      driver2_pole_rates: isNaN(parseFloat(driverResults[driver2Id]?.pole_rates)) ? 0.00 : parseFloat(driverResults[driver2Id]?.pole_rates).toFixed(2),
       driver1PositionsGainLost: driverResults[driver1Id]?.positionsGainLost || {},
       driver2PositionsGainLost: driverResults[driver2Id]?.positionsGainLost || {}
     });
@@ -442,6 +443,61 @@ const formatDate = (isoString) => {
   return date.toLocaleString();
 };
 
+
+const scaleValue = (value, fromMax, toMax = 100) => {
+  // Invert the value since lower positions are better
+  const invertedValue = fromMax - value;
+  return (invertedValue / fromMax) * toMax;
+};
+
+const radar_data = [
+  {
+    subject: 'Average Race Position',
+    A: scaleValue(memoizedHeadToHeadData?.driver1AvgRacePosition || 0, 20),
+    B: scaleValue(memoizedHeadToHeadData?.driver2AvgRacePosition || 0, 20),
+    fullMark: 100,
+  },
+  {
+    subject: 'Average Qualifying Position',
+    A: scaleValue(memoizedHeadToHeadData?.driver1AvgQualiPositions || 0, 20),
+    B: scaleValue(memoizedHeadToHeadData?.driver2AvgQualiPositions || 0, 20),
+    fullMark: 100,
+  },
+  {
+    subject: 'Win Rate',
+    A: (memoizedHeadToHeadData?.driver1_win_rates || 0) * 100, 
+    B: (memoizedHeadToHeadData?.driver2_win_rates || 0) * 100, 
+    fullMark: 100, 
+  },
+  {
+    subject: 'Podium Rate',
+    A: (memoizedHeadToHeadData?.driver1_podium_rates || 0) * 100, 
+    B: (memoizedHeadToHeadData?.driver2_podium_rates || 0) * 100, 
+    fullMark: 100, 
+  },
+  {
+    subject: 'Pole Rate',
+    A: (memoizedHeadToHeadData?.driver1_pole_rates || 0) * 100, 
+    B: (memoizedHeadToHeadData?.driver2_pole_rates || 0) * 100,
+    fullMark: 100,
+  },
+];
+
+const CustomTooltip = ({ active, payload, label }) => {
+  if (active && payload && payload.length) {
+    const driver1 = payload[0].payload.A;
+    const driver2 = payload[0].payload.B;
+    return (
+      <div className="custom-tooltip bg-white p-4 rounded shadow-md">
+        <p className="label">{`${label}`}</p>
+        <p className="text-sm">{`${payload[0].name}: ${driver1.toFixed(2)}`}</p>
+        <p className="text-sm">{`${payload[1].name}: ${driver2.toFixed(2)}`}</p>
+      </div>
+    );
+  }
+  return null;
+};
+
 const currentYear = new Date().getFullYear();
 const years = Array.from({ length: currentYear - 1975 + 1 }, (_, i) => currentYear - i);
 
@@ -527,12 +583,17 @@ const years = Array.from({ length: currentYear - 1975 + 1 }, (_, i) => currentYe
 
           <h3 className="heading-4 mb-16 text-neutral-400 ml-24">Driver Statistics Comparison</h3>
           <div className="bg-glow-large rounded-lg mb-64 p-8 md:px-32 md:pt-16 md:pb-32"> 
-            {GridRow( " ", memoizedHeadToHeadData.driver1, memoizedHeadToHeadData.driver2, true)}
-            {GridRow( "Average Race Position", memoizedHeadToHeadData.driver1AvgRacePosition, memoizedHeadToHeadData.driver2AvgRacePosition)}
-            {GridRow( "Average Qualifying Position", memoizedHeadToHeadData.driver1AvgQualiPositions, memoizedHeadToHeadData.driver2AvgQualiPositions)}
-            {GridRow( "Win Rate", memoizedHeadToHeadData.driver1_win_rates, memoizedHeadToHeadData.driver2_win_rates)}
-            {GridRow( "Podium Rate", memoizedHeadToHeadData.driver1_podium_rates, memoizedHeadToHeadData.driver2_podium_rates)}
-            {GridRow( "Pole Rate", memoizedHeadToHeadData.driver1_pole_rates, memoizedHeadToHeadData.driver2_pole_rates)}
+          <ResponsiveContainer width="100%" height={400}>
+            <RadarChart cx="50%" cy="50%" outerRadius="80%" data={radar_data}>
+              <PolarGrid />
+              <PolarAngleAxis dataKey="subject" />
+              <PolarRadiusAxis angle={30} domain={[0, 100]} tick={false} />
+              <Radar name={memoizedHeadToHeadData.driver1} dataKey="A" stroke={`#${teamColor}`} fill={`#${teamColor}`} fillOpacity={0.6} />
+              <Radar name={memoizedHeadToHeadData.driver2} dataKey="B" stroke={lightenColor(teamColor)} fill={lightenColor(teamColor)} fillOpacity={0.6} />
+              <Legend verticalAlign="top" height={36} />
+              <Tooltip content={<CustomTooltip />} />
+            </RadarChart>
+          </ResponsiveContainer>
           </div>
 
           <h3 className="heading-4 mb-16 text-neutral-400 ml-24">Positions Gained or Lost During Race</h3>
