@@ -22,7 +22,8 @@ export const TeammatesComparison = () => {
   const [ambQ, setAmbQ] = useState(true);
   const [ambR, setAmbR] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
-  const [teamColor, setTeamColor] = useState('');
+  const [teamColor, setTeamColor] = useState('5F0B84');
+  const [renderHead, setRenderHead] = useState(true);
 
   useEffect(() => {
     if(year !== ''){
@@ -48,6 +49,7 @@ export const TeammatesComparison = () => {
     setSelectedDriver2('');
     setAmbQ(true);
     setAmbR(true);
+    setRenderHead(true);
   }, [year, teamCache]);
 
   const teamsMemo = useMemo(() => teamCache[year] || [], [year, teamCache]);
@@ -73,18 +75,15 @@ export const TeammatesComparison = () => {
     const colorsResponse = await axios.get('https://praneeth7781.github.io/f1nsight-api-2/colors/teams.json');
     const teamColors = colorsResponse.data;
 
-    // Get the color for the selected team and year
     if(teamColors[year]){
-      // console.log(teamColors[year]);
       setTeamColor(teamColors[year][selectedTeam]);
-      // console.log(selectedTeam);
-      // console.log(teamColors[year][selectedTeam]);
     } 
     else{
       setTeamColor('5F0B84');
     }
     if(fetchedDrivers.length > 2){
       setShowDriverSelectors(true);
+      setRenderHead(false);
     }
     else{
       fetchDriverData(fetchedDrivers);
@@ -146,6 +145,7 @@ export const TeammatesComparison = () => {
     if (selectedDriver2) {
       setAmbQ(true);
       setAmbR(true);
+      setRenderHead(true);
       const driver1Data = drivers.find(driver => driver.driverId === e.target.value);
       const driver2Data = drivers.find(driver => driver.driverId === selectedDriver2);
       await fetchDriverData([driver1Data, driver2Data]);
@@ -158,6 +158,7 @@ export const TeammatesComparison = () => {
     if (selectedDriver1) {
       setAmbQ(true);
       setAmbR(true);
+      setRenderHead(true);
       const driver1Data = drivers.find(driver => driver.driverId === selectedDriver1);
       const driver2Data = drivers.find(driver => driver.driverId === e.target.value);
       await fetchDriverData([driver1Data, driver2Data]);
@@ -551,7 +552,7 @@ const years = Array.from({ length: currentYear - 1975 + 1 }, (_, i) => currentYe
       ) : (
         <div className="max-md:px-8">
 
-        {memoizedHeadToHeadData && (
+        {memoizedHeadToHeadData && renderHead && (
         <>
           <div 
               className="text-center leading-none mt-48 mb-48 w-1/2 m-auto"
