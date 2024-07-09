@@ -128,7 +128,7 @@ export const fetchRacesAndSessions = async (selectedYear) => {
       const filteredRaces = racesData.filter(race => 
           sessionsData.some(session => session.meeting_key === race.meeting_key)
       );
-      console.log('12', filteredRaces);
+      // console.log('12', filteredRaces);
       return filteredRaces;
   } catch (error) {
       console.error('Error fetching data:', error);

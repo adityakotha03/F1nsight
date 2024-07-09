@@ -413,25 +413,6 @@ const CustomizedYAxisTick = ({ x, y, payload }) => {
   );
 };
 
-const GridRow = (label, driver1, driver2, title) => {
-  const driver1SplitName = driver1.split(" ");
-  const driver2SplitName = driver2.split(" ")
-
-  return (
-    <>
-      <div className={classNames("grid grid-cols-3 gap-4 mb-16 text-neutral-400 items-center", {'text-xs': title})}>
-        <span className="tracking-xs uppercase text-xs">{label}</span>
-        <span className="tracking-xs uppercase text-center">
-          {title ? driver1SplitName[1] : driver1}
-        </span>
-        <span className="tracking-xs uppercase text-center">
-          {title ? driver2SplitName[1] : driver2}
-        </span>
-      </div>
-      <div className='divider-glow-medium ' />
-    </>
-  );
-}
 
 const chartData_posGainorLost = useMemo(() => {
   if (!memoizedHeadToHeadData) return [];
@@ -465,38 +446,49 @@ const radar_data = [
     subject: 'Average Race Position',
     A: scaleValue(memoizedHeadToHeadData?.driver1AvgRacePosition || 0, 20),
     B: scaleValue(memoizedHeadToHeadData?.driver2AvgRacePosition || 0, 20),
+    customA : memoizedHeadToHeadData?.driver1AvgRacePosition || 0,
+    customB : memoizedHeadToHeadData?.driver2AvgRacePosition || 0,
     fullMark: 100,
   },
   {
     subject: 'Average Qualifying Position',
     A: scaleValue(memoizedHeadToHeadData?.driver1AvgQualiPositions || 0, 20),
     B: scaleValue(memoizedHeadToHeadData?.driver2AvgQualiPositions || 0, 20),
+    customA : memoizedHeadToHeadData?.driver1AvgQualiPositions || 0,
+    customB : memoizedHeadToHeadData?.driver2AvgQualiPositions || 0,
     fullMark: 100,
   },
   {
     subject: 'Win Rate',
     A: (memoizedHeadToHeadData?.driver1_win_rates || 0) * 100, 
     B: (memoizedHeadToHeadData?.driver2_win_rates || 0) * 100, 
+    customA : memoizedHeadToHeadData?.driver1_win_rates || 0,
+    customB : memoizedHeadToHeadData?.driver2_win_rates || 0,
     fullMark: 100, 
   },
   {
     subject: 'Podium Rate',
     A: (memoizedHeadToHeadData?.driver1_podium_rates || 0) * 100, 
     B: (memoizedHeadToHeadData?.driver2_podium_rates || 0) * 100, 
+    customA : memoizedHeadToHeadData?.driver1_podium_rates || 0,
+    customB : memoizedHeadToHeadData?.driver2_podium_rates || 0,
     fullMark: 100, 
   },
   {
     subject: 'Pole Rate',
     A: (memoizedHeadToHeadData?.driver1_pole_rates || 0) * 100, 
     B: (memoizedHeadToHeadData?.driver2_pole_rates || 0) * 100,
+    customA : memoizedHeadToHeadData?.driver1_pole_rates || 0,
+    customB : memoizedHeadToHeadData?.driver2_pole_rates || 0,
     fullMark: 100,
   },
 ];
 
 const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
-    const driver1 = payload[0].payload.A;
-    const driver2 = payload[0].payload.B;
+    const driver1 = parseFloat(payload[0].payload.customA);
+    const driver2 = parseFloat(payload[0].payload.customB);
+    // console.log(typeof(driver1),driver2)
     return (
       <div className="custom-tooltip bg-white p-4 rounded shadow-md">
         <p className="label">{`${label}`}</p>
@@ -597,7 +589,7 @@ const years = Array.from({ length: currentYear - 1975 + 1 }, (_, i) => currentYe
             <RadarChart cx="50%" cy="50%" outerRadius="80%" data={radar_data}>
               <PolarGrid />
               <PolarAngleAxis dataKey="subject" />
-              <PolarRadiusAxis angle={30} domain={[0, 100]} tick={false} />
+              {/* <PolarRadiusAxis angle={0} domain={[0, 100]} tick={false} /> */}
               <Radar name={memoizedHeadToHeadData.driver1} dataKey="A" stroke={`#${teamColor}`} fill={`#${teamColor}`} fillOpacity={0.6} />
               <Radar name={memoizedHeadToHeadData.driver2} dataKey="B" stroke={lightenColor(teamColor)} fill={lightenColor(teamColor)} fillOpacity={0.6} />
               <Legend verticalAlign="top" height={36} />
