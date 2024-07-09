@@ -492,8 +492,8 @@ const CustomTooltip = ({ active, payload, label }) => {
     return (
       <div className="custom-tooltip bg-white p-4 rounded shadow-md">
         <p className="label">{`${label}`}</p>
-        <p className="text-sm">{`${payload[0].name}: ${driver1.toFixed(2)}`}</p>
-        <p className="text-sm">{`${payload[1].name}: ${driver2.toFixed(2)}`}</p>
+        <p className="text-sm" style={{ color: `#${teamColor}`}} >{`${payload[0].name}: ${driver1.toFixed(2)}`}</p>
+        <p className="text-sm" style={{ color: lightenColor(teamColor)}} >{`${payload[1].name}: ${driver2.toFixed(2)}`}</p>
       </div>
     );
   }
