@@ -1,7 +1,7 @@
 import classNames from "classnames";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useLocation } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import {
     fetchDriversAndTires,
     fetchRaceResultsByCircuit,
@@ -23,8 +23,11 @@ import {
 
 export function RacePage() {
     const { state } = useLocation();
-    // console.log({state});
-    const { raceName, meetingKey, year, location } = state || {};
+    const { raceId } = useParams();
+    const [raceName, setRaceName] = useState(state? state.raceName : null);
+    const [meetingKey, setMeetingKey] = useState(state ? state.meetingKey : raceId);
+    const [year, setYear] = useState(state ? state.year : null);
+    const [location, setLocation] = useState(state ? state.location : null);
     const [drivers, setDrivers] = useState([]);
     const [laps, setLaps] = useState([]);
     const [driversDetails, setDriversDetails] = useState({});
@@ -48,11 +51,35 @@ export function RacePage() {
     const [hasRaceSession, sethasRaceSession] = useState(false);
     const [hasQualifyingSession, sethasQualifyingSession] = useState(false);
 
+    useEffect(() => {
+        const setBaseData = async () => {
+            setRaceName(state.raceName);
+            setYear(state.year);
+            setLocation(state.location);
+            setMeetingKey(state.meetingKey);
+        }
+        if(state) setBaseData();
+    }, [state])
+
+    useEffect(() => {
+        const fetchByMeetingKey = async() => {
+            const response = await fetch(`https://praneeth7781.github.io/f1nsight-api-2/races/racesbyMK.json`).then((res) => res.json());
+            setYear(response[raceId]["year"]);
+            setLocation(response[raceId]["location"]);
+            setRaceName(response[raceId]["raceName"]);
+            console.log(raceName);
+        };
+        if(raceName){}
+        else{
+            fetchByMeetingKey();
+            fetchData();
+        }
+    },[])
+
     const handleOptionChange = (event) => {
         setSelectedSession(event.target.value);
     };
 
-    // console.log(selectedSession);
 
     const animatedLocations = ["Sakhir", "Suzuka", "Melbourne", "Monaco"];
 
@@ -63,272 +90,271 @@ export function RacePage() {
         (obj) => obj["number"] === driverNumber
     );
 
-    // console.log(startingGrid)
 
-    useEffect(() => {
-        const fetchData = async () => {
-            if (!meetingKey) return;
+    const fetchData = async () => {
+        if (!raceName) return;
 
-            try {
-                setDriverSelected(false);
-                setActiveButtonIndex(null);
 
-                const locationMap = {
-                    Melbourne: "albert_park",
-                    Austin: "americas",
-                    Sakhir: "bahrain",
-                    Baku: "baku",
-                    Budapest: "hungaroring",
-                    Imola: "imola",
-                    "São Paulo": "interlagos",
-                    Jeddah: "jeddah",
-                    "Marina Bay": "marina_bay",
-                    Monaco: "monaco",
-                    Spielberg: "red_bull_ring",
-                    "Mexico City": "rodriguez",
-                    Shanghai: "shanghai",
-                    Silverstone: "silverstone",
-                    "Spa-Francorchamps": "spa",
-                    Suzuka: "suzuka",
-                    "Las Vegas": "vegas",
-                    Montréal: "villeneuve",
-                    Zandvoort: "zandvoort",
-                    Miami: "miami",
-                    Monza: "monza",
-                    Barcelona: "catalunya",
-                    Lusail: "losail",
-                    "Yas Island": "yas_marina",
-                };
+        try {
+            setDriverSelected(false);
+            setActiveButtonIndex(null);
 
+            const locationMap = {
+                Melbourne: "albert_park",
+                Austin: "americas",
+                Sakhir: "bahrain",
+                Baku: "baku",
+                Budapest: "hungaroring",
+                Imola: "imola",
+                "São Paulo": "interlagos",
+                Jeddah: "jeddah",
+                "Marina Bay": "marina_bay",
+                Monaco: "monaco",
+                Spielberg: "red_bull_ring",
+                "Mexico City": "rodriguez",
+                Shanghai: "shanghai",
+                Silverstone: "silverstone",
+                "Spa-Francorchamps": "spa",
+                Suzuka: "suzuka",
+                "Las Vegas": "vegas",
+                Montréal: "villeneuve",
+                Zandvoort: "zandvoort",
+                Miami: "miami",
+                Monza: "monza",
+                Barcelona: "catalunya",
+                Lusail: "losail",
+                "Yas Island": "yas_marina",
+            };
+
+            setIsLoading(true);
+
+            const circuitId = locationMap[location];
+            const sessionsResponse = await fetch(
+                `https://api.openf1.org/v1/sessions?meeting_key=${meetingKey}`
+            );
+            const sessionsData = await sessionsResponse.json();
+
+            const hasRaceSession = sessionsData.some(
+                (session) => session.session_name === "Race"
+            );
+            sethasRaceSession(hasRaceSession);
+            const hasQualifyingSession = sessionsData.some(
+                (session) => session.session_name === "Qualifying"
+            );
+            sethasQualifyingSession(hasQualifyingSession);
+
+            if (selectedSession === "Race") {
                 setIsLoading(true);
 
-                const circuitId = locationMap[location];
-                const sessionsResponse = await fetch(
-                    `https://api.openf1.org/v1/sessions?meeting_key=${meetingKey}`
+                setMapPath(
+                    `${
+                        process.env.PUBLIC_URL +
+                        "/map/" +
+                        circuitId +
+                        ".gltf"
+                    }`
                 );
-                const sessionsData = await sessionsResponse.json();
+                setAnimatedMap(
+                    `${
+                        process.env.PUBLIC_URL +
+                        "/mapsAnimated/" +
+                        circuitId +
+                        "Animated.mp4"
+                    }`
+                );
 
-                const hasRaceSession = sessionsData.some(
+                if (circuitId) {
+                    const results = await fetchRaceResultsByCircuit(
+                        year,
+                        circuitId
+                    );
+                    setRaceResults(results);
+                    // console.log(results);
+                }
+
+                const raceSession = sessionsData.find(
                     (session) => session.session_name === "Race"
                 );
-                sethasRaceSession(hasRaceSession);
-                const hasQualifyingSession = sessionsData.some(
+                if (!raceSession) throw new Error("Race session not found");
+                const sessionKey = raceSession.session_key;
+
+                const [
+                    driverDetailsData,
+                    startingGridData,
+                    driversData,
+                    lapsData,
+                ] = await Promise.all([
+                    fetch(
+                        `https://api.openf1.org/v1/drivers?session_key=${sessionKey}`
+                    ).then((res) => res.json()),
+                    fetch(
+                        `https://api.openf1.org/v1/position?session_key=${sessionKey}`
+                    ).then((res) => res.json()),
+                    fetchDriversAndTires(sessionKey),
+                    fetch(
+                        `https://api.openf1.org/v1/laps?session_key=${sessionKey}`
+                    ).then((res) => res.json()),
+                ]);
+
+                const driverDetailsMap = driverDetailsData.reduce(
+                    (acc, driver) => ({
+                        ...acc,
+                        [driver.driver_number]: driver.name_acronym,
+                    }),
+                    {}
+                );
+
+                setDriversDetails(driverDetailsMap);
+
+                const driverColorMap = driverDetailsData.reduce(
+                    (acc, driver) => ({
+                        ...acc,
+                        [driver.name_acronym]: driver.team_colour,
+                    }),
+                    {}
+                );
+
+                setDriversColor(driverColorMap);
+
+                const latestDate = startingGridData[0].date;
+                const firstDifferentDate = startingGridData.find(
+                    (item) => item.date !== latestDate
+                )?.date;
+                const date = new Date(firstDifferentDate);
+                date.setMinutes(date.getMinutes() - 1);
+                const updatedDate = date.toISOString();
+
+                setStartTime(updatedDate);
+                setEndTime(
+                    startingGridData[startingGridData.length - 1].date
+                );
+
+                const earliestDateTime = startingGridData[0]?.date;
+                const filteredStartingGrid = startingGridData.filter(
+                    (item) => item.date === earliestDateTime
+                );
+                setStartingGrid(filteredStartingGrid);
+
+                setDrivers(driversData);
+
+                setLaps(
+                    lapsData.map((lap) => ({
+                        ...lap,
+                        driver_acronym: driverDetailsMap[lap.driver_number],
+                    }))
+                );
+
+                setIsLoading(false);
+            } else if (selectedSession === "Qualifying") {
+                setIsLoading(true);
+
+                setMapPath(
+                    `${
+                        process.env.PUBLIC_URL +
+                        "/map/" +
+                        circuitId +
+                        ".gltf"
+                    }`
+                );
+                setAnimatedMap(
+                    `${
+                        process.env.PUBLIC_URL +
+                        "/mapsAnimated/" +
+                        circuitId +
+                        "Animated.mp4"
+                    }`
+                );
+
+                if (circuitId) {
+                    const results = await fetchQualifyingResultsByCircuit(
+                        year,
+                        circuitId
+                    );
+                    setRaceResults(results);
+                    // console.log(results);
+                }
+
+                const raceSession = sessionsData.find(
                     (session) => session.session_name === "Qualifying"
                 );
-                sethasQualifyingSession(hasQualifyingSession);
+                if (!raceSession) throw new Error("Race session not found");
+                const sessionKey = raceSession.session_key;
 
-                if (selectedSession === "Race") {
-                    setIsLoading(true);
+                const [
+                    driverDetailsData,
+                    startingGridData,
+                    driversData,
+                    lapsData,
+                ] = await Promise.all([
+                    fetch(
+                        `https://api.openf1.org/v1/drivers?session_key=${sessionKey}`
+                    ).then((res) => res.json()),
+                    fetch(
+                        `https://api.openf1.org/v1/position?session_key=${sessionKey}`
+                    ).then((res) => res.json()),
+                    fetchDriversAndTires(sessionKey),
+                    fetch(
+                        `https://api.openf1.org/v1/laps?session_key=${sessionKey}`
+                    ).then((res) => res.json()),
+                ]);
 
-                    setMapPath(
-                        `${
-                            process.env.PUBLIC_URL +
-                            "/map/" +
-                            circuitId +
-                            ".gltf"
-                        }`
-                    );
-                    setAnimatedMap(
-                        `${
-                            process.env.PUBLIC_URL +
-                            "/mapsAnimated/" +
-                            circuitId +
-                            "Animated.mp4"
-                        }`
-                    );
+                const driverDetailsMap = driverDetailsData.reduce(
+                    (acc, driver) => ({
+                        ...acc,
+                        [driver.driver_number]: driver.name_acronym,
+                    }),
+                    {}
+                );
 
-                    if (circuitId) {
-                        const results = await fetchRaceResultsByCircuit(
-                            year,
-                            circuitId
-                        );
-                        setRaceResults(results);
-                        // console.log(results);
-                    }
+                setDriversDetails(driverDetailsMap);
 
-                    const raceSession = sessionsData.find(
-                        (session) => session.session_name === "Race"
-                    );
-                    if (!raceSession) throw new Error("Race session not found");
-                    const sessionKey = raceSession.session_key;
+                const driverColorMap = driverDetailsData.reduce(
+                    (acc, driver) => ({
+                        ...acc,
+                        [driver.name_acronym]: driver.team_colour,
+                    }),
+                    {}
+                );
 
-                    const [
-                        driverDetailsData,
-                        startingGridData,
-                        driversData,
-                        lapsData,
-                    ] = await Promise.all([
-                        fetch(
-                            `https://api.openf1.org/v1/drivers?session_key=${sessionKey}`
-                        ).then((res) => res.json()),
-                        fetch(
-                            `https://api.openf1.org/v1/position?session_key=${sessionKey}`
-                        ).then((res) => res.json()),
-                        fetchDriversAndTires(sessionKey),
-                        fetch(
-                            `https://api.openf1.org/v1/laps?session_key=${sessionKey}`
-                        ).then((res) => res.json()),
-                    ]);
+                setDriversColor(driverColorMap);
 
-                    const driverDetailsMap = driverDetailsData.reduce(
-                        (acc, driver) => ({
-                            ...acc,
-                            [driver.driver_number]: driver.name_acronym,
-                        }),
-                        {}
-                    );
+                const latestDate = startingGridData[0].date;
+                const firstDifferentDate = startingGridData.find(
+                    (item) => item.date !== latestDate
+                )?.date;
+                const date = new Date(firstDifferentDate);
+                date.setMinutes(date.getMinutes() - 1);
+                const updatedDate = date.toISOString();
 
-                    setDriversDetails(driverDetailsMap);
+                setStartTime(updatedDate);
+                setEndTime(
+                    startingGridData[startingGridData.length - 1].date
+                );
 
-                    const driverColorMap = driverDetailsData.reduce(
-                        (acc, driver) => ({
-                            ...acc,
-                            [driver.name_acronym]: driver.team_colour,
-                        }),
-                        {}
-                    );
+                const earliestDateTime = startingGridData[0]?.date;
+                const filteredStartingGrid = startingGridData.filter(
+                    (item) => item.date === earliestDateTime
+                );
+                setStartingGrid(filteredStartingGrid);
 
-                    setDriversColor(driverColorMap);
+                setDrivers(driversData);
 
-                    const latestDate = startingGridData[0].date;
-                    const firstDifferentDate = startingGridData.find(
-                        (item) => item.date !== latestDate
-                    )?.date;
-                    const date = new Date(firstDifferentDate);
-                    date.setMinutes(date.getMinutes() - 1);
-                    const updatedDate = date.toISOString();
+                setLaps(
+                    lapsData.map((lap) => ({
+                        ...lap,
+                        driver_acronym: driverDetailsMap[lap.driver_number],
+                    }))
+                );
 
-                    setStartTime(updatedDate);
-                    setEndTime(
-                        startingGridData[startingGridData.length - 1].date
-                    );
-
-                    const earliestDateTime = startingGridData[0]?.date;
-                    const filteredStartingGrid = startingGridData.filter(
-                        (item) => item.date === earliestDateTime
-                    );
-                    setStartingGrid(filteredStartingGrid);
-
-                    setDrivers(driversData);
-
-                    setLaps(
-                        lapsData.map((lap) => ({
-                            ...lap,
-                            driver_acronym: driverDetailsMap[lap.driver_number],
-                        }))
-                    );
-
-                    setIsLoading(false);
-                } else if (selectedSession === "Qualifying") {
-                    setIsLoading(true);
-
-                    setMapPath(
-                        `${
-                            process.env.PUBLIC_URL +
-                            "/map/" +
-                            circuitId +
-                            ".gltf"
-                        }`
-                    );
-                    setAnimatedMap(
-                        `${
-                            process.env.PUBLIC_URL +
-                            "/mapsAnimated/" +
-                            circuitId +
-                            "Animated.mp4"
-                        }`
-                    );
-
-                    if (circuitId) {
-                        const results = await fetchQualifyingResultsByCircuit(
-                            year,
-                            circuitId
-                        );
-                        setRaceResults(results);
-                        // console.log(results);
-                    }
-
-                    const raceSession = sessionsData.find(
-                        (session) => session.session_name === "Qualifying"
-                    );
-                    if (!raceSession) throw new Error("Race session not found");
-                    const sessionKey = raceSession.session_key;
-
-                    const [
-                        driverDetailsData,
-                        startingGridData,
-                        driversData,
-                        lapsData,
-                    ] = await Promise.all([
-                        fetch(
-                            `https://api.openf1.org/v1/drivers?session_key=${sessionKey}`
-                        ).then((res) => res.json()),
-                        fetch(
-                            `https://api.openf1.org/v1/position?session_key=${sessionKey}`
-                        ).then((res) => res.json()),
-                        fetchDriversAndTires(sessionKey),
-                        fetch(
-                            `https://api.openf1.org/v1/laps?session_key=${sessionKey}`
-                        ).then((res) => res.json()),
-                    ]);
-
-                    const driverDetailsMap = driverDetailsData.reduce(
-                        (acc, driver) => ({
-                            ...acc,
-                            [driver.driver_number]: driver.name_acronym,
-                        }),
-                        {}
-                    );
-
-                    setDriversDetails(driverDetailsMap);
-
-                    const driverColorMap = driverDetailsData.reduce(
-                        (acc, driver) => ({
-                            ...acc,
-                            [driver.name_acronym]: driver.team_colour,
-                        }),
-                        {}
-                    );
-
-                    setDriversColor(driverColorMap);
-
-                    const latestDate = startingGridData[0].date;
-                    const firstDifferentDate = startingGridData.find(
-                        (item) => item.date !== latestDate
-                    )?.date;
-                    const date = new Date(firstDifferentDate);
-                    date.setMinutes(date.getMinutes() - 1);
-                    const updatedDate = date.toISOString();
-
-                    setStartTime(updatedDate);
-                    setEndTime(
-                        startingGridData[startingGridData.length - 1].date
-                    );
-
-                    const earliestDateTime = startingGridData[0]?.date;
-                    const filteredStartingGrid = startingGridData.filter(
-                        (item) => item.date === earliestDateTime
-                    );
-                    setStartingGrid(filteredStartingGrid);
-
-                    setDrivers(driversData);
-
-                    setLaps(
-                        lapsData.map((lap) => ({
-                            ...lap,
-                            driver_acronym: driverDetailsMap[lap.driver_number],
-                        }))
-                    );
-
-                    setIsLoading(false);
-                }
-            } catch (error) {
-                console.error("Error fetching data:", error);
+                setIsLoading(false);
             }
-        };
-
+        } catch (error) {
+            console.error("Error fetching data:", error);
+        }
+    };
+    useEffect(() => {
         fetchData();
-    }, [meetingKey, year, location, selectedSession]);
+    }, [year, location, selectedSession, raceName]);
 
     const handleDriverSelectionClick = (index) => {
         // console.log(raceResults[index].Driver.code); // Log the driver code
