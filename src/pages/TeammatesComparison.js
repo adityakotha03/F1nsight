@@ -324,8 +324,8 @@ export const TeammatesComparison = () => {
     return races;
   };
 
-  const chartData = prepareChartData();
-
+  const chartData = (!ambQ && !ambR) ? prepareChartData() : []
+  
   const yAxisLimits = useMemo(() => {
     if (!chartData.length) return [0, 10]; // default values if no data
     let allValues = chartData.flatMap(data => Object.values(data).filter(val => typeof val === 'number'));
