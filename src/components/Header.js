@@ -77,7 +77,7 @@ export const Header = ({ setResultPage, setResultPagePath }) => {
     const comparisonContent = (
         <>
             {/* <NavLink to="/driver-comparison" className="block px-4 py-2" onClick={toggleOpen}>Driver Comparison</NavLink> */}
-            <NavLink disabled to="/driver-comparison" className="block px-4 py-2 text-neutral-500">Driver Comparison - Coming Soon</NavLink>
+            <NavLink disabled to="/driver-comparison" className="block px-4 py-2">Driver Comparison - Coming Soon</NavLink>
             <NavLink to="/teammates-comparison" className="block px-4 py-2" onClick={toggleOpen}>Teammates Comparison</NavLink>
         </>
     )
