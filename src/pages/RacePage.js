@@ -63,6 +63,7 @@ export function RacePage() {
 
     useEffect(() => {
         const fetchByMeetingKey = async() => {
+            setIsLoading(true);
             const response = await fetch(`https://praneeth7781.github.io/f1nsight-api-2/races/racesbyMK.json`).then((res) => res.json());
             setYear(response[raceId]["year"]);
             setLocation(response[raceId]["location"]);
