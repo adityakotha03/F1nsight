@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { fetchDriverStats, fetchDriversList } from '../utils/api';
-import { Loading, Select as CustomSelect } from "../components"
+import { Loading, Select as CustomSelect } from "../components";
 import Select from 'react-select';
 
 export function DriverComparison(){
@@ -13,8 +13,8 @@ export function DriverComparison(){
     const [driver2Data, setDriver2Data] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
 
-    console.log("driver1", driver1);
-    console.log("driver2", driver2);
+    // console.log("driver1", driver1);
+    // console.log("driver2", driver2);
 
 
     useEffect(() => {
@@ -149,7 +149,7 @@ export function DriverComparison(){
       );
 
     const renderFinalStandings = () => {
-        
+
         const allYears = new Set([
             ...Object.keys(driver1Data.finalStandings),
             ...Object.keys(driver2Data.finalStandings)
