@@ -7,11 +7,12 @@ import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis } from 'r
 import { fetchDriverStats } from '../utils/api';
 import { lightenColor } from '../utils/lightenColor';
 import { HeadToHeadChart, Select, Loading } from '../components';
-import { useLocation, useParams, Link } from 'react-router-dom';
+import { useLocation, useParams, useNavigate } from 'react-router-dom';
 
 export const TeammatesComparison = () => {
   const {state} = useLocation();
   const { urlYear, urlTeam } = useParams();
+  let navigate = useNavigate();
   const [year, setYear] = useState(state ? state.selectedYear : ((urlYear && urlYear<=2024) ? urlYear : ''));
   const [team, setTeam] = useState(state? state.constructorId : (urlTeam ? urlTeam : ''));
   const [drivers, setDrivers] = useState([]);
@@ -30,6 +31,11 @@ export const TeammatesComparison = () => {
     if(year !== ''){
       submit(team);
     }
+    if(urlYear>2024){
+      window.alert(`Please select an year<=2024`);
+      window.location.reload();
+      navigate('/teammates-comparison');
+    }
   }, [])
 
   useEffect(()=>{
@@ -40,6 +46,14 @@ export const TeammatesComparison = () => {
     if (year && !teamCache[year]) {
       const response = await axios.get(`https://praneeth7781.github.io/f1nsight-api-2/constructors/${year}.json`);
       const constructors = response.data;
+      if(urlTeam){
+        const urlTeamExists = constructors.some(element => element.constructorId === urlTeam);
+        if(!urlTeamExists){
+          window.alert(`${urlTeam} did not participate in ${year}`);
+          navigate('/teammates-comparison');
+          window.location.reload();
+        }
+      }
       // console.log(constructors);
       setTeamCache((prevCache) => ({ ...prevCache, [year]: constructors }));
     }
