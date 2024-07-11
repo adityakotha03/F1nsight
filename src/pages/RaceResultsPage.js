@@ -1,21 +1,25 @@
 import React, { useState, useEffect } from 'react';
-import { fetchRaceDetails } from '../utils/api';
+import { fetchRaceDetails, fetch, fetchRaceMeetingKeys } from '../utils/api';
 import classNames from 'classnames';
 
 import { RaceResultItem, Loading } from '../components';
+import { useNavigate } from 'react-router-dom';
 
 
 export function RaceResultsPage({ selectedYear }) {
   const [raceDetails, setRaceDetails] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [races, setRaces] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
       const details = await fetchRaceDetails(selectedYear);
-      console.log('details', details) 
+      const races = await fetchRaceMeetingKeys(selectedYear);
+      // console.log('details', details) 
 
       setRaceDetails(details);
+      setRaces(races);
       setIsLoading(false);
     };
 
@@ -40,6 +44,22 @@ export function RaceResultsPage({ selectedYear }) {
     const formattedTimeCapitalized = formattedTime.replace('am', 'AM').replace('pm', 'PM');
     return `${formattedDate} ${formattedTimeCapitalized}`;
   };
+
+  let navigate = useNavigate();
+  const navigateToRaceResult = (race) => {
+    // console.log(race);
+    navigate(
+      `/race/${races[race.raceName]['meeting_key']}`, 
+      { 
+        state: { 
+          raceName: race.raceName,
+          meetingKey: races[race.raceName]['meeting_key'], 
+          year: selectedYear, 
+          location: races[race.raceName]['location']
+        }
+      }
+    );
+  }
   
   return (
     <div className="race-results max-w-[120rem] m-auto">
@@ -51,9 +71,10 @@ export function RaceResultsPage({ selectedYear }) {
             <li 
               key={index}
               className={classNames(
-                  "bg-glow-dark rounded-[2.4rem] mt-56 px-32", 
+                  "bg-glow-dark rounded-[2.4rem] mt-56 px-32 clickable-hover", 
                   `${race.raceName}`
               )}
+              onClick={()=>{if(race.results && race.results.length >0 ) navigateToRaceResult(race)}}
             >
               {race.results && race.results.length > 0 ? (
                 <ul className="race-results__list -mt-48">

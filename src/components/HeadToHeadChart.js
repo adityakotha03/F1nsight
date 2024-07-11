@@ -4,8 +4,8 @@ import React from 'react';
 export const HeadToHeadChart = ({ headToHeadData, color }) => {
   const FillMath = (d1, d2, driver) => {
     const total = d1 + d2;
-    const d1Percent = (d1 / total) * 100;
-    const d2Percent = (d2 / total) * 100;
+    const d1Percent = total > 0 ? (d1 / total) * 100 : 0;
+    const d2Percent = total > 0 ? (d2 / total) * 100 : 0;
 
     if (driver === 'driver1') {
       return `${d1Percent}%`;
