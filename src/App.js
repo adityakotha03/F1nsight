@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { fas } from '@fortawesome/free-solid-svg-icons';
@@ -57,7 +57,7 @@ function MainContent({ setSelectedYear, selectedYear, resultPage, resultPagePath
         <Route path="/race-results" element={<RaceResultsPage setSelectedYear={setSelectedYear} selectedYear={selectedYear} />} />
         <Route path="/constructor-standings" element={<ConstructorStandings setSelectedYear={setSelectedYear} selectedYear={selectedYear} />} />
         <Route path="/driver-standings" element={<DriverStandings setSelectedYear={setSelectedYear} selectedYear={selectedYear} />} />
-        <Route path="/teammates-comparison" element={<TeammatesComparison />}/>
+        <Route path="/teammates-comparison/:urlYear?/:urlTeam?" element={<TeammatesComparison />}/>
         <Route path="/driver-comparison" element={<DriverComparison selectedYear={selectedYear} />} />
         <Route path="/race/:raceId" element={<RacePage />} />
       </Routes>

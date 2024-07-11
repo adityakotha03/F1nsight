@@ -7,12 +7,13 @@ import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis } from 'r
 import { fetchDriverStats } from '../utils/api';
 import { lightenColor } from '../utils/lightenColor';
 import { HeadToHeadChart, Select, Loading } from '../components';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useParams, Link } from 'react-router-dom';
 
 export const TeammatesComparison = () => {
   const {state} = useLocation();
-  const [year, setYear] = useState(state ? state.selectedYear : '');
-  const [team, setTeam] = useState(state? state.constructorId : '');
+  const { urlYear, urlTeam } = useParams();
+  const [year, setYear] = useState(state ? state.selectedYear : ((urlYear && urlYear<=2024) ? urlYear : ''));
+  const [team, setTeam] = useState(state? state.constructorId : (urlTeam ? urlTeam : ''));
   const [drivers, setDrivers] = useState([]);
   const [selectedDriver1, setSelectedDriver1] = useState('');
   const [selectedDriver2, setSelectedDriver2] = useState('');
@@ -39,6 +40,7 @@ export const TeammatesComparison = () => {
     if (year && !teamCache[year]) {
       const response = await axios.get(`https://praneeth7781.github.io/f1nsight-api-2/constructors/${year}.json`);
       const constructors = response.data;
+      // console.log(constructors);
       setTeamCache((prevCache) => ({ ...prevCache, [year]: constructors }));
     }
   };
@@ -69,7 +71,13 @@ export const TeammatesComparison = () => {
   };
 
   const submit = async (selectedTeam) => {
-    const response = await axios.get(`https://praneeth7781.github.io/f1nsight-api-2/constructors/${year}/${selectedTeam}.json`);
+    const response = await axios.get(`https://praneeth7781.github.io/f1nsight-api-2/constructors/${year}/${selectedTeam}.json`)
+    .catch(function(error){
+      if(error.response) {
+        console.log(error.response.status);
+      }
+      return;
+    });
     const fetchedDrivers = response.data;
     setDrivers(fetchedDrivers);
     const colorsResponse = await axios.get('https://praneeth7781.github.io/f1nsight-api-2/colors/teams.json');
@@ -554,6 +562,7 @@ const years = Array.from({ length: currentYear - 1975 + 1 }, (_, i) => currentYe
 
         {memoizedHeadToHeadData && renderHead && (
         <>
+          <p onClick={() => {navigator.clipboard.writeText(`http://localhost:3000/#/teammates-comparison/${year}/${team}`)}} >Share</p>
           <div 
               className="text-center leading-none mt-48 mb-48 w-1/2 m-auto"
             >
