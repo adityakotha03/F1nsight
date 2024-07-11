@@ -404,7 +404,7 @@ export function RacePage() {
         }
     };
 
-    console.log(location, MapPath);
+    // console.log(location, MapPath);
 
     return isLoading ? (
         <Loading
