@@ -229,14 +229,14 @@ export const getConstructorStandings = async (selectedYear) => {
       driverResponse.json()
     ]);
 
-    const constructorStandings = constructorData.map(standing => ({
+    const constructorStandings = constructorData['latest'].map(standing => ({
       constructorName: standing.Constructor.name,
       constructorId: standing.Constructor.constructorId,
       points: standing.points,
       driverCodes: []
     }));
 
-    const driverStandings = driverData;
+    const driverStandings = driverData['latest'];
 
     driverStandings.forEach(standing => {
       standing.Constructors.forEach(constructor => {
@@ -265,7 +265,7 @@ export const getDriverStandings = async (selectedYear) => {
     const response = await fetch(url);
     if (response.ok) {
       const data = await response.json();
-      const standings = data;
+      const standings = data['latest'];
       return standings.map(standing => ({
         driverCode: standing.Driver.code,
         firstName: standing.Driver.givenName,
