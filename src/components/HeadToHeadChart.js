@@ -14,10 +14,14 @@ export const HeadToHeadChart = ({ headToHeadData, color }) => {
     }
   };
 
-  const StatLine = ( stat, d1Data, d2Data ) => {
+  const StatLine = (stat, d1Data, d2Data) => {
     const d1Color = d1Data > d2Data ? color : `${color}40`;
     const d2Color = d2Data > d1Data ? color : `${color}40`;
-    
+
+    if (d1Data === 0 && d2Data === 0) {
+      return null;
+    }
+
     return (
       <>
         <h6 className="text-center mb-8">{stat}</h6>
@@ -53,11 +57,21 @@ export const HeadToHeadChart = ({ headToHeadData, color }) => {
 
   return (
     <div className="mb-64 md:w-1/2 m-auto">
-    {StatLine('Qualifying', headToHeadData.driver1QualifyingWins, headToHeadData.driver2QualifyingWins)}
-    {StatLine('Race', headToHeadData.driver1RaceWins, headToHeadData.driver2RaceWins)}
-    {StatLine('Points', headToHeadData.driver1Points, headToHeadData.driver2Points)}
-    {StatLine('Podiums', headToHeadData.driver1Podiums, headToHeadData.driver2Podiums)}
-    {StatLine('Poles', headToHeadData.driver1Poles, headToHeadData.driver2Poles)}
+      {headToHeadData.driver1QualifyingWins > 0 || headToHeadData.driver2QualifyingWins > 0
+        ? StatLine('Qualifying', headToHeadData.driver1QualifyingWins, headToHeadData.driver2QualifyingWins)
+        : null}
+      {headToHeadData.driver1RaceWins > 0 || headToHeadData.driver2RaceWins > 0
+        ? StatLine('Race', headToHeadData.driver1RaceWins, headToHeadData.driver2RaceWins)
+        : null}
+      {headToHeadData.driver1Points > 0 || headToHeadData.driver2Points > 0
+        ? StatLine('Points', headToHeadData.driver1Points, headToHeadData.driver2Points)
+        : null}
+      {headToHeadData.driver1Podiums > 0 || headToHeadData.driver2Podiums > 0
+        ? StatLine('Podiums', headToHeadData.driver1Podiums, headToHeadData.driver2Podiums)
+        : null}
+      {headToHeadData.driver1Poles > 0 || headToHeadData.driver2Poles > 0
+        ? StatLine('Poles', headToHeadData.driver1Poles, headToHeadData.driver2Poles)
+        : null}
     </div>
   );
 };

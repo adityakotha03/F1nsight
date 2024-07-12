@@ -414,6 +414,30 @@ const CustomizedYAxisTick = ({ x, y, payload }) => {
   );
 };
 
+const GridRow = (label, driver1, driver2, title) => {
+  const driver1SplitName = String(driver1).split(" ");
+  const driver2SplitName = String(driver2).split(" ");
+
+  const driver1Int = parseFloat(driver1, 10);
+  const driver2Int = parseFloat(driver2, 10);
+
+  // Check if both values are zero and conditionally render
+  return driver1Int === 0 && driver2Int === 0 ? null : (
+    <>
+      <div className={classNames("grid grid-cols-3 gap-4 mb-16 text-neutral-400 items-center", {'text-xs': title})}>
+        <span className="tracking-xs uppercase text-xs">{label}</span>
+        <span className="tracking-xs uppercase text-center">
+          {title ? driver1SplitName[1] : driver1}
+        </span>
+        <span className="tracking-xs uppercase text-center">
+          {title ? driver2SplitName[1] : driver2}
+        </span>
+      </div>
+      <div className='divider-glow-medium ' />
+    </>
+  );
+}
+
 
 const chartData_posGainorLost = useMemo(() => {
   if (!memoizedHeadToHeadData) return [];
@@ -436,70 +460,70 @@ const formatDate = (isoString) => {
 };
 
 
-const scaleValue = (value, fromMax, toMax = 100) => {
-  // Invert the value since lower positions are better
-  const invertedValue = fromMax - value;
-  return (invertedValue / fromMax) * toMax;
-};
+// const scaleValue = (value, fromMax, toMax = 100) => {
+//   // Invert the value since lower positions are better
+//   const invertedValue = fromMax - value;
+//   return (invertedValue / fromMax) * toMax;
+// };
 
-const radar_data = [
-  {
-    subject: 'Average Race Position',
-    A: scaleValue(memoizedHeadToHeadData?.driver1AvgRacePosition || 0, 20),
-    B: scaleValue(memoizedHeadToHeadData?.driver2AvgRacePosition || 0, 20),
-    customA : memoizedHeadToHeadData?.driver1AvgRacePosition || 0,
-    customB : memoizedHeadToHeadData?.driver2AvgRacePosition || 0,
-    fullMark: 100,
-  },
-  {
-    subject: 'Average Qualifying Position',
-    A: scaleValue(memoizedHeadToHeadData?.driver1AvgQualiPositions || 0, 20),
-    B: scaleValue(memoizedHeadToHeadData?.driver2AvgQualiPositions || 0, 20),
-    customA : memoizedHeadToHeadData?.driver1AvgQualiPositions || 0,
-    customB : memoizedHeadToHeadData?.driver2AvgQualiPositions || 0,
-    fullMark: 100,
-  },
-  {
-    subject: 'Win Rate',
-    A: (memoizedHeadToHeadData?.driver1_win_rates || 0) * 100, 
-    B: (memoizedHeadToHeadData?.driver2_win_rates || 0) * 100, 
-    customA : memoizedHeadToHeadData?.driver1_win_rates || 0,
-    customB : memoizedHeadToHeadData?.driver2_win_rates || 0,
-    fullMark: 100, 
-  },
-  {
-    subject: 'Podium Rate',
-    A: (memoizedHeadToHeadData?.driver1_podium_rates || 0) * 100, 
-    B: (memoizedHeadToHeadData?.driver2_podium_rates || 0) * 100, 
-    customA : memoizedHeadToHeadData?.driver1_podium_rates || 0,
-    customB : memoizedHeadToHeadData?.driver2_podium_rates || 0,
-    fullMark: 100, 
-  },
-  {
-    subject: 'Pole Rate',
-    A: (memoizedHeadToHeadData?.driver1_pole_rates || 0) * 100, 
-    B: (memoizedHeadToHeadData?.driver2_pole_rates || 0) * 100,
-    customA : memoizedHeadToHeadData?.driver1_pole_rates || 0,
-    customB : memoizedHeadToHeadData?.driver2_pole_rates || 0,
-    fullMark: 100,
-  },
-];
+// const radar_data = [
+//   {
+//     subject: 'Average Race Position',
+//     A: scaleValue(memoizedHeadToHeadData?.driver1AvgRacePosition || 0, 20),
+//     B: scaleValue(memoizedHeadToHeadData?.driver2AvgRacePosition || 0, 20),
+//     customA : memoizedHeadToHeadData?.driver1AvgRacePosition || 0,
+//     customB : memoizedHeadToHeadData?.driver2AvgRacePosition || 0,
+//     fullMark: 100,
+//   },
+//   {
+//     subject: 'Average Qualifying Position',
+//     A: scaleValue(memoizedHeadToHeadData?.driver1AvgQualiPositions || 0, 20),
+//     B: scaleValue(memoizedHeadToHeadData?.driver2AvgQualiPositions || 0, 20),
+//     customA : memoizedHeadToHeadData?.driver1AvgQualiPositions || 0,
+//     customB : memoizedHeadToHeadData?.driver2AvgQualiPositions || 0,
+//     fullMark: 100,
+//   },
+//   {
+//     subject: 'Win Rate',
+//     A: (memoizedHeadToHeadData?.driver1_win_rates || 0) * 100, 
+//     B: (memoizedHeadToHeadData?.driver2_win_rates || 0) * 100, 
+//     customA : memoizedHeadToHeadData?.driver1_win_rates || 0,
+//     customB : memoizedHeadToHeadData?.driver2_win_rates || 0,
+//     fullMark: 100, 
+//   },
+//   {
+//     subject: 'Podium Rate',
+//     A: (memoizedHeadToHeadData?.driver1_podium_rates || 0) * 100, 
+//     B: (memoizedHeadToHeadData?.driver2_podium_rates || 0) * 100, 
+//     customA : memoizedHeadToHeadData?.driver1_podium_rates || 0,
+//     customB : memoizedHeadToHeadData?.driver2_podium_rates || 0,
+//     fullMark: 100, 
+//   },
+//   {
+//     subject: 'Pole Rate',
+//     A: (memoizedHeadToHeadData?.driver1_pole_rates || 0) * 100, 
+//     B: (memoizedHeadToHeadData?.driver2_pole_rates || 0) * 100,
+//     customA : memoizedHeadToHeadData?.driver1_pole_rates || 0,
+//     customB : memoizedHeadToHeadData?.driver2_pole_rates || 0,
+//     fullMark: 100,
+//   },
+// ];
 
-const CustomTooltip = ({ active, payload, label }) => {
-  if (active && payload && payload.length) {
-    const driver1 = parseFloat(payload[0].payload.customA);
-    const driver2 = parseFloat(payload[0].payload.customB);
-    // console.log(typeof(driver1),driver2)
-    return (
-      <div className="custom-tooltip bg-white p-4 rounded shadow-md">
-        <p className="label">{`${label}`}</p>
-        <p className="text-sm" style={{ color: `#${teamColor}`}} >{`${payload[0].name}: ${driver1.toFixed(2)}`}</p>
-        <p className="text-sm" style={{ color: lightenColor(teamColor)}} >{`${payload[1].name}: ${driver2.toFixed(2)}`}</p>
-      </div>
-    );
-  }
-  return null;
-};
+// const CustomTooltip = ({ active, payload, label }) => {
+//   if (active && payload && payload.length) {
+//     const driver1 = parseFloat(payload[0].payload.customA);
+//     const driver2 = parseFloat(payload[0].payload.customB);
+//     // console.log(typeof(driver1),driver2)
+//     return (
+//       <div className="custom-tooltip bg-white p-4 rounded shadow-md">
+//         <p className="label">{`${label}`}</p>
+//         <p className="text-sm" style={{ color: `#${teamColor}`}} >{`${payload[0].name}: ${driver1.toFixed(2)}`}</p>
+//         <p className="text-sm" style={{ color: lightenColor(teamColor)}} >{`${payload[1].name}: ${driver2.toFixed(2)}`}</p>
+//       </div>
+//     );
+//   }
+//   return null;
+// };
 
 const currentYear = new Date().getFullYear();
 const years = Array.from({ length: currentYear - 1975 + 1 }, (_, i) => currentYear - i);
@@ -584,19 +608,28 @@ const years = Array.from({ length: currentYear - 1975 + 1 }, (_, i) => currentYe
           </p>
           <HeadToHeadChart headToHeadData={memoizedHeadToHeadData} color={`#${teamColor}`} />
 
-          <h3 className="heading-4 mb-16 text-neutral-400 ml-24">Driver Statistics Comparison</h3>
+          {/* <h3 className="heading-4 mb-16 text-neutral-400 ml-24">Driver Statistics Comparison</h3>
           <div className="bg-glow-large rounded-lg mb-64 p-8 md:px-32 md:pt-16 md:pb-32"> 
           <ResponsiveContainer width="100%" height={400}>
             <RadarChart cx="50%" cy="50%" outerRadius="80%" data={radar_data}>
               <PolarGrid />
               <PolarAngleAxis dataKey="subject" />
-              {/* <PolarRadiusAxis angle={0} domain={[0, 100]} tick={false} /> */}
               <Radar name={memoizedHeadToHeadData.driver1} dataKey="A" stroke={`#${teamColor}`} fill={`#${teamColor}`} fillOpacity={0.6} />
               <Radar name={memoizedHeadToHeadData.driver2} dataKey="B" stroke={lightenColor(teamColor)} fill={lightenColor(teamColor)} fillOpacity={0.6} />
               <Legend verticalAlign="top" height={36} />
               <Tooltip content={<CustomTooltip />} />
             </RadarChart>
           </ResponsiveContainer>
+          </div> */}
+
+          <h3 className="heading-4 mb-16 text-neutral-400 ml-24">Driver Statistics Comparison</h3>
+          <div className="bg-glow-large rounded-lg mb-64 p-8 md:px-32 md:pt-16 md:pb-32"> 
+            {GridRow( " ", memoizedHeadToHeadData.driver1, memoizedHeadToHeadData.driver2, true)}
+            {GridRow( "Average Race Position", memoizedHeadToHeadData.driver1AvgRacePosition, memoizedHeadToHeadData.driver2AvgRacePosition)}
+            {GridRow( "Average Qualifying Position", memoizedHeadToHeadData.driver1AvgQualiPositions, memoizedHeadToHeadData.driver2AvgQualiPositions)}
+            {GridRow( "Win Rate", memoizedHeadToHeadData.driver1_win_rates, memoizedHeadToHeadData.driver2_win_rates)}
+            {GridRow( "Podium Rate", memoizedHeadToHeadData.driver1_podium_rates, memoizedHeadToHeadData.driver2_podium_rates)}
+            {GridRow( "Pole Rate", memoizedHeadToHeadData.driver1_pole_rates, memoizedHeadToHeadData.driver2_pole_rates)}
           </div>
 
           {(!ambQ && !ambR) && (<div>
