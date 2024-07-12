@@ -10,13 +10,15 @@ import { HeadToHeadChart, Select, Loading } from '../components';
 import { useLocation, useParams, useNavigate } from 'react-router-dom';
 
 export const TeammatesComparison = () => {
-  // const {state} = useLocation();
+  const currentYear = new Date().getFullYear();
+  const years = Array.from({ length: currentYear - 1975 + 1 }, (_, i) => currentYear - i);
+
+  const { state } = useLocation();
   const { urlYear, urlTeam } = useParams();
-  let navigate = useNavigate();
-  // const [year, setYear] = useState(state ? state.selectedYear : ((urlYear && urlYear<=2024) ? urlYear : ''));
-  // const [team, setTeam] = useState(state? state.constructorId : (urlTeam ? urlTeam : ''));
-  const [year, setYear] = useState((urlYear && urlYear<=2024) ? urlYear : '');
-  const [team, setTeam] = useState(urlTeam ? urlTeam : '');
+  const navigate = useNavigate();
+
+  const [year, setYear] = useState('');
+  const [team, setTeam] = useState('');
   const [drivers, setDrivers] = useState([]);
   const [selectedDriver1, setSelectedDriver1] = useState('');
   const [selectedDriver2, setSelectedDriver2] = useState('');
@@ -30,59 +32,56 @@ export const TeammatesComparison = () => {
   const [renderHead, setRenderHead] = useState(true);
 
   useEffect(() => {
-    if(year !== ''){
-      submit(team);
-    }
-    if(urlYear>2024){
-      window.alert(`Please select an year<=2024`);
-      window.location.reload();
-      navigate('/teammates-comparison');
-    }
-  }, [])
+    const validYear = urlYear && parseInt(urlYear) <= currentYear ? urlYear : '';
+    setYear(validYear);
+    setTeam(urlTeam || '');
+  }, [urlYear, urlTeam, currentYear]);
 
-  useEffect(()=>{
-
-  },[isLoading]);
+  useEffect(() => {
+    if (year) {
+      fetchTeams();
+      if (team) {
+        submit(team);
+      }
+    }
+  }, [year, team]);
 
   const fetchTeams = async () => {
     if (year && !teamCache[year]) {
-      const response = await axios.get(`https://praneeth7781.github.io/f1nsight-api-2/constructors/${year}.json`);
-      const constructors = response.data;
-      if(urlTeam){
-        const urlTeamExists = constructors.some(element => element.constructorId === urlTeam);
-        if(!urlTeamExists){
-          window.alert(`${urlTeam} did not participate in ${year}`);
-          navigate('/teammates-comparison');
-          window.location.reload();
+      setIsLoading(true);
+      try {
+        const response = await axios.get(`https://praneeth7781.github.io/f1nsight-api-2/constructors/${year}.json`);
+        const constructors = response.data;
+        setTeamCache((prevCache) => ({ ...prevCache, [year]: constructors }));
+
+        if (team && !constructors.some(constructor => constructor.constructorId === team)) {
+          window.alert(`${team} did not participate in ${year}`);
+          setTeam('');
+          navigate(`/teammates-comparison/${year}`, { replace: true });
         }
+      } catch (error) {
+        console.error("Error fetching teams:", error);
+      } finally {
+        setIsLoading(false);
       }
-      // console.log(constructors);
-      setTeamCache((prevCache) => ({ ...prevCache, [year]: constructors }));
     }
   };
-  useEffect(() => {
-    fetchTeams();
-    setShowDriverSelectors(false);
-    setSelectedDriver1('');
-    setSelectedDriver2('');
-    setAmbQ(true);
-    setAmbR(true);
-    setRenderHead(true);
-  }, [year, teamCache]);
 
   const teamsMemo = useMemo(() => teamCache[year] || [], [year, teamCache]);
 
-  const handleYearChange = async (e) => {
+  const handleYearChange = (e) => {
     const selectedYear = e.target.value;
     setYear(selectedYear);
     setTeam('');
     setDrivers([]);
     setHeadToHeadData(null);
+    navigate(`/teammates-comparison/${selectedYear}`, { replace: true });
   };
 
-  const handleTeamChange = async (e) => {
+  const handleTeamChange = (e) => {
     const selectedTeam = e.target.value;
     setTeam(selectedTeam);
+    navigate(`/teammates-comparison/${year}/${selectedTeam}`, { replace: true });
     submit(selectedTeam);
   };
 
@@ -459,74 +458,90 @@ const formatDate = (isoString) => {
   return date.toLocaleString();
 };
 
+const GridRow = (label, driver1, driver2, title) => {
+  const driver1SplitName = String(driver1).split(" ");
+  const driver2SplitName = String(driver2).split(" ");
 
-const scaleValue = (value, fromMax, toMax = 100) => {
-  // Invert the value since lower positions are better
-  const invertedValue = fromMax - value;
-  return (invertedValue / fromMax) * toMax;
-};
-
-const radar_data = [
-  {
-    subject: 'Average Race Position',
-    A: scaleValue(memoizedHeadToHeadData?.driver1AvgRacePosition || 0, 20),
-    B: scaleValue(memoizedHeadToHeadData?.driver2AvgRacePosition || 0, 20),
-    customA : memoizedHeadToHeadData?.driver1AvgRacePosition || 0,
-    customB : memoizedHeadToHeadData?.driver2AvgRacePosition || 0,
-    fullMark: 100,
-  },
-  {
-    subject: 'Average Qualifying Position',
-    A: scaleValue(memoizedHeadToHeadData?.driver1AvgQualiPositions || 0, 20),
-    B: scaleValue(memoizedHeadToHeadData?.driver2AvgQualiPositions || 0, 20),
-    customA : memoizedHeadToHeadData?.driver1AvgQualiPositions || 0,
-    customB : memoizedHeadToHeadData?.driver2AvgQualiPositions || 0,
-    fullMark: 100,
-  },
-  {
-    subject: 'Win Rate',
-    A: (memoizedHeadToHeadData?.driver1_win_rates || 0) * 100, 
-    B: (memoizedHeadToHeadData?.driver2_win_rates || 0) * 100, 
-    customA : memoizedHeadToHeadData?.driver1_win_rates || 0,
-    customB : memoizedHeadToHeadData?.driver2_win_rates || 0,
-    fullMark: 100, 
-  },
-  {
-    subject: 'Podium Rate',
-    A: (memoizedHeadToHeadData?.driver1_podium_rates || 0) * 100, 
-    B: (memoizedHeadToHeadData?.driver2_podium_rates || 0) * 100, 
-    customA : memoizedHeadToHeadData?.driver1_podium_rates || 0,
-    customB : memoizedHeadToHeadData?.driver2_podium_rates || 0,
-    fullMark: 100, 
-  },
-  {
-    subject: 'Pole Rate',
-    A: (memoizedHeadToHeadData?.driver1_pole_rates || 0) * 100, 
-    B: (memoizedHeadToHeadData?.driver2_pole_rates || 0) * 100,
-    customA : memoizedHeadToHeadData?.driver1_pole_rates || 0,
-    customB : memoizedHeadToHeadData?.driver2_pole_rates || 0,
-    fullMark: 100,
-  },
-];
-
-const CustomTooltip = ({ active, payload, label }) => {
-  if (active && payload && payload.length) {
-    const driver1 = parseFloat(payload[0].payload.customA);
-    const driver2 = parseFloat(payload[0].payload.customB);
-    // console.log(typeof(driver1),driver2)
-    return (
-      <div className="custom-tooltip bg-white p-4 rounded shadow-md">
-        <p className="label">{`${label}`}</p>
-        <p className="text-sm" style={{ color: `#${teamColor}`}} >{`${payload[0].name}: ${driver1.toFixed(2)}`}</p>
-        <p className="text-sm" style={{ color: lightenColor(teamColor)}} >{`${payload[1].name}: ${driver2.toFixed(2)}`}</p>
+  return (
+    <>
+      <div className={classNames("grid grid-cols-3 gap-4 mb-16 text-neutral-400 items-center", {'text-xs': title})}>
+        <span className="tracking-xs uppercase text-xs">{label}</span>
+        <span className="tracking-xs uppercase text-center">
+          {title ? driver1SplitName[1] : driver1}
+        </span>
+        <span className="tracking-xs uppercase text-center">
+          {title ? driver2SplitName[1] : driver2}
+        </span>
       </div>
-    );
-  }
-  return null;
-};
+      <div className='divider-glow-medium ' />
+    </>
+  );
+}
 
-const currentYear = new Date().getFullYear();
-const years = Array.from({ length: currentYear - 1975 + 1 }, (_, i) => currentYear - i);
+// const scaleValue = (value, fromMax, toMax = 100) => {
+//   // Invert the value since lower positions are better
+//   const invertedValue = fromMax - value;
+//   return (invertedValue / fromMax) * toMax;
+// };
+
+// const radar_data = [
+//   {
+//     subject: 'Average Race Position',
+//     A: scaleValue(memoizedHeadToHeadData?.driver1AvgRacePosition || 0, 20),
+//     B: scaleValue(memoizedHeadToHeadData?.driver2AvgRacePosition || 0, 20),
+//     customA : memoizedHeadToHeadData?.driver1AvgRacePosition || 0,
+//     customB : memoizedHeadToHeadData?.driver2AvgRacePosition || 0,
+//     fullMark: 100,
+//   },
+//   {
+//     subject: 'Average Qualifying Position',
+//     A: scaleValue(memoizedHeadToHeadData?.driver1AvgQualiPositions || 0, 20),
+//     B: scaleValue(memoizedHeadToHeadData?.driver2AvgQualiPositions || 0, 20),
+//     customA : memoizedHeadToHeadData?.driver1AvgQualiPositions || 0,
+//     customB : memoizedHeadToHeadData?.driver2AvgQualiPositions || 0,
+//     fullMark: 100,
+//   },
+//   {
+//     subject: 'Win Rate',
+//     A: (memoizedHeadToHeadData?.driver1_win_rates || 0) * 100, 
+//     B: (memoizedHeadToHeadData?.driver2_win_rates || 0) * 100, 
+//     customA : memoizedHeadToHeadData?.driver1_win_rates || 0,
+//     customB : memoizedHeadToHeadData?.driver2_win_rates || 0,
+//     fullMark: 100, 
+//   },
+//   {
+//     subject: 'Podium Rate',
+//     A: (memoizedHeadToHeadData?.driver1_podium_rates || 0) * 100, 
+//     B: (memoizedHeadToHeadData?.driver2_podium_rates || 0) * 100, 
+//     customA : memoizedHeadToHeadData?.driver1_podium_rates || 0,
+//     customB : memoizedHeadToHeadData?.driver2_podium_rates || 0,
+//     fullMark: 100, 
+//   },
+//   {
+//     subject: 'Pole Rate',
+//     A: (memoizedHeadToHeadData?.driver1_pole_rates || 0) * 100, 
+//     B: (memoizedHeadToHeadData?.driver2_pole_rates || 0) * 100,
+//     customA : memoizedHeadToHeadData?.driver1_pole_rates || 0,
+//     customB : memoizedHeadToHeadData?.driver2_pole_rates || 0,
+//     fullMark: 100,
+//   },
+// ];
+
+// const CustomTooltip = ({ active, payload, label }) => {
+//   if (active && payload && payload.length) {
+//     const driver1 = parseFloat(payload[0].payload.customA);
+//     const driver2 = parseFloat(payload[0].payload.customB);
+//     // console.log(typeof(driver1),driver2)
+//     return (
+//       <div className="custom-tooltip bg-white p-4 rounded shadow-md">
+//         <p className="label">{`${label}`}</p>
+//         <p className="text-sm" style={{ color: `#${teamColor}`}} >{`${payload[0].name}: ${driver1.toFixed(2)}`}</p>
+//         <p className="text-sm" style={{ color: lightenColor(teamColor)}} >{`${payload[1].name}: ${driver2.toFixed(2)}`}</p>
+//       </div>
+//     );
+//   }
+//   return null;
+// };
 
   // console.log(chartData);
   // console.log(preparePositionChartData(memoizedHeadToHeadData.driver1QualifyingPosList, memoizedHeadToHeadData.driver2QualifyingPosList, memoizedHeadToHeadData.driver1Code, memoizedHeadToHeadData.driver2Code));
@@ -576,9 +591,10 @@ const years = Array.from({ length: currentYear - 1975 + 1 }, (_, i) => currentYe
       ) : (
         <div className="max-md:px-8">
 
-        {memoizedHeadToHeadData && renderHead && (
+        {memoizedHeadToHeadData && renderHead && urlTeam && urlYear && (
         <>
-          <p onClick={() => {navigator.clipboard.writeText(`http://localhost:3000/#/teammates-comparison/${year}/${team}`)}} >Share</p>
+          <button onClick={() => {navigator.clipboard.writeText(`http://localhost:3000/#/teammates-comparison/${year}/${team}`)}}   style={{ cursor: 'pointer', padding: '10px 20px', backgroundColor: '#007BFF', color: '#FFF', border: 'none', borderRadius: '4px' }}>Share</button>
+
           <div 
               className="text-center leading-none mt-48 mb-48 w-1/2 m-auto"
             >
@@ -609,20 +625,30 @@ const years = Array.from({ length: currentYear - 1975 + 1 }, (_, i) => currentYe
           </p>
           <HeadToHeadChart headToHeadData={memoizedHeadToHeadData} color={`#${teamColor}`} />
 
-          <h3 className="heading-4 mb-16 text-neutral-400 ml-24">Driver Statistics Comparison</h3>
+          {/* <h3 className="heading-4 mb-16 text-neutral-400 ml-24">Driver Statistics Comparison</h3>
           <div className="bg-glow-large rounded-lg mb-64 p-8 md:px-32 md:pt-16 md:pb-32"> 
           <ResponsiveContainer width="100%" height={400}>
             <RadarChart cx="50%" cy="50%" outerRadius="80%" data={radar_data}>
               <PolarGrid />
               <PolarAngleAxis dataKey="subject" />
-              {/* <PolarRadiusAxis angle={0} domain={[0, 100]} tick={false} /> */}
               <Radar name={memoizedHeadToHeadData.driver1} dataKey="A" stroke={`#${teamColor}`} fill={`#${teamColor}`} fillOpacity={0.6} />
               <Radar name={memoizedHeadToHeadData.driver2} dataKey="B" stroke={lightenColor(teamColor)} fill={lightenColor(teamColor)} fillOpacity={0.6} />
               <Legend verticalAlign="top" height={36} />
               <Tooltip content={<CustomTooltip />} />
             </RadarChart>
           </ResponsiveContainer>
+          </div> */}
+
+          <h3 className="heading-4 mb-16 text-neutral-400 ml-24">Driver Statistics Comparison</h3>
+          <div className="bg-glow-large rounded-lg mb-64 p-8 md:px-32 md:pt-16 md:pb-32"> 
+            {GridRow( " ", memoizedHeadToHeadData.driver1, memoizedHeadToHeadData.driver2, true)}
+            {GridRow( "Average Race Position", memoizedHeadToHeadData.driver1AvgRacePosition, memoizedHeadToHeadData.driver2AvgRacePosition)}
+            {GridRow( "Average Qualifying Position", memoizedHeadToHeadData.driver1AvgQualiPositions, memoizedHeadToHeadData.driver2AvgQualiPositions)}
+            {GridRow( "Win Rate", memoizedHeadToHeadData.driver1_win_rates, memoizedHeadToHeadData.driver2_win_rates)}
+            {GridRow( "Podium Rate", memoizedHeadToHeadData.driver1_podium_rates, memoizedHeadToHeadData.driver2_podium_rates)}
+            {GridRow( "Pole Rate", memoizedHeadToHeadData.driver1_pole_rates, memoizedHeadToHeadData.driver2_pole_rates)}
           </div>
+
 
           {(!ambQ && !ambR) && (<div>
             <h3 className="heading-4 mb-16 text-neutral-400 ml-24">Positions Gained or Lost During Race</h3>
