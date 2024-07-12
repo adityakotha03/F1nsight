@@ -181,7 +181,7 @@ const fetchRaceResults = async (selectedYear, raceId) => {
     if (response.ok) {
       // const data = await response.json();
       const tempdata = await response.json();
-      const data = tempdata[raceId].slice(0,3);
+      const data = tempdata.find(element => element.round === raceId).Results.slice(0,3);
 
       // console.log(data.slice(0,3));
       const results = data.map(result => ({
