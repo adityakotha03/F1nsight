@@ -591,7 +591,7 @@ const GridRow = (label, driver1, driver2, title) => {
       ) : (
         <div className="max-md:px-8">
 
-        {memoizedHeadToHeadData && renderHead && (
+        {memoizedHeadToHeadData && renderHead && urlTeam && urlYear && (
         <>
           <button onClick={() => {navigator.clipboard.writeText(`http://localhost:3000/#/teammates-comparison/${year}/${team}`)}}   style={{ cursor: 'pointer', padding: '10px 20px', backgroundColor: '#007BFF', color: '#FFF', border: 'none', borderRadius: '4px' }}>Share</button>
 
