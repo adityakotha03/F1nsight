@@ -10,11 +10,13 @@ import { HeadToHeadChart, Select, Loading } from '../components';
 import { useLocation, useParams, useNavigate } from 'react-router-dom';
 
 export const TeammatesComparison = () => {
-  const {state} = useLocation();
+  // const {state} = useLocation();
   const { urlYear, urlTeam } = useParams();
   let navigate = useNavigate();
-  const [year, setYear] = useState(state ? state.selectedYear : ((urlYear && urlYear<=2024) ? urlYear : ''));
-  const [team, setTeam] = useState(state? state.constructorId : (urlTeam ? urlTeam : ''));
+  // const [year, setYear] = useState(state ? state.selectedYear : ((urlYear && urlYear<=2024) ? urlYear : ''));
+  // const [team, setTeam] = useState(state? state.constructorId : (urlTeam ? urlTeam : ''));
+  const [year, setYear] = useState((urlYear && urlYear<=2024) ? urlYear : '');
+  const [team, setTeam] = useState(urlTeam ? urlTeam : '');
   const [drivers, setDrivers] = useState([]);
   const [selectedDriver1, setSelectedDriver1] = useState('');
   const [selectedDriver2, setSelectedDriver2] = useState('');

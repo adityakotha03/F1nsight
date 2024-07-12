@@ -137,13 +137,13 @@ export const fetchRacesAndSessions = async (selectedYear) => {
   
 // race results page
 export const fetchRaceDetails = async (selectedYear) => {
-  const url = `https://ergast.com/api/f1/${selectedYear}.json`; 
+  const url = `https://praneeth7781.github.io/f1nsight-api-2/races/raceDetails/${selectedYear}.json`; 
   try {
     const response = await fetch(url);
     if (response.ok) {
-      const data = await response.json();
-      const races = data.MRData.RaceTable.Races;
-
+      // const data = await response.json();
+      // const races = data.MRData.RaceTable.Races;
+      const races = await response.json();
       const raceResultsPromises = races.map(race => {
         if (new Date(race.date) < new Date()) {
           return fetchRaceResults(selectedYear, race.round)
@@ -169,13 +169,16 @@ export const fetchRaceDetails = async (selectedYear) => {
 };
   
 const fetchRaceResults = async (selectedYear, raceId) => {
-  const resultsUrl = `https://ergast.com/api/f1/${selectedYear}/${raceId}/results.json?limit=3`;
+  const resultsUrl = `https://praneeth7781.github.io/f1nsight-api-2/races/results/${selectedYear}.json`;
   try {
     const response = await fetch(resultsUrl);
     if (response.ok) {
-      const data = await response.json();
-      // console.log(data);
-      const results = data.MRData.RaceTable.Races[0].Results.map(result => ({
+      // const data = await response.json();
+      const tempdata = await response.json();
+      const data = tempdata[raceId].slice(0,3);
+
+      // console.log(data.slice(0,3));
+      const results = data.map(result => ({
         driver: result.Driver,
         fastestLap: result.FastestLap,
         grid: result.grid,
