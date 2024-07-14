@@ -75,7 +75,7 @@ export const TeammatesComparison = () => {
     setTeam('');
     setDrivers([]);
     setHeadToHeadData(null);
-    navigate(`/teammates-comparison/${selectedYear}`, { replace: true });
+    navigate(team ? `/teammates-comparison/${selectedYear}/${team}` : `/teammates-comparison/${selectedYear}`, { replace: true });
   };
 
   const handleTeamChange = (e) => {
@@ -272,6 +272,39 @@ export const TeammatesComparison = () => {
     const driver1TotalPoints = parseInt(driverResults[driver1Id]?.posAfterRace.pos[Object.keys(driverResults[driver1Id]?.posAfterRace.pos).pop()]?.points) || 0;
     const driver2TotalPoints = parseInt(driverResults[driver2Id]?.posAfterRace.pos[Object.keys(driverResults[driver2Id]?.posAfterRace.pos).pop()]?.points) || 0;        
 
+    const driver1QualifyingPosList = driverResults[driver1Id]?.qualiPosition.positions || {};
+    const driver2QualifyingPosList = driverResults[driver2Id]?.qualiPosition.positions || {};
+    const driver1RacePosList = driverResults[driver1Id]?.racePosition.positions || {};
+    const driver2RacePosList = driverResults[driver2Id]?.racePosition.positions || {};
+    
+    const driver1QualifyingRaces = Object.keys(driver1QualifyingPosList);
+    const driver2QualifyingRaces = Object.keys(driver2QualifyingPosList);
+    const driver1RaceRaces = Object.keys(driver1RacePosList);
+    const driver2RaceRaces = Object.keys(driver2RacePosList);
+    
+    const commonQualifyingRaces = driver1QualifyingRaces.filter(race => driver2QualifyingRaces.includes(race));
+    const commonRaceRaces = driver1RaceRaces.filter(race => driver2RaceRaces.includes(race));
+    
+    const filteredDriver1QualifyingPosList = commonQualifyingRaces.reduce((result, race) => {
+        result[race] = driver1QualifyingPosList[race];
+        return result;
+    }, {});
+    
+    const filteredDriver2QualifyingPosList = commonQualifyingRaces.reduce((result, race) => {
+        result[race] = driver2QualifyingPosList[race];
+        return result;
+    }, {});
+    
+    const filteredDriver1RacePosList = commonRaceRaces.reduce((result, race) => {
+        result[race] = driver1RacePosList[race];
+        return result;
+    }, {});
+    
+    const filteredDriver2RacePosList = commonRaceRaces.reduce((result, race) => {
+        result[race] = driver2RacePosList[race];
+        return result;
+    }, {});
+    
     setHeadToHeadData({
       lastUpdate: driverResults[driver1Id]?.lastUpdate,
       driver1: drivers.find(d => d.driverId === driver1Id).givenName + ' ' + drivers.find(d => d.driverId === driver1Id).familyName,
@@ -290,10 +323,10 @@ export const TeammatesComparison = () => {
       driver2Poles: Object.keys(driverResults[driver2Id]?.poles || {}).length,
       driver1QualifyingTimes: driver1QualifyingTimesProcessed,
       driver2QualifyingTimes: driver2QualifyingTimesProcessed,
-      driver1QualifyingPosList: driverResults[driver1Id]?.qualiPosition.positions || {},
-      driver2QualifyingPosList: driverResults[driver2Id]?.qualiPosition.positions || {},
-      driver1RacePosList: driverResults[driver1Id]?.racePosition.positions || {},
-      driver2RacePosList: driverResults[driver2Id]?.racePosition.positions || {},
+      driver1QualifyingPosList: filteredDriver1QualifyingPosList,
+      driver2QualifyingPosList: filteredDriver2QualifyingPosList,
+      driver1RacePosList: filteredDriver1RacePosList,
+      driver2RacePosList: filteredDriver2RacePosList,
       driver1AvgRacePosition: isNaN(parseFloat(driverResults[driver1Id]?.avgRacePositions)) ? 0.00 : parseFloat(driverResults[driver1Id]?.avgRacePositions).toFixed(2),
       driver2AvgRacePosition: isNaN(parseFloat(driverResults[driver2Id]?.avgRacePositions)) ? 0.00 : parseFloat(driverResults[driver2Id]?.avgRacePositions).toFixed(2),
       driver1AvgQualiPositions: isNaN(parseFloat(driverResults[driver1Id]?.avgQualiPositions)) ? 0.00 : parseFloat(driverResults[driver1Id]?.avgQualiPositions).toFixed(2),
@@ -566,24 +599,26 @@ const GridRow = (label, driver1, driver2, title) => {
 
       {showDriverSelectors && (
         <div className="flex flex-col items-center justify-center gap-8">
-          <p className="pt-24 pb-16">This team had more than 2 drivers competing this season. Please select two drivers to compare.</p>
-          <div className='flex items-center gap-8'>
-            <Select label="Driver 1" value={selectedDriver1} onChange={handleDriver1Change}>
-              <option value="">Select Driver</option>
-              {drivers.map(d => (
-                <option key={d.driverId} value={d.driverId } disabled={d.driverId === selectedDriver2}>{d.givenName} {d.familyName}</option>
-              ))}
-            </Select>
-            <Select label="Driver 2" value={selectedDriver2} onChange={handleDriver2Change} disabled={!selectedDriver1}>
-              <option value="">Select Driver</option>
-              {drivers.map(d => (
-                <option key={d.driverId} value={d.driverId} disabled={d.driverId === selectedDriver1}>
-                  {d.givenName} {d.familyName}
-                </option>
-              ))}
-            </Select>
-          </div>
+        <p className="pt-24 pb-16">This team had more than 2 drivers competing this season. Please select two drivers to compare.</p>
+        <div className='flex items-center gap-8'>
+          <Select label="Driver 1" value={selectedDriver1} onChange={handleDriver1Change}>
+            {!selectedDriver1 && <option value="">Select Driver</option>}
+            {drivers.map(d => (
+              <option key={d.driverId} value={d.driverId} disabled={d.driverId === selectedDriver2}>
+                {d.givenName} {d.familyName}
+              </option>
+            ))}
+          </Select>
+          <Select label="Driver 2" value={selectedDriver2} onChange={handleDriver2Change} disabled={!selectedDriver1}>
+            {!selectedDriver2 && <option value="">Select Driver</option>}
+            {drivers.map(d => (
+              <option key={d.driverId} value={d.driverId} disabled={d.driverId === selectedDriver1}>
+                {d.givenName} {d.familyName}
+              </option>
+            ))}
+          </Select>
         </div>
+      </div>
       )}
 
       {isLoading ? (
