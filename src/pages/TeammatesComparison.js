@@ -628,7 +628,7 @@ const GridRow = (label, driver1, driver2, title) => {
 
         {memoizedHeadToHeadData && renderHead && urlTeam && urlYear && (
         <>
-          <button onClick={() => {navigator.clipboard.writeText(`http://localhost:3000/#/teammates-comparison/${year}/${team}`)}}   style={{ cursor: 'pointer', padding: '10px 20px', backgroundColor: '#007BFF', color: '#FFF', border: 'none', borderRadius: '4px' }}>Share</button>
+          {/* <button onClick={() => {navigator.clipboard.writeText(`http://localhost:3000/#/teammates-comparison/${year}/${team}`)}}   style={{ cursor: 'pointer', padding: '10px 20px', backgroundColor: '#007BFF', color: '#FFF', border: 'none', borderRadius: '4px' }}>Share</button> */}
 
           <div 
               className="text-center leading-none mt-48 mb-48 w-1/2 m-auto"
