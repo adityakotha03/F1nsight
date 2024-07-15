@@ -7,12 +7,18 @@ import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis } from 'r
 import { fetchDriverStats } from '../utils/api';
 import { lightenColor } from '../utils/lightenColor';
 import { HeadToHeadChart, Select, Loading } from '../components';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useParams, useNavigate } from 'react-router-dom';
 
 export const TeammatesComparison = () => {
-  const {state} = useLocation();
-  const [year, setYear] = useState(state ? state.selectedYear : '');
-  const [team, setTeam] = useState(state? state.constructorId : '');
+  const currentYear = new Date().getFullYear();
+  const years = Array.from({ length: currentYear - 1975 + 1 }, (_, i) => currentYear - i);
+
+  const { state } = useLocation();
+  const { urlYear, urlTeam } = useParams();
+  const navigate = useNavigate();
+
+  const [year, setYear] = useState('');
+  const [team, setTeam] = useState('');
   const [drivers, setDrivers] = useState([]);
   const [selectedDriver1, setSelectedDriver1] = useState('');
   const [selectedDriver2, setSelectedDriver2] = useState('');
@@ -26,50 +32,67 @@ export const TeammatesComparison = () => {
   const [renderHead, setRenderHead] = useState(true);
 
   useEffect(() => {
-    if(year !== ''){
-      submit(team);
+    const validYear = urlYear && parseInt(urlYear) <= currentYear ? urlYear : '';
+    setYear(validYear);
+    setTeam(urlTeam || '');
+  }, [urlYear, urlTeam, currentYear]);
+
+  useEffect(() => {
+    if (year) {
+      fetchTeams();
+      if (team) {
+        submit(team);
+      }
     }
-  }, [])
-
-  useEffect(()=>{
-
-  },[isLoading]);
+  }, [year, team]);
 
   const fetchTeams = async () => {
     if (year && !teamCache[year]) {
-      const response = await axios.get(`https://praneeth7781.github.io/f1nsight-api-2/constructors/${year}.json`);
-      const constructors = response.data;
-      setTeamCache((prevCache) => ({ ...prevCache, [year]: constructors }));
+      setIsLoading(true);
+      try {
+        const response = await axios.get(`https://praneeth7781.github.io/f1nsight-api-2/constructors/${year}.json`);
+        const constructors = response.data;
+        setTeamCache((prevCache) => ({ ...prevCache, [year]: constructors }));
+
+        if (team && !constructors.some(constructor => constructor.constructorId === team)) {
+          window.alert(`${team} did not participate in ${year}`);
+          setTeam('');
+          navigate(`/teammates-comparison/${year}`, { replace: true });
+        }
+      } catch (error) {
+        console.error("Error fetching teams:", error);
+      } finally {
+        setIsLoading(false);
+      }
     }
   };
-  useEffect(() => {
-    fetchTeams();
-    setShowDriverSelectors(false);
-    setSelectedDriver1('');
-    setSelectedDriver2('');
-    setAmbQ(true);
-    setAmbR(true);
-    setRenderHead(true);
-  }, [year, teamCache]);
 
   const teamsMemo = useMemo(() => teamCache[year] || [], [year, teamCache]);
 
-  const handleYearChange = async (e) => {
+  const handleYearChange = (e) => {
     const selectedYear = e.target.value;
     setYear(selectedYear);
     setTeam('');
     setDrivers([]);
     setHeadToHeadData(null);
+    navigate(team ? `/teammates-comparison/${selectedYear}/${team}` : `/teammates-comparison/${selectedYear}`, { replace: true });
   };
 
-  const handleTeamChange = async (e) => {
+  const handleTeamChange = (e) => {
     const selectedTeam = e.target.value;
     setTeam(selectedTeam);
+    navigate(`/teammates-comparison/${year}/${selectedTeam}`, { replace: true });
     submit(selectedTeam);
   };
 
   const submit = async (selectedTeam) => {
-    const response = await axios.get(`https://praneeth7781.github.io/f1nsight-api-2/constructors/${year}/${selectedTeam}.json`);
+    const response = await axios.get(`https://praneeth7781.github.io/f1nsight-api-2/constructors/${year}/${selectedTeam}.json`)
+    .catch(function(error){
+      if(error.response) {
+        console.log(error.response.status);
+      }
+      return;
+    });
     const fetchedDrivers = response.data;
     setDrivers(fetchedDrivers);
     const colorsResponse = await axios.get('https://praneeth7781.github.io/f1nsight-api-2/colors/teams.json');
@@ -249,6 +272,39 @@ export const TeammatesComparison = () => {
     const driver1TotalPoints = parseInt(driverResults[driver1Id]?.posAfterRace.pos[Object.keys(driverResults[driver1Id]?.posAfterRace.pos).pop()]?.points) || 0;
     const driver2TotalPoints = parseInt(driverResults[driver2Id]?.posAfterRace.pos[Object.keys(driverResults[driver2Id]?.posAfterRace.pos).pop()]?.points) || 0;        
 
+    const driver1QualifyingPosList = driverResults[driver1Id]?.qualiPosition.positions || {};
+    const driver2QualifyingPosList = driverResults[driver2Id]?.qualiPosition.positions || {};
+    const driver1RacePosList = driverResults[driver1Id]?.racePosition.positions || {};
+    const driver2RacePosList = driverResults[driver2Id]?.racePosition.positions || {};
+    
+    const driver1QualifyingRaces = Object.keys(driver1QualifyingPosList);
+    const driver2QualifyingRaces = Object.keys(driver2QualifyingPosList);
+    const driver1RaceRaces = Object.keys(driver1RacePosList);
+    const driver2RaceRaces = Object.keys(driver2RacePosList);
+    
+    const commonQualifyingRaces = driver1QualifyingRaces.filter(race => driver2QualifyingRaces.includes(race));
+    const commonRaceRaces = driver1RaceRaces.filter(race => driver2RaceRaces.includes(race));
+    
+    const filteredDriver1QualifyingPosList = commonQualifyingRaces.reduce((result, race) => {
+        result[race] = driver1QualifyingPosList[race];
+        return result;
+    }, {});
+    
+    const filteredDriver2QualifyingPosList = commonQualifyingRaces.reduce((result, race) => {
+        result[race] = driver2QualifyingPosList[race];
+        return result;
+    }, {});
+    
+    const filteredDriver1RacePosList = commonRaceRaces.reduce((result, race) => {
+        result[race] = driver1RacePosList[race];
+        return result;
+    }, {});
+    
+    const filteredDriver2RacePosList = commonRaceRaces.reduce((result, race) => {
+        result[race] = driver2RacePosList[race];
+        return result;
+    }, {});
+    
     setHeadToHeadData({
       lastUpdate: driverResults[driver1Id]?.lastUpdate,
       driver1: drivers.find(d => d.driverId === driver1Id).givenName + ' ' + drivers.find(d => d.driverId === driver1Id).familyName,
@@ -267,10 +323,10 @@ export const TeammatesComparison = () => {
       driver2Poles: Object.keys(driverResults[driver2Id]?.poles || {}).length,
       driver1QualifyingTimes: driver1QualifyingTimesProcessed,
       driver2QualifyingTimes: driver2QualifyingTimesProcessed,
-      driver1QualifyingPosList: driverResults[driver1Id]?.qualiPosition.positions || {},
-      driver2QualifyingPosList: driverResults[driver2Id]?.qualiPosition.positions || {},
-      driver1RacePosList: driverResults[driver1Id]?.racePosition.positions || {},
-      driver2RacePosList: driverResults[driver2Id]?.racePosition.positions || {},
+      driver1QualifyingPosList: filteredDriver1QualifyingPosList,
+      driver2QualifyingPosList: filteredDriver2QualifyingPosList,
+      driver1RacePosList: filteredDriver1RacePosList,
+      driver2RacePosList: filteredDriver2RacePosList,
       driver1AvgRacePosition: isNaN(parseFloat(driverResults[driver1Id]?.avgRacePositions)) ? 0.00 : parseFloat(driverResults[driver1Id]?.avgRacePositions).toFixed(2),
       driver2AvgRacePosition: isNaN(parseFloat(driverResults[driver2Id]?.avgRacePositions)) ? 0.00 : parseFloat(driverResults[driver2Id]?.avgRacePositions).toFixed(2),
       driver1AvgQualiPositions: isNaN(parseFloat(driverResults[driver1Id]?.avgQualiPositions)) ? 0.00 : parseFloat(driverResults[driver1Id]?.avgQualiPositions).toFixed(2),
@@ -435,74 +491,90 @@ const formatDate = (isoString) => {
   return date.toLocaleString();
 };
 
+const GridRow = (label, driver1, driver2, title) => {
+  const driver1SplitName = String(driver1).split(" ");
+  const driver2SplitName = String(driver2).split(" ");
 
-const scaleValue = (value, fromMax, toMax = 100) => {
-  // Invert the value since lower positions are better
-  const invertedValue = fromMax - value;
-  return (invertedValue / fromMax) * toMax;
-};
-
-const radar_data = [
-  {
-    subject: 'Average Race Position',
-    A: scaleValue(memoizedHeadToHeadData?.driver1AvgRacePosition || 0, 20),
-    B: scaleValue(memoizedHeadToHeadData?.driver2AvgRacePosition || 0, 20),
-    customA : memoizedHeadToHeadData?.driver1AvgRacePosition || 0,
-    customB : memoizedHeadToHeadData?.driver2AvgRacePosition || 0,
-    fullMark: 100,
-  },
-  {
-    subject: 'Average Qualifying Position',
-    A: scaleValue(memoizedHeadToHeadData?.driver1AvgQualiPositions || 0, 20),
-    B: scaleValue(memoizedHeadToHeadData?.driver2AvgQualiPositions || 0, 20),
-    customA : memoizedHeadToHeadData?.driver1AvgQualiPositions || 0,
-    customB : memoizedHeadToHeadData?.driver2AvgQualiPositions || 0,
-    fullMark: 100,
-  },
-  {
-    subject: 'Win Rate',
-    A: (memoizedHeadToHeadData?.driver1_win_rates || 0) * 100, 
-    B: (memoizedHeadToHeadData?.driver2_win_rates || 0) * 100, 
-    customA : memoizedHeadToHeadData?.driver1_win_rates || 0,
-    customB : memoizedHeadToHeadData?.driver2_win_rates || 0,
-    fullMark: 100, 
-  },
-  {
-    subject: 'Podium Rate',
-    A: (memoizedHeadToHeadData?.driver1_podium_rates || 0) * 100, 
-    B: (memoizedHeadToHeadData?.driver2_podium_rates || 0) * 100, 
-    customA : memoizedHeadToHeadData?.driver1_podium_rates || 0,
-    customB : memoizedHeadToHeadData?.driver2_podium_rates || 0,
-    fullMark: 100, 
-  },
-  {
-    subject: 'Pole Rate',
-    A: (memoizedHeadToHeadData?.driver1_pole_rates || 0) * 100, 
-    B: (memoizedHeadToHeadData?.driver2_pole_rates || 0) * 100,
-    customA : memoizedHeadToHeadData?.driver1_pole_rates || 0,
-    customB : memoizedHeadToHeadData?.driver2_pole_rates || 0,
-    fullMark: 100,
-  },
-];
-
-const CustomTooltip = ({ active, payload, label }) => {
-  if (active && payload && payload.length) {
-    const driver1 = parseFloat(payload[0].payload.customA);
-    const driver2 = parseFloat(payload[0].payload.customB);
-    // console.log(typeof(driver1),driver2)
-    return (
-      <div className="custom-tooltip bg-white p-4 rounded shadow-md">
-        <p className="label">{`${label}`}</p>
-        <p className="text-sm" style={{ color: `#${teamColor}`}} >{`${payload[0].name}: ${driver1.toFixed(2)}`}</p>
-        <p className="text-sm" style={{ color: lightenColor(teamColor)}} >{`${payload[1].name}: ${driver2.toFixed(2)}`}</p>
+  return (
+    <>
+      <div className={classNames("grid grid-cols-3 gap-4 mb-16 text-neutral-400 items-center", {'text-xs': title})}>
+        <span className="tracking-xs uppercase text-xs">{label}</span>
+        <span className="tracking-xs uppercase text-center">
+          {title ? driver1SplitName[1] : driver1}
+        </span>
+        <span className="tracking-xs uppercase text-center">
+          {title ? driver2SplitName[1] : driver2}
+        </span>
       </div>
-    );
-  }
-  return null;
-};
+      <div className='divider-glow-medium ' />
+    </>
+  );
+}
 
-const currentYear = new Date().getFullYear();
-const years = Array.from({ length: currentYear - 1975 + 1 }, (_, i) => currentYear - i);
+// const scaleValue = (value, fromMax, toMax = 100) => {
+//   // Invert the value since lower positions are better
+//   const invertedValue = fromMax - value;
+//   return (invertedValue / fromMax) * toMax;
+// };
+
+// const radar_data = [
+//   {
+//     subject: 'Average Race Position',
+//     A: scaleValue(memoizedHeadToHeadData?.driver1AvgRacePosition || 0, 20),
+//     B: scaleValue(memoizedHeadToHeadData?.driver2AvgRacePosition || 0, 20),
+//     customA : memoizedHeadToHeadData?.driver1AvgRacePosition || 0,
+//     customB : memoizedHeadToHeadData?.driver2AvgRacePosition || 0,
+//     fullMark: 100,
+//   },
+//   {
+//     subject: 'Average Qualifying Position',
+//     A: scaleValue(memoizedHeadToHeadData?.driver1AvgQualiPositions || 0, 20),
+//     B: scaleValue(memoizedHeadToHeadData?.driver2AvgQualiPositions || 0, 20),
+//     customA : memoizedHeadToHeadData?.driver1AvgQualiPositions || 0,
+//     customB : memoizedHeadToHeadData?.driver2AvgQualiPositions || 0,
+//     fullMark: 100,
+//   },
+//   {
+//     subject: 'Win Rate',
+//     A: (memoizedHeadToHeadData?.driver1_win_rates || 0) * 100, 
+//     B: (memoizedHeadToHeadData?.driver2_win_rates || 0) * 100, 
+//     customA : memoizedHeadToHeadData?.driver1_win_rates || 0,
+//     customB : memoizedHeadToHeadData?.driver2_win_rates || 0,
+//     fullMark: 100, 
+//   },
+//   {
+//     subject: 'Podium Rate',
+//     A: (memoizedHeadToHeadData?.driver1_podium_rates || 0) * 100, 
+//     B: (memoizedHeadToHeadData?.driver2_podium_rates || 0) * 100, 
+//     customA : memoizedHeadToHeadData?.driver1_podium_rates || 0,
+//     customB : memoizedHeadToHeadData?.driver2_podium_rates || 0,
+//     fullMark: 100, 
+//   },
+//   {
+//     subject: 'Pole Rate',
+//     A: (memoizedHeadToHeadData?.driver1_pole_rates || 0) * 100, 
+//     B: (memoizedHeadToHeadData?.driver2_pole_rates || 0) * 100,
+//     customA : memoizedHeadToHeadData?.driver1_pole_rates || 0,
+//     customB : memoizedHeadToHeadData?.driver2_pole_rates || 0,
+//     fullMark: 100,
+//   },
+// ];
+
+// const CustomTooltip = ({ active, payload, label }) => {
+//   if (active && payload && payload.length) {
+//     const driver1 = parseFloat(payload[0].payload.customA);
+//     const driver2 = parseFloat(payload[0].payload.customB);
+//     // console.log(typeof(driver1),driver2)
+//     return (
+//       <div className="custom-tooltip bg-white p-4 rounded shadow-md">
+//         <p className="label">{`${label}`}</p>
+//         <p className="text-sm" style={{ color: `#${teamColor}`}} >{`${payload[0].name}: ${driver1.toFixed(2)}`}</p>
+//         <p className="text-sm" style={{ color: lightenColor(teamColor)}} >{`${payload[1].name}: ${driver2.toFixed(2)}`}</p>
+//       </div>
+//     );
+//   }
+//   return null;
+// };
 
   // console.log(chartData);
   // console.log(preparePositionChartData(memoizedHeadToHeadData.driver1QualifyingPosList, memoizedHeadToHeadData.driver2QualifyingPosList, memoizedHeadToHeadData.driver1Code, memoizedHeadToHeadData.driver2Code));
@@ -527,24 +599,26 @@ const years = Array.from({ length: currentYear - 1975 + 1 }, (_, i) => currentYe
 
       {showDriverSelectors && (
         <div className="flex flex-col items-center justify-center gap-8">
-          <p className="pt-24 pb-16">This team had more than 2 drivers competing this season. Please select two drivers to compare.</p>
-          <div className='flex items-center gap-8'>
-            <Select label="Driver 1" value={selectedDriver1} onChange={handleDriver1Change}>
-              <option value="">Select Driver</option>
-              {drivers.map(d => (
-                <option key={d.driverId} value={d.driverId } disabled={d.driverId === selectedDriver2}>{d.givenName} {d.familyName}</option>
-              ))}
-            </Select>
-            <Select label="Driver 2" value={selectedDriver2} onChange={handleDriver2Change} disabled={!selectedDriver1}>
-              <option value="">Select Driver</option>
-              {drivers.map(d => (
-                <option key={d.driverId} value={d.driverId} disabled={d.driverId === selectedDriver1}>
-                  {d.givenName} {d.familyName}
-                </option>
-              ))}
-            </Select>
-          </div>
+        <p className="pt-24 pb-16">This team had more than 2 drivers competing this season. Please select two drivers to compare.</p>
+        <div className='flex items-center gap-8'>
+          <Select label="Driver 1" value={selectedDriver1} onChange={handleDriver1Change}>
+            {!selectedDriver1 && <option value="">Select Driver</option>}
+            {drivers.map(d => (
+              <option key={d.driverId} value={d.driverId} disabled={d.driverId === selectedDriver2}>
+                {d.givenName} {d.familyName}
+              </option>
+            ))}
+          </Select>
+          <Select label="Driver 2" value={selectedDriver2} onChange={handleDriver2Change} disabled={!selectedDriver1}>
+            {!selectedDriver2 && <option value="">Select Driver</option>}
+            {drivers.map(d => (
+              <option key={d.driverId} value={d.driverId} disabled={d.driverId === selectedDriver1}>
+                {d.givenName} {d.familyName}
+              </option>
+            ))}
+          </Select>
         </div>
+      </div>
       )}
 
       {isLoading ? (
@@ -552,8 +626,10 @@ const years = Array.from({ length: currentYear - 1975 + 1 }, (_, i) => currentYe
       ) : (
         <div className="max-md:px-8">
 
-        {memoizedHeadToHeadData && renderHead && (
+        {memoizedHeadToHeadData && renderHead && urlTeam && urlYear && (
         <>
+          {/* <button onClick={() => {navigator.clipboard.writeText(`http://localhost:3000/#/teammates-comparison/${year}/${team}`)}}   style={{ cursor: 'pointer', padding: '10px 20px', backgroundColor: '#007BFF', color: '#FFF', border: 'none', borderRadius: '4px' }}>Share</button> */}
+
           <div 
               className="text-center leading-none mt-48 mb-48 w-1/2 m-auto"
             >
@@ -584,20 +660,30 @@ const years = Array.from({ length: currentYear - 1975 + 1 }, (_, i) => currentYe
           </p>
           <HeadToHeadChart headToHeadData={memoizedHeadToHeadData} color={`#${teamColor}`} />
 
-          <h3 className="heading-4 mb-16 text-neutral-400 ml-24">Driver Statistics Comparison</h3>
+          {/* <h3 className="heading-4 mb-16 text-neutral-400 ml-24">Driver Statistics Comparison</h3>
           <div className="bg-glow-large rounded-lg mb-64 p-8 md:px-32 md:pt-16 md:pb-32"> 
           <ResponsiveContainer width="100%" height={400}>
             <RadarChart cx="50%" cy="50%" outerRadius="80%" data={radar_data}>
               <PolarGrid />
               <PolarAngleAxis dataKey="subject" />
-              {/* <PolarRadiusAxis angle={0} domain={[0, 100]} tick={false} /> */}
               <Radar name={memoizedHeadToHeadData.driver1} dataKey="A" stroke={`#${teamColor}`} fill={`#${teamColor}`} fillOpacity={0.6} />
               <Radar name={memoizedHeadToHeadData.driver2} dataKey="B" stroke={lightenColor(teamColor)} fill={lightenColor(teamColor)} fillOpacity={0.6} />
               <Legend verticalAlign="top" height={36} />
               <Tooltip content={<CustomTooltip />} />
             </RadarChart>
           </ResponsiveContainer>
+          </div> */}
+
+          <h3 className="heading-4 mb-16 text-neutral-400 ml-24">Driver Statistics Comparison</h3>
+          <div className="bg-glow-large rounded-lg mb-64 p-8 md:px-32 md:pt-16 md:pb-32"> 
+            {GridRow( " ", memoizedHeadToHeadData.driver1, memoizedHeadToHeadData.driver2, true)}
+            {GridRow( "Average Race Position", memoizedHeadToHeadData.driver1AvgRacePosition, memoizedHeadToHeadData.driver2AvgRacePosition)}
+            {GridRow( "Average Qualifying Position", memoizedHeadToHeadData.driver1AvgQualiPositions, memoizedHeadToHeadData.driver2AvgQualiPositions)}
+            {GridRow( "Win Rate", memoizedHeadToHeadData.driver1_win_rates, memoizedHeadToHeadData.driver2_win_rates)}
+            {GridRow( "Podium Rate", memoizedHeadToHeadData.driver1_podium_rates, memoizedHeadToHeadData.driver2_podium_rates)}
+            {GridRow( "Pole Rate", memoizedHeadToHeadData.driver1_pole_rates, memoizedHeadToHeadData.driver2_pole_rates)}
           </div>
+
 
           {(!ambQ && !ambR) && (<div>
             <h3 className="heading-4 mb-16 text-neutral-400 ml-24">Positions Gained or Lost During Race</h3>

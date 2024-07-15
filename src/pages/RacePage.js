@@ -465,7 +465,7 @@ export function RacePage() {
                                             result.position,
                                             10
                                         )}
-                                        year={year}
+                                        year={parseInt(year)}
                                         time={
                                             result.Time?.time || result.status
                                         }

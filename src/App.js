@@ -57,7 +57,7 @@ function MainContent({ setSelectedYear, selectedYear, resultPage, resultPagePath
         <Route path="/race-results" element={<RaceResultsPage setSelectedYear={setSelectedYear} selectedYear={selectedYear} />} />
         <Route path="/constructor-standings" element={<ConstructorStandings setSelectedYear={setSelectedYear} selectedYear={selectedYear} />} />
         <Route path="/driver-standings" element={<DriverStandings setSelectedYear={setSelectedYear} selectedYear={selectedYear} />} />
-        <Route path="/teammates-comparison" element={<TeammatesComparison />}/>
+        <Route path="/teammates-comparison/:urlYear?/:urlTeam?" element={<TeammatesComparison />}/>
         <Route path="/driver-comparison" element={<DriverComparison selectedYear={selectedYear} />} />
         <Route path="/race/:raceId" element={<RacePage />} />
       </Routes>

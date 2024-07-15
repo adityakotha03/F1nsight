@@ -49,15 +49,7 @@ export function RaceResultsPage({ selectedYear }) {
   const navigateToRaceResult = (race) => {
     // console.log(race);
     navigate(
-      `/race/${races[race.raceName]['meeting_key']}`, 
-      { 
-        state: { 
-          raceName: race.raceName,
-          meetingKey: races[race.raceName]['meeting_key'], 
-          year: selectedYear, 
-          location: races[race.raceName]['location']
-        }
-      }
+      `/race/${races[race.raceName]['meeting_key']}`
     );
   }
   
