@@ -325,6 +325,20 @@ export const fetchRaceResultsByCircuit = async (year, circuitId) => {
   }
 };
 
+export const fetchF1aRaceResultsByCircuit = async (year, circuitId) => {
+  try {
+    const url = `https://ant-dot-comm.github.io/f1aapi/races/${year}/resullts.json`;
+    const response = await fetch(url);
+    const data = await response.json();
+    const results = data.find(race => race.Circuit.circuitId === circuitId);
+    // console.log('fetchF1aRaceResultsByCircuit', {results});
+    return results || [];
+  } catch (error) {
+    console.error("Error fetching race results:", error);
+    return [];
+  }
+};
+
 export const fetchQualifyingResultsByCircuit = async(year, circuitId) => {
   try {
     const url = `https://ergast.com/api/f1/${year}/circuits/${circuitId}/qualifying.json`;

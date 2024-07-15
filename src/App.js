@@ -6,7 +6,7 @@ import { fas } from '@fortawesome/free-solid-svg-icons';
 import { fab } from '@fortawesome/free-brands-svg-icons'
 
 import { Header, Footer, ResultsSelector } from './components';
-import { DriverComparison, TeammatesComparison, RacePage, LandingPage, RaceResultsPage, DriverStandings, ConstructorStandings } from './pages'; 
+import { DriverComparison, TeammatesComparison, RacePage, RacePageF1a, LandingPage, RaceResultsPage, DriverStandings, ConstructorStandings } from './pages'; 
 
 import './App.scss';
 
@@ -60,6 +60,7 @@ function MainContent({ setSelectedYear, selectedYear, resultPage, resultPagePath
         <Route path="/teammates-comparison" element={<TeammatesComparison />}/>
         <Route path="/driver-comparison" element={<DriverComparison selectedYear={selectedYear} />} />
         <Route path="/race/:raceId" element={<RacePage />} />
+        <Route path="/race-f1a/:raceId" element={<RacePageF1a />} />
       </Routes>
     </div>
   );

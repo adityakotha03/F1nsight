@@ -6,7 +6,7 @@ import { Popover } from "flowbite-react";
 import { useInView } from "framer-motion";
 
 export const DriverCard = (props) => {
-    const { className, driver, driverColor, stint, fastestLap, startPosition, endPosition, isActive, layoutSmall, time, year, hasHover, index, mobileSmall} = props;
+    const { className, driver, driverColor, stint, fastestLap, startPosition, endPosition, isActive, layoutSmall, time, year, hasHover, index, mobileSmall, f1a} = props;
 
     const ref = useRef(null);
     const isInView = useInView(ref, { once: true });
@@ -81,7 +81,10 @@ export const DriverCard = (props) => {
                     <p className="driver-card-position heading-1 px-8 py-4 bg-neutral-700">P{endPosition}</p>
                     <img 
                         alt="" 
-                        src={`${process.env.PUBLIC_URL + "/images/" + year + "/drivers/" + driver.code + ".png"}`}
+                        src={f1a ? 
+                            `${process.env.PUBLIC_URL + "/images/" + year + "/F1A/" + driver.code + ".png"}`
+                            : `${process.env.PUBLIC_URL + "/images/" + year + "/drivers/" + driver.code + ".png"}`
+                        }
                         width={72} 
                         height={72} 
                         ref={ref}
@@ -194,4 +197,5 @@ DriverCard.propTypes = {
     year: PropTypes.number,
     layoutSmall: PropTypes.bool,
     mobileSmall: PropTypes.bool,
+    f1a: PropTypes.bool,
 };
