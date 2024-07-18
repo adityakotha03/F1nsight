@@ -111,21 +111,23 @@ export const TeammatesComparison = () => {
     try {
       const driverPromises = drivers.map(driver => driver.driverId);
       const driverResults = await fetchDriverStats(driverPromises[0], driverPromises[1]);
-      
+
       const filterDataByYear = (data, year) => ({
         qualifyingTimes: data.driverQualifyingTimes[year] || {},
         racePosition: data.racePosition[year] || {},
         qualiPosition: data.qualiPosition[year] || {},
-        posAfterRace: data.posAfterRace[year] || {},
-        podiums: data.podiums[year] || {},
-        poles: data.poles[year] || {},
+        finalStandings: data.finalStandings[year] || {},
+        seasonPodiums: data.seasonPodiums[year] || 0,
+        seasonPoles: data.seasonPoles[year] || 0,
+        seasonWins: data.seasonWins[year] || 0,
         lastUpdate: data.lastUpdate,
         positionsGainLost: data.positionsGainLost[year] || {},
         avgRacePositions: data.avgRacePositions[year] || {},
         avgQualiPositions: data.avgQualiPositions[year] || {},
         win_rates: data.rates.wins[year] || {},
         podium_rates: data.rates.podiums[year] || {},
-        pole_rates: data.rates.poles[year] || {}
+        pole_rates: data.rates.poles[year] || {},
+        seasonDNFs: data.seasonDNFs[year] || 0
       });
 
       const filteredDriver1Data = filterDataByYear(driverResults.driver1, year);
@@ -227,9 +229,6 @@ export const TeammatesComparison = () => {
       }
     });
 
-    const driver1TotalPoints = parseInt(driverResults[driver1Id]?.posAfterRace.pos[Object.keys(driverResults[driver1Id]?.posAfterRace.pos).pop()]?.points) || 0;
-    const driver2TotalPoints = parseInt(driverResults[driver2Id]?.posAfterRace.pos[Object.keys(driverResults[driver2Id]?.posAfterRace.pos).pop()]?.points) || 0;        
-
     const driver1QualifyingPosList = driverResults[driver1Id]?.qualiPosition.positions || {};
     const driver2QualifyingPosList = driverResults[driver2Id]?.qualiPosition.positions || {};
     const driver1RacePosList = driverResults[driver1Id]?.racePosition.positions || {};
@@ -268,12 +267,12 @@ export const TeammatesComparison = () => {
       driver2QualifyingWins,
       driver1RaceWins,
       driver2RaceWins,
-      driver1Points: driver1TotalPoints,
-      driver2Points: driver2TotalPoints,
-      driver1Podiums: Object.keys(driverResults[driver1Id]?.podiums || {}).length,
-      driver2Podiums: Object.keys(driverResults[driver2Id]?.podiums || {}).length,
-      driver1Poles: Object.keys(driverResults[driver1Id]?.poles || {}).length,
-      driver2Poles: Object.keys(driverResults[driver2Id]?.poles || {}).length,
+      driver1Points: parseInt(driverResults[driver1Id]?.finalStandings.points || "0", 10),
+      driver2Points: parseInt(driverResults[driver2Id]?.finalStandings.points || "0", 10),
+      driver1Podiums: driverResults[driver1Id]?.seasonPodiums || 0,
+      driver2Podiums: driverResults[driver2Id]?.seasonPodiums || 0,
+      driver1Poles: driverResults[driver1Id]?.seasonPoles || 0,
+      driver2Poles: driverResults[driver2Id]?.seasonPoles || 0,
       driver1QualifyingTimes: driver1QualifyingTimesProcessed,
       driver2QualifyingTimes: driver2QualifyingTimesProcessed,
       driver1QualifyingPosList: filteredDriver1QualifyingPosList,
@@ -291,12 +290,16 @@ export const TeammatesComparison = () => {
       driver1_pole_rates: isNaN(parseFloat(driverResults[driver1Id]?.pole_rates)) ? 0.00 : parseFloat(driverResults[driver1Id]?.pole_rates).toFixed(2),
       driver2_pole_rates: isNaN(parseFloat(driverResults[driver2Id]?.pole_rates)) ? 0.00 : parseFloat(driverResults[driver2Id]?.pole_rates).toFixed(2),
       driver1PositionsGainLost: driverResults[driver1Id]?.positionsGainLost || {},
-      driver2PositionsGainLost: driverResults[driver2Id]?.positionsGainLost || {}
+      driver2PositionsGainLost: driverResults[driver2Id]?.positionsGainLost || {},
+      driver1DNF: driverResults[driver1Id]?.seasonDNFs || 0,
+      driver2DNF: driverResults[driver2Id]?.seasonDNFs || 0,
+      driver1Wins: driverResults[driver1Id]?.seasonWins || 0,
+      driver2Wins: driverResults[driver2Id]?.seasonWins || 0,
     });
   };
 
   const memoizedHeadToHeadData = useMemo(() => headToHeadData, [headToHeadData]);
-  // console.log(memoizedHeadToHeadData);
+  console.log(memoizedHeadToHeadData);
 
 
 const driverLockup = (driverId, driverName) => {
@@ -354,13 +357,13 @@ const GridRow = (label, driver1, driver2, title) => {
 
       <div className="flex items-center justify-center gap-8">
         <Select label="Year" value={year} onChange={handleYearChange}>
-          <option value="">Select Year</option>
+          <option value="" disabled={!!year}>Select Year</option>
           {years.map((year) => (
             <option key={year} value={year}>{year}</option>
           ))}
         </Select>
         <Select label="Team" value={team} onChange={handleTeamChange} disabled={!year}>
-          <option value="">Select Team</option>
+          <option value="" disabled={!!team}>Select Team</option>
           {teamsMemo.map(t => (
             <option key={t.constructorId} value={t.constructorId}>{t.name}</option>
           ))}
@@ -368,11 +371,11 @@ const GridRow = (label, driver1, driver2, title) => {
       </div>
 
       {showDriverSelectors && (
-        <div className="flex flex-col items-center justify-center gap-8">
+      <div className="flex flex-col items-center justify-center gap-8">
         <p className="pt-24 pb-16">This team had more than 2 drivers competing this season. Please select two drivers to compare.</p>
-        <div className='flex items-center gap-8'>
+        <div className="flex items-center gap-8">
           <Select label="Driver 1" value={selectedDriver1} onChange={handleDriver1Change}>
-            {!selectedDriver1 && <option value="">Select Driver</option>}
+            <option value="" disabled={!!selectedDriver1}>Select Driver</option>
             {drivers.map(d => (
               <option key={d.driverId} value={d.driverId} disabled={d.driverId === selectedDriver2}>
                 {d.givenName} {d.familyName}
@@ -380,7 +383,7 @@ const GridRow = (label, driver1, driver2, title) => {
             ))}
           </Select>
           <Select label="Driver 2" value={selectedDriver2} onChange={handleDriver2Change} disabled={!selectedDriver1}>
-            {!selectedDriver2 && <option value="">Select Driver</option>}
+            <option value="" disabled={!!selectedDriver2}>Select Driver</option>
             {drivers.map(d => (
               <option key={d.driverId} value={d.driverId} disabled={d.driverId === selectedDriver1}>
                 {d.givenName} {d.familyName}
@@ -389,7 +392,7 @@ const GridRow = (label, driver1, driver2, title) => {
           </Select>
         </div>
       </div>
-      )}
+    )}
 
       {isLoading ? (
         <Loading className="mt-[20rem] mb-[20rem]" message={`Comparing selected drivers`} />
@@ -398,7 +401,7 @@ const GridRow = (label, driver1, driver2, title) => {
 
         {memoizedHeadToHeadData && renderHead && urlTeam && urlYear && (
         <>
-          <button onClick={() => {navigator.clipboard.writeText(`http://localhost:3000/#/teammates-comparison/${year}/${team}`)}}   style={{ cursor: 'pointer', padding: '10px 20px', backgroundColor: '#007BFF', color: '#FFF', border: 'none', borderRadius: '4px' }}>Share</button>
+          <button onClick={() => {navigator.clipboard.writeText(`https://www.f1nsight.com/#/teammates-comparison/${year}/${team}`)}}   style={{ cursor: 'pointer', padding: '10px 20px', backgroundColor: '#007BFF', color: '#FFF', border: 'none', borderRadius: '4px' }}>Share</button>
 
           <div 
               className="text-center leading-none mt-48 mb-48 w-1/2 m-auto"

@@ -44,7 +44,7 @@ const CustomizedYAxisTick = ({ x, y, payload }) => {
 export const QualifyingLapTimesChart = ({ headToHeadData, teamColor }) => {
   const chartData = useMemo(() => {
     if (!headToHeadData) return [];
-    return headToHeadData.driver1QualifyingTimes.map((q, index) => {
+    return headToHeadData.driver1QualifyingTimes.map((q) => {
       const driver2Race = headToHeadData.driver2QualifyingTimes.find(r => r.race === q.race);
       if (driver2Race && driver2Race.race === q.race) {
         const getTime = (times) => {
@@ -66,7 +66,6 @@ export const QualifyingLapTimesChart = ({ headToHeadData, teamColor }) => {
 
         return {
           race: q.race,
-          index,
           [headToHeadData.driver1Code]: bestTime1 ? convertToSeconds(bestTime1) : null,
           [headToHeadData.driver2Code]: bestTime2 ? convertToSeconds(bestTime2) : null,
         };
@@ -98,13 +97,13 @@ export const QualifyingLapTimesChart = ({ headToHeadData, teamColor }) => {
           </linearGradient>
         </defs>
         <CartesianGrid strokeDasharray="3 3" stroke="#444444" />
-        <XAxis dataKey="index" tick={<CustomizedXAxisTick />} />
+        <XAxis tick={<CustomizedXAxisTick />} />
         <YAxis
           domain={yAxisLimits}
           tick={<CustomizedYAxisTick />}
         />
         <Tooltip
-          labelFormatter={(index) => chartData[index] ? chartData[index].race : index}
+          labelFormatter={(name) => chartData[name] ? chartData[name].race : name}
           formatter={(value) => {
             const minutes = Math.floor(value / 60);
             const totalSeconds = (value % 60);
