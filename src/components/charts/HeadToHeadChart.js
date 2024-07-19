@@ -2,6 +2,7 @@ import classNames from 'classnames';
 import React from 'react';
 
 export const HeadToHeadChart = ({ headToHeadData, color }) => {
+  console.log(headToHeadData);
   const FillMath = (d1, d2, driver) => {
     const total = d1 + d2;
     const d1Percent = total > 0 ? (d1 / total) * 100 : 0;
@@ -55,9 +56,11 @@ export const HeadToHeadChart = ({ headToHeadData, color }) => {
     <div className="mb-64 md:w-1/2 m-auto">
     {StatLine('Qualifying', headToHeadData.driver1QualifyingWins, headToHeadData.driver2QualifyingWins)}
     {StatLine('Race', headToHeadData.driver1RaceWins, headToHeadData.driver2RaceWins)}
-    {StatLine('Points', headToHeadData.driver1Points, headToHeadData.driver2Points)}
-    {StatLine('Podiums', headToHeadData.driver1Podiums, headToHeadData.driver2Podiums)}
+    {StatLine('Wins', headToHeadData.driver1Wins, headToHeadData.driver2Wins)}
     {StatLine('Poles', headToHeadData.driver1Poles, headToHeadData.driver2Poles)}
+    {StatLine('Podiums', headToHeadData.driver1Podiums, headToHeadData.driver2Podiums)}
+    {StatLine('Points', headToHeadData.driver1Points, headToHeadData.driver2Points)}
+    {StatLine('DNF', headToHeadData.driver1DNF, headToHeadData.driver2DNF)}
     </div>
   );
 };

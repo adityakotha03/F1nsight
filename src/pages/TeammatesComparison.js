@@ -1,13 +1,11 @@
-import React, { useState, useEffect, useMemo} from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import classNames from 'classnames';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area, BarChart, Legend, Bar, ComposedChart } from 'recharts';
 import axios from 'axios';
-import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis } from 'recharts';
+import { useLocation, useParams, useNavigate } from 'react-router-dom';
 
 import { fetchDriverStats } from '../utils/api';
-import { lightenColor } from '../utils/lightenColor';
-import { HeadToHeadChart, Select, Loading } from '../components';
-import { useLocation, useParams, useNavigate } from 'react-router-dom';
+import { HeadToHeadChart, PositionsGainedLostChart, QualifyingLapTimesChart, PositionsComparisonChart, Select, Loading } from '../components';
+
 
 export const TeammatesComparison = () => {
   const currentYear = new Date().getFullYear();
@@ -52,7 +50,7 @@ export const TeammatesComparison = () => {
       try {
         const response = await axios.get(`https://praneeth7781.github.io/f1nsight-api-2/constructors/${year}.json`);
         const constructors = response.data;
-        setTeamCache((prevCache) => ({ ...prevCache, [year]: constructors }));
+        setTeamCache(prevCache => ({ ...prevCache, [year]: constructors }));
 
         if (team && !constructors.some(constructor => constructor.constructorId === team)) {
           window.alert(`${team} did not participate in ${year}`);
@@ -86,85 +84,72 @@ export const TeammatesComparison = () => {
   };
 
   const submit = async (selectedTeam) => {
-    const response = await axios.get(`https://praneeth7781.github.io/f1nsight-api-2/constructors/${year}/${selectedTeam}.json`)
-    .catch(function(error){
-      if(error.response) {
-        console.log(error.response.status);
-      }
-      return;
-    });
-    const fetchedDrivers = response.data;
-    setDrivers(fetchedDrivers);
-    const colorsResponse = await axios.get('https://praneeth7781.github.io/f1nsight-api-2/colors/teams.json');
-    const teamColors = colorsResponse.data;
+    try {
+      const response = await axios.get(`https://praneeth7781.github.io/f1nsight-api-2/constructors/${year}/${selectedTeam}.json`);
+      const fetchedDrivers = response.data;
+      setDrivers(fetchedDrivers);
 
-    if(teamColors[year]){
-      setTeamColor(teamColors[year][selectedTeam]);
-    } 
-    else{
-      setTeamColor('5F0B84');
-    }
-    if(fetchedDrivers.length > 2){
-      setShowDriverSelectors(true);
-      setRenderHead(false);
-    }
-    else{
-      fetchDriverData(fetchedDrivers);
-      setShowDriverSelectors(false);
+      const colorsResponse = await axios.get('https://praneeth7781.github.io/f1nsight-api-2/colors/teams.json');
+      const teamColors = colorsResponse.data;
+
+      setTeamColor(teamColors[year]?.[selectedTeam] || '5F0B84');
+
+      if (fetchedDrivers.length > 2) {
+        setShowDriverSelectors(true);
+        setRenderHead(false);
+      } else {
+        fetchDriverData(fetchedDrivers);
+        setShowDriverSelectors(false);
+      }
+    } catch (error) {
+      console.error("Error submitting team data:", error);
     }
   };
 
   const fetchDriverData = async (drivers) => {
     setIsLoading(true);
-    const driverPromises = drivers.map(driver => driver.driverId);
-    const driverResults = await fetchDriverStats(driverPromises[0], driverPromises[1]);
-    
-    const filterDataByYear = (data, year) => {
-      // console.log(data);
-      return {
+    try {
+      const driverPromises = drivers.map(driver => driver.driverId);
+      const driverResults = await fetchDriverStats(driverPromises[0], driverPromises[1]);
+
+      const filterDataByYear = (data, year) => ({
         qualifyingTimes: data.driverQualifyingTimes[year] || {},
         racePosition: data.racePosition[year] || {},
         qualiPosition: data.qualiPosition[year] || {},
-        posAfterRace: data.posAfterRace[year] || {},
-        podiums: data.podiums[year] || {},
-        poles: data.poles[year] || {},
+        finalStandings: data.finalStandings[year] || {},
+        seasonPodiums: data.seasonPodiums[year] || 0,
+        seasonPoles: data.seasonPoles[year] || 0,
+        seasonWins: data.seasonWins[year] || 0,
         lastUpdate: data.lastUpdate,
         positionsGainLost: data.positionsGainLost[year] || {},
         avgRacePositions: data.avgRacePositions[year] || {},
         avgQualiPositions: data.avgQualiPositions[year] || {},
         win_rates: data.rates.wins[year] || {},
         podium_rates: data.rates.podiums[year] || {},
-        pole_rates: data.rates.poles[year] || {}
+        pole_rates: data.rates.poles[year] || {},
+        seasonDNFs: data.seasonDNFs[year] || 0
+      });
+
+      const filteredDriver1Data = filterDataByYear(driverResults.driver1, year);
+      const filteredDriver2Data = filterDataByYear(driverResults.driver2, year);
+
+      const driverResultsMap = {
+        [driverResults.driver1.driverId]: filteredDriver1Data,
+        [driverResults.driver2.driverId]: filteredDriver2Data
       };
-    };
 
-    const filteredDriver1Data = filterDataByYear(driverResults.driver1, year);
-    const filteredDriver2Data = filterDataByYear(driverResults.driver2, year);
-
-    const driverResultsMap = {
-      [driverResults.driver1.driverId]: filteredDriver1Data,
-      [driverResults.driver2.driverId]: filteredDriver2Data
-    };
-
-    if (drivers.length >= 2) {
-      // const colorsResponse = await axios.get('https://praneeth7781.github.io/f1nsight-api-2/colors/teams.json');
-      // const teamColors = colorsResponse.data;
-
-      // Get the color for the selected team and year
-      // if(teamColors[year]){
-      //   setTeamColor(teamColors[year][drivers[0].driverId]);
-      // } 
-      // else {
-      //   setTeamColor('5F0B84');
-      // }
-      await calculateHeadToHead(driverResultsMap, drivers[0].driverId, drivers[1].driverId, drivers);
+      if (drivers.length >= 2) {
+        await calculateHeadToHead(driverResultsMap, drivers[0].driverId, drivers[1].driverId, drivers);
+      }
+    } catch (error) {
+      console.error("Error fetching driver data:", error);
+    } finally {
       setIsLoading(false);
     }
   };
 
   const handleDriver1Change = async (e) => {
     setSelectedDriver1(e.target.value);
-
     if (selectedDriver2) {
       setAmbQ(true);
       setAmbR(true);
@@ -177,7 +162,6 @@ export const TeammatesComparison = () => {
 
   const handleDriver2Change = async (e) => {
     setSelectedDriver2(e.target.value);
-
     if (selectedDriver1) {
       setAmbQ(true);
       setAmbR(true);
@@ -197,54 +181,32 @@ export const TeammatesComparison = () => {
     let driver2RaceWins = 0;
 
     const processQualifyingResults = (qualifyingResults) => {
-      if (!qualifyingResults) return { qualifyingPos: [], qualifyingTimes: [] };
+      if (!qualifyingResults) return { qualifyingTimes: [] };
 
-      const qualifyingTimes = [];
-
-      Object.keys(qualifyingResults.QualiTimes).forEach((raceName) => {
-        const times = qualifyingResults.QualiTimes[raceName];
-        qualifyingTimes.push({
-          race: raceName,
-          QualiTimes: [times[0] || 'N/A', times[1] || 'N/A', times[2] || 'N/A']
-        });
-      });
+      const qualifyingTimes = Object.entries(qualifyingResults.QualiTimes).map(([raceName, times]) => ({
+        race: raceName,
+        QualiTimes: [times[0] || 'N/A', times[1] || 'N/A', times[2] || 'N/A']
+      }));
 
       return { qualifyingTimes };
     };
 
-    const processRaceResults = (raceResults) => {
-      if (!raceResults) return { racePos: [] };
+    const processPositions = (positions) => {
+      if (!positions) return { pos: [] };
 
-      const racePos = [];
-
-      Object.keys(raceResults.positions).forEach((raceName) => {
-        const result = raceResults.positions[raceName];
-        const racePosition = parseInt(result);
-        racePos.push({ raceName, pos: racePosition });
-      });
-
-      return { racePos };
-    };
-
-    const processQualiResults = (qualiResults) => {
-      if (!qualiResults) return { qualiPos: [] };
-
-      const qualiPos = [];
-
-      Object.keys(qualiResults.positions).forEach((raceName) => {
-        const result = qualiResults.positions[raceName];
-        const racePosition = parseInt(result);
-        qualiPos.push({ raceName, pos: racePosition });
-      });
-
-      return { qualiPos };
+      return {
+        pos: Object.entries(positions.positions).map(([raceName, pos]) => ({
+          raceName,
+          pos: parseInt(pos)
+        }))
+      };
     };
 
     const { qualifyingTimes: driver1QualifyingTimesProcessed } = processQualifyingResults(driverResults[driver1Id]?.qualifyingTimes);
     const { qualifyingTimes: driver2QualifyingTimesProcessed } = processQualifyingResults(driverResults[driver2Id]?.qualifyingTimes);
 
-    const { qualiPos: driver1QualifyingPos } = processQualiResults(driverResults[driver1Id]?.qualiPosition);
-    const { qualiPos: driver2QualifyingPos } = processQualiResults(driverResults[driver2Id]?.qualiPosition);
+    const { pos: driver1QualifyingPos } = processPositions(driverResults[driver1Id]?.qualiPosition);
+    const { pos: driver2QualifyingPos } = processPositions(driverResults[driver2Id]?.qualiPosition);
     
     driver1QualifyingPos.forEach(race1 => {
       let race2 = driver2QualifyingPos.find(el => el.raceName === race1.raceName);
@@ -255,8 +217,8 @@ export const TeammatesComparison = () => {
       }
     });
 
-    const { racePos: driver1RacePosProcessed } = processRaceResults(driverResults[driver1Id]?.racePosition);
-    const { racePos: driver2RacePosProcessed } = processRaceResults(driverResults[driver2Id]?.racePosition);
+    const { pos: driver1RacePosProcessed } = processPositions(driverResults[driver1Id]?.racePosition);
+    const { pos: driver2RacePosProcessed } = processPositions(driverResults[driver2Id]?.racePosition);
     
     driver1RacePosProcessed.forEach(race1 => {
       let race2 = driver2RacePosProcessed.find(el => el.raceName === race1.raceName);
@@ -267,23 +229,13 @@ export const TeammatesComparison = () => {
       }
     });
 
-    // console.log(driverResults);
-
-    const driver1TotalPoints = parseInt(driverResults[driver1Id]?.posAfterRace.pos[Object.keys(driverResults[driver1Id]?.posAfterRace.pos).pop()]?.points) || 0;
-    const driver2TotalPoints = parseInt(driverResults[driver2Id]?.posAfterRace.pos[Object.keys(driverResults[driver2Id]?.posAfterRace.pos).pop()]?.points) || 0;        
-
     const driver1QualifyingPosList = driverResults[driver1Id]?.qualiPosition.positions || {};
     const driver2QualifyingPosList = driverResults[driver2Id]?.qualiPosition.positions || {};
     const driver1RacePosList = driverResults[driver1Id]?.racePosition.positions || {};
     const driver2RacePosList = driverResults[driver2Id]?.racePosition.positions || {};
     
-    const driver1QualifyingRaces = Object.keys(driver1QualifyingPosList);
-    const driver2QualifyingRaces = Object.keys(driver2QualifyingPosList);
-    const driver1RaceRaces = Object.keys(driver1RacePosList);
-    const driver2RaceRaces = Object.keys(driver2RacePosList);
-    
-    const commonQualifyingRaces = driver1QualifyingRaces.filter(race => driver2QualifyingRaces.includes(race));
-    const commonRaceRaces = driver1RaceRaces.filter(race => driver2RaceRaces.includes(race));
+    const commonQualifyingRaces = Object.keys(driver1QualifyingPosList).filter(race => race in driver2QualifyingPosList);
+    const commonRaceRaces = Object.keys(driver1RacePosList).filter(race => race in driver2RacePosList);
     
     const filteredDriver1QualifyingPosList = commonQualifyingRaces.reduce((result, race) => {
         result[race] = driver1QualifyingPosList[race];
@@ -315,12 +267,12 @@ export const TeammatesComparison = () => {
       driver2QualifyingWins,
       driver1RaceWins,
       driver2RaceWins,
-      driver1Points: driver1TotalPoints,
-      driver2Points: driver2TotalPoints,
-      driver1Podiums: Object.keys(driverResults[driver1Id]?.podiums || {}).length,
-      driver2Podiums: Object.keys(driverResults[driver2Id]?.podiums || {}).length,
-      driver1Poles: Object.keys(driverResults[driver1Id]?.poles || {}).length,
-      driver2Poles: Object.keys(driverResults[driver2Id]?.poles || {}).length,
+      driver1Points: parseInt(driverResults[driver1Id]?.finalStandings.points || "0", 10),
+      driver2Points: parseInt(driverResults[driver2Id]?.finalStandings.points || "0", 10),
+      driver1Podiums: driverResults[driver1Id]?.seasonPodiums || 0,
+      driver2Podiums: driverResults[driver2Id]?.seasonPodiums || 0,
+      driver1Poles: driverResults[driver1Id]?.seasonPoles || 0,
+      driver2Poles: driverResults[driver2Id]?.seasonPoles || 0,
       driver1QualifyingTimes: driver1QualifyingTimesProcessed,
       driver2QualifyingTimes: driver2QualifyingTimesProcessed,
       driver1QualifyingPosList: filteredDriver1QualifyingPosList,
@@ -338,74 +290,17 @@ export const TeammatesComparison = () => {
       driver1_pole_rates: isNaN(parseFloat(driverResults[driver1Id]?.pole_rates)) ? 0.00 : parseFloat(driverResults[driver1Id]?.pole_rates).toFixed(2),
       driver2_pole_rates: isNaN(parseFloat(driverResults[driver2Id]?.pole_rates)) ? 0.00 : parseFloat(driverResults[driver2Id]?.pole_rates).toFixed(2),
       driver1PositionsGainLost: driverResults[driver1Id]?.positionsGainLost || {},
-      driver2PositionsGainLost: driverResults[driver2Id]?.positionsGainLost || {}
+      driver2PositionsGainLost: driverResults[driver2Id]?.positionsGainLost || {},
+      driver1DNF: driverResults[driver1Id]?.seasonDNFs || 0,
+      driver2DNF: driverResults[driver2Id]?.seasonDNFs || 0,
+      driver1Wins: driverResults[driver1Id]?.seasonWins || 0,
+      driver2Wins: driverResults[driver2Id]?.seasonWins || 0,
     });
   };
 
   const memoizedHeadToHeadData = useMemo(() => headToHeadData, [headToHeadData]);
-  // console.log(memoizedHeadToHeadData);
-  
-  const prepareChartData = () => {
-    if (!memoizedHeadToHeadData) return [];
-    const races = memoizedHeadToHeadData.driver1QualifyingTimes.map((q) => {
-      const driver2Race = memoizedHeadToHeadData.driver2QualifyingTimes.find(r => r.race === q.race);
-      if (driver2Race && driver2Race.race === q.race) {
-        const getTime = (times) => {
-          const validTimes = times.filter(t => t !== 'N/A');
-          if (validTimes.length === 3) return validTimes[2];
-          if (validTimes.length === 2) return validTimes[1];
-          if (validTimes.length === 1) return validTimes[0];
-          ;
-          return null;
-        };
+  console.log(memoizedHeadToHeadData);
 
-        const bestTime1 = getTime(q.QualiTimes);
-        const bestTime2 = getTime(driver2Race.QualiTimes);
-
-        const convertToSeconds = (time) => {
-          const [minutes, seconds] = time.split(':');
-          const [secs, millis] = seconds.split('.');
-          ;
-          return parseInt(minutes) * 60 + parseInt(secs) + parseInt(millis) / 1000;
-        };
-        ;
-        return {
-          race: q.race,
-          [memoizedHeadToHeadData.driver1Code]: bestTime1 ? convertToSeconds(bestTime1) : null,
-          [memoizedHeadToHeadData.driver2Code]: bestTime2 ? convertToSeconds(bestTime2) : null,
-        };
-      }
-      ;
-      return null;
-    }).filter(item => item !== null);
-    ;
-    return races;
-  };
-
-  const chartData = (!ambQ && !ambR) ? prepareChartData() : []
-  
-  const yAxisLimits = useMemo(() => {
-    if (!chartData.length) return [0, 10]; // default values if no data
-    let allValues = chartData.flatMap(data => Object.values(data).filter(val => typeof val === 'number'));
-    let minVal = Math.min(...allValues);
-    let maxVal = Math.max(...allValues);
-    let padding = (maxVal - minVal) * 0.1; // 10% padding
-    return [minVal - padding, maxVal + padding];
-  }, [chartData]);
-
-  const preparePositionChartData = (driver1PosList, driver2PosList, driver1Code, driver2Code) => {
-    const races = Object.keys(driver1PosList).map((raceName) => {
-      const driver1Pos = driver1PosList[raceName];
-      const driver2Pos = driver2PosList[raceName];
-  
-      return {
-        race: raceName,
-        [driver1Code]: driver1Pos ? parseInt(driver1Pos) : null,
-        [driver2Code]: driver2Pos ? parseInt(driver2Pos) : null,
-      };
-    });
-    return races;
-  };  
 
 const driverLockup = (driverId, driverName) => {
   const driverSplitName = driverName.split(" ");
@@ -431,60 +326,6 @@ const driverLockup = (driverId, driverName) => {
   )
 }
 
-const CustomizedXAxisTick = ({ x, y, payload }) => {
-  return (
-    <g transform={`translate(${x},${y})`}>
-      <text
-        x={0}
-        y={0}
-        dy={16}
-        textAnchor="end"
-        fill="#666"
-        transform="rotate(-15) translate(8,0)"
-        fontSize={12}
-      >
-        GP {payload.value + 1}
-      </text>
-    </g>
-  );
-};
-
-const CustomizedYAxisTick = ({ x, y, payload }) => {
-  const minutes = Math.floor(payload.value / 60);
-  const seconds = Math.floor(payload.value % 60);
-  const milliseconds = Math.round((payload.value - Math.floor(payload.value)) * 1000);
-  return (
-    <g transform={`translate(${x},${y})`}>
-      <text
-        x={0}
-        y={0}
-        dy={16}
-        textAnchor="end"
-        fill="#666"
-        transform="rotate(-15) translate(-8,-12)"
-        fontSize={12}
-      >
-        {`${minutes}:${seconds.toString().padStart(2, '0')}.${milliseconds.toString().padStart(3, '0')}`}
-      </text>
-    </g>
-  );
-};
-
-
-const chartData_posGainorLost = useMemo(() => {
-  if (!memoizedHeadToHeadData) return [];
-  
-  return Object.keys(memoizedHeadToHeadData.driver1PositionsGainLost).map(race => {
-    const driver1Data = memoizedHeadToHeadData.driver1PositionsGainLost[race];
-    const driver2Data = memoizedHeadToHeadData.driver2PositionsGainLost[race];
-
-    return driver1Data !== undefined && driver2Data !== undefined ? {
-      race,
-      [memoizedHeadToHeadData.driver1Code]: driver1Data,
-      [memoizedHeadToHeadData.driver2Code]: driver2Data
-    } : null;
-  }).filter(item => item !== null);
-}, [memoizedHeadToHeadData]);
 
 const formatDate = (isoString) => {
   const date = new Date(isoString);
@@ -511,86 +352,18 @@ const GridRow = (label, driver1, driver2, title) => {
   );
 }
 
-// const scaleValue = (value, fromMax, toMax = 100) => {
-//   // Invert the value since lower positions are better
-//   const invertedValue = fromMax - value;
-//   return (invertedValue / fromMax) * toMax;
-// };
-
-// const radar_data = [
-//   {
-//     subject: 'Average Race Position',
-//     A: scaleValue(memoizedHeadToHeadData?.driver1AvgRacePosition || 0, 20),
-//     B: scaleValue(memoizedHeadToHeadData?.driver2AvgRacePosition || 0, 20),
-//     customA : memoizedHeadToHeadData?.driver1AvgRacePosition || 0,
-//     customB : memoizedHeadToHeadData?.driver2AvgRacePosition || 0,
-//     fullMark: 100,
-//   },
-//   {
-//     subject: 'Average Qualifying Position',
-//     A: scaleValue(memoizedHeadToHeadData?.driver1AvgQualiPositions || 0, 20),
-//     B: scaleValue(memoizedHeadToHeadData?.driver2AvgQualiPositions || 0, 20),
-//     customA : memoizedHeadToHeadData?.driver1AvgQualiPositions || 0,
-//     customB : memoizedHeadToHeadData?.driver2AvgQualiPositions || 0,
-//     fullMark: 100,
-//   },
-//   {
-//     subject: 'Win Rate',
-//     A: (memoizedHeadToHeadData?.driver1_win_rates || 0) * 100, 
-//     B: (memoizedHeadToHeadData?.driver2_win_rates || 0) * 100, 
-//     customA : memoizedHeadToHeadData?.driver1_win_rates || 0,
-//     customB : memoizedHeadToHeadData?.driver2_win_rates || 0,
-//     fullMark: 100, 
-//   },
-//   {
-//     subject: 'Podium Rate',
-//     A: (memoizedHeadToHeadData?.driver1_podium_rates || 0) * 100, 
-//     B: (memoizedHeadToHeadData?.driver2_podium_rates || 0) * 100, 
-//     customA : memoizedHeadToHeadData?.driver1_podium_rates || 0,
-//     customB : memoizedHeadToHeadData?.driver2_podium_rates || 0,
-//     fullMark: 100, 
-//   },
-//   {
-//     subject: 'Pole Rate',
-//     A: (memoizedHeadToHeadData?.driver1_pole_rates || 0) * 100, 
-//     B: (memoizedHeadToHeadData?.driver2_pole_rates || 0) * 100,
-//     customA : memoizedHeadToHeadData?.driver1_pole_rates || 0,
-//     customB : memoizedHeadToHeadData?.driver2_pole_rates || 0,
-//     fullMark: 100,
-//   },
-// ];
-
-// const CustomTooltip = ({ active, payload, label }) => {
-//   if (active && payload && payload.length) {
-//     const driver1 = parseFloat(payload[0].payload.customA);
-//     const driver2 = parseFloat(payload[0].payload.customB);
-//     // console.log(typeof(driver1),driver2)
-//     return (
-//       <div className="custom-tooltip bg-white p-4 rounded shadow-md">
-//         <p className="label">{`${label}`}</p>
-//         <p className="text-sm" style={{ color: `#${teamColor}`}} >{`${payload[0].name}: ${driver1.toFixed(2)}`}</p>
-//         <p className="text-sm" style={{ color: lightenColor(teamColor)}} >{`${payload[1].name}: ${driver2.toFixed(2)}`}</p>
-//       </div>
-//     );
-//   }
-//   return null;
-// };
-
-  // console.log(chartData);
-  // console.log(preparePositionChartData(memoizedHeadToHeadData.driver1QualifyingPosList, memoizedHeadToHeadData.driver2QualifyingPosList, memoizedHeadToHeadData.driver1Code, memoizedHeadToHeadData.driver2Code));
-
   return (
     <div className='global-container'>
 
       <div className="flex items-center justify-center gap-8">
         <Select label="Year" value={year} onChange={handleYearChange}>
-          <option value="">Select Year</option>
+          <option value="" disabled={!!year}>Select Year</option>
           {years.map((year) => (
             <option key={year} value={year}>{year}</option>
           ))}
         </Select>
         <Select label="Team" value={team} onChange={handleTeamChange} disabled={!year}>
-          <option value="">Select Team</option>
+          <option value="" disabled={!!team}>Select Team</option>
           {teamsMemo.map(t => (
             <option key={t.constructorId} value={t.constructorId}>{t.name}</option>
           ))}
@@ -598,11 +371,11 @@ const GridRow = (label, driver1, driver2, title) => {
       </div>
 
       {showDriverSelectors && (
-        <div className="flex flex-col items-center justify-center gap-8">
+      <div className="flex flex-col items-center justify-center gap-8">
         <p className="pt-24 pb-16">This team had more than 2 drivers competing this season. Please select two drivers to compare.</p>
-        <div className='flex items-center gap-8'>
+        <div className="flex items-center gap-8">
           <Select label="Driver 1" value={selectedDriver1} onChange={handleDriver1Change}>
-            {!selectedDriver1 && <option value="">Select Driver</option>}
+            <option value="" disabled={!!selectedDriver1}>Select Driver</option>
             {drivers.map(d => (
               <option key={d.driverId} value={d.driverId} disabled={d.driverId === selectedDriver2}>
                 {d.givenName} {d.familyName}
@@ -610,7 +383,7 @@ const GridRow = (label, driver1, driver2, title) => {
             ))}
           </Select>
           <Select label="Driver 2" value={selectedDriver2} onChange={handleDriver2Change} disabled={!selectedDriver1}>
-            {!selectedDriver2 && <option value="">Select Driver</option>}
+            <option value="" disabled={!!selectedDriver2}>Select Driver</option>
             {drivers.map(d => (
               <option key={d.driverId} value={d.driverId} disabled={d.driverId === selectedDriver1}>
                 {d.givenName} {d.familyName}
@@ -619,7 +392,7 @@ const GridRow = (label, driver1, driver2, title) => {
           </Select>
         </div>
       </div>
-      )}
+    )}
 
       {isLoading ? (
         <Loading className="mt-[20rem] mb-[20rem]" message={`Comparing selected drivers`} />
@@ -628,6 +401,7 @@ const GridRow = (label, driver1, driver2, title) => {
 
         {memoizedHeadToHeadData && renderHead && urlTeam && urlYear && (
         <>
+
           {/* <button onClick={() => {navigator.clipboard.writeText(`http://localhost:3000/#/teammates-comparison/${year}/${team}`)}}   style={{ cursor: 'pointer', padding: '10px 20px', backgroundColor: '#007BFF', color: '#FFF', border: 'none', borderRadius: '4px' }}>Share</button> */}
 
           <div 
@@ -660,20 +434,6 @@ const GridRow = (label, driver1, driver2, title) => {
           </p>
           <HeadToHeadChart headToHeadData={memoizedHeadToHeadData} color={`#${teamColor}`} />
 
-          {/* <h3 className="heading-4 mb-16 text-neutral-400 ml-24">Driver Statistics Comparison</h3>
-          <div className="bg-glow-large rounded-lg mb-64 p-8 md:px-32 md:pt-16 md:pb-32"> 
-          <ResponsiveContainer width="100%" height={400}>
-            <RadarChart cx="50%" cy="50%" outerRadius="80%" data={radar_data}>
-              <PolarGrid />
-              <PolarAngleAxis dataKey="subject" />
-              <Radar name={memoizedHeadToHeadData.driver1} dataKey="A" stroke={`#${teamColor}`} fill={`#${teamColor}`} fillOpacity={0.6} />
-              <Radar name={memoizedHeadToHeadData.driver2} dataKey="B" stroke={lightenColor(teamColor)} fill={lightenColor(teamColor)} fillOpacity={0.6} />
-              <Legend verticalAlign="top" height={36} />
-              <Tooltip content={<CustomTooltip />} />
-            </RadarChart>
-          </ResponsiveContainer>
-          </div> */}
-
           <h3 className="heading-4 mb-16 text-neutral-400 ml-24">Driver Statistics Comparison</h3>
           <div className="bg-glow-large rounded-lg mb-64 p-8 md:px-32 md:pt-16 md:pb-32"> 
             {GridRow( " ", memoizedHeadToHeadData.driver1, memoizedHeadToHeadData.driver2, true)}
@@ -686,108 +446,43 @@ const GridRow = (label, driver1, driver2, title) => {
 
 
           {(!ambQ && !ambR) && (<div>
-            <h3 className="heading-4 mb-16 text-neutral-400 ml-24">Positions Gained or Lost During Race</h3>
-            <div className="bg-glow-large rounded-lg mb-64 p-8 md:px-32 md:pt-16 md:pb-32">
-              <ResponsiveContainer width="100%" height={400}>
-                <BarChart width={730} height={250} data={chartData_posGainorLost} margin={{ top: 20, right: 30 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#444444" />
-                  <XAxis tick={<CustomizedXAxisTick />} />
-                  <YAxis tick={{ fontSize: 12, fill: '#666' }} />
-                  <Tooltip 
-                    labelFormatter={(name) => chartData[name] && chartData[name].race ? chartData[name].race : name} 
-                    formatter={(value) => {
-                      return value;
-                    }}
+            <div>
+              <div>
+                <h3 className="heading-4 mb-16 text-neutral-400 ml-24">Positions Gained or Lost During Race</h3>
+                <div className="bg-glow-large rounded-lg mb-64 p-8 md:px-32 md:pt-16 md:pb-32">
+                  <PositionsGainedLostChart 
+                    headToHeadData={memoizedHeadToHeadData}
+                    teamColor={teamColor}
                   />
-                  <Legend verticalAlign="top" height={36} />
-                  <Bar dataKey={memoizedHeadToHeadData.driver1Code} fillOpacity={1} fill={`#${teamColor}`} />
-                  <Bar dataKey={memoizedHeadToHeadData.driver2Code} fillOpacity={1} fill={lightenColor(teamColor)} />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-            
-            <h3 className="heading-4 mb-16 text-neutral-400 ml-24">Qualifying Lap Times Comparision</h3>
-            <div className="bg-glow-large rounded-lg mb-64 p-8 md:px-32 md:pt-16 md:pb-32">
-              <ResponsiveContainer width="100%" height={400}>
-                <BarChart width={730} height={250} data={chartData} margin={{ top: 20, right: 30 }}>
-                  <defs>
-                    <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor={`#${teamColor}`} stopOpacity={1}/>
-                      <stop offset="95%" stopColor={`#${teamColor}`} stopOpacity={0}/>
-                    </linearGradient>
-                    <linearGradient id="colorPv" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor={lightenColor(teamColor)} stopOpacity={1}/>
-                      <stop offset="95%" stopColor={lightenColor(teamColor)} stopOpacity={0}/>
-                    </linearGradient>
-                  </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#444444" />
-                  <XAxis tick={<CustomizedXAxisTick />} />
-                  <YAxis 
-                    domain={yAxisLimits} 
-                    tick={<CustomizedYAxisTick />}
-                    // tickFormatter={(value) => {
-                    //   const minutes = Math.floor(value / 60);
-                    //   const seconds = Math.floor(value % 60);
-                    //   const milliseconds = Math.round((value - Math.floor(value)) * 1000);
-                    //   return `${minutes}:${seconds.toString().padStart(2, '0')}.${milliseconds.toString().padStart(3, '0')}`;
-                    // }} 
+                </div>
+                
+                <h3 className="heading-4 mb-16 text-neutral-400 ml-24">Qualifying Lap Times Comparison</h3>
+                <div className="bg-glow-large rounded-lg mb-64 p-8 md:px-32 md:pt-16 md:pb-32">
+                  <QualifyingLapTimesChart 
+                    headToHeadData={memoizedHeadToHeadData}
+                    teamColor={teamColor}
                   />
-                  <Tooltip 
-                    labelFormatter={(name) => chartData[name] && chartData[name].race ? chartData[name].race : name} 
-                    formatter={(value) => {
-                      const minutes = Math.floor(value / 60);
-                      const totalSeconds = (value % 60);
-                      const seconds = Math.floor(totalSeconds);
-                      const milliseconds = Math.round((totalSeconds - seconds) * 1000);
-                      return `${minutes}:${seconds.toString().padStart(2, '0')}.${milliseconds.toString().padStart(3, '0')}`;
-                    }}
-                  />
-                  <Legend verticalAlign="top" height={32} />
-                  <Bar dataKey={memoizedHeadToHeadData.driver1Code} fillOpacity={1} fill={`#${teamColor}`} connectNulls={true} />
-                  <Bar dataKey={memoizedHeadToHeadData.driver2Code} fillOpacity={1} fill={lightenColor(teamColor)} connectNulls={true} />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
+                </div>
+              </div>
 
-            <h3 className="heading-4 mb-16 text-neutral-400 ml-24">Qualifying Positions Comparison</h3>
-            <div className="bg-glow-large rounded-lg mb-64 p-8 md:px-32 md:pt-16 md:pb-32">
-              <ResponsiveContainer width="100%" height={400}>
-                <LineChart data={preparePositionChartData(memoizedHeadToHeadData.driver1QualifyingPosList, memoizedHeadToHeadData.driver2QualifyingPosList, memoizedHeadToHeadData.driver1Code, memoizedHeadToHeadData.driver2Code)} margin={{ top: 20, right: 30 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#444444" />
-                  <XAxis tick={<CustomizedXAxisTick />} />
-                  <YAxis reversed={true} domain={[1, 'dataMax']} />
-                  <Tooltip 
-                    labelFormatter={(name) => chartData[name] && chartData[name].race ? chartData[name].race : name} 
-                    formatter={(value) => {
-                      return `P${value}`;
-                    }}
-                  />
-                  <Legend verticalAlign="top" height={32} />
-                  <Line type="monotone" dataKey={memoizedHeadToHeadData.driver1Code} stroke={`#${teamColor}`} connectNulls={true}/>
-                  <Line type="monotone" dataKey={memoizedHeadToHeadData.driver2Code} stroke={lightenColor(teamColor)} connectNulls={true}/>
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
+              <h3 className="heading-4 mb-16 text-neutral-400 ml-24">Qualifying Positions Comparison</h3>
+              <div className="bg-glow-large rounded-lg mb-64 p-8 md:px-32 md:pt-16 md:pb-32">
+                <PositionsComparisonChart
+                  headToHeadData={memoizedHeadToHeadData}
+                  teamColor={teamColor}
+                  isQualifying={true}
+                />
+              </div>
 
-            <h3 className="heading-4 mb-16 text-neutral-400 ml-24">Race Positions Comparison</h3>
-            <div className="bg-glow-large rounded-lg mb-96 p-8 md:px-32 md:pt-16 md:pb-32">
-              <ResponsiveContainer width="100%" height={400}>
-                <LineChart data={preparePositionChartData(memoizedHeadToHeadData.driver1RacePosList, memoizedHeadToHeadData.driver2RacePosList, memoizedHeadToHeadData.driver1Code, memoizedHeadToHeadData.driver2Code)} margin={{ top: 20, right: 30 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#444444" />
-                  <XAxis tick={<CustomizedXAxisTick />} />
-                  <YAxis reversed={true} domain={[1, 'dataMax']} />
-                  <Tooltip 
-                    labelFormatter={(name) => chartData[name] && chartData[name].race ? chartData[name].race : name} 
-                    formatter={(value) => {
-                      return `P${value}`;
-                    }}
-                  />
-                  <Legend verticalAlign="top" height={32} />
-                  <Line type="monotone" dataKey={memoizedHeadToHeadData.driver1Code} stroke={`#${teamColor}`} connectNulls={true}/>
-                  <Line type="monotone" dataKey={memoizedHeadToHeadData.driver2Code} stroke={lightenColor(teamColor)} connectNulls={true}/>
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
+              <h3 className="heading-4 mb-16 text-neutral-400 ml-24">Race Positions Comparison</h3>
+              <div className="bg-glow-large rounded-lg mb-96 p-8 md:px-32 md:pt-16 md:pb-32">
+                <PositionsComparisonChart
+                  headToHeadData={memoizedHeadToHeadData}
+                  teamColor={teamColor}
+                  isQualifying={false}
+                />
+              </div>
+              </div>
           </div>)}
         </>
       )}
