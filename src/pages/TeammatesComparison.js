@@ -299,7 +299,7 @@ export const TeammatesComparison = () => {
   };
 
   const memoizedHeadToHeadData = useMemo(() => headToHeadData, [headToHeadData]);
-  console.log(memoizedHeadToHeadData);
+  // console.log(memoizedHeadToHeadData);
 
 
 const driverLockup = (driverId, driverName) => {
