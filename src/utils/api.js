@@ -325,6 +325,33 @@ export const fetchRaceResultsByCircuit = async (year, circuitId) => {
   }
 };
 
+export const fetchDriverInfo = async (year) => {
+  try {
+    const url = `https://ant-dot-comm.github.io/f1aapi/constructors/${year}/drivers.json`;
+    const response = await fetch(url);
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error fetching driver information:", error);
+    return {};
+  }
+};
+
+const enrichDriverData = (raceData, driverInfo) => {
+  return raceData.map(driver => {
+    const driverDetails = driverInfo[driver.number];
+    return {
+      ...driver,
+      Driver: {
+        ...driverDetails.Driver
+      },
+      Constructor: {
+        ...driverDetails.Constructor
+      }
+    };
+  });
+};
+
 export const fetchF1aRaceResultsByCircuit = async (year, circuitId) => {
   try {
     const url = `https://ant-dot-comm.github.io/f1aapi/races/${year}/resullts.json`;
@@ -332,10 +359,16 @@ export const fetchF1aRaceResultsByCircuit = async (year, circuitId) => {
     const data = await response.json();
     const results = data.find(race => race.Circuit.circuitId === circuitId);
     // console.log('fetchF1aRaceResultsByCircuit', {results});
-    return results || [];
+    const driverInfo = await fetchDriverInfo(year);
+    if (results && results.Results) {
+      const race1Results = enrichDriverData(results.Results.race1, driverInfo);
+      const race2Results = enrichDriverData(results.Results.race2, driverInfo);
+      return { race1: race1Results, race2: race2Results };
+    }
+    return { race1: [], race2: [] };
   } catch (error) {
     console.error("Error fetching race results:", error);
-    return [];
+    return { race1: [], race2: [] };
   }
 };
 

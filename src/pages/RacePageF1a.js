@@ -115,7 +115,7 @@ export function RacePageF1a() {
             setIsLoading(true);
 
             const circuitId = locationMap[location];
-            // console.log('circuitId', circuitId);
+            console.log('circuitId', circuitId);
             const sessionsResponse = await fetch(
                 `https://api.openf1.org/v1/sessions?meeting_key=${meetingKey}`
             );
@@ -155,9 +155,9 @@ export function RacePageF1a() {
                     year,
                     circuitId
                 );
-                setRaceResults(results.Results.race1);
-                setRaceResults2(results.Results.race2);
-                // console.log('setRaceResults', results.Results);
+                setRaceResults(results.race1);
+                setRaceResults2(results.race2);
+                console.log('setRaceResults', results);
             }
 
             const raceSession = sessionsData.find(
@@ -232,10 +232,17 @@ export function RacePageF1a() {
         fetchData();
     }, [year, location, selectedSession, raceName]);
 
+    // Sort raceResults by endPosition (ascending order)
+    raceResults.sort((a, b) => parseInt(a.position, 10) - parseInt(b.position, 10));
+    raceResults2.sort((a, b) => parseInt(a.position, 10) - parseInt(b.position, 10));
+
     return (
+        <>
+        
+        <h1 className="heading-1 mt-96">{raceName}</h1>
+
         <div className="pt-[10rem] flex flex-col md:flex-row">
-
-
+            
             {/* race 1 */}
             <div className="flex flex-col items-center md:w-1/2 bg-gradient-to-br from-indigo-500/10 via-purple-500/10 to-pink-500/10 p-32">
                 
@@ -326,5 +333,6 @@ export function RacePageF1a() {
                 </div>
             </div>
         </div>
+        </>
     );
 }
