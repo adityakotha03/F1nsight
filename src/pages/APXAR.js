@@ -144,7 +144,7 @@ export const APXAR = () => {
       <h1>APX GP Model Viewer</h1>
       <div className="model-viewer-container">
         <model-viewer
-          src="APX/APX-GP.glb"
+          src="APX/apx_livery.glb"
           ar
           ar-modes="webxr scene-viewer quick-look"
           camera-controls
@@ -152,15 +152,18 @@ export const APXAR = () => {
           poster="APX/poster.webp"
           shadow-intensity="1"
         >
+          <div id="error" class="hide">AR is not supported on this device</div>
           <div className="progress-bar hide" slot="progress-bar">
             <div className="update-bar"></div>
           </div>
+          <button slot="ar-button" id="ar-button">
+              View in AR
+          </button>
           <div id="ar-prompt">
             <img src="APX/ar_hand_prompt.png" alt="AR prompt" />
           </div>
         </model-viewer>
       </div>
-      <button slot="ar-button" id="ar-button" onclick="document.querySelector('model-viewer').activateAR()">View in AR</button>
     </div>
   );
 };
