@@ -130,7 +130,5 @@ APXAR.defaultProps = {
   arModes: 'webxr scene-viewer quick-look',
   arScale: 'auto',
   arPlacement: 'floor',
-  alt: 'APX GP Model',
-  title: 'APX GP Model Viewer',
-  link: 'https://www.f1nsight.com/#/teammates-comparison/2024/apx',
+  alt: 'APX GP Model'
 };
