@@ -144,7 +144,7 @@ export const APXAR = () => {
       <h1>APX GP Model Viewer</h1>
       <div className="model-viewer-container">
         <model-viewer
-          src="APX/apx_livery.glb"
+          src="APX/apx_livery_w_logo.glb"
           ar
           ar-modes="webxr scene-viewer quick-look"
           camera-controls
