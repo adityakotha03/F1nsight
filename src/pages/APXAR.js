@@ -1,36 +1,10 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React from 'react';
 import '@google/model-viewer/';
 
 export const APXAR = () => {
-  const arButton = useRef(null);
-  const [hide, setHide] = useState(false);
-
-  useEffect(() => {
-    if (arButton.current) {
-      isHidden(arButton.current) ? setHide(true) : setHide(false);
-    }
-  }, [arButton.current]);
-
-  const isHidden = (element) => {
-    return element.offsetParent === null;
-  };
-
-  const arCheck = () => {
-    setTimeout(() => {
-      isHidden(arButton.current) ? setHide(true) : setHide(false);
-    }, 500);
-  };
 
   return (
     <div className="apx-ar-container">
-      <header className="apx-header">
-        <div className="logo">F1NSIGHT</div>
-        <nav>
-          <button>RESULTS</button>
-          <button>COMPARISONS</button>
-          <button>RACE VIEWER</button>
-        </nav>
-      </header>
       <div className="model-viewer-wrapper">
         <model-viewer
           poster={APXAR.defaultProps.img}
@@ -46,63 +20,33 @@ export const APXAR = () => {
           alt={APXAR.defaultProps.alt}
         >
           <button
-            ref={arButton}
             slot="ar-button"
             className="ar-button"
-            onClick={arCheck}
           >
             <img src={APXAR.defaultProps.buttonIcon} alt="AR icon" />
             Launch AR
           </button>
-          
         </model-viewer>
         <div className="ar-badge">
           <span>AR Enabled</span>
         </div>
       </div>
-      {hide && (
-        <a
-          href="https://developers.google.com/ar/discover/supported-devices"
-          className="ar-not-supported"
-        >
-          AR not available on this device
-        </a>
-      )}
-      <style jsx>{`
+      <style jsx="true">{`
         .apx-ar-container {
           background-color: #f0f5f5;
           text-align: center;
           position: relative;
           overflow: hidden;
+          top: 65px;
           width: 100vw;
-          height: 100vh;
+          height: 60vh;
           display: flex;
           flex-direction: column;
         }
-        .apx-header {
-          background-color: #1a202c;
-          color: white;
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          padding: 0 20px;
-          height: 60px;
-        }
-        .logo {
-          font-weight: bold;
-          font-size: 24px;
-        }
-        nav button {
-          background: none;
-          border: none;
-          color: white;
-          margin-left: 20px;
-          cursor: pointer;
-        }
         .model-viewer-wrapper {
-          flex-grow: 1;
-          width: 100%;
+          flex: 1;
           position: relative;
+          overflow: hidden;
         }
         model-viewer {
           width: 100%;
@@ -188,5 +132,5 @@ APXAR.defaultProps = {
   arPlacement: 'floor',
   alt: 'APX GP Model',
   title: 'APX GP Model Viewer',
-  link: 'https://www.f1nsight.com/',
+  link: 'https://www.f1nsight.com/#/teammates-comparison/2024/apx',
 };
