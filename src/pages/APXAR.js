@@ -1,171 +1,192 @@
-import React, { useEffect } from 'react';
-
-const styles = `
-.apxar-container * {
-  box-sizing: border-box;
-}
-
-.apxar-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-  width: 100vw;
-  margin: 0;
-  padding: 20px;
-  font-family: Arial, sans-serif;
-}
-
-.apxar-container h1 {
-  text-align: center;
-  color: #333;
-  margin-bottom: 20px;
-}
-
-.apxar-container .model-viewer-container {
-  width: 100%;
-  max-width: 800px;
-  height: 600px;
-  position: relative;
-}
-
-.apxar-container model-viewer {
-  width: 100%;
-  height: 100%;
-  background-color: #f0f0f0;
-  --poster-color: #ffffff;
-}
-
-.apxar-container .progress-bar {
-  display: block;
-  width: 33%;
-  height: 10%;
-  max-height: 2%;
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate3d(-50%, -50%, 0);
-  border-radius: 25px;
-  box-shadow: 0px 3px 10px 3px rgba(0, 0, 0, 0.5), 0px 0px 5px 1px rgba(0, 0, 0, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.9);
-  background-color: rgba(0, 0, 0, 0.5);
-}
-
-.apxar-container .progress-bar.hide {
-  visibility: hidden;
-  transition: visibility 0.3s;
-}
-
-.apxar-container .update-bar {
-  background-color: rgba(255, 255, 255, 0.9);
-  width: 0%;
-  height: 100%;
-  border-radius: 25px;
-  float: left;
-  transition: width 0.3s;
-}
-
-.apxar-container #ar-button {
-  background-image: url(APX/ar_icon.png);
-  background-repeat: no-repeat;
-  background-size: 20px 20px;
-  background-position: 12px 50%;
-  background-color: #fff;
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  white-space: nowrap;
-  bottom: 16px;
-  padding: 0px 16px 0px 40px;
-  font-family: Roboto Regular, Helvetica Neue, sans-serif;
-  font-size: 14px;
-  color:#4285f4;
-  height: 36px;
-  line-height: 36px;
-  border-radius: 18px;
-  border: 1px solid #DADCE0;
-  cursor: pointer;
-}
-
-.apxar-container #ar-button:active {
-  background-color: #E8EAED;
-}
-
-.apxar-container #ar-button:focus {
-  outline: none;
-}
-
-.apxar-container #ar-button:focus-visible {
-  outline: 1px solid #4285f4;
-}
-
-@keyframes circle {
-  from { transform: translateX(-50%) rotate(0deg) translateX(50px) rotate(0deg); }
-  to   { transform: translateX(-50%) rotate(360deg) translateX(50px) rotate(-360deg); }
-}
-
-@keyframes elongate {
-  from { transform: translateX(100px); }
-  to   { transform: translateX(-100px); }
-}
-
-.apxar-container model-viewer > #ar-prompt {
-  position: absolute;
-  left: 50%;
-  bottom: 60px;
-  animation: elongate 2s infinite ease-in-out alternate;
-  display: none;
-}
-
-.apxar-container model-viewer[ar-status="session-started"] > #ar-prompt {
-  display: block;
-}
-
-.apxar-container model-viewer > #ar-prompt > img {
-  animation: circle 4s linear infinite;
-}
-`;
+import React, { useRef, useEffect, useState } from 'react';
+import '@google/model-viewer/';
 
 export const APXAR = () => {
+  const arButton = useRef(null);
+  const [hide, setHide] = useState(false);
+
   useEffect(() => {
-    const script = document.createElement('script');
-    script.type = 'module';
-    script.src = 'https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js';
-    document.body.appendChild(script);
-    return () => {
-      document.body.removeChild(script);
-    };
-  }, []);
+    if (arButton.current) {
+      isHidden(arButton.current) ? setHide(true) : setHide(false);
+    }
+  }, [arButton.current]);
+
+  const isHidden = (element) => {
+    return element.offsetParent === null;
+  };
+
+  const arCheck = () => {
+    setTimeout(() => {
+      isHidden(arButton.current) ? setHide(true) : setHide(false);
+    }, 500);
+  };
 
   return (
-    <div className="apxar-container">
-      <style>{styles}</style>
-      <h1>APX GP Model Viewer</h1>
-      <div className="model-viewer-container">
+    <div className="apx-ar-container">
+      <header className="apx-header">
+        <div className="logo">F1NSIGHT</div>
+        <nav>
+          <button>RESULTS</button>
+          <button>COMPARISONS</button>
+          <button>RACE VIEWER</button>
+        </nav>
+      </header>
+      <div className="model-viewer-wrapper">
         <model-viewer
-          src="APX/apx_livery_w_logo.glb"
-          ar
-          ar-modes="webxr scene-viewer quick-look"
-          camera-controls
-          tone-mapping="neutral"
-          poster="APX/poster.webp"
-          shadow-intensity="1"
+          poster={APXAR.defaultProps.img}
+          src={APXAR.defaultProps.glbLink}
+          ar-modes={APXAR.defaultProps.arModes}
+          ar={APXAR.defaultProps.ar}
+          ar-scale={APXAR.defaultProps.arScale}
+          camera-controls={APXAR.defaultProps.cameraControls}
+          exposure={APXAR.defaultProps.exposure}
+          loading={APXAR.defaultProps.loading}
+          shadow-intensity={APXAR.defaultProps.shadowIntensity}
+          shadow-softness={APXAR.defaultProps.shadowSoftness}
+          alt={APXAR.defaultProps.alt}
         >
-          <div id="error" class="hide">AR is not supported on this device</div>
-          <div className="progress-bar hide" slot="progress-bar">
-            <div className="update-bar"></div>
-          </div>
-          <button slot="ar-button" id="ar-button">
-              View in AR
+          <button
+            ref={arButton}
+            slot="ar-button"
+            className="ar-button"
+            onClick={arCheck}
+          >
+            <img src={APXAR.defaultProps.buttonIcon} alt="AR icon" />
+            Launch AR
           </button>
-          <div id="ar-prompt">
-            <img src="APX/ar_hand_prompt.png" alt="AR prompt" />
-          </div>
+          
         </model-viewer>
+        <div className="ar-badge">
+          <span>AR Enabled</span>
+        </div>
       </div>
+      {hide && (
+        <a
+          href="https://developers.google.com/ar/discover/supported-devices"
+          className="ar-not-supported"
+        >
+          AR not available on this device
+        </a>
+      )}
+      <style jsx>{`
+        .apx-ar-container {
+          background-color: #f0f5f5;
+          text-align: center;
+          position: relative;
+          overflow: hidden;
+          width: 100vw;
+          height: 100vh;
+          display: flex;
+          flex-direction: column;
+        }
+        .apx-header {
+          background-color: #1a202c;
+          color: white;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 0 20px;
+          height: 60px;
+        }
+        .logo {
+          font-weight: bold;
+          font-size: 24px;
+        }
+        nav button {
+          background: none;
+          border: none;
+          color: white;
+          margin-left: 20px;
+          cursor: pointer;
+        }
+        .model-viewer-wrapper {
+          flex-grow: 1;
+          width: 100%;
+          position: relative;
+        }
+        model-viewer {
+          width: 100%;
+          height: 100%;
+          background-color: #f0f5f5;
+        }
+        .ar-button {
+          position: absolute;
+          bottom: 14px;
+          left: 50%;
+          transform: translateX(-50%);
+          background-color: #3182ce;
+          color: white;
+          border: none;
+          border-radius: 4px;
+          padding: 8px 16px;
+          font-size: 14px;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+        }
+        .ar-button img {
+          width: 15px;
+          margin-right: 8px;
+        }
+        .ar-badge {
+          background-color: #3182ce;
+          position: absolute;
+          right: -50px;
+          top: 2rem;
+          width: 200px;
+          transform: rotate(45deg);
+          padding: 8px;
+        }
+        .ar-badge span {
+          font-size: 12px;
+          text-transform: uppercase;
+          font-weight: bold;
+          letter-spacing: 0.05em;
+          color: white;
+        }
+        .ar-not-supported {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background-color: #e53e3e;
+          color: white;
+          position: absolute;
+          bottom: 10px;
+          left: 0;
+          width: 100%;
+          padding: 8px;
+          text-decoration: none;
+        }
+        @media (max-width: 768px) {
+          .ar-badge {
+            display: none;
+          }
+        }
+      `}</style>
     </div>
   );
 };
 
 export default APXAR;
+
+APXAR.defaultProps = {
+  glbLink: 'APX/apx_livery_w_logo.glb',
+  img: 'APX/poster.webp',
+  buttonIcon: 'APX/3diconWhite.png',
+  loading: 'eager',
+  reveal: 'auto',
+  autoRotate: true,
+  cameraControls: true,
+  shadowIntensity: '1',
+  shadowSoftness: '1',
+  environmentImage: 'neutral',
+  skyboxImage: null,
+  exposure: '2',
+  ar: true,
+  arModes: 'webxr scene-viewer quick-look',
+  arScale: 'auto',
+  arPlacement: 'floor',
+  alt: 'APX GP Model',
+  title: 'APX GP Model Viewer',
+  link: 'https://www.f1nsight.com/',
+};
