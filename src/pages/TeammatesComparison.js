@@ -87,6 +87,7 @@ export const TeammatesComparison = () => {
     try {
       const response = await axios.get(`https://praneeth7781.github.io/f1nsight-api-2/constructors/${year}/${selectedTeam}.json`);
       const fetchedDrivers = response.data;
+      console.log(response.data);
       setDrivers(fetchedDrivers);
 
       const colorsResponse = await axios.get('https://praneeth7781.github.io/f1nsight-api-2/colors/teams.json');

@@ -9,7 +9,7 @@ export const APXAR = () => {
     if (arButton.current) {
       isHidden(arButton.current) ? setHide(true) : setHide(false);
     }
-  }, [arButton.current]);
+  }, [arButton.offsetParent]);
 
   const isHidden = (element) => {
     return element.offsetParent === null;
@@ -23,14 +23,6 @@ export const APXAR = () => {
 
   return (
     <div className="apx-ar-container">
-      <header className="apx-header">
-        <div className="logo">F1NSIGHT</div>
-        <nav>
-          <button>RESULTS</button>
-          <button>COMPARISONS</button>
-          <button>RACE VIEWER</button>
-        </nav>
-      </header>
       <div className="model-viewer-wrapper">
         <model-viewer
           poster={APXAR.defaultProps.img}
@@ -54,7 +46,6 @@ export const APXAR = () => {
             <img src={APXAR.defaultProps.buttonIcon} alt="AR icon" />
             Launch AR
           </button>
-          
         </model-viewer>
         <div className="ar-badge">
           <span>AR Enabled</span>
@@ -100,9 +91,9 @@ export const APXAR = () => {
           cursor: pointer;
         }
         .model-viewer-wrapper {
-          flex-grow: 1;
-          width: 100%;
+          flex: 1;
           position: relative;
+          overflow: hidden;
         }
         model-viewer {
           width: 100%;
@@ -188,5 +179,5 @@ APXAR.defaultProps = {
   arPlacement: 'floor',
   alt: 'APX GP Model',
   title: 'APX GP Model Viewer',
-  link: 'https://www.f1nsight.com/',
+  link: 'https://www.f1nsight.com/#/teammates-comparison/2024/apx',
 };
