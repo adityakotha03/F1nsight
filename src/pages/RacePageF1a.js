@@ -239,9 +239,9 @@ export function RacePageF1a() {
     return (
         <>
         
-        <h1 className="heading-1 mt-96">{raceName}</h1>
+        <h1 className="heading-1 mt-[12rem] text-center">{raceName}</h1>
 
-        <div className="pt-[10rem] flex flex-col md:flex-row">
+        <div className="pt-[6.4rem] flex flex-col md:flex-row -mb-64">
             
             {/* race 1 */}
             <div className="flex flex-col items-center md:w-1/2 bg-gradient-to-br from-indigo-500/10 via-purple-500/10 to-pink-500/10 p-32">

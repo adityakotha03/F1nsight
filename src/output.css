@@ -1310,6 +1310,10 @@ input[type="range"]::-ms-fill-lower {
   margin-bottom: -.4rem;
 }
 
+.-mb-64 {
+  margin-bottom: -6.4rem;
+}
+
 .-mb-8 {
   margin-bottom: -.8rem;
 }
@@ -1568,6 +1572,14 @@ input[type="range"]::-ms-fill-lower {
 
 .mt-\[9rem\] {
   margin-top: 9rem;
+}
+
+.mt-\[11\.2rem\] {
+  margin-top: 11.2rem;
+}
+
+.mt-\[12rem\] {
+  margin-top: 12rem;
 }
 
 .block {
@@ -3497,6 +3509,14 @@ input[type="range"]::-ms-fill-lower {
 
 .pt-\[10rem\] {
   padding-top: 10rem;
+}
+
+.pt-\[7\.2rem\] {
+  padding-top: 7.2rem;
+}
+
+.pt-\[6\.4rem\] {
+  padding-top: 6.4rem;
 }
 
 .text-left {

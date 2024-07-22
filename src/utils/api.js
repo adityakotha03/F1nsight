@@ -107,6 +107,19 @@ export const fetchRaceMeetingKeys = async (selectedYear) => {
   }
 };
 
+export const fetchRaceMeetingKeysF1a = async (selectedYear) => {
+  try {
+    const raceResponse = await fetch(`https://ant-dot-comm.github.io/f1aapi/races/races.json`);
+    if(!raceResponse.ok) {
+      throw new Error('Failed to fetch races');
+    }
+    const races = await raceResponse.json();
+    return races[selectedYear]
+  } catch(error) {
+    console.error('Error fetching data:', error);
+  }
+};
+
 // Header
 export const fetchRacesAndSessions = async (selectedYear) => {
   try {
@@ -352,23 +365,34 @@ const enrichDriverData = (raceData, driverInfo) => {
   });
 };
 
-export const fetchF1aRaceResultsByCircuit = async (year, circuitId) => {
+const filterTop3 = (raceData) => {
+  return raceData.sort((a, b) => parseInt(a.position, 10) - parseInt(b.position, 10)).slice(0, 3);
+};
+
+export const fetchF1aRaceResultsByCircuit = async (year, circuitId, top3 = false) => {
   try {
     const url = `https://ant-dot-comm.github.io/f1aapi/races/${year}/resullts.json`;
     const response = await fetch(url);
     const data = await response.json();
     const results = data.find(race => race.Circuit.circuitId === circuitId);
-    // console.log('fetchF1aRaceResultsByCircuit', {results});
+    console.log('fetchF1aRaceResultsByCircuit', {results});
     const driverInfo = await fetchDriverInfo(year);
+
     if (results && results.Results) {
-      const race1Results = enrichDriverData(results.Results.race1, driverInfo);
-      const race2Results = enrichDriverData(results.Results.race2, driverInfo);
-      return { race1: race1Results, race2: race2Results };
+      let race1Results = enrichDriverData(results.Results.race1, driverInfo);
+      let race2Results = enrichDriverData(results.Results.race2, driverInfo);
+
+      if (top3) {
+        race1Results = filterTop3(race1Results);
+        race2Results = filterTop3(race2Results);
+      }
+
+      return { raceName: results.raceName, race1: race1Results, race2: race2Results };
     }
-    return { race1: [], race2: [] };
+    return { raceName: '', race1: [], race2: [] };
   } catch (error) {
     console.error("Error fetching race results:", error);
-    return { race1: [], race2: [] };
+    return { raceName: '', race1: [], race2: [] };
   }
 };
 
