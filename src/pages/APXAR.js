@@ -117,7 +117,7 @@ APXAR.defaultProps = {
   glbLink: 'APX/apx_livery_w_logo.glb',
   img: 'APX/poster.webp',
   buttonIcon: 'APX/3diconWhite.png',
-  loading: 'eager',
+  loading: 'auto',
   reveal: 'auto',
   autoRotate: true,
   cameraControls: true,
