@@ -119,15 +119,17 @@ export const LapChart = (props) => {
     };
 
     const prepareBoxPlotData = () => {
-        const driversData = sortedDriverAcronyms.map(acronym => {
-            const driverLaps = laps.filter(lap => driversDetails[lap.driver_number] === acronym);
-            return {
-                y: driverLaps.map(lap => parseFloat(lap.lap_duration)),
-                type: 'box',
-                name: acronym,
-                marker: { color: newDriversColor[acronym] }
-            };
-        });
+        const driversData = sortedDriverAcronyms
+            .filter(acronym => driverVisibility[acronym])
+            .map(acronym => {
+                const driverLaps = laps.filter(lap => driversDetails[lap.driver_number] === acronym);
+                return {
+                    y: driverLaps.map(lap => parseFloat(lap.lap_duration)),
+                    type: 'box',
+                    name: acronym,
+                    marker: { color: newDriversColor[acronym] }
+                };
+            });
         return driversData;
     };
 
