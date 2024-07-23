@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { darkenColor } from '../../utils/darkenColor';
 import { lightenColor } from '../../utils/lightenColor';
 
 const CustomizedXAxisTick = ({ x, y, payload }) => {
@@ -10,7 +11,7 @@ const CustomizedXAxisTick = ({ x, y, payload }) => {
         y={0}
         dy={16}
         textAnchor="end"
-        fill="#666"
+        fill="#f1f1f1"
         transform="rotate(-15) translate(8,0)"
         fontSize={12}
       >
@@ -50,7 +51,7 @@ export const PositionsComparisonChart = ({ headToHeadData, teamColor, isQualifyi
           formatter={(value) => `P${value}`}
         />
         <Legend verticalAlign="top" height={32} />
-        <Line type="monotone" dataKey={headToHeadData.driver1Code} stroke={`#${teamColor}`} connectNulls={true}/>
+        <Line type="monotone" dataKey={headToHeadData.driver1Code} stroke={darkenColor(teamColor)} connectNulls={true}/>
         <Line type="monotone" dataKey={headToHeadData.driver2Code} stroke={lightenColor(teamColor)} connectNulls={true}/>
       </LineChart>
     </ResponsiveContainer>
