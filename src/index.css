@@ -160,3 +160,7 @@ code {
 .recharts-cartesian-grid line {
   stroke: #666666
 }
+
+.recharts-rectangle:not(.recharts-bar-rectangle .recharts-rectangle) {
+  fill: #1f1f1f;
+}

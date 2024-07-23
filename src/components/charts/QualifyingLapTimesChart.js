@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { lightenColor } from '../../utils/lightenColor';
+import { darkenColor } from '../../utils/darkenColor';
 
 const CustomizedXAxisTick = ({ x, y, payload }) => {
   return (
@@ -10,7 +11,7 @@ const CustomizedXAxisTick = ({ x, y, payload }) => {
         y={0}
         dy={16}
         textAnchor="end"
-        fill="#666"
+        fill="#f1f1f1"
         transform="rotate(-15) translate(8,0)"
         fontSize={12}
       >
@@ -31,7 +32,7 @@ const CustomizedYAxisTick = ({ x, y, payload }) => {
         y={0}
         dy={16}
         textAnchor="end"
-        fill="#666"
+        fill="#f1f1f1"
         transform="rotate(-15) translate(-8,-12)"
         fontSize={12}
       >
@@ -113,7 +114,7 @@ export const QualifyingLapTimesChart = ({ headToHeadData, teamColor }) => {
           }}
         />
         <Legend verticalAlign="top" height={32} />
-        <Bar dataKey={headToHeadData.driver1Code} fillOpacity={1} fill={`#${teamColor}`} connectNulls={true} />
+        <Bar dataKey={headToHeadData.driver1Code} fillOpacity={1} fill={darkenColor(teamColor)} connectNulls={true} />
         <Bar dataKey={headToHeadData.driver2Code} fillOpacity={1} fill={lightenColor(teamColor)} connectNulls={true} />
       </BarChart>
     </ResponsiveContainer>

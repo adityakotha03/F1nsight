@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { lightenColor } from '../../utils/lightenColor';
+import { darkenColor } from '../../utils/darkenColor';
 
 const CustomizedXAxisTick = ({ x, y, payload }) => {
   return (
@@ -10,7 +11,7 @@ const CustomizedXAxisTick = ({ x, y, payload }) => {
         y={0}
         dy={16}
         textAnchor="end"
-        fill="#666"
+        fill="#f1f1f1"
         transform="rotate(-15) translate(8,0)"
         fontSize={12}
       >
@@ -42,13 +43,13 @@ export const PositionsGainedLostChart = ({ headToHeadData, teamColor }) => {
       <BarChart width={730} height={250} data={chartData} margin={{ top: 20, right: 30 }}>
         <CartesianGrid strokeDasharray="3 3" stroke="#444444" />
         <XAxis dataKey="index" tick={<CustomizedXAxisTick />} />
-        <YAxis tick={{ fontSize: 12, fill: '#666' }} />
+        <YAxis tick={{ fontSize: 12, fill: '#f1f1f1' }} />
         <Tooltip
           labelFormatter={(index) => chartData[index] ? chartData[index].race : index}
           formatter={(value) => value}
         />
         <Legend verticalAlign="top" height={36} />
-        <Bar dataKey={headToHeadData.driver1Code} fillOpacity={1} fill={`#${teamColor}`} />
+        <Bar dataKey={headToHeadData.driver1Code} fillOpacity={1} fill={darkenColor(teamColor)} />
         <Bar dataKey={headToHeadData.driver2Code} fillOpacity={1} fill={lightenColor(teamColor)} />
       </BarChart>
     </ResponsiveContainer>
