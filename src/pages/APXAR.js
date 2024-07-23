@@ -88,19 +88,6 @@ export const APXAR = () => {
           letter-spacing: 0.05em;
           color: white;
         }
-        .ar-not-supported {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          background-color: #e53e3e;
-          color: white;
-          position: absolute;
-          bottom: 10px;
-          left: 0;
-          width: 100%;
-          padding: 8px;
-          text-decoration: none;
-        }
         @media (max-width: 768px) {
           .ar-badge {
             display: none;
@@ -127,7 +114,7 @@ APXAR.defaultProps = {
   skyboxImage: null,
   exposure: '2',
   ar: true,
-  arModes: 'webxr scene-viewer quick-look',
+  arModes: 'scene-viewer quick-look',
   arScale: 'auto',
   arPlacement: 'floor',
   alt: 'APX GP Model'
