@@ -53,7 +53,10 @@ code {
   box-shadow: inset 0 0 1rem 0 rgba(255, 255, 255, .25), 0 0 2.4rem 0 rgba(0, 0, 0, .5);
 }
 .bg-glow-dark {
-  box-shadow: inset 0 0 2.4rem 0 rgba(0, 0, 0, .5);
+  box-shadow: inset 0 0 2.4rem 0 rgba(0, 0, 0, .75);
+}
+.bg-glow-dark-shadow {
+  box-shadow: inset 0 0 2.4rem 0 rgba(0, 0, 0, .75), 0 .4rem .4rem 0 rgba(0, 0, 0, .25);
 }
 .bg-glow-large {
   background-color: #242424;
@@ -103,6 +106,11 @@ code {
 }
 .gradient-text-light {
   background: -webkit-linear-gradient(theme('colors.neutral.300'), theme('colors.neutral.500'));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.gradient-text-white {
+  background: -webkit-linear-gradient(#ffffff, theme('colors.neutral.500'));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
