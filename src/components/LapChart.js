@@ -137,60 +137,71 @@ export const LapChart = (props) => {
 
     return (
         <>
-        <h3 className="heading-4 mb-16 text-neutral-400 ml-24">Lap Data</h3>
-        <div className="mb-16 bg-glow-large max-sm:py-[3.2rem] sm:p-32 rounded-xlarge">
-            <button onClick={() => setShowBoxPlot(!showBoxPlot)} className="mb-4 py-2 px-4 bg-blue-500 text-white font-semibold rounded">
-                {showBoxPlot ? 'Show Line Chart' : 'Show Box Plot'}
-            </button>
+          <h3 className="heading-4 mb-16 text-neutral-400 ml-24">Lap Data</h3>
+          <div className="mb-16 bg-glow-large max-sm:py-[3.2rem] sm:p-32 rounded-xlarge">
+            <div className="mb-4">
+              <button
+                onClick={() => setShowBoxPlot(true)}
+                className={`py-2 px-4 text-white font-semibold rounded ${showBoxPlot ? 'bg-plum-500' : 'bg-neutral-900'}`}
+              >
+                Box Plot
+              </button>
+              <button
+                onClick={() => setShowBoxPlot(false)}
+                className={`py-2 px-4 ml-4 text-white font-semibold rounded ${!showBoxPlot ? 'bg-plum-500' : 'bg-neutral-900'}`}
+              >
+                Line Chart
+              </button>
+            </div>
             {showBoxPlot ? (
-                <Plot
-                    data={prepareBoxPlotData()}
-                    layout={{ width: 800, height: 400, title: 'Lap Duration Box Plot' }}
-                />
+              <Plot
+                data={prepareBoxPlotData()}
+                layout={{ width: 800, height: 400, title: 'Lap Duration Box Plot' }}
+              />
             ) : (
-                <ResponsiveContainer width="100%" height={299}>
-                    <LineChart
-                        data={chartData}
-                        margin={{ top: 20, right: 30 }}
-                        width="100%"
-                    >
-                        <CartesianGrid strokeDasharray="3 3" stroke="#444444" />
-                        <XAxis dataKey="name" />
-                        <YAxis domain={[minYAxisValue, maxYAxisValue]} tickFormatter={formatMinutes} />
-                        <Tooltip 
-                            formatter={(value) => {
-                                const decimalMinutes = parseFloat(value);
-                                const minutes = Math.floor(decimalMinutes);
-                                const totalSeconds = (decimalMinutes - minutes) * 60;
-                                const seconds = Math.floor(totalSeconds);
-                                const milliseconds = Math.round((totalSeconds - seconds) * 1000);
-                                return `${minutes}:${seconds.toString().padStart(2, '0')}.${milliseconds.toString().padStart(3, '0')}`;
-                            }}
-                        />
-                        {[...new Set(laps.map(lap => driversDetails[lap.driver_number]))].map((acronym, index) => (
-                            driverVisibility[acronym] && <Line key={index} type="monotone" dataKey={acronym} stroke={`${newDriversColor[acronym]}`} connectNulls={true} />
-                        ))}
-                    </LineChart>
-                </ResponsiveContainer>
+              <ResponsiveContainer width="100%" height={299}>
+                <LineChart
+                  data={chartData}
+                  margin={{ top: 20, right: 30 }}
+                  width="100%"
+                >
+                  <CartesianGrid strokeDasharray="3 3" stroke="#444444" />
+                  <XAxis dataKey="name" />
+                  <YAxis domain={[minYAxisValue, maxYAxisValue]} tickFormatter={formatMinutes} />
+                  <Tooltip 
+                    formatter={(value) => {
+                      const decimalMinutes = parseFloat(value);
+                      const minutes = Math.floor(decimalMinutes);
+                      const totalSeconds = (decimalMinutes - minutes) * 60;
+                      const seconds = Math.floor(totalSeconds);
+                      const milliseconds = Math.round((totalSeconds - seconds) * 1000);
+                      return `${minutes}:${seconds.toString().padStart(2, '0')}.${milliseconds.toString().padStart(3, '0')}`;
+                    }}
+                  />
+                  {[...new Set(laps.map(lap => driversDetails[lap.driver_number]))].map((acronym, index) => (
+                    driverVisibility[acronym] && <Line key={index} type="monotone" dataKey={acronym} stroke={`${newDriversColor[acronym]}`} connectNulls={true} />
+                  ))}
+                </LineChart>
+              </ResponsiveContainer>
             )}
             {driverCode == null && (
-                <div className="flex flex-wrap justify-center gap-4 mt-4 sm:max-w-[80%] sm:mx-auto">
-                    {sortedDriverAcronyms.map((acronym, index) => (
-                        <button
-                            key={index}
-                            className={`py-1 px-4 text-white font-semibold rounded font-display`}
-                            onClick={() => handleDriverVisibilityChange(acronym)}
-                            style={{backgroundColor: driverVisibility[acronym] ? `${newDriversColor[acronym]}` : '#333333'}}
-                        >
-                            {acronym}
-                        </button>
-                    ))}
-                </div>
+              <div className="flex flex-wrap justify-center gap-4 mt-4 sm:max-w-[80%] sm:mx-auto">
+                {sortedDriverAcronyms.map((acronym, index) => (
+                  <button
+                    key={index}
+                    className={`py-1 px-4 text-white font-semibold rounded font-display`}
+                    onClick={() => handleDriverVisibilityChange(acronym)}
+                    style={{ backgroundColor: driverVisibility[acronym] ? `${newDriversColor[acronym]}` : '#333333' }}
+                  >
+                    {acronym}
+                  </button>
+                ))}
+              </div>
             )}
-        </div>
+          </div>
         </>
-    );
-};
+      );
+    };
 
 LapChart.propTypes = {
     className: PropTypes.string,
