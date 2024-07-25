@@ -4,7 +4,7 @@ import axios from 'axios';
 import { useLocation, useParams, useNavigate } from 'react-router-dom';
 
 import { fetchDriverStats } from '../utils/api';
-import { HeadToHeadChart, PositionsGainedLostChart, QualifyingLapTimesChart, PositionsComparisonChart, Select, Loading } from '../components';
+import { HeadToHeadChart, PositionsGainedLostChart, QualifyingLapTimesChart, QualifyingLapTimesDeltaChart, PositionsComparisonChart, Select, Loading } from '../components';
 
 
 export const TeammatesComparison = () => {
@@ -28,6 +28,15 @@ export const TeammatesComparison = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [teamColor, setTeamColor] = useState('5F0B84');
   const [renderHead, setRenderHead] = useState(true);
+  const [showTimes, setShowTimes] = useState(true);
+
+  const handleShowTimes = () => {
+    setShowTimes(true);
+  };
+
+  const handleShowDifference = () => {
+    setShowTimes(false);
+  };
 
   useEffect(() => {
     const validYear = urlYear && parseInt(urlYear) <= currentYear ? urlYear : '';
@@ -459,10 +468,29 @@ const GridRow = (label, driver1, driver2, title) => {
                 
                 <h3 className="heading-4 mb-16 text-neutral-400 ml-24">Qualifying Lap Time Differences</h3>
                 <div className="bg-glow-large rounded-lg mb-64 p-8 md:px-32 md:pt-16 md:pb-32">
-                  <QualifyingLapTimesChart 
-                    headToHeadData={memoizedHeadToHeadData}
-                    teamColor={teamColor}
-                  />
+                    <button 
+                      className={`px-16 py-8 rounded ${showTimes ? 'bg-plum-500 shadow-12-dark' : 'bg-neutral-900'}`}
+                      onClick={handleShowTimes}
+                    >
+                      Show Times
+                    </button>
+                    <button 
+                      className={`px-16 py-8 rounded ml-8 ${!showTimes ? 'bg-plum-500 shadow-12-dark' : 'bg-neutral-900'}`}
+                      onClick={handleShowDifference}
+                    >
+                      Show Difference
+                    </button>
+                  {showTimes ? (
+                    <QualifyingLapTimesChart 
+                      headToHeadData={memoizedHeadToHeadData}
+                      teamColor={teamColor}
+                    />
+                  ) : (
+                    <QualifyingLapTimesDeltaChart
+                      headToHeadData={memoizedHeadToHeadData}
+                      teamColor={teamColor}
+                    />
+                  )}
                 </div>
               </div>
 
