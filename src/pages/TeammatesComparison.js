@@ -457,7 +457,7 @@ const GridRow = (label, driver1, driver2, title) => {
                   />
                 </div>
                 
-                <h3 className="heading-4 mb-16 text-neutral-400 ml-24">Qualifying Lap Times Comparison</h3>
+                <h3 className="heading-4 mb-16 text-neutral-400 ml-24">Qualifying Lap Time Differences</h3>
                 <div className="bg-glow-large rounded-lg mb-64 p-8 md:px-32 md:pt-16 md:pb-32">
                   <QualifyingLapTimesChart 
                     headToHeadData={memoizedHeadToHeadData}
