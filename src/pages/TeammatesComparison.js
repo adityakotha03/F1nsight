@@ -305,6 +305,7 @@ export const TeammatesComparison = () => {
 
 const driverLockup = (driverId, driverName) => {
   const driverSplitName = driverName.split(" ");
+  const randomNumber = Math.ceil(Math.random() * 5);
   return (
     <div 
       className="flex justify-center relative text-center group rounded-lg px-16"
@@ -314,7 +315,7 @@ const driverLockup = (driverId, driverName) => {
         alt="NotAvailable" 
         src={year >= 2023 ? 
           `${process.env.PUBLIC_URL + "/images/2024/drivers/" + driverId +  ".png"}` 
-          : `${process.env.PUBLIC_URL + "/images/2024/drivers/default.png"}`}
+          : `${process.env.PUBLIC_URL + "/images/2024/drivers/default" + randomNumber + ".png"}`}
         width={150} 
         height={150} 
         className={classNames("-mt-32", {"group-[:first-of-type]:scale-x-[-1]" : year <= 2023 })}

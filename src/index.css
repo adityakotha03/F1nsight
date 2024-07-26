@@ -18,6 +18,7 @@ body {
   font-family: "Lato", sans-serif;
   font-size: 1.6rem;
   font-weight: 400;
+  letter-spacing: .4px;
   margin: 0;
   overflow-x: hidden;
 }
@@ -26,6 +27,11 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+a:hover,
+button:hover {
+  cursor: pointer;
+} 
 
 /* ------- */
 /* Helpers */
@@ -51,6 +57,9 @@ code {
 }
 .bg-glow-sm {
   box-shadow: inset 0 0 1rem 0 rgba(255, 255, 255, .25), 0 0 2.4rem 0 rgba(0, 0, 0, .5);
+}
+.bg-glow-md {
+  box-shadow: inset 0 0 4.8rem 0 rgba(255, 255, 255, .25), 0 0 2.4rem 0 rgba(0, 0, 0, .5);
 }
 .bg-glow-dark {
   box-shadow: inset 0 0 2.4rem 0 rgba(0, 0, 0, .75);
