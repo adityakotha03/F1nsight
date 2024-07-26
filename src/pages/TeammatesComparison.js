@@ -474,7 +474,7 @@ const GridRow = (label, driver1, driver2, title) => {
                       Show Times
                     </button>
                     <button 
-                      className={`px-16 py-8 rounded ${!showTimes ? 'bg-plum-500 shadow-12-dark' : 'bg-neutral-900'}`}
+                      className={`px-16 py-8 rounded ml-8 ${!showTimes ? 'bg-plum-500 shadow-12-dark' : 'bg-neutral-900'}`}
                       onClick={handleShowDifference}
                     >
                       Show Deltas
