@@ -105,7 +105,7 @@ export function LandingPage() {
             <div className="flex flex-col items-center gap-16">
               <NavLink to="/apxar" className="bg-plum-500 shadow-12-dark py-8 px-16 rounded w-full text-center">Click here to try it out</NavLink>
               <div>or scan QR code</div>
-              <img className="rounded-lg shadow-12-dark w-[12rem]" alt="" src={`${process.env.PUBLIC_URL + "/images/arqr.png"}`} /> 
+              <img className="rounded-lg shadow-12-dark w-[12rem]" alt="" src={`${process.env.PUBLIC_URL + "/images/arQr.png"}`} /> 
             </div>
           </div>
           <div className="landing-section__content__media flex-grow max-md:-mt-64" >
