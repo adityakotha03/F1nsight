@@ -1,8 +1,9 @@
 import React, { useRef } from 'react';
 import { FaGithub, FaInstagram } from 'react-icons/fa';
 import { useInView } from "framer-motion";
-import { NavLink } from 'react-router-dom';
 import classNames from 'classnames';
+
+import { Button } from '../components';
 
 export function LandingPage() {
   const ref = useRef(null);
@@ -88,8 +89,8 @@ export function LandingPage() {
             <p className="heading-3 mb-24">Driver & team comparisons</p>
             <p className="mb-24">Compare drivers and teams from any generation based on performance metrics and statistics.</p>
             <div className="flex max-sm:flex-col max-sm:w-full md:flex-row items-center gap-16">
-              <NavLink to="/driver-comparison" className="bg-plum-500 shadow-12-dark py-8 px-16 rounded w-full text-center">Driver Comparison</NavLink>
-              <NavLink to="/teammates-comparison" className="bg-plum-500 shadow-12-dark py-8 px-16 rounded w-full text-center">Teammates Comparison</NavLink>
+              <Button to="/driver-comparison" buttonStyle="solid">Driver Comparison</Button>
+              <Button to="/team-comparison" buttonStyle="solid">Team Comparison</Button>
             </div>
           </div>
         </div>
@@ -103,7 +104,7 @@ export function LandingPage() {
             <p className="mb-24">Place and scale your favorite F1 car model in your environment. Walk around it, inspect every detail.</p>
             <p className="mb-24">Capture stunning photos and videos of your AR F1 car in different settings. Share these memorable moments with friends and fellow F1 enthusiasts and be sure to mention @f1nsight1.</p>
             <div className="flex flex-col items-center gap-16">
-              <NavLink to="/apxar" className="bg-plum-500 shadow-12-dark py-8 px-16 rounded w-full text-center">Click here to try it out</NavLink>
+              <Button to="/apxar" buttonStyle="solid">Click here to try it out</Button>
               <div>or scan QR code</div>
               <img className="rounded-lg shadow-12-dark w-[12rem]" alt="" src={`${process.env.PUBLIC_URL + "/images/arqr.png"}`} /> 
             </div>

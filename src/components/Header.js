@@ -80,15 +80,15 @@ export const Header = ({ setResultPage, setResultPagePath }) => {
     
     const comparisonContent = (
         <>
-            <NavLink to="/driver-comparison" className="block px-4 py-2" onClick={toggleOpen}>Driver Comparison</NavLink>
-            <NavLink to="/teammates-comparison" className="block px-4 py-2" onClick={toggleOpen}>Teammates Comparison</NavLink>
+            <NavLink to="/driver-comparison" className="block px-4 py-2 text-neutral-300 hover:text-white" onClick={toggleOpen}>Driver Comparison</NavLink>
+            <NavLink to="/teammates-comparison" className="block px-4 py-2 text-neutral-300 hover:text-white" onClick={toggleOpen}>Teammates Comparison</NavLink>
         </>
     )
     const resultsContent = (
         <>
              <NavLink 
                 to="/race-results" 
-                className="block px-4 py-2" 
+                className="block px-4 py-2 text-neutral-300 hover:text-white" 
                 onClick={() => {
                     handleNavLinkClick('Race Results')
                     toggleOpen()
@@ -96,7 +96,7 @@ export const Header = ({ setResultPage, setResultPagePath }) => {
                 >Race Results</NavLink>
             <NavLink 
                 to="/constructor-standings" 
-                className="block px-4 py-2 "
+                className="block px-4 py-2 text-neutral-300 hover:text-white"
                 onClick={() => {
                     handleNavLinkClick('Constructor Standings')
                     toggleOpen()
@@ -104,7 +104,7 @@ export const Header = ({ setResultPage, setResultPagePath }) => {
                 >Constructor Standings</NavLink>
             <NavLink 
                 to="/driver-standings" 
-                className="block px-4 py-2"
+                className="block px-4 py-2 text-neutral-300 hover:text-white"
                 onClick={() => {
                     handleNavLinkClick('Driver Standing')
                     toggleOpen()
@@ -170,15 +170,15 @@ export const Header = ({ setResultPage, setResultPagePath }) => {
                     <FontAwesomeIcon icon="xmark" className="fa-2x" />
                 </button>
                 <div className="pt-64 px-32">
-                    <p className="font-display tracking-xs my-16 text-neutral-500">Results</p>
+                    <p className="font-display tracking-xs my-16">Results</p>
                     <div className="flex flex-col gap-16">
                         {resultsContent}
                     </div>
-                    <p className="font-display tracking-xs my-16 text-neutral-500 mt-32">Comparisons</p>
+                    <p className="font-display tracking-xs my-16 mt-32">Comparisons</p>
                     <div className="flex flex-col gap-16">
                         {comparisonContent}
                     </div>
-                    <p className="font-display tracking-xs my-16 text-neutral-500 mt-32">Race Viewer</p>
+                    <p className="font-display tracking-xs my-16 mt-32">Race Viewer</p>
                     <div className="flex flex-col gap-16">
                         {raceSelectorContent}
                     </div>
