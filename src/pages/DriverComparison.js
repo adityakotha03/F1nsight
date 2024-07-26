@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { fetchDriverStats, fetchDriversList } from '../utils/api';
-import { Loading, LineChartByYear, BarChartTotal } from "../components";
+import { Loading, LineChartByYear, BarChartTotal, Button } from "../components";
 import Select from 'react-select';
 import classNames from 'classnames';
 
@@ -241,7 +241,7 @@ export function DriverComparison(){
                         />
                     </div>
 
-                    <button className="bg-plum-500 shadow-12-dark py-8 px-16 rounded mt-16 mb-32 mx-auto block" onClick={handleCompare} type='submit'>Compare</button>
+                    <Button className="mx-auto block mt-16" onClick={handleCompare} buttonStyle="solid" type='submit'>Compare</Button>
 
                     {driver1Data && driver2Data && (
                         <div>
@@ -261,22 +261,26 @@ export function DriverComparison(){
 
                             {competingYears.length > 0 && (
                                 <>
-                                <div className="flex justify-center gap-32">
-                                    <button
-                                        className={`px-16 py-8 rounded ${displayCompetingYears ? 'bg-plum-500 shadow-12-dark' : 'bg-glow-dark bg-neutral-900'}`}
-                                        onClick={() => setDisplayCompetingYears(true)}
-                                    >
-                                        Show Competing Years
-                                    </button>
-                                    <button
-                                        className={`px-16 py-8 rounded ${!displayCompetingYears ? 'bg-plum-500 shadow-12-dark' : 'bg-glow-dark bg-neutral-900'}`}
-                                        onClick={() => setDisplayCompetingYears(false)}
-                                    >
-                                        Show All Years
-                                    </button>
-                                </div>
-                                 <div className="divider-glow-dark -mt-20 mb-64 max-md:w-[200%] max-md:ml-[-50%]" />
-                                 </>
+                                    <div className="flex justify-center gap-32">
+                                        <Button 
+                                            className={classNames({'active' : displayCompetingYears})} 
+                                            onClick={() => setDisplayCompetingYears(true)} 
+                                            buttonStyle="solid" 
+                                            active={displayCompetingYears}
+                                        >
+                                            Show Competing Years
+                                        </Button>
+                                        <Button 
+                                            className={classNames({'active' : displayCompetingYears})} 
+                                            onClick={() => setDisplayCompetingYears(false)} 
+                                            buttonStyle="solid" 
+                                            active={!displayCompetingYears}
+                                        >
+                                            Show All Years
+                                        </Button>
+                                    </div>
+                                    <div className="divider-glow-dark -mt-[3rem] mb-64 max-md:w-[200%] max-md:ml-[-50%]" />
+                                </>
                             )}
                             
                             <div className="comparison-container mb-96">
