@@ -106,7 +106,7 @@ export function LandingPage() {
             <div className="flex flex-col items-center gap-16">
               <Button to="/apxar" buttonStyle="solid">Click here to try it out</Button>
               <div>or scan QR code</div>
-              <img className="rounded-lg shadow-12-dark w-[12rem]" alt="" src={`${process.env.PUBLIC_URL + "/images/arqr.png"}`} /> 
+              <img className="rounded-lg shadow-12-dark w-[12rem]" alt="" src={`${process.env.PUBLIC_URL + "/images/arQr.png"}`} /> 
             </div>
           </div>
           <div className="landing-section__content__media flex-grow max-md:-mt-64" >
