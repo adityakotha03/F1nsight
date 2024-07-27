@@ -90,7 +90,7 @@ export function LandingPage() {
             <p className="mb-24">Compare drivers and teams from any generation based on performance metrics and statistics.</p>
             <div className="flex max-sm:flex-col max-sm:w-full md:flex-row items-center gap-16">
               <Button to="/driver-comparison" buttonStyle="solid">Driver Comparison</Button>
-              <Button to="/team-comparison" buttonStyle="solid">Team Comparison</Button>
+              <Button to="/teammates-comparison" buttonStyle="solid">Team Comparison</Button>
             </div>
           </div>
         </div>
