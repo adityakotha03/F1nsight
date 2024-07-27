@@ -41,7 +41,7 @@ export function DriverComparison(){
             }
         };
         loadDrivers();
-    },[])
+    },[urlDriver1, urlDriver2])
 
     useEffect(() => {
         const fetchData = async () => {
