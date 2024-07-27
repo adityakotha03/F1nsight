@@ -3,8 +3,12 @@ import { fetchDriverStats, fetchDriversList } from '../utils/api';
 import { Loading, LineChartByYear, BarChartTotal, Button } from "../components";
 import Select from 'react-select';
 import classNames from 'classnames';
+import { useNavigate, useParams } from 'react-router-dom';
 
 export function DriverComparison(){
+    const {urlDriver1, urlDriver2} = useParams();
+    const [urlDriverName1, setURLDriverName1] = useState(null);
+    const [urlDriverName2, setURLDriverName2] = useState(null);
     const [driversList, setDriversList] = useState([]);
     const [driver1, setDriver1] = useState('');
     const [driver2, setDriver2] = useState('');
@@ -17,11 +21,24 @@ export function DriverComparison(){
     const [competingYears, setCompetingYears] = useState([]);
     const [allYears, setAllYears] = useState([]);
     const [displayCompetingYears, setDisplayCompetingYears] = useState(false);
+    let navigate = useNavigate();
 
     useEffect(() => {
         const loadDrivers = async () => {
             const drivers = await fetchDriversList();
             setDriversList(drivers);
+            if(urlDriver1){
+                setURLDriverName1(drivers.find(driver => driver.id === urlDriver1).name);
+                setInputDriver1({value : urlDriver1, label : urlDriverName1});
+            }
+            if(urlDriver2){
+                setURLDriverName2(drivers.find(driver => driver.id === urlDriver2).name);
+                setInputDriver2({value : urlDriver2, label : urlDriverName2});
+            }
+            if(urlDriver1 && urlDriver2){
+                setDriver1(urlDriver1);
+                setDriver2(urlDriver2);
+            }
         };
         loadDrivers();
     },[])
@@ -61,6 +78,7 @@ export function DriverComparison(){
     const yearsToDisplay = displayCompetingYears && competingYears.length > 0 ? competingYears : allYears;
 
     const handleCompare = () => {
+        navigate(`/driver-comparison/${inputdriver1.value}/${inputdriver2.value}`, {replace : true});
         setDriver1(inputdriver1.value);
         setDriver2(inputdriver2.value);
         setInputDriver1('');
@@ -169,7 +187,7 @@ export function DriverComparison(){
                 <span className="text-sm md:w-32">{rate && rate}</span>
             </div>
         </div>
-        {!last && <div class="divider-glow-dark mt-8" />}
+        {!last && <div className="divider-glow-dark mt-8" />}
         </>
     );
 
@@ -209,7 +227,7 @@ export function DriverComparison(){
                         <h2 className="font-display md:text-[3.2rem] gradient-text-white">{LastName}</h2>
                     </div>
                     <div className="md:hidden w-full">{mainData}</div>
-                    <div class="divider-glow-dark -mt-4 -mb-12 md:hidden " />
+                    <div className="divider-glow-dark -mt-4 -mb-12 md:hidden " />
                     {otherData}
                 </div>
             </div>
@@ -226,14 +244,14 @@ export function DriverComparison(){
                 <div>
                     <div className="flex max-md:flex-col justify-center items-center gap-16 z-[2] relative">
                         <Select
-                            placeholder="Select Driver 1"
+                            placeholder={urlDriverName1 ? urlDriverName1 : (driver1 ? driversList.find(driver => driver.id === driver1).name : "Select Driver 1")}
                             options={driversList.map(driver => ({ value: driver.id, label: driver.name }))}
                             onChange={(selectedOption) => setInputDriver1(selectedOption)}
                             styles={customStyles}
                             className="w-full md:w-[30rem]"
                         />
                         <Select
-                            placeholder="Select Driver 2"
+                            placeholder={urlDriverName2 ? urlDriverName2 : (driver2 ? driversList.find(driver => driver.id === driver2).name : "Select Driver 2")}
                             options={driversList.map(driver => ({ value: driver.id, label: driver.name }))}
                             onChange={(selectedOption) => setInputDriver2(selectedOption)}
                             styles={customStyles}
