@@ -22,13 +22,7 @@ export function ConstructorStandings({ selectedYear }) {
   let navigate = useNavigate();
   const navigateToTeamComp = (constructorId) => {
     navigate(
-      '/teammates-comparison',
-      {
-        state: {
-          constructorId : constructorId,
-          selectedYear: selectedYear
-        }
-      }
+      `/teammates-comparison/${selectedYear}/${constructorId}`
     );
   };
 

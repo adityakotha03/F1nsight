@@ -82,7 +82,7 @@ export function RacePage() {
     };
 
 
-    const animatedLocations = ["Sakhir", "Suzuka", "Melbourne", "Monaco", "Silverstone"];
+    const animatedLocations = ["Sakhir", "Suzuka", "Melbourne", "Monaco", "Silverstone", "Budapest"];
 
     const selectedDriverData = drivers.find(
         (obj) => obj["acronym"] === driverCode
@@ -465,7 +465,7 @@ export function RacePage() {
                                             result.position,
                                             10
                                         )}
-                                        year={year}
+                                        year={parseInt(year)}
                                         time={
                                             result.Time?.time || result.status
                                         }

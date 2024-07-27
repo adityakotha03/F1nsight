@@ -16,10 +16,22 @@
   .heading-2 {
     font-family: "Bungee", sans-serif;
     font-size: 3.2rem;
+    @media (max-width: 639px) {
+      font-size: 2.8rem;
+    }
+    @media (max-width: 480px) {
+      font-size: 2.4rem;
+    }
   }
   .heading-3 {
     font-family: "Bungee", sans-serif;
     font-size: 2.8rem;
+    @media (max-width: 639px) {
+      font-size: 2.4rem;
+    }
+    @media (max-width: 480px) {
+      font-size: 2rem;
+    }
   }
   .heading-4 {
     font-family: "Bungee", sans-serif;

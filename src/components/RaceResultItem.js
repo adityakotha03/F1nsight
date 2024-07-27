@@ -36,7 +36,7 @@ export const RaceResultItem = (props) => {
                     }}
                 />
                 <div className="stand bg-glow px-14 text-center">
-                    <div className="heading-4"><span className="text-neutral-500">P{endPosition}</span> {driver.code}</div>
+                    <div className="font-display text-[1.8rem] "><span className="text-neutral-500">P{endPosition}</span> {driver.code}</div>
                     <div className="divider-glow w-full" /> 
                     <div className="text-sm -mt-8 flex items-center justify-center gap-4">
                         {time}

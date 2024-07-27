@@ -1,7 +1,7 @@
 export const lightenColor = (hex) => {
     let color = hex.startsWith('#') ? hex.slice(1) : hex;
     let num = parseInt(color, 16),
-        amt = Math.round(2.55 * 30),
+        amt = Math.round(2.55 * 10),
         R = (num >> 16) + amt,
         G = (num >> 8 & 0x00FF) + amt,
         B = (num & 0x0000FF) + amt;

@@ -1,11 +1,17 @@
 const BASE_URL = 'http://ergast.com/api/f1';
 
 export const fetchDriversList = async () => {
-  const response = await fetchWithCache(`${BASE_URL}/drivers.json?limit=1000`); // Adjust limit as needed
-  return response.MRData.DriverTable.Drivers.map(driver => ({
-      id: driver.driverId,
-      name: `${driver.givenName} ${driver.familyName}`
+  const response = await fetchWithCache(`https://praneeth7781.github.io/f1nsight-api-2/drivers/driversList.json`);
+  // console.log("New one");
+  return response.map(driver => ({
+    id: driver.driverId,
+    name: `${driver.givenName} ${driver.familyName}`
   }));
+  // const response = await fetchWithCache(`${BASE_URL}/drivers.json?limit=1000`); // Adjust limit as needed
+  // return response.MRData.DriverTable.Drivers.map(driver => ({
+  //     id: driver.driverId,
+  //     name: `${driver.givenName} ${driver.familyName}`
+  // }));
 };
 
 const fetchData = async (url) => {
@@ -150,13 +156,13 @@ export const fetchRacesAndSessions = async (selectedYear) => {
   
 // race results page
 export const fetchRaceDetails = async (selectedYear) => {
-  const url = `https://ergast.com/api/f1/${selectedYear}.json`; 
+  const url = `https://praneeth7781.github.io/f1nsight-api-2/races/${selectedYear}/raceDetails.json`; 
   try {
     const response = await fetch(url);
     if (response.ok) {
-      const data = await response.json();
-      const races = data.MRData.RaceTable.Races;
-
+      // const data = await response.json();
+      // const races = data.MRData.RaceTable.Races;
+      const races = await response.json();
       const raceResultsPromises = races.map(race => {
         if (new Date(race.date) < new Date()) {
           return fetchRaceResults(selectedYear, race.round)
@@ -182,13 +188,16 @@ export const fetchRaceDetails = async (selectedYear) => {
 };
   
 const fetchRaceResults = async (selectedYear, raceId) => {
-  const resultsUrl = `https://ergast.com/api/f1/${selectedYear}/${raceId}/results.json?limit=3`;
+  const resultsUrl = `https://praneeth7781.github.io/f1nsight-api-2/races/${selectedYear}/results.json`;
   try {
     const response = await fetch(resultsUrl);
     if (response.ok) {
-      const data = await response.json();
-      // console.log(data);
-      const results = data.MRData.RaceTable.Races[0].Results.map(result => ({
+      // const data = await response.json();
+      const tempdata = await response.json();
+      const data = tempdata.find(element => element.round === raceId).Results.slice(0,3);
+
+      // console.log(data.slice(0,3));
+      const results = data.map(result => ({
         driver: result.Driver,
         fastestLap: result.FastestLap,
         grid: result.grid,
@@ -212,7 +221,7 @@ export const fetchUpcomingRace = async (selectedYear) => {
 };
 
 export const getConstructorStandings = async (selectedYear) => {
-  const baseURL = `https://ergast.com/api/f1/${selectedYear}`;
+  const baseURL = `https://praneeth7781.github.io/f1nsight-api-2/races/${selectedYear}`;
   const urls = {
     constructorUrl: `${baseURL}/constructorStandings.json`,
     driverUrl: `${baseURL}/driverStandings.json`
@@ -233,14 +242,14 @@ export const getConstructorStandings = async (selectedYear) => {
       driverResponse.json()
     ]);
 
-    const constructorStandings = constructorData.MRData.StandingsTable.StandingsLists[0].ConstructorStandings.map(standing => ({
+    const constructorStandings = constructorData['latest'].map(standing => ({
       constructorName: standing.Constructor.name,
       constructorId: standing.Constructor.constructorId,
       points: standing.points,
       driverCodes: []
     }));
 
-    const driverStandings = driverData.MRData.StandingsTable.StandingsLists[0].DriverStandings;
+    const driverStandings = driverData['latest'];
 
     driverStandings.forEach(standing => {
       standing.Constructors.forEach(constructor => {
@@ -264,12 +273,12 @@ export const getConstructorStandings = async (selectedYear) => {
   
 
 export const getDriverStandings = async (selectedYear) => {
-  const url = `https://ergast.com/api/f1/${selectedYear}/driverStandings.json`;
+  const url = `https://praneeth7781.github.io/f1nsight-api-2/races/${selectedYear}/driverStandings.json`;
   try {
     const response = await fetch(url);
     if (response.ok) {
       const data = await response.json();
-      const standings = data.MRData.StandingsTable.StandingsLists[0].DriverStandings;
+      const standings = data['latest'];
       return standings.map(standing => ({
         driverCode: standing.Driver.code,
         firstName: standing.Driver.givenName,
@@ -327,15 +336,31 @@ export const fetchDriversAndTires = async (sessionKey) => {
 
 export const fetchRaceResultsByCircuit = async (year, circuitId) => {
   try {
-    const url = `https://ergast.com/api/f1/${year}/circuits/${circuitId}/results.json`;
+    // const url = `https://praneeth7781.github.io/f1nsight-api-2/races/${year}/raceDetails.json`;
+    // const response  = await fetch(url);
+    // const raceDetails = await response.json();
+    // const raceRound = raceDetails.find(element=>element.Circuit.circuitId === circuitId).round;
+    const url = `https://praneeth7781.github.io/f1nsight-api-2/races/${year}/results.json`;
     const response = await fetch(url);
     const data = await response.json();
-    const results = data.MRData.RaceTable.Races[0]?.Results;
+    // console.log(data);
+    const results = data.find(element => element.Circuit.circuitId === circuitId).Results;
     return results || [];
   } catch (error) {
     console.error("Error fetching race results:", error);
-    return [];
+    return []
   }
+  // try {
+  //   const url = `https://ergast.com/api/f1/${year}/circuits/${circuitId}/results.json`;
+  //   const response = await fetch(url);
+  //   const data = await response.json();
+  //   const results = data.MRData.RaceTable.Races[0]?.Results;
+  //   console.log(results);
+  //   return results || [];
+  // } catch (error) {
+  //   console.error("Error fetching race results:", error);
+  //   return [];
+  // }
 };
 
 export const fetchDriverInfo = async (year) => {
@@ -398,15 +423,25 @@ export const fetchF1aRaceResultsByCircuit = async (year, circuitId, top3 = false
 
 export const fetchQualifyingResultsByCircuit = async(year, circuitId) => {
   try {
-    const url = `https://ergast.com/api/f1/${year}/circuits/${circuitId}/qualifying.json`;
+    const url = `https://praneeth7781.github.io/f1nsight-api-2/races/${year}/qualifying.json`;
     const response = await fetch(url);
     const data = await response.json();
-    const results = data.MRData.RaceTable.Races[0]?.QualifyingResults;
+    const results = data.find(element => element.Circuit.circuitId === circuitId).QualifyingResults;
     return results || [];
-  } catch (error) {
-    console.error("Error fetching race results:", error);
+  } catch(error){
+    console.error("Error fetching qualifiying results:", error);
     return [];
   }
+  // try {
+  //   const url = `https://ergast.com/api/f1/${year}/circuits/${circuitId}/qualifying.json`;
+  //   const response = await fetch(url);
+  //   const data = await response.json();
+  //   const results = data.MRData.RaceTable.Races[0]?.QualifyingResults;
+  //   return results || [];
+  // } catch (error) {
+  //   console.error("Error fetching race results:", error);
+  //   return [];
+  // }
 };
 
 function scaleCoordinates(x, y, scale_factor) {
