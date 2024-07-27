@@ -101,9 +101,9 @@ export const APXAR = () => {
 export default APXAR;
 
 APXAR.defaultProps = {
-  glbLink: 'APX/apx_livery_w_logo.glb',
-  img: 'APX/poster.webp',
-  buttonIcon: 'APX/3diconWhite.png',
+  glbLink: `${process.env.PUBLIC_URL + "/APX/apx_livery_w_logo.glb"}`,
+  img: `${process.env.PUBLIC_URL + "/APX/poster.webp"}`,
+  buttonIcon: `${process.env.PUBLIC_URL + "/APX/3diconWhite.png"}`,
   loading: 'auto',
   reveal: 'auto',
   autoRotate: true,

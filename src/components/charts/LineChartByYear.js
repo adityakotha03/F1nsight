@@ -64,7 +64,7 @@ export const LineChartByYear = ({ driver1Name, driver2Name, driver1Data, driver2
 
   return (
     <div className="bg-glow-large rounded-lg mb-96 p-8 md:px-32 md:pt-16 md:pb-32">
-      <div className="flex justify-center">
+      <div className="flex justify-center flex-wrap">
         {competingYears.map(year => (
           <button key={year} onClick={() => setSelectedYear(year)} className={classNames("py-4 px-8 rounded", year === selectedYear ? 'bg-glow-sm' : '')}>
             {year}

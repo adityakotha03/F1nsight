@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { fetchDriverStats, fetchDriversList } from '../utils/api';
-import { Loading, LineChartByYear, BarChartTotal } from "../components";
+import { Loading, LineChartByYear, BarChartTotal, Button } from "../components";
 import Select from 'react-select';
 import classNames from 'classnames';
 
@@ -132,20 +132,21 @@ export function DriverComparison(){
     };
 
     const DriverImage = (driverCode) => {
+        const randomNumber = Math.floor(Math.random() * 5) + 1;
+    
         const imageUrl = driverCode ? 
           `${process.env.PUBLIC_URL + "/images/2024/drivers/" + driverCode + ".png"}` 
-          : `${process.env.PUBLIC_URL + "/images/2024/drivers/default.png"}`;
+          : `${process.env.PUBLIC_URL + "/images/2024/drivers/default" + randomNumber + ".png"}`;
       
         const handleError = (event) => {
-          event.target.src = `${process.env.PUBLIC_URL + "/images/2024/drivers/default.png"}`;
+          event.target.src = `${process.env.PUBLIC_URL + "/images/2024/drivers/default" + randomNumber + ".png"}`;
         };
       
         return (
           <img 
             alt="Driver" 
+            className="w-[15rem] md:w-[22rem]"
             src={imageUrl}
-            width={150} 
-            height={150} 
             onError={handleError}
           />
         );
@@ -154,38 +155,62 @@ export function DriverComparison(){
     const splitName = (name) => {
         return name.split(' ');
     }
-    const statLine = (label, stat, rate) => (
+    const statLine = (label, stat, rate, last) => (
+        <>
         <div className={classNames(
-            "bg-glow-dark-shadow bg-gradient-to-r from-neutral-900 to-neutral-700 rounded-[1rem] -mx-8 py-8 px-12 mb-8",
-            "flex max-sm:flex-col-reverse max-sm:justify-center sm:justify-between items-center"
+            "",
         )}>
-            <div className="tracking-xs uppercase gradient-text-light sm:mr-32 text-sm">{label}</div>
-            <div className="gradient-text-white">
-                <span className="font-display max-sm:text-[3.2rem] sm:text-[2rem] leading-none">{stat}</span>
-                <span className="text-sm"> / {rate}</span></div>
+            <div className={classNames(
+                "gradient-text-white",
+                "flex flex-col md:flex-row items-center justify-center", 
+            )}>
+                <span className="tracking-xs uppercase gradient-text-light text-sm md:text-right md:w-96">{label}</span>
+                <span className="font-display text-[2rem] sm:text-[2rem] leading-none md:text-center md:w-64">{stat}</span>
+                <span className="text-sm md:w-32">{rate && rate}</span>
             </div>
+        </div>
+        {!last && <div class="divider-glow-dark mt-8" />}
+        </>
     );
 
     const driverCard = (firstName, LastName, driverData) => {
+
+        const mainData = (
+            <div className="flex flex-col justify-center py-16 w-full md:-ml-32">
+                {statLine('Wins', driverData.totalWins, `${parseFloat(driverData.winRate * 100).toFixed()}%`)}
+                {statLine('Podiums', driverData.totalPodiums, `${parseFloat(driverData.podiumRate * 100).toFixed()}%`)}
+                {statLine('Poles', driverData.totalPoles, `${parseFloat(driverData.poleRate * 100).toFixed()}%`)}
+                {statLine('DNFs', driverData.totalDNFs, `${parseFloat(driverData.dnfRate * 100).toFixed()}%`, true)}
+            </div>
+        )
+        const otherData = (
+            <div className="flex flex-col justify-center py-16 w-full">
+                {/* {statLine('Wins', driverData.totalWins, `${parseFloat(driverData.winRate * 100).toFixed()}%`)}
+                {statLine('Podiums', driverData.totalPodiums, `${parseFloat(driverData.podiumRate * 100).toFixed()}%`)}
+                {statLine('Poles', driverData.totalPoles, `${parseFloat(driverData.poleRate * 100).toFixed()}%`)}
+                {statLine('DNFs', driverData.totalDNFs, null, true)} */}
+            </div>
+        )
+
         return (
             <div> 
                 <div 
                     className={classNames(
-                        "flex flex-col items-center max-w-[30rem] bg-glow-dark px-16 rounded-[1.2rem] relative",
-                        "before:content-[''] before:absolute before:top-[0] before:left-[0] before:w-full before:h-full before:bg-gradient-to-t before:from-neutral-950 before:to-neutral-950/0 before:rounded-b-[1.2rem]"
+                        "flex flex-col items-center max-w-[16rem] md:max-w-[60rem] bg-glow-dark rounded-[2.4rem] relative",
+                        // "before:content-[''] before:absolute before:top-[0] before:left-[0] before:w-full before:h-full before:bg-gradient-to-t before:from-neutral-950 before:to-neutral-950/0 before:rounded-b-[1.2rem]"
                     )}
                 >
-                    <div className="-mt-32">{DriverImage(driverData.driverCode)}</div>
-                    <div className="flex items-center flex-col absolute bottom-[0]">
-                        <p className="gradient-text-light uppercase tracking-wide -mb-8">{firstName}</p>
-                        <h2 className="font-display text-[2rem] mb-6 gradient-text-white">{LastName}</h2>
+                    <div className="-mt-32 z-[1] md:flex md:items-end">
+                        {DriverImage(driverData.driverCode)}
+                        <div className="max-md:hidden">{mainData}</div>
                     </div>
-                </div>
-                <div className="bg-glow-dark rounded-b-[1.2rem] mx-8 py-16">
-                    {statLine('Wins', driverData.totalWins, `${parseFloat(driverData.winRate * 100).toFixed()}%`)}
-                    {statLine('Podiums', driverData.totalPodiums, `${parseFloat(driverData.podiumRate * 100).toFixed()}%`)}
-                    {statLine('Poles', driverData.totalPoles, `${parseFloat(driverData.poleRate * 100).toFixed()}%`)}
-                    {statLine('DNFs', driverData.totalDNFs, `${parseFloat(driverData.dnfRate * 100).toFixed()}%`)}
+                    <div className="constructor-stand bg-glow-md py-8 md:py-16 mt-4 w-[110%] text-center">
+                        <p className="gradient-text-light uppercase tracking-xs -mb-8">{firstName}</p>
+                        <h2 className="font-display md:text-[3.2rem] gradient-text-white">{LastName}</h2>
+                    </div>
+                    <div className="md:hidden w-full">{mainData}</div>
+                    <div class="divider-glow-dark -mt-4 -mb-12 md:hidden " />
+                    {otherData}
                 </div>
             </div>
         )
@@ -193,35 +218,35 @@ export function DriverComparison(){
 
 
     return(
-        <div className='global-container'>
+        <div className='global-container px-8'>
             <h2 className='heading-2 text-center mb-40 text-neutral-400'>Drivers Comparison</h2>
             {isLoading ? (
                 <Loading className="mt-[20rem] mb-[20rem]" message={`Comparing ${driversList.find(q=> q.id === driver1).name} and ${driversList.find(q=> q.id === driver2).name}`} />
             ) : (
                 <div>
-                    <div className="flex max-md:flex-col items-center gap-16">
+                    <div className="flex max-md:flex-col justify-center items-center gap-16 z-[2] relative">
                         <Select
                             placeholder="Select Driver 1"
                             options={driversList.map(driver => ({ value: driver.id, label: driver.name }))}
                             onChange={(selectedOption) => setInputDriver1(selectedOption)}
                             styles={customStyles}
-                            className="w-full"
+                            className="w-full md:w-[30rem]"
                         />
                         <Select
                             placeholder="Select Driver 2"
                             options={driversList.map(driver => ({ value: driver.id, label: driver.name }))}
                             onChange={(selectedOption) => setInputDriver2(selectedOption)}
                             styles={customStyles}
-                            className="w-full"
+                            className="w-full md:w-[30rem]"
                         />
                     </div>
 
-                    <button className="bg-plum-500 shadow-12-dark py-8 px-16 rounded mt-16 mb-32 mx-auto block" onClick={handleCompare} type='submit'>Compare</button>
+                    <Button className="mx-auto block mt-16" onClick={handleCompare} buttonStyle="solid" type='submit'>Compare</Button>
 
                     {driver1Data && driver2Data && (
                         <div>
 
-                            <div className='flex justify-center gap-16 mt-64 mb-64'>
+                            <div className='flex justify-center gap-24 md:gap-48 mt-64 mb-64'>
                                 {driverCard(
                                     splitName(driversList.find(q=> q.id === driver1).name)[0], 
                                     splitName(driversList.find(q=> q.id === driver1).name)[1], 
@@ -236,22 +261,26 @@ export function DriverComparison(){
 
                             {competingYears.length > 0 && (
                                 <>
-                                <div className="flex justify-center gap-32">
-                                    <button
-                                        className={`px-16 py-8 rounded ${displayCompetingYears ? 'bg-plum-500 shadow-12-dark' : 'bg-glow-dark bg-neutral-900'}`}
-                                        onClick={() => setDisplayCompetingYears(true)}
-                                    >
-                                        Show Competing Years
-                                    </button>
-                                    <button
-                                        className={`px-16 py-8 rounded ${!displayCompetingYears ? 'bg-plum-500 shadow-12-dark' : 'bg-glow-dark bg-neutral-900'}`}
-                                        onClick={() => setDisplayCompetingYears(false)}
-                                    >
-                                        Show All Years
-                                    </button>
-                                </div>
-                                 <div className="divider-glow-dark -mt-20 mb-64 max-md:w-[200%] max-md:ml-[-50%]" />
-                                 </>
+                                    <div className="flex justify-center gap-32">
+                                        <Button 
+                                            className={classNames({'active' : displayCompetingYears})} 
+                                            onClick={() => setDisplayCompetingYears(true)} 
+                                            buttonStyle="solid" 
+                                            active={displayCompetingYears}
+                                        >
+                                            Show Competing Years
+                                        </Button>
+                                        <Button 
+                                            className={classNames({'active' : displayCompetingYears})} 
+                                            onClick={() => setDisplayCompetingYears(false)} 
+                                            buttonStyle="solid" 
+                                            active={!displayCompetingYears}
+                                        >
+                                            Show All Years
+                                        </Button>
+                                    </div>
+                                    <div className="divider-glow-dark -mt-[3rem] mb-64 max-md:w-[200%] max-md:ml-[-50%]" />
+                                </>
                             )}
                             
                             <div className="comparison-container mb-96">

@@ -4,7 +4,7 @@ import axios from 'axios';
 import { useLocation, useParams, useNavigate } from 'react-router-dom';
 
 import { fetchDriverStats } from '../utils/api';
-import { HeadToHeadChart, PositionsGainedLostChart, QualifyingLapTimesChart, PositionsComparisonChart, Select, Loading } from '../components';
+import { HeadToHeadChart, PositionsGainedLostChart, QualifyingLapTimesChart, QualifyingLapTimesDeltaChart, PositionsComparisonChart, Select, Loading, Button } from '../components';
 
 
 export const TeammatesComparison = () => {
@@ -28,6 +28,15 @@ export const TeammatesComparison = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [teamColor, setTeamColor] = useState('5F0B84');
   const [renderHead, setRenderHead] = useState(true);
+  const [showTimes, setShowTimes] = useState(true);
+
+  const handleShowTimes = () => {
+    setShowTimes(true);
+  };
+
+  const handleShowDifference = () => {
+    setShowTimes(false);
+  };
 
   useEffect(() => {
     const validYear = urlYear && parseInt(urlYear) <= currentYear ? urlYear : '';
@@ -87,7 +96,6 @@ export const TeammatesComparison = () => {
     try {
       const response = await axios.get(`https://praneeth7781.github.io/f1nsight-api-2/constructors/${year}/${selectedTeam}.json`);
       const fetchedDrivers = response.data;
-      console.log(response.data);
       setDrivers(fetchedDrivers);
 
       const colorsResponse = await axios.get('https://praneeth7781.github.io/f1nsight-api-2/colors/teams.json');
@@ -300,11 +308,11 @@ export const TeammatesComparison = () => {
   };
 
   const memoizedHeadToHeadData = useMemo(() => headToHeadData, [headToHeadData]);
-  // console.log(memoizedHeadToHeadData);
 
 
 const driverLockup = (driverId, driverName) => {
   const driverSplitName = driverName.split(" ");
+  const randomNumber = Math.ceil(Math.random() * 5);
   return (
     <div 
       className="flex justify-center relative text-center group rounded-lg px-16"
@@ -314,7 +322,7 @@ const driverLockup = (driverId, driverName) => {
         alt="NotAvailable" 
         src={year >= 2023 ? 
           `${process.env.PUBLIC_URL + "/images/2024/drivers/" + driverId +  ".png"}` 
-          : `${process.env.PUBLIC_URL + "/images/2024/drivers/default.png"}`}
+          : `${process.env.PUBLIC_URL + "/images/2024/drivers/default" + randomNumber + ".png"}`}
         width={150} 
         height={150} 
         className={classNames("-mt-32", {"group-[:first-of-type]:scale-x-[-1]" : year <= 2023 })}
@@ -459,10 +467,35 @@ const GridRow = (label, driver1, driver2, title) => {
                 
                 <h3 className="heading-4 mb-16 text-neutral-400 ml-24">Qualifying Lap Time Differences</h3>
                 <div className="bg-glow-large rounded-lg mb-64 p-8 md:px-32 md:pt-16 md:pb-32">
-                  <QualifyingLapTimesChart 
-                    headToHeadData={memoizedHeadToHeadData}
-                    teamColor={teamColor}
-                  />
+                  <div className="flex gap-8">
+                    <Button 
+                        onClick={handleShowTimes}
+                        buttonStyle="hollow" 
+                        active={showTimes}
+                        size='sm'
+                    >
+                        Show Times
+                    </Button>
+                    <Button 
+                        onClick={handleShowDifference}
+                        buttonStyle="hollow" 
+                        active={!showTimes}
+                        size='sm'
+                    >
+                        Show Deltas
+                    </Button>
+                  </div>
+                  {showTimes ? (
+                    <QualifyingLapTimesChart 
+                      headToHeadData={memoizedHeadToHeadData}
+                      teamColor={teamColor}
+                    />
+                  ) : (
+                    <QualifyingLapTimesDeltaChart
+                      headToHeadData={memoizedHeadToHeadData}
+                      teamColor={teamColor}
+                    />
+                  )}
                 </div>
               </div>
 
