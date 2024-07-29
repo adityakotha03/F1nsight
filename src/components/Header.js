@@ -118,8 +118,10 @@ export const Header = ({ setResultPage, setResultPagePath }) => {
         <header className="global-header" ref={headerRef}>
             <div className="global-header__main-nav shadow-lg bg-glow bg-neutral-800/90 backdrop-blur-sm uppercase tracking-xs text-sm " >
 
-                <div className="global-header__main-nav__left">
+                <div className="global-header__main-nav__left flex items-center gap-32">
                     <a href="/"><Logo height={48} /></a>
+                    <NavLink to="/race-results" className="global-header__main-nav__link"><span>F1<sup>®</sup></span></NavLink>
+                    <NavLink to="/f1a/race-results" className="global-header__main-nav__link"><span>F1<sup>®</sup> Academy</span></NavLink>
                 </div>
 
                 {/* Mobile */}

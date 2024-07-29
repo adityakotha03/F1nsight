@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { fetchF1aRaceResultsByCircuit } from '../utils/api';
 import classNames from 'classnames';
 
-import { RaceResultItem, Loading } from '../components';
-import { useNavigate } from 'react-router-dom';
+import { RaceResultItem, Loading, Select } from '../components';
+import { NavLink, useNavigate } from 'react-router-dom';
 
 const fetchCircuitData = async () => {
   try {
@@ -17,7 +17,7 @@ const fetchCircuitData = async () => {
   }
 };
 
-const Top3Drivers = ({ year, circuitId }) => {
+const Top3Drivers = ({ year, circuitId, index }) => {
   const [raceName, setRaceName] = useState('');
   const [top3RaceResults, setTop3RaceResults] = useState([]);
   const [top3RaceResults2, setTop3RaceResults2] = useState([]);
@@ -35,50 +35,71 @@ const Top3Drivers = ({ year, circuitId }) => {
     fetchData();
   }, [year, circuitId]);
 
+  console.log('top3RaceResults', top3RaceResults);
+  console.log('top3RaceResults2', top3RaceResults2);
+
   return (
-    <div>
-      <h1>Top 3 Drivers for {raceName}</h1>
-      <h2>Race 1 Results</h2>
-      <ul className="race-results__list -mt-48">
-        {top3RaceResults.map((result, index) => (
-          <RaceResultItem 
-            className={`race-results__list__item-${index + 1}`}
-            carNumber={result.number}
-            driver={result.Driver}
-            fastestLap={result.fastestLap}
-            startPosition={parseInt(result.grid, 10)}
-            key={index}
-            index={index}
-            endPosition={parseInt(result.position, 10)}
-            status={result.status}
-            time={result.time}
-            year={year}
-            wireframe={result.length === 0}
-            f1a={true}
-          />
-        ))}
-      </ul>
-      <h2>Race 2 Results</h2>
-      <ul className="race-results__list -mt-48">
-        {top3RaceResults2.map((result, index) => (
-          <RaceResultItem 
-            className={`race-results__list__item-${index + 1}`}
-            carNumber={result.number}
-            driver={result.Driver}
-            fastestLap={result.fastestLap}
-            startPosition={parseInt(result.grid, 10)}
-            key={index}
-            index={index}
-            endPosition={parseInt(result.position, 10)}
-            status={result.status}
-            time={result.time}
-            year={year}
-            wireframe={result.length === 0}
-            f1a={true}
-        />
-        ))}
-      </ul>
-    </div>
+    <NavLink to={`/race-f1a/2024${index}`} className="bg-glow-dark rounded-[2.4rem] p-32 block mt-32 clickable-hover w-fit m-auto">
+      <h3 className='font-display tracking-xs leading-none text-center font-bold mb-32'>{raceName}</h3>
+      <div className="flex flex-col md:flex-row items-center md:justify-center gap-16">
+        <div>
+          <p className="uppercase text-sm text-center text-neutral-400 tracking-sm leading-none mb-24">Race 1 Results</p>
+          {top3RaceResults && top3RaceResults.length > 0 ? (
+            <ul className="bg-glow-dark rounded-[2.4rem] race-results__list">
+              {top3RaceResults.map((result, index) => (
+                <RaceResultItem 
+                  className={`race-results__list__item-${index + 1}`}
+                  carNumber={result.number}
+                  driver={result.Driver}
+                  fastestLap={result.fastestLap}
+                  startPosition={parseInt(result.grid, 10)}
+                  key={index}
+                  index={index}
+                  endPosition={parseInt(result.position, 10)}
+                  status={result.status}
+                  time={result.Time.time}
+                  year={year}
+                  wireframe={result.length === 0}
+                  f1a={true}
+                />
+              ))}
+            </ul>
+          ) : (
+            <div className="flex justify-center">
+              <img alt="" src={`${process.env.PUBLIC_URL + "/images/podium.png"}`} width={324} />
+            </div>
+          )}
+        </div>
+        <div>
+          <p className="uppercase text-sm text-center text-neutral-400 tracking-sm leading-none mb-24">Race 2 Results</p>
+          {top3RaceResults && top3RaceResults.length > 0 ? (
+            <ul className="bg-glow-dark rounded-[2.4rem] race-results__list">
+              {top3RaceResults2.map((result, index) => (
+                <RaceResultItem 
+                  className={`race-results__list__item-${index + 1}`}
+                  carNumber={result.number}
+                  driver={result.Driver}
+                  fastestLap={result.fastestLap}
+                  startPosition={parseInt(result.grid, 10)}
+                  key={index}
+                  index={index}
+                  endPosition={parseInt(result.position, 10)}
+                  status={result.status}
+                  time={result.Time.time}
+                  year={year}
+                  wireframe={result.length === 0}
+                  f1a={true}
+              />
+              ))}
+            </ul>
+          ) : (
+            <div className="flex justify-center">
+              <img alt="" src={`${process.env.PUBLIC_URL + "/images/podium.png"}`} width={324} />
+            </div>
+          )}
+        </div>
+      </div>
+    </NavLink>
   );
 };
 
@@ -108,17 +129,16 @@ export function RaceResultsPageF1a({ selectedYear }) {
   
   return (
     <div className="race-results max-w-[120rem] m-auto mt-[12rem]">
-      <label htmlFor="year">Select Year:</label>
-      <select id="year" value={year} onChange={handleYearChange}>
+      <Select className="m-auto w-fit" label="Year" value={year} onChange={handleYearChange}>
         <option value={2023}>2023</option>
         <option value={2024}>2024</option>
-      </select>
+      </Select>
 
       {isLoading ? (
         <Loading className="mt-[20rem] mb-[20rem]" message={`Loading ${selectedYear} Race Results`} />
       ) : (
-        filteredCircuits.map(circuit => (
-          <Top3Drivers key={circuit.circuitId} year={year} circuitId={circuit.circuitId} />
+        filteredCircuits.map((circuit, index) => (
+          <Top3Drivers key={circuit.circuitId} year={year} index={index+1} circuitId={circuit.circuitId} />
         ))
       )}
     </div>

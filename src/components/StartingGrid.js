@@ -86,7 +86,7 @@ export const StartingGrid = (props) => {
                                             "group-odd:items-end group-even:items-start"
                                         )}
                                     >
-                                        <p className="text-neutral-600">
+                                        <p className="text-neutral-500">
                                             P{gridPosition.position}
                                         </p>
                                         <p
@@ -129,7 +129,7 @@ export const StartingGridF1A = (props) => {
         // Initialize an array to store driver codes
         const driverCodes = [];
         // Iterate over sorted results and extract driver code
-        for (let i = 0; i < 16; i++) {
+        for (let i = 0; i < sortedResults.length; i++) {
             if (sortedResults[i]) { // Check if result exists for this grid position
                 driverCodes.push(sortedResults[i].Driver.code);
             } else {
@@ -151,7 +151,7 @@ export const StartingGridF1A = (props) => {
                       <li className="text-center w-fit even:-mt-[8rem] even:ml-[6rem] even:mb-8 relative group">
                           <div
                               className={classNames(
-                                  "border-x-2 border-t-2 border-solid w-48 font-display h-32 ml-4"
+                                  "border-x-2 border-t-2 border-solid border-neutral-700 w-48 font-display h-32 ml-4"
                               )}
                           />
 
@@ -160,7 +160,7 @@ export const StartingGridF1A = (props) => {
                               className="-mt-32 drop-shadow-[0_0_14px_rgba(0,0,0,0.75)]"
                               src={driverCode === 'JUF' ? 
                                 `${ process.env.PUBLIC_URL + "/images/2024/F1A/carTopView/F1N-top.png"}` :
-                                `${ process.env.PUBLIC_URL + `/images/2024/F1A/carTopView/${driverCode}-top.png`}` 
+                                `${ process.env.PUBLIC_URL + "/images/2024/F1A/carTopView/" + driverCode + "-top.png"}` 
                               }
                               width={56}
                           />
@@ -174,7 +174,7 @@ export const StartingGridF1A = (props) => {
                                   "group-odd:items-end group-even:items-start"
                               )}
                           >
-                              <p className="text-neutral-600">P{index+1}</p>
+                              <p className="text-neutral-500">P{index+1}</p>
                               <p>
                                   {driverCode}
                               </p>
