@@ -297,7 +297,7 @@ export const getPartialConstructorStandings = async (selectedYear, start, end) =
       standing.driverCodes = [...new Set(standing.driverCodes)].sort();
     });
 
-    return constructorStandings;
+    return constructorStandings.sort((a,b) => parseInt(b.points)-parseInt(a.points));
   } catch (error) {
     console.error('Error fetching constructor standings:', error);
     return [];
