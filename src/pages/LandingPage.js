@@ -81,9 +81,9 @@ export function LandingPage() {
       {/* Comparisons */}
       <div className="landing-section">
         <div className="landing-section__content md:mt-24">
-          <div className="landing-section__content__media shrink-0 md:flex md:items-center gap-4 max-md:-mt-64" >
-            <img className="rounded-lg shadow-12-dark w-full" alt="" src={`${process.env.PUBLIC_URL + "/images/teamComparison.jpg"}`} /> 
-            <img className="rounded-lg shadow-12-dark w-full max-md:hidden" alt="" src={`${process.env.PUBLIC_URL + "/images/driverComparison.jpg"}`} /> 
+          <div className="landing-section__content__media max-md:-mt-64 md:flex md:gap-8" >
+            <img className="rounded-lg shadow-12-dark max-md:w-full md:w-1/2" alt="" src={`${process.env.PUBLIC_URL + "/images/teamComparison.png"}`} /> 
+            <img className="rounded-lg shadow-12-dark max-md:hidden md:w-1/2" alt="" src={`${process.env.PUBLIC_URL + "/images/driverComparison.png"}`} /> 
           </div>
           <div className="">
             <p className="heading-3 mb-24">Driver & team comparisons</p>

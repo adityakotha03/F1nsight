@@ -12,7 +12,7 @@ export const Button = ({ className, to, href, onClick, children, buttonStyle, si
     const buttonBaseStyle = classNames(className, sizeStyle, "relative flex items-center justify-center px-24 py-16 overflow-hidden font-bold rounded shadow-2xl group")
     const solidButtonStyle = classNames(buttonBaseStyle, "bg-plum-500");
     const hollowButtonStyle = classNames(buttonBaseStyle, " bg-glow");
-    const activeButtonStyle = classNames(buttonBaseStyle, active ? buttonStyle === 'hollow' ? hollowButtonStyle : solidButtonStyle : 'bg-glow-dark bg-neutral-900');
+    const activeButtonStyle = classNames(buttonBaseStyle, active ? buttonStyle === 'hollow' ? hollowButtonStyle : solidButtonStyle : 'bg-neutral-800 shadow-md');
     const buttonHoverStyle = (<span className={classNames("absolute inset-0 w-full h-full transition duration-300 ease-out opacity-0 bg-gradient-to-br from-plum-500  to-plum-300 group-hover:opacity-100")} />);
 
     const finalStyle =  isActiveEffective ? activeButtonStyle : buttonStyle === 'hollow' ? hollowButtonStyle : solidButtonStyle;
