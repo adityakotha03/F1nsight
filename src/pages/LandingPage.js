@@ -25,13 +25,13 @@ export function LandingPage() {
 
       {/* beyond the track */}
       <div className="landing-section-features pb-56 flex flex-col relative">
-        <div className="landing-section__content mb-96">
+        <div className="landing-section__content mb-[10.4rem]">
           <div className="landing-section-features__media">
             <img alt="" src={`${process.env.PUBLIC_URL + "/images/lapData.png"}`} />
             <img alt="" src={`${process.env.PUBLIC_URL + "/images/tireStrat.png"}`} />
           </div>
 
-          <div className="relative z-10">
+          <div className="relative z-10 md:mb-96">
             <p className="uppercase text-neutral-400 tracking-sm md:mt-24">beyond the track</p>
             <p className="heading-3 mb-24">Data, Insights, Action</p>
 
@@ -60,7 +60,7 @@ export function LandingPage() {
       </div>
 
       {/* Interactive Telemetry Viewer */}
-      <div className="landing-section -mt-[12rem] max-md:pt-[12rem] md:pt-[15rem]">
+      <div className="landing-section -mt-[12rem] max-md:pt-[12rem] md:pt-[18rem]">
         <div className="landing-section__content landing-section__content--reverse">
           <div className="">
             <p className="uppercase text-neutral-400 tracking-sm">State-of-the-art</p>
@@ -79,18 +79,18 @@ export function LandingPage() {
       </div>
      
       {/* Comparisons */}
-      <div className="landing-section">
+      <div className="landing-section py-64">
         <div className="landing-section__content md:mt-24">
-          <div className="landing-section__content__media shrink-0 md:flex md:items-center gap-4 max-md:-mt-64" >
-            <img className="rounded-lg shadow-12-dark w-full" alt="" src={`${process.env.PUBLIC_URL + "/images/teamComparison.jpg"}`} /> 
-            <img className="rounded-lg shadow-12-dark w-full max-md:hidden" alt="" src={`${process.env.PUBLIC_URL + "/images/driverComparison.jpg"}`} /> 
+          <div className="landing-section__content__media  max-md:-mt-64 md:flex md:gap-4 md:mr-4" >
+            <img className="rounded-lg shadow-12-dark max-lg:w-full lg:w-1/2 lg:h-fit" alt="" src={`${process.env.PUBLIC_URL + "/images/teamComparison.png"}`} /> 
+            <img className="rounded-lg shadow-12-dark max-lg:hidden lg:w-1/2 lg:h-fit" alt="" src={`${process.env.PUBLIC_URL + "/images/driverComparison.png"}`} /> 
           </div>
-          <div className="">
+          <div className="md:min-w-[50%]">
             <p className="heading-3 mb-24">Driver & team comparisons</p>
             <p className="mb-24">Compare drivers and teams from any generation based on performance metrics and statistics.</p>
-            <div className="flex max-sm:flex-col max-sm:w-full md:flex-row items-center gap-16">
-              <Button to="/driver-comparison" buttonStyle="solid">Driver Comparison</Button>
-              <Button to="/teammates-comparison" buttonStyle="solid">Team Comparison</Button>
+            <div className="flex max-lg:flex-col max-lg:w-full lg:flex-row items-center gap-16">
+              <Button to="/driver-comparison" buttonStyle="solid" className="w-full">Driver Comparison</Button>
+              <Button to="/teammates-comparison" buttonStyle="solid" className="w-full">Team Comparison</Button>
             </div>
           </div>
         </div>

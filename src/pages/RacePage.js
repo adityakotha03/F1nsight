@@ -2,12 +2,14 @@ import classNames from "classnames";
 import React, { useState, useEffect, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useLocation, useParams } from "react-router-dom";
+
 import {
     fetchDriversAndTires,
     fetchRaceResultsByCircuit,
     fetchQualifyingResultsByCircuit,
     fetchLocationData,
 } from "../utils/api.js";
+import { organizeQualifyingResults } from "../utils/organizeQualifyingResults.js";
 
 import {
     DriverCard,
@@ -408,7 +410,40 @@ export function RacePage() {
         }
     };
 
+    const DriverList = ({ results, activeButtonIndex, handleDriverSelectionClick, drivers, driversColor, year, session }) => {
+        return (
+          <ul className="w-fit mx-auto">
+            {results.map((result, index) => (
+                <DriverCard
+                  hasHover={false}
+                  isActive={activeButtonIndex === index}
+                  index={index}
+                  driver={result.Driver}
+                  stint={drivers}
+                  driverColor={driversColor[result.Driver.code]} // Use driver code here
+                  startPosition={parseInt(result.grid, 10)}
+                  endPosition={parseInt(result.position, 10)}
+                  year={parseInt(year)}
+                  time={result[session]}
+                  fastestLap={result.FastestLap}
+                  layoutSmall={index > 2}
+                  mobileSmall
+                  isRace={false}
+                />
+            ))}
+          </ul>
+        );
+    };
+
     // console.log(location, MapPath);
+    console.log({raceResults});
+    console.log({startingGrid});
+
+    const { q1Results, q2Results, q3Results } = organizeQualifyingResults(raceResults);
+
+    console.log('Q1 Results:', q1Results);
+    console.log('Q2 Results:', q2Results);
+    console.log('Q3 Results:', q3Results);
 
     return isLoading ? (
         <Loading
@@ -435,6 +470,47 @@ export function RacePage() {
                     )}
                 </Select>
             </div>
+
+            {selectedSession !== "Race" && (
+                <div className="flex items-start justify-center gap-8 sm:gap-32 mx-8 mb-32">
+                    <div className="p-16 bg-glow-dark rounded-md max-md:w-full">
+                        <h3 className="heading-3 mb-32 gradient-text-light">Q1</h3>
+                        <DriverList 
+                            results={q1Results} 
+                            activeButtonIndex={activeButtonIndex} 
+                            handleDriverSelectionClick={handleDriverSelectionClick} 
+                            drivers={drivers} 
+                            driversColor={driversColor} 
+                            year={year} 
+                            session="Q1"
+                        />
+                    </div>
+                    <div className="p-16 bg-glow-dark rounded-md max-md:w-full">
+                        <h3 className="heading-3 mb-32 gradient-text-light">Q2</h3>
+                        <DriverList 
+                            results={q2Results} 
+                            activeButtonIndex={activeButtonIndex} 
+                            handleDriverSelectionClick={handleDriverSelectionClick} 
+                            drivers={drivers} 
+                            driversColor={driversColor} 
+                            year={year} 
+                            session="Q2"
+                        />
+                    </div>
+                    <div className="p-16 bg-glow-dark rounded-md max-md:w-full">
+                        <h3 className="heading-3 mb-32 gradient-text-light">Q3</h3>
+                        <DriverList 
+                            results={q3Results} 
+                            activeButtonIndex={activeButtonIndex} 
+                            handleDriverSelectionClick={handleDriverSelectionClick} 
+                            drivers={drivers} 
+                            driversColor={driversColor} 
+                            year={year} 
+                            session="Q3"
+                        />
+                    </div>
+                </div>
+            )}
 
             {selectedSession === "Race" && (
                 <>
@@ -476,6 +552,7 @@ export function RacePage() {
                                         fastestLap={result.FastestLap}
                                         layoutSmall={index > 2}
                                         mobileSmall
+                                        isRace={true}
                                     />
                                 </button>
                             ))}

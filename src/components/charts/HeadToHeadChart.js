@@ -21,7 +21,7 @@ export const HeadToHeadChart = ({ headToHeadData, color }) => {
     return (
       <>
         <h6 className="text-center mb-8">{stat}</h6>
-        <div className="flex items-center mb-24">
+        <div className="flex items-center mb-16">
           <div className="flex items-center gap-8 w-1/2">
             <div className="font-display gradient-text-light">{d1Data}</div>
             <div className="grow bg-glow-sm rounded-l-[.8rem] h-32 flex justify-end overflow-hidden">
