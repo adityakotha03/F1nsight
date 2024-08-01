@@ -23,10 +23,20 @@ export function DriverComparison(){
     const [displayCompetingYears, setDisplayCompetingYears] = useState(false);
     let navigate = useNavigate();
 
+    function compare( a, b ) {
+    if ( a.name < b.name ){
+        return -1;
+    }
+    if ( a.name > b.name ){
+        return 1;
+    }
+        return 0;
+    }
+
     useEffect(() => {
         const loadDrivers = async () => {
             const drivers = await fetchDriversList();
-            setDriversList(drivers);
+            setDriversList(drivers.sort(compare));
             if(urlDriver1){
                 setURLDriverName1(drivers.find(driver => driver.id === urlDriver1).name);
                 setInputDriver1({value : urlDriver1, label : urlDriverName1});
@@ -245,7 +255,7 @@ export function DriverComparison(){
                     <div className="flex max-md:flex-col justify-center items-center gap-16 z-[2] relative">
                         <Select
                             placeholder={urlDriverName1 ? urlDriverName1 : (driver1 ? driversList.find(driver => driver.id === driver1).name : "Select Driver 1")}
-                            options={driversList.map(driver => ({ value: driver.id, label: driver.name }))}
+                            options={driversList.sort((a,b) => a.name-b.name).map(driver => ({ value: driver.id, label: driver.name }))}
                             onChange={(selectedOption) => setInputDriver1(selectedOption)}
                             styles={customStyles}
                             className="w-full md:w-[30rem]"
