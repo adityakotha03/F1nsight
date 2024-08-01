@@ -30,6 +30,8 @@ export const TeammatesComparison = () => {
   const [renderHead, setRenderHead] = useState(true);
   const [showTimes, setShowTimes] = useState(true);
 
+  console.log(headToHeadData);
+
   const handleShowTimes = () => {
     setShowTimes(true);
   };
@@ -443,7 +445,7 @@ const GridRow = (label, driver1, driver2, title) => {
           </p>
           <HeadToHeadChart headToHeadData={memoizedHeadToHeadData} color={`#${teamColor}`} />
 
-          <h3 className="heading-4 mb-16 text-neutral-400 ml-24">Driver Statistics Comparison</h3>
+          <h3 className="heading-4 mb-16 text-neutral-400 ml-24 text-center">Driver Statistics Comparison</h3>
           <div className="bg-glow-large rounded-lg mb-64 p-8 md:px-32 md:pt-16 md:pb-32"> 
             {GridRow( " ", memoizedHeadToHeadData.driver1, memoizedHeadToHeadData.driver2, true)}
             {GridRow( "Average Race Position", memoizedHeadToHeadData.driver1AvgRacePosition, memoizedHeadToHeadData.driver2AvgRacePosition)}
@@ -457,7 +459,7 @@ const GridRow = (label, driver1, driver2, title) => {
           {(!ambQ && !ambR) && (<div>
             <div>
               <div>
-                <h3 className="heading-4 mb-16 text-neutral-400 ml-24">Positions Gained or Lost During Race</h3>
+                <h3 className="heading-4 mb-16 text-neutral-400 ml-24 text-center">Positions Gained or Lost During Race</h3>
                 <div className="bg-glow-large rounded-lg mb-64 p-8 md:px-32 md:pt-16 md:pb-32">
                   <PositionsGainedLostChart 
                     headToHeadData={memoizedHeadToHeadData}
@@ -465,7 +467,7 @@ const GridRow = (label, driver1, driver2, title) => {
                   />
                 </div>
                 
-                <h3 className="heading-4 mb-16 text-neutral-400 ml-24">Qualifying Lap Time Differences</h3>
+                <h3 className="heading-4 mb-16 text-neutral-400 ml-24 text-center">Qualifying Lap Time Differences</h3>
                 <div className="bg-glow-large rounded-lg mb-64 p-8 md:px-32 md:pt-16 md:pb-32">
                   <div className="flex gap-8">
                     <Button 
@@ -499,7 +501,7 @@ const GridRow = (label, driver1, driver2, title) => {
                 </div>
               </div>
 
-              <h3 className="heading-4 mb-16 text-neutral-400 ml-24">Qualifying Positions Comparison</h3>
+              <h3 className="heading-4 mb-16 text-neutral-400 ml-24 text-center">Qualifying Positions Comparison</h3>
               <div className="bg-glow-large rounded-lg mb-64 p-8 md:px-32 md:pt-16 md:pb-32">
                 <PositionsComparisonChart
                   headToHeadData={memoizedHeadToHeadData}
@@ -508,7 +510,7 @@ const GridRow = (label, driver1, driver2, title) => {
                 />
               </div>
 
-              <h3 className="heading-4 mb-16 text-neutral-400 ml-24">Race Positions Comparison</h3>
+              <h3 className="heading-4 mb-16 text-neutral-400 ml-24 text-center">Race Positions Comparison</h3>
               <div className="bg-glow-large rounded-lg mb-96 p-8 md:px-32 md:pt-16 md:pb-32">
                 <PositionsComparisonChart
                   headToHeadData={memoizedHeadToHeadData}
