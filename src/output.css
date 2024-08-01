@@ -1206,6 +1206,10 @@ input[type="range"]::-ms-fill-lower {
   top: 100%;
 }
 
+.start-1 {
+  inset-inline-start: 0.1rem;
+}
+
 .-z-10 {
   z-index: -10;
 }
@@ -1304,6 +1308,11 @@ input[type="range"]::-ms-fill-lower {
 .my-6 {
   margin-top: .6rem;
   margin-bottom: .6rem;
+}
+
+.my-64 {
+  margin-top: 6.4rem;
+  margin-bottom: 6.4rem;
 }
 
 .-mb-10 {
@@ -1584,6 +1593,18 @@ input[type="range"]::-ms-fill-lower {
 
 .mt-\[9rem\] {
   margin-top: 9rem;
+}
+
+.-ml-8 {
+  margin-left: -.8rem;
+}
+
+.mb-\[10\.4rem\] {
+  margin-bottom: 10.4rem;
+}
+
+.\!mb-32 {
+  margin-bottom: 3.2rem !important;
 }
 
 .block {
@@ -2318,6 +2339,10 @@ input[type="range"]::-ms-fill-lower {
   border-radius: 3.2rem;
 }
 
+.\!rounded-md {
+  border-radius: 1.2rem !important;
+}
+
 .rounded-b {
   border-bottom-right-radius: .8rem;
   border-bottom-left-radius: .8rem;
@@ -2396,6 +2421,15 @@ input[type="range"]::-ms-fill-lower {
 .rounded-t-lg {
   border-top-left-radius: 1.6rem;
   border-top-right-radius: 1.6rem;
+}
+
+.rounded-l-\[\.4rem\] {
+  border-top-left-radius: .4rem;
+  border-bottom-left-radius: .4rem;
+}
+
+.rounded-tl-\[\.4rem\] {
+  border-top-left-radius: .4rem;
 }
 
 .border {
@@ -3429,6 +3463,11 @@ input[type="range"]::-ms-fill-lower {
 .py-8 {
   padding-top: .8rem;
   padding-bottom: .8rem;
+}
+
+.py-64 {
+  padding-top: 6.4rem;
+  padding-bottom: 6.4rem;
 }
 
 .pb-16 {
@@ -6633,6 +6672,18 @@ button:hover {
 }
 
 @media not all and (min-width: 1024px) {
+  .max-lg\:hidden {
+    display: none;
+  }
+
+  .max-lg\:w-full {
+    width: 100%;
+  }
+
+  .max-lg\:flex-col {
+    flex-direction: column;
+  }
+
   .max-lg\:px-16 {
     padding-left: 1.6rem;
     padding-right: 1.6rem;
@@ -6820,6 +6871,10 @@ button:hover {
     justify-content: space-between;
   }
 
+  .sm\:gap-32 {
+    gap: 3.2rem;
+  }
+
   .sm\:p-32 {
     padding: 3.2rem;
   }
@@ -6881,6 +6936,10 @@ button:hover {
     margin-top: 2.4rem;
   }
 
+  .md\:mr-4 {
+    margin-right: .4rem;
+  }
+
   .md\:block {
     display: block;
   }
@@ -6903,6 +6962,12 @@ button:hover {
 
   .md\:h-full {
     height: 100%;
+  }
+
+  .md\:h-fit {
+    height: -webkit-fit-content;
+    height: -moz-fit-content;
+    height: fit-content;
   }
 
   .md\:w-1\/2 {
@@ -6939,6 +7004,10 @@ button:hover {
 
   .md\:w-auto {
     width: auto;
+  }
+
+  .md\:min-w-\[50\%\] {
+    min-width: 50%;
   }
 
   .md\:max-w-\[60rem\] {
@@ -6987,6 +7056,10 @@ button:hover {
     gap: .8rem;
   }
 
+  .md\:gap-4 {
+    gap: .4rem;
+  }
+
   .md\:space-x-8 > :not([hidden]) ~ :not([hidden]) {
     --tw-space-x-reverse: 0;
     margin-right: calc(.8rem * var(--tw-space-x-reverse));
@@ -7030,6 +7103,10 @@ button:hover {
 
   .md\:pt-\[15rem\] {
     padding-top: 15rem;
+  }
+
+  .md\:pt-\[18rem\] {
+    padding-top: 18rem;
   }
 
   .md\:text-center {
@@ -7080,6 +7157,20 @@ button:hover {
   .lg\:my-8 {
     margin-top: .8rem;
     margin-bottom: .8rem;
+  }
+
+  .lg\:h-fit {
+    height: -webkit-fit-content;
+    height: -moz-fit-content;
+    height: fit-content;
+  }
+
+  .lg\:w-1\/2 {
+    width: 50%;
+  }
+
+  .lg\:flex-row {
+    flex-direction: row;
   }
 
   .lg\:px-64 {
