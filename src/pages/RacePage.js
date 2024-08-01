@@ -21,6 +21,7 @@ import {
     StartingGrid,
     SelectedDriverStats,
     FastestLaps,
+    PositionCharts
 } from "../components";
 
 export function RacePage() {
@@ -32,6 +33,7 @@ export function RacePage() {
     const [location, setLocation] = useState(state ? state.location : null);
     const [drivers, setDrivers] = useState([]);
     const [laps, setLaps] = useState([]);
+    const [pos, setPos] = useState([]);
     const [driversDetails, setDriversDetails] = useState({});
     const [driverSelected, setDriverSelected] = useState(false);
     const [driverCode, setDriverCode] = useState("");
@@ -196,8 +198,10 @@ export function RacePage() {
                     fetchDriversAndTires(sessionKey),
                     fetch(
                         `https://api.openf1.org/v1/laps?session_key=${sessionKey}`
-                    ).then((res) => res.json()),
+                    ).then((res) => res.json())
                 ]);
+
+                setPos(startingGridData);
 
                 const driverDetailsMap = driverDetailsData.reduce(
                     (acc, driver) => ({
@@ -686,6 +690,17 @@ export function RacePage() {
                 )}
 
                 <div className="sm:grow-0">
+                    <PositionCharts
+                        laps={laps}
+                        pos={pos}
+                        startGrid={startingGrid}
+                        driversDetails={driversDetails}
+                        driversColor={driversColor}
+                        raceResults={raceResults}
+                        driverCode={
+                            driverSelected ? driversDetails[driverNumber] : null
+                        }
+                    />
                     <LapChart
                         laps={laps}
                         setLaps={() => setLaps}
