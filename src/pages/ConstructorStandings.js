@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { fetchRaceDetails, getConstructorStandings, getPartialConstructorStandings } from '../utils/api';
-import Select from 'react-select';
 
-import { ConstructorCar, Loading } from '../components';
+import { Button, ConstructorCar, Loading, RangeSelector } from '../components';
 import { useNavigate } from 'react-router-dom';
 
 export function ConstructorStandings({ selectedYear }) {
@@ -10,8 +9,9 @@ export function ConstructorStandings({ selectedYear }) {
   const [isLoading, setIsLoading] = useState(false);
   const [start, setStart] = useState(-1);
   const [end, setEnd] = useState(-1);
-  const [raceDetails, setRaceDetails] = useState(null);
   const [reset, setReset] = useState(false);
+  const [raceDetails, setRaceDetails] = useState(null);
+  const [rangeOpen, setRangeOpen] = useState(false);
 
 
   useEffect(() => {
@@ -43,6 +43,7 @@ export function ConstructorStandings({ selectedYear }) {
     }
 
     alterStandings();
+    start > 0 || end > 0 ? setRangeOpen(true) : setRangeOpen(false);
   }, [start,end]);
 
   let navigate = useNavigate();
@@ -52,83 +53,39 @@ export function ConstructorStandings({ selectedYear }) {
     );
   };
 
-  const handleStartChange = (start) => {
-    setStart(start);
-    setEnd(-1);
-  }
-
-  const handleReset = () => {
-    setStart(-1);
-    setEnd(-1);
-    setReset(!reset);
-  }
-
-  const customStyles = {
-    option: (provided) => ({
-        ...provided,
-        color: 'black'
-    }),
-    control: (baseStyles, state) => ({
-        ...baseStyles,
-        borderColor: state.isFocused ? '#e5e5e5' : '#737373',
-        background: 'rgb(38 38 38 / 0.1)',
-        boxShadow: 'inset 0 0 2.4rem 0 rgba(255, 255, 255, .25), 0 0 2.4rem 0 rgba(0, 0, 0, .55)',
-        color: '#f1f1f1',
-        borderRadius: '1.2rem',
-        padding: '.8rem',
-    }),
-    input: (styles, state) => ({
-        ...styles,
-        color: '#f1f1f1',
-    }),
-    placeholder: (styles) => ({ 
-        ...styles, 
-        color: '#cccccc',
-    }),
-    singleValue: (styles) => ({ 
-        ...styles, 
-        color: '#f1f1f1',
-    }),
-  };
-
   return (
     <div className="max-w-[45rem] m-auto">
       {isLoading ? (
         <Loading className="mt-[20rem] mb-[20rem]" message={`Loading ${selectedYear} Constructor Standings`} />
       ) : (
-      <div>
-        <div className="flex max-md:flex-col justify-center items-center gap-16 z-[2] relative">
-          <Select 
-            placeholder = {start===-1 ? "Select Start Race" : (raceDetails ? raceDetails.find(race => (race.round===start)).raceName : '')}
-            options={raceDetails ? raceDetails.map(race => ({value: race.round, label: race.raceName})) : ''}
-            onChange = {(selectedOption) => handleStartChange(selectedOption.value)}
-            styles={customStyles}
-            className="w-full md:w-[30rem]"
+        <>
+          <RangeSelector 
+            className="-mt-24 pt-48 relative z-[90]"
+            start={start}
+            end={end}
+            reset={reset}
+            setEnd={setEnd}
+            setStart={setStart}
+            setReset={setReset}
+            raceDetails={raceDetails}
+            rangeOpen={rangeOpen}
           />
-          <Select 
-            placeholder = {end===-1 ? "Select End Race" : (raceDetails ? raceDetails.find(race => (race.round===end)).raceName : '')}
-            options={raceDetails ? raceDetails.map(race => ({value: race.round, label: race.raceName})).filter(x => (parseInt(x.value) > parseInt(start))) : ''}
-            onChange = {(selectedOption) => setEnd(selectedOption.value)}
-            styles={customStyles}
-            className="w-full md:w-[30rem]"
-          />
-          <button onClick={() => handleReset()}>Reset</button>
-        </div>
-      <ul>
-        {standings.map((standing, index) => (
-          <li key={index} className='clickable-hover' onClick={()=> {navigateToTeamComp(standing.constructorId)}}>
-            <ConstructorCar 
-              image={standing.constructorId} 
-              points={standing.points}
-              name={standing.constructorName}
-              year={selectedYear} 
-              drivers={standing.driverCodes}
-              index={index}
-            />
-          </li>
-        ))}
-      </ul>
-      </div>
+          <ul>
+            {standings.map((standing, index) => (
+              <li key={index} className='clickable-hover group -mb-32' onClick={()=> {navigateToTeamComp(standing.constructorId)}}>
+                <ConstructorCar 
+                  image={standing.constructorId} 
+                  points={standing.points}
+                  name={standing.constructorName}
+                  year={selectedYear} 
+                  drivers={standing.driverCodes}
+                  index={index}
+                  />
+                  <Button size='sm' disabled className="opacity-0 group-hover:opacity-100 absolute bottom-[2.4rem] left-1/2 -translate-x-1/2">See Comparison</Button>
+              </li>
+            ))}
+          </ul>
+        </>
       )}
     </div>
   );
