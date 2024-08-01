@@ -71,7 +71,7 @@ export const DriverCard = (props) => {
             {layoutSmall ? (
                 <div className={classNames("flex items-center justify-between w-full", { "max-md:hidden": mobileSmall})}>
                     <div className="flex items-center">
-                        <p className="heading-4 w-64 bg-neutral-600 py-2 text-center">P{isRace ? endPosition : index + 1}</p>
+                        <p className={classNames("heading-4 w-64 bg-neutral-600 py-2 text-center" , { "rounded-l-sm": !isRace })}>P{isRace ? endPosition : index + 1}</p>
                         <span className="font-display pl-16 mr-4">{driver.code}</span>
                     </div>
                     <p className=" text-xs pr-8">{time}</p>
@@ -79,7 +79,7 @@ export const DriverCard = (props) => {
             ) : (
                 <div className={classNames('flex item-center w-full', { "max-md:hidden": mobileSmall})}>
                     <p 
-                        className={classNames("driver-card-position heading-1 px-8 py-4 bg-neutral-700" , { "rounded-l-md": !isRace })}
+                        className={classNames("driver-card-position heading-1 px-8 py-4 bg-neutral-700" , { "rounded-l-sm": !isRace })}
                     >
                         P{isRace ? endPosition : index + 1}
                     </p>

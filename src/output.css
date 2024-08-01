@@ -2428,6 +2428,11 @@ input[type="range"]::-ms-fill-lower {
   border-bottom-left-radius: .4rem;
 }
 
+.rounded-l-sm {
+  border-top-left-radius: .4rem;
+  border-bottom-left-radius: .4rem;
+}
+
 .rounded-tl-\[\.4rem\] {
   border-top-left-radius: .4rem;
 }
@@ -6938,6 +6943,10 @@ button:hover {
 
   .md\:mr-4 {
     margin-right: .4rem;
+  }
+
+  .md\:mb-96 {
+    margin-bottom: 9.6rem;
   }
 
   .md\:block {

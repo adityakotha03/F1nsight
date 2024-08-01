@@ -31,7 +31,7 @@ export function LandingPage() {
             <img alt="" src={`${process.env.PUBLIC_URL + "/images/tireStrat.png"}`} />
           </div>
 
-          <div className="relative z-10 mb-96">
+          <div className="relative z-10 md:mb-96">
             <p className="uppercase text-neutral-400 tracking-sm md:mt-24">beyond the track</p>
             <p className="heading-3 mb-24">Data, Insights, Action</p>
 
