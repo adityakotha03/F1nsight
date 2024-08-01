@@ -31,8 +31,8 @@ export const Select = (props) => {
             <select
                 {...rest}
                 className={classNames('select__input', {
-                    'bg-neutral-800/10 bg-glow': !unstyled,
-                    'bg-transparent border-0': unstyled,
+                    'bg-glow': !unstyled,
+                    'border-0': unstyled,
                     'w-full': fullWidth,
                 })}
                 id={inputId}
@@ -43,4 +43,33 @@ export const Select = (props) => {
             </label>
         </div>
     );
+};
+
+// use for the react select component
+export const customSelectStyles = {
+    option: (provided) => ({
+        ...provided,
+        color: 'black'
+    }),
+    control: (baseStyles, state) => ({
+        ...baseStyles,
+        borderColor: state.isFocused ? '#e5e5e5' : '#737373',
+        background: '#1f1f1f',
+        boxShadow: 'inset 0 0 2.4rem 0 rgba(255, 255, 255, .25), 0 0 2.4rem 0 rgba(0, 0, 0, .55)',
+        color: '#f1f1f1',
+        borderRadius: '1.2rem',
+        padding: '.8rem',
+    }),
+    input: (styles, state) => ({
+        ...styles,
+        color: '#f1f1f1',
+    }),
+    placeholder: (styles) => ({ 
+        ...styles, 
+        color: '#cccccc',
+    }),
+    singleValue: (styles) => ({ 
+        ...styles, 
+        color: '#f1f1f1',
+    }),
 };

@@ -45,7 +45,7 @@ function MainContent({ setSelectedYear, selectedYear, resultPage, resultPagePath
     <div className="grow">
       {validPaths.includes(location.pathname) && (
         <ResultsSelector 
-          className="mt-[12.4rem] mb-64" 
+          className="mt-[12.4rem] relative z-[100]" 
           setSelectedYear={setSelectedYear} 
           selectedYear={selectedYear} 
           resultPage={resultPage} 
