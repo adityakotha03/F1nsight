@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import Plot from 'react-plotly.js';
 
 const lightenColor = (color, percent) => {
     let num = parseInt(color, 16),
@@ -20,9 +21,9 @@ const lightenColor = (color, percent) => {
 export const LapChart = (props) => {
     const { laps, driversDetails, driversColor, raceResults, driverCode } = props;
 
-    // Initialize visibility state for drivers
     const [driverVisibility, setDriverVisibility] = useState({});
     const [newDriversColor, setnewDriversColor] = useState({});
+    const [showBoxPlot, setShowBoxPlot] = useState(false);
 
     const sortedDriverAcronyms = raceResults
         .sort((a, b) => parseInt(a.position, 10) - parseInt(b.position, 10))
@@ -31,7 +32,6 @@ export const LapChart = (props) => {
     useEffect(() => {
         const initialVisibility = {};
         sortedDriverAcronyms.forEach((acronym, index) => {
-            // Conditionally set visibility based on driverCode
             initialVisibility[acronym] = driverCode ? (acronym === driverCode) : (index < 3);
         });
         setDriverVisibility(initialVisibility);
@@ -40,19 +40,16 @@ export const LapChart = (props) => {
         const colorCount = {};
 
         Object.entries(driversColor).forEach(([id, color]) => {
-            // Increase the count or initialize if first occurrence
             if (!colorCount[color]) {
                 colorCount[color] = { count: 1, indexModified: false };
-                newDriversColor[id] = `#${color}`; // Use original color on first occurrence
+                newDriversColor[id] = `#${color}`;
             } else {
                 colorCount[color].count++;
-
-                // Modify color only if it's the second time we've encountered this color
                 if (!colorCount[color].indexModified) {
-                    newDriversColor[id] = lightenColor(color, 30); 
-                    colorCount[color].indexModified = true; 
+                    newDriversColor[id] = lightenColor(color, 30);
+                    colorCount[color].indexModified = true;
                 } else {
-                    newDriversColor[id] = {color}; 
+                    newDriversColor[id] = {color};
                 }
             }
         });
@@ -61,12 +58,10 @@ export const LapChart = (props) => {
 
     }, [laps, driversDetails, driverCode, driversColor]);
 
-
     const prepareChartData = () => {
         const driverAcronyms = [...new Set(laps.map(lap => driversDetails[lap.driver_number]))];
         const lapNumbers = [...new Set(laps.map(lap => lap.lap_number))].sort((a, b) => a - b);
     
-        // Step 1: Gather all valid lap durations in seconds
         let lapDurations = [];
         laps.forEach(lap => {
             const lapDuration = parseFloat(lap.lap_duration);
@@ -75,7 +70,6 @@ export const LapChart = (props) => {
             }
         });
     
-        // Step 2: Calculate Q1, Q3, and IQR
         lapDurations.sort((a, b) => a - b);
         const q1 = lapDurations[Math.floor((lapDurations.length / 4))];
         const q3 = lapDurations[Math.floor((lapDurations.length * 3) / 4)];
@@ -92,7 +86,6 @@ export const LapChart = (props) => {
                     if (lapForDriver) {
                         const lapDurationInSeconds = parseFloat(lapForDriver.lap_duration);
                         if (!isNaN(lapDurationInSeconds) && lapDurationInSeconds > 0 && lapDurationInSeconds <= 180 && lapDurationInSeconds >= lowerBound && lapDurationInSeconds <= upperBound) {
-                            // Convert lap duration from seconds to minutes and exclude outliers
                             lapDataForAllDrivers[acronym] = (lapDurationInSeconds / 60).toFixed(5);
                         }
                     }
@@ -104,6 +97,7 @@ export const LapChart = (props) => {
     };
     
     const chartData = prepareChartData();
+    console.log(chartData);
     
     const minLapDuration = Math.min(...chartData.flatMap(lap => Object.values(lap).slice(1)));
     const maxLapDuration = Math.max(...chartData.flatMap(lap => Object.values(lap).slice(1)));
@@ -111,7 +105,6 @@ export const LapChart = (props) => {
     const minYAxisValue = parseFloat((minLapDuration - yAxisPadding).toFixed(3));
     const maxYAxisValue = parseFloat((maxLapDuration + yAxisPadding).toFixed(3));
        
-
     const handleDriverVisibilityChange = (acronym) => {
         setDriverVisibility(prevState => ({
             ...prevState,
@@ -125,52 +118,90 @@ export const LapChart = (props) => {
         return `${minutes}:${seconds.toString().padStart(2, '0')}`;
     };
 
+    const prepareBoxPlotData = () => {
+        const driversData = sortedDriverAcronyms
+            .filter(acronym => driverVisibility[acronym])
+            .map(acronym => {
+                const driverLaps = laps.filter(lap => driversDetails[lap.driver_number] === acronym);
+                return {
+                    y: driverLaps.map(lap => parseFloat(lap.lap_duration)),
+                    type: 'box',
+                    name: acronym,
+                    marker: { color: newDriversColor[acronym] }
+                };
+            });
+        return driversData;
+    };
+
+    console.log(prepareBoxPlotData());
+
     return (
         <>
-        <h3 className="heading-4 mb-16 text-neutral-400 ml-24">Lap Data</h3>
-        <div className="mb-16 bg-glow-large max-sm:py-[3.2rem] sm:p-32 rounded-xlarge">
-            <ResponsiveContainer width="100%" height={299}>
+          <h3 className="heading-4 mb-16 text-neutral-400 ml-24">Lap Data</h3>
+          <div className="mb-16 bg-glow-large max-sm:py-[3.2rem] sm:p-32 rounded-xlarge">
+            <div className="mb-4">
+              <button
+                onClick={() => setShowBoxPlot(true)}
+                className={`py-2 px-4 text-white font-semibold rounded ${showBoxPlot ? 'bg-plum-500' : 'bg-neutral-900'}`}
+              >
+                Box Plot
+              </button>
+              <button
+                onClick={() => setShowBoxPlot(false)}
+                className={`py-2 px-4 ml-4 text-white font-semibold rounded ${!showBoxPlot ? 'bg-plum-500' : 'bg-neutral-900'}`}
+              >
+                Line Chart
+              </button>
+            </div>
+            {showBoxPlot ? (
+              <Plot
+                data={prepareBoxPlotData()}
+                layout={{ width: 800, height: 400, title: 'Lap Duration Box Plot' }}
+              />
+            ) : (
+              <ResponsiveContainer width="100%" height={299}>
                 <LineChart
-                    data={chartData}
-                    margin={{ top: 20, right: 30 }}
-                    width="100%"
+                  data={chartData}
+                  margin={{ top: 20, right: 30 }}
+                  width="100%"
                 >
-                    <CartesianGrid strokeDasharray="3 3" stroke="#444444" />
-                    <XAxis dataKey="name" />
-                    <YAxis domain={[minYAxisValue, maxYAxisValue]} tickFormatter={formatMinutes} />
-                    <Tooltip 
-                        formatter={(value) => {
-                            const decimalMinutes = parseFloat(value);
-                            const minutes = Math.floor(decimalMinutes);
-                            const totalSeconds = (decimalMinutes - minutes) * 60;
-                            const seconds = Math.floor(totalSeconds);
-                            const milliseconds = Math.round((totalSeconds - seconds) * 1000);
-                            return `${minutes}:${seconds.toString().padStart(2, '0')}.${milliseconds.toString().padStart(3, '0')}`;
-                        }}
-                    />
-                    {[...new Set(laps.map(lap => driversDetails[lap.driver_number]))].map((acronym, index) => (
-                        driverVisibility[acronym] && <Line key={index} type="monotone" dataKey={acronym} stroke={`${newDriversColor[acronym]}`} connectNulls={true} />
-                    ))}
+                  <CartesianGrid strokeDasharray="3 3" stroke="#444444" />
+                  <XAxis dataKey="name" />
+                  <YAxis domain={[minYAxisValue, maxYAxisValue]} tickFormatter={formatMinutes} />
+                  <Tooltip 
+                    formatter={(value) => {
+                      const decimalMinutes = parseFloat(value);
+                      const minutes = Math.floor(decimalMinutes);
+                      const totalSeconds = (decimalMinutes - minutes) * 60;
+                      const seconds = Math.floor(totalSeconds);
+                      const milliseconds = Math.round((totalSeconds - seconds) * 1000);
+                      return `${minutes}:${seconds.toString().padStart(2, '0')}.${milliseconds.toString().padStart(3, '0')}`;
+                    }}
+                  />
+                  {[...new Set(laps.map(lap => driversDetails[lap.driver_number]))].map((acronym, index) => (
+                    driverVisibility[acronym] && <Line key={index} type="monotone" dataKey={acronym} stroke={`${newDriversColor[acronym]}`} connectNulls={true} />
+                  ))}
                 </LineChart>
-            </ResponsiveContainer>
-            {driverCode == null && (
-                <div className="flex flex-wrap justify-center gap-4 mt-4 sm:max-w-[80%] sm:mx-auto">
-                    {sortedDriverAcronyms.map((acronym, index) => (
-                        <button
-                            key={index}
-                            className={`py-1 px-4 text-white font-semibold rounded font-display`}
-                            onClick={() => handleDriverVisibilityChange(acronym)}
-                            style={{backgroundColor: driverVisibility[acronym] ? `${newDriversColor[acronym]}` : '#333333'}}
-                        >
-                            {acronym}
-                        </button>
-                    ))}
-                </div>
+              </ResponsiveContainer>
             )}
-        </div>
+            {driverCode == null && (
+              <div className="flex flex-wrap justify-center gap-4 mt-4 sm:max-w-[80%] sm:mx-auto">
+                {sortedDriverAcronyms.map((acronym, index) => (
+                  <button
+                    key={index}
+                    className={`py-1 px-4 text-white font-semibold rounded font-display`}
+                    onClick={() => handleDriverVisibilityChange(acronym)}
+                    style={{ backgroundColor: driverVisibility[acronym] ? `${newDriversColor[acronym]}` : '#333333' }}
+                  >
+                    {acronym}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
         </>
-    );
-};
+      );
+    };
 
 LapChart.propTypes = {
     className: PropTypes.string,
