@@ -59,9 +59,9 @@ export const PositionCharts = ({ laps, pos, startGrid, driversDetails, driversCo
       return;
     }
 
-    // Initialize positions with starting grid
+    // Initialize positions with starting grid for lap 1
     startGrid.forEach(entry => {
-      positionData[entry.driver_number] = [{ lap: 2, position: entry.position }];
+      positionData[entry.driver_number] = [{ lap: 1, position: entry.position }];
     });
 
     // Process position changes
@@ -94,7 +94,7 @@ export const PositionCharts = ({ laps, pos, startGrid, driversDetails, driversCo
     const newChartData = [];
     const totalLaps = Math.max(...laps.map(lap => lap.lap_number));
 
-    for (let lap = 2; lap <= totalLaps; lap++) {
+    for (let lap = 1; lap <= totalLaps; lap++) {
       const lapData = { lap };
       Object.keys(positionData).forEach(driverNumber => {
         const lastPosition = positionData[driverNumber]
@@ -144,14 +144,19 @@ export const PositionCharts = ({ laps, pos, startGrid, driversDetails, driversCo
     }));
   };
 
+  const lapTickFormatter = (tick) => `Lap ${tick}`;
+
   return (
     <>
-      <h3 className="heading-4 mb-16 text-neutral-400 ml-24">Lap Data</h3>
+      <h3 className="heading-4 mb-16 text-neutral-400 ml-24">Position Data</h3>
       <div className="mb-16 bg-glow-large max-sm:py-[3.2rem] sm:p-32 rounded-xlarge">
         <ResponsiveContainer width="100%" height={400}>
           <LineChart data={chartData}>
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="lap" label={{ value: 'Lap', position: 'insideBottomRight', offset: 0 }} />
+            <XAxis 
+              dataKey="lap" 
+              tickFormatter={lapTickFormatter} 
+            />
             <YAxis
               reversed
               type="number"
@@ -159,7 +164,6 @@ export const PositionCharts = ({ laps, pos, startGrid, driversDetails, driversCo
               domain={[1, startGrid.length]}
               ticks={startGrid.map(entry => entry.position)}
               tickFormatter={tick => yAxisLabels[tick]}
-              label={{ value: 'Position', angle: -90, position: 'insideLeft' }}
             />
             <Tooltip 
               formatter={(value, name) => [`P${value}`, driversDetails[name]]}
