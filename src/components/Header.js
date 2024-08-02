@@ -15,8 +15,9 @@ export const Header = ({ setResultPage, setResultPagePath }) => {
     const [races, setRaces] = useState([]);
     const [selectedYear, setSelectedYear] = useState([]);
     const [isOpen, setIsOpen] = useState(false);
+    const [raceViewerDropdownOpen, setRaceViewerDropdownOpen] = useState(false);
 
-    const navRef = useRef(null);
+    const raceViewerRef = useRef(null);
     const headerRef = useRef(null);
 
     useEffect(() => {
@@ -30,6 +31,19 @@ export const Header = ({ setResultPage, setResultPagePath }) => {
         }
     }, [selectedYear]);
 
+    const handleClickOutside = (event) => {
+        if (raceViewerRef.current && !raceViewerRef.current.contains(event.target)) {
+            setRaceViewerDropdownOpen(false);
+        }
+    };
+
+    useEffect(() => {
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+          document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
+
     const handleNavLinkClick = (page) => {
         setResultPage(page);
         if (page === 'Race Results') {
@@ -40,6 +54,7 @@ export const Header = ({ setResultPage, setResultPagePath }) => {
             setResultPagePath('/driver-standings');
         }
     };
+    
 
     const currentYear = new Date().getFullYear();
     const generateYears = (startYear) => {
@@ -69,14 +84,10 @@ export const Header = ({ setResultPage, setResultPagePath }) => {
             <RaceSelector 
                 races={races} 
                 selectedYear={selectedYear} 
-                onChange={toggleOpen}
+                onChange={() => setRaceViewerDropdownOpen(false)}
             />
         </>
     )
-
-    const disableClick = (e) => {
-        e.preventDefault();
-    }
     
     const comparisonContent = (
         <>
@@ -132,7 +143,7 @@ export const Header = ({ setResultPage, setResultPagePath }) => {
                     <div className="relative group w-max">
                         <button className="global-header__main-nav__button py-12 px-24 rounded-[.8rem] uppercase">
                             Results
-                            <FontAwesomeIcon icon="chevron-down" className='global-header__main-nav__button__icon' />
+                            <FontAwesomeIcon icon="chevron-down" className='global-header__main-nav__button__icon opacity-0 group-hover:opacity-100' />
                         </button>
                         <div className="absolute right-1 -mt-2 pt-12 w-max hidden group-hover:block">
                             <div className="flex flex-col gap-8 p-16 rounded-md bg-glow bg-neutral-800 shadow-lg">
@@ -143,7 +154,7 @@ export const Header = ({ setResultPage, setResultPagePath }) => {
                     <div className="relative group w-max">
                         <button className="global-header__main-nav__button py-12 px-24 rounded-[.8rem] uppercase">
                             Comparisons
-                            <FontAwesomeIcon icon="chevron-down" className='global-header__main-nav__button__icon' />
+                            <FontAwesomeIcon icon="chevron-down" className='global-header__main-nav__button__icon opacity-0 group-hover:opacity-100' />
                         </button>
                         <div className="absolute right-1 -mt-2 pt-12 w-max hidden group-hover:block">
                             <div className="flex flex-col gap-8 p-16 rounded-md bg-glow bg-neutral-800 shadow-lg">
@@ -151,9 +162,12 @@ export const Header = ({ setResultPage, setResultPagePath }) => {
                             </div>
                         </div>
                     </div>
-                    <div className="relative group w-max">
-                        <button className="global-header__main-nav__button py-12 px-24 rounded-[.8rem] uppercase">Race Viewer</button>
-                        <div className="absolute right-1 -mt-2 pt-12 w-max hidden group-hover:block min-w-[20rem]">
+                    <div className="relative w-max" ref={raceViewerRef}>
+                        <button className="global-header__main-nav__button py-12 px-24 rounded-[.8rem] uppercase" onClick={() => setRaceViewerDropdownOpen(!raceViewerDropdownOpen)}>
+                            Race Viewer
+                            <FontAwesomeIcon icon="chevron-down" className={classNames('global-header__main-nav__button__icon opacity-0', {"opacity-100": raceViewerDropdownOpen})} />
+                        </button>
+                        <div className={classNames("absolute right-1 -mt-2 pt-12 w-max min-w-[20rem]", raceViewerDropdownOpen ? 'block' : 'hidden' )}>
                             <div className="flex flex-col p-16 rounded-md bg-glow bg-neutral-800 shadow-lg">
                                 {raceSelectorContent}
                             </div>
