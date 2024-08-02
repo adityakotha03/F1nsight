@@ -690,6 +690,7 @@ export function RacePage() {
                 )}
 
                 <div className="sm:grow-0">
+                {selectedSession === "Race" && (
                     <PositionCharts
                         laps={laps}
                         pos={pos}
@@ -701,6 +702,7 @@ export function RacePage() {
                             driverSelected ? driversDetails[driverNumber] : null
                         }
                     />
+                )}
                     <LapChart
                         laps={laps}
                         setLaps={() => setLaps}
