@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { Select } from './Select';
 import classNames from 'classnames';
+import { fetchRaceDetails } from '../utils/api';
 
 export const ResultsSelector = ({ className, setSelectedYear, selectedYear, resultPage, resultPagePath }) => {
   const navigate = useNavigate();

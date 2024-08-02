@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { fetchDriverStats, fetchDriversList } from '../utils/api';
-import { Loading, LineChartByYear, BarChartTotal, Button } from "../components";
 import Select from 'react-select';
 import classNames from 'classnames';
 import { useNavigate, useParams } from 'react-router-dom';
+
+import { fetchDriverStats, fetchDriversList } from '../utils/api';
+import { Loading, LineChartByYear, BarChartTotal, Button, customSelectStyles } from "../components";
 
 export function DriverComparison(){
     const {urlDriver1, urlDriver2} = useParams();
@@ -23,10 +24,20 @@ export function DriverComparison(){
     const [displayCompetingYears, setDisplayCompetingYears] = useState(false);
     let navigate = useNavigate();
 
+    function compare( a, b ) {
+        if ( a.name < b.name ){
+            return -1;
+        }
+        if ( a.name > b.name ){
+            return 1;
+        }
+            return 0;
+        }
+
     useEffect(() => {
         const loadDrivers = async () => {
             const drivers = await fetchDriversList();
-            setDriversList(drivers);
+            setDriversList(drivers.sort(compare));
             if(urlDriver1){
                 setURLDriverName1(drivers.find(driver => driver.id === urlDriver1).name);
                 setInputDriver1({value : urlDriver1, label : urlDriverName1});
@@ -84,35 +95,6 @@ export function DriverComparison(){
         setInputDriver1('');
         setInputDriver2('');
     };
-
-    const customStyles = {
-        option: (provided) => ({
-            ...provided,
-            color: 'black'
-        }),
-        control: (baseStyles, state) => ({
-            ...baseStyles,
-            borderColor: state.isFocused ? '#e5e5e5' : '#737373',
-            background: 'rgb(38 38 38 / 0.1)',
-            boxShadow: 'inset 0 0 2.4rem 0 rgba(255, 255, 255, .25), 0 0 2.4rem 0 rgba(0, 0, 0, .55)',
-            color: '#f1f1f1',
-            borderRadius: '1.2rem',
-            padding: '.8rem',
-        }),
-        input: (styles, state) => ({
-            ...styles,
-            color: '#f1f1f1',
-        }),
-        placeholder: (styles) => ({ 
-            ...styles, 
-            color: '#cccccc',
-        }),
-        singleValue: (styles) => ({ 
-            ...styles, 
-            color: '#f1f1f1',
-        }),
-    };
-
 
     const renderFinalStandings = () => {
         return (
@@ -245,16 +227,16 @@ export function DriverComparison(){
                     <div className="flex max-md:flex-col justify-center items-center gap-16 z-[2] relative">
                         <Select
                             placeholder={urlDriverName1 ? urlDriverName1 : (driver1 ? driversList.find(driver => driver.id === driver1).name : "Select Driver 1")}
-                            options={driversList.map(driver => ({ value: driver.id, label: driver.name }))}
+                            options={driversList.sort((a,b) => a.name-b.name).map(driver => ({ value: driver.id, label: driver.name }))}
                             onChange={(selectedOption) => setInputDriver1(selectedOption)}
-                            styles={customStyles}
+                            styles={customSelectStyles}
                             className="w-full md:w-[30rem]"
                         />
                         <Select
                             placeholder={urlDriverName2 ? urlDriverName2 : (driver2 ? driversList.find(driver => driver.id === driver2).name : "Select Driver 2")}
                             options={driversList.map(driver => ({ value: driver.id, label: driver.name }))}
                             onChange={(selectedOption) => setInputDriver2(selectedOption)}
-                            styles={customStyles}
+                            styles={customSelectStyles}
                             className="w-full md:w-[30rem]"
                         />
                     </div>

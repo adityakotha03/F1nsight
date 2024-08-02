@@ -34,7 +34,7 @@ const CustomizedYAxisTick = ({ x, y, payload }) => {
         textAnchor="end"
         fill="#f1f1f1"
         transform="rotate(-15) translate(-8,-12)"
-        fontSize={12}
+        fontSize={10}
       >
         {`${minutes}:${seconds.toString().padStart(2, '0')}.${milliseconds.toString().padStart(3, '0')}`}
       </text>

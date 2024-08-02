@@ -160,6 +160,8 @@ export const fetchRaceDetails = async (selectedYear) => {
         } else {
           return Promise.resolve({ raceName: race.raceName, 
             date: race.date,
+            season: race.season,
+            round: race.round,
             time: race.time, });
         }
       });
@@ -206,6 +208,101 @@ export const fetchUpcomingRace = async (selectedYear) => {
   const upcomingRace = races.find(race => new Date(race.date) > new Date());
   return upcomingRace || null;
 };
+
+
+export const getPartialConstructorStandings = async (selectedYear, start, end) => {
+  const baseURL = `https://praneeth7781.github.io/f1nsight-api-2/races/${selectedYear}`;
+  const urls = {
+    constructorUrl: `${baseURL}/constructorStandings.json`,
+    driverUrl: `${baseURL}/driverStandings.json`
+  };
+
+  try {
+    const [constructorResponse, driverResponse] = await Promise.all([
+      fetch(urls.constructorUrl),
+      fetch(urls.driverUrl)
+    ]);
+    // const constructorResponse = await fetch(url);
+
+    if (!constructorResponse.ok || !driverResponse.ok) {
+      throw new Error('Failed to fetch data');
+    }
+
+    // const constructorData = constructorResponse.json();
+
+    const [constructorData, driverData] = await Promise.all([
+      constructorResponse.json(),
+      driverResponse.json()
+    ]);
+
+    console.log("Here", constructorData, start, end);
+
+    let startStandings = []
+    if(parseInt(start)===1){
+      startStandings = constructorData[start].map(standing => ({
+        constructorName: standing.Constructor.name,
+        constructorId: standing.Constructor.constructorId,
+        points: 0,
+        driverCodes: []
+      }))
+    } else {
+      console.log("Value of start is: ", start)
+      startStandings = constructorData[start-1].map(standing => ({
+        constructorName: standing.Constructor.name,
+        constructorId: standing.Constructor.constructorId,
+        points: standing.points,
+        driverCodes: []
+      }))
+    }
+    console.log(startStandings);
+
+
+    let endStandings = constructorData[end].map(standing => ({
+      constructorName: standing.Constructor.name,
+      constructorId: standing.Constructor.constructorId,
+      points: standing.points,
+      driverCodes: []
+    }))
+
+    const constructorStandings = startStandings.map(start => {
+      const end = endStandings.find(end => end.constructorId === start.constructorId);
+      return {
+        constructorName: start.constructorName,
+        constructorId: start.constructorId,
+        points: (end ? end.points : 0) - start.points,
+        driverCodes: start.driverCodes
+      };
+    });
+
+    // const constructorStandings = constructorData['latest'].map(standing => ({
+    //   constructorName: standing.Constructor.name,
+    //   constructorId: standing.Constructor.constructorId,
+    //   points: standing.points,
+    //   driverCodes: []
+    // }));
+    // const baseURL = `https://praneeth7781.github.io/f1nsight-api-2/constructors/${selectedYear}`
+
+    const driverStandings = driverData['latest'];
+
+    driverStandings.forEach(standing => {
+      standing.Constructors.forEach(constructor => {
+        const constructorIndex = constructorStandings.findIndex(c => c.constructorId === constructor.constructorId);
+        if (constructorIndex !== -1) {
+          constructorStandings[constructorIndex].driverCodes.push(standing.Driver.code);
+        }
+      });
+    });
+
+    constructorStandings.forEach(standing => {
+      standing.driverCodes = [...new Set(standing.driverCodes)].sort();
+    });
+
+    return constructorStandings.sort((a,b) => parseInt(b.points)-parseInt(a.points));
+  } catch (error) {
+    console.error('Error fetching constructor standings:', error);
+    return [];
+  }
+}
 
 export const getConstructorStandings = async (selectedYear) => {
   const baseURL = `https://praneeth7781.github.io/f1nsight-api-2/races/${selectedYear}`;
@@ -274,6 +371,36 @@ export const getDriverStandings = async (selectedYear) => {
         constructorId: standing.Constructors[0].constructorId,
         points: standing.points,
       }));
+    }
+  } catch (error) {
+    console.error('Error fetching driver standings:', error);
+  }
+  return [];
+};
+
+export const getPartialDriverStandings = async (selectedYear, start, end) => {
+  const url = `https://praneeth7781.github.io/f1nsight-api-2/races/${selectedYear}/driverStandings.json`;
+  try {
+    const response = await fetch(url);
+    if (response.ok) {
+      const data = await response.json();
+      let endStandings = data[end];
+      let startStandings = [];
+      if(parseInt(start)!==1) startStandings = data[start-1];
+      console.log(endStandings);
+      const standings =  endStandings.map(end => {
+        const start = startStandings.find(start => start.Driver.driverId === end.Driver.driverId);
+        return {
+          driverCode : end.Driver.code,
+          firstName : end.Driver.givenName,
+          lastName : end.Driver.lastName,
+          constructorName : end.Constructors[0].name,
+          constructorId : end.Constructors[0].constructorId,
+          points : end.points - (start ? start.points : 0)
+        }
+      });
+      // const standings = data['latest'];
+      return standings.sort((a,b) => parseInt(b.points)-parseInt(a.points));
     }
   } catch (error) {
     console.error('Error fetching driver standings:', error);
