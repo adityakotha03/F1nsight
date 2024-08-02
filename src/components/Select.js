@@ -31,8 +31,8 @@ export const Select = (props) => {
             <select
                 {...rest}
                 className={classNames('select__input', {
-                    'bg-glow': !unstyled,
-                    'border-0': unstyled,
+                    'bg-neutral-800/10 bg-glow': !unstyled,
+                    'bg-transparent border-0': unstyled,
                     'w-full': fullWidth,
                 })}
                 id={inputId}
