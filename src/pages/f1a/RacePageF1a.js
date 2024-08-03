@@ -1,25 +1,17 @@
-import classNames from "classnames";
-import React, { useState, useEffect, useRef } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React, { useState, useEffect } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import {
     fetchDriversAndTires,
-    fetchF1aRaceResultsByCircuit,
-    fetchQualifyingResultsByCircuit,
-    fetchLocationData,
-} from "../utils/api.js";
+} from "../../utils/api.js";
+import {
+    fetchF1aRaceResultsByCircuit
+} from "../../utils/apiF1a.js";
 
 import {
     DriverCard,
-    Loading,
-    Select,
-    ThreeCanvas,
-    LapChart,
-    TireStrategy,
     StartingGridF1A,
-    SelectedDriverStats,
     FastestLapsF1A,
-} from "../components";
+} from "../../components/index.js";
 
 export function RacePageF1a() {
     const { state } = useLocation();
@@ -29,28 +21,10 @@ export function RacePageF1a() {
     const [year, setYear] = useState(state ? state.year : null);
     const [location, setLocation] = useState(state ? state.location : null);
     const [drivers, setDrivers] = useState([]);
-    const [laps, setLaps] = useState([]);
-    const [driversDetails, setDriversDetails] = useState({});
-    const [driverSelected, setDriverSelected] = useState(false);
-    const [driverCode, setDriverCode] = useState("");
-    const [driverNumber, setDriverNumber] = useState("");
-    const [driversColor, setDriversColor] = useState({});
-    const [startingGrid, setStartingGrid] = useState([]);
-    const [animatedMap, setAnimatedMap] = useState("");
-    const [MapPath, setMapPath] = useState("");
     const [raceResults, setRaceResults] = useState([]);
     const [raceResults2, setRaceResults2] = useState([]);
-    const [locData, setLocData] = useState({});
     const [activeButtonIndex, setActiveButtonIndex] = useState(null);
-    const [startTime, setStartTime] = useState("");
-    const [endTime, setEndTime] = useState("");
-    const [speedFactor, setSpeedFactor] = useState(0.2);
-    const [isPaused, setIsPaused] = useState(false);
-    const [haloView, setHaloView] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const [selectedSession, setSelectedSession] = useState("Race");
-    const [hasRaceSession, sethasRaceSession] = useState(false);
-    const [hasQualifyingSession, sethasQualifyingSession] = useState(false);
 
     useEffect(() => {
         const setBaseData = async () => {
@@ -82,7 +56,6 @@ export function RacePageF1a() {
         if (!raceName) return;
 
         try {
-            setDriverSelected(false);
             setActiveButtonIndex(null);
 
             const locationMap = {
@@ -121,35 +94,6 @@ export function RacePageF1a() {
             );
             const sessionsData = await sessionsResponse.json();
 
-            const hasRaceSession = sessionsData.some(
-                (session) => session.session_name === "Race"
-            );
-            sethasRaceSession(hasRaceSession);
-            const hasQualifyingSession = sessionsData.some(
-                (session) => session.session_name === "Qualifying"
-            );
-            sethasQualifyingSession(hasQualifyingSession);
-
-            setIsLoading(true);
-
-            setMapPath(
-                `${
-                    process.env.PUBLIC_URL +
-                    "/map/" +
-                    circuitId +
-                    ".gltf"
-                }`
-            );
-
-            setAnimatedMap(
-                `${
-                    process.env.PUBLIC_URL +
-                    "/mapsAnimated/" +
-                    circuitId +
-                    "Animated.mp4"
-                }`
-            );
-
             if (circuitId) {
                 const results = await fetchF1aRaceResultsByCircuit(
                     year,
@@ -170,7 +114,6 @@ export function RacePageF1a() {
                 driverDetailsData,
                 startingGridData,
                 driversData,
-                lapsData,
             ] = await Promise.all([
                 fetch(
                     `https://api.openf1.org/v1/drivers?session_key=${sessionKey}`
@@ -192,7 +135,6 @@ export function RacePageF1a() {
                 {}
             );
 
-            setDriversDetails(driverDetailsMap);
 
             const latestDate = startingGridData[0].date;
             const firstDifferentDate = startingGridData.find(
@@ -200,27 +142,8 @@ export function RacePageF1a() {
             )?.date;
             const date = new Date(firstDifferentDate);
             date.setMinutes(date.getMinutes() - 1);
-            const updatedDate = date.toISOString();
-
-            setStartTime(updatedDate);
-            setEndTime(
-                startingGridData[startingGridData.length - 1].date
-            );
-
-            // const earliestDateTime = startingGridData[0]?.date;
-            // const filteredStartingGrid = startingGridData.filter(
-            //     (item) => item.date === earliestDateTime
-            // );
-            // setStartingGrid(filteredStartingGrid);
 
             setDrivers(driversData);
-
-            setLaps(
-                lapsData.map((lap) => ({
-                    ...lap,
-                    driver_acronym: driverDetailsMap[lap.driver_number],
-                }))
-            );
 
             setIsLoading(false);
         } catch (error) {
@@ -230,7 +153,7 @@ export function RacePageF1a() {
 
     useEffect(() => {
         fetchData();
-    }, [year, location, selectedSession, raceName]);
+    }, [year, location, raceName]);
 
     // Sort raceResults by endPosition (ascending order)
     raceResults.sort((a, b) => parseInt(a.position, 10) - parseInt(b.position, 10));
@@ -257,7 +180,6 @@ export function RacePageF1a() {
                             index={index}
                             driver={result.Driver}
                             stint={drivers}
-                            driverColor={driversColor[driverCode]}
                             startPosition={parseInt(
                                 result.grid,
                                 10
@@ -302,7 +224,6 @@ export function RacePageF1a() {
                             index={index}
                             driver={result.Driver}
                             stint={drivers}
-                            driverColor={driversColor[driverCode]}
                             startPosition={parseInt(
                                 result.grid,
                                 10

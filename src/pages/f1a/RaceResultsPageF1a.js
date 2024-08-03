@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { fetchF1aRaceResultsByCircuit } from '../utils/api';
-import classNames from 'classnames';
+import { fetchF1aRaceResultsByCircuit } from '../../utils/apiF1a';
 
-import { RaceResultItem, Loading, Select } from '../components';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { RaceResultItem, Loading, Select } from '../../components';
+import { NavLink } from 'react-router-dom';
 
 const fetchCircuitData = async () => {
   try {
@@ -61,6 +60,7 @@ const Top3Drivers = ({ year, circuitId, index }) => {
                   year={year}
                   wireframe={result.length === 0}
                   f1a={true}
+                  hasHover={false}
                 />
               ))}
             </ul>

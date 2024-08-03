@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import { useInView } from "framer-motion";
 
 export const ConstructorDriver = (props) => {
-    const { className, points, image, car, firstName, lastName, year, index, showStanding} = props;
+    const { className, points, image, car, firstName, lastName, year, index, showStanding, f1a} = props;
     const ref = useRef(null);
     const isInView = useInView(ref, { once: true });
 
@@ -20,7 +20,7 @@ export const ConstructorDriver = (props) => {
                 <img 
                     alt="" 
                     className="constructor-driver-card__person -mr-28 w-[12rem]"
-                    src={`${process.env.PUBLIC_URL + "/images/" + year + "/drivers/" + image + ".png"}`}
+                    src={f1a ? `${process.env.PUBLIC_URL + "/images/" + year + "/F1A/" + image + ".png"}` : `${process.env.PUBLIC_URL + "/images/" + year + "/drivers/" + image + ".png"}`}
                     style={{
                         opacity: isInView ? 1 : 0,
                         transition: "all 2s cubic-bezier(0.17, 0.55, 0.55, 1)"
@@ -47,7 +47,7 @@ export const ConstructorDriver = (props) => {
                         <img 
                             alt="" 
                             className="constructor-driver-card__car -mb-8 z-10 -ml-32 w-[20rem]"
-                            src={`${process.env.PUBLIC_URL + "/images/" + year + "/cars/" + car + ".png"}`}
+                            src={`${process.env.PUBLIC_URL + "/images/" + year + "/F1A/carSideView/" + image + "-side.png"}`}
                             width={200} 
                             style={{
                                 transform: isInView ? "none" : "translateX(-50px)",

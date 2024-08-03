@@ -1,5 +1,6 @@
 export * from './Button'
 export * from './ConstructorCar'
+export * from './ConstructorCarF1a'
 export * from './ConstructorDriver'
 export * from './DriverCard'
 export * from './FastestLaps'   

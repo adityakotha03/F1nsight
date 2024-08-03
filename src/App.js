@@ -6,7 +6,7 @@ import { fas } from '@fortawesome/free-solid-svg-icons';
 import { fab } from '@fortawesome/free-brands-svg-icons'
 
 import { Header, Footer, ResultsSelector } from './components';
-import { DriverComparison, TeammatesComparison, RacePage, RaceResultsPageF1a, RacePageF1a, LandingPage, RaceResultsPage, DriverStandings, ConstructorStandings, APXAR } from './pages'; 
+import { DriverComparison, TeammatesComparison, RacePage, LandingPage, RaceResultsPage, DriverStandings, ConstructorStandings, APXAR, RaceResultsPageF1a, RacePageF1a, DriverStandingsF1a, ConstructorStandingsF1a } from './pages'; 
 
 import './App.scss';
 
@@ -62,6 +62,8 @@ function MainContent({ setSelectedYear, selectedYear, resultPage, resultPagePath
         <Route path="/race/:raceId" element={<RacePage />} />
         <Route path="/race-f1a/:raceId" element={<RacePageF1a />} />
         <Route path="/f1a/race-results" element={<RaceResultsPageF1a />} />
+        <Route path="/f1a/driver-standings" element={<DriverStandingsF1a setSelectedYear={setSelectedYear} selectedYear={selectedYear} />} />
+        <Route path="/f1a/constructor-standings" element={<ConstructorStandingsF1a setSelectedYear={setSelectedYear} selectedYear={selectedYear} />} />
         <Route path="/apxar" element={<APXAR />} />
       </Routes>
     </div>
