@@ -1,7 +1,7 @@
 const BASE_URL = 'http://ergast.com/api/f1';
 
 export const fetchDriversList = async () => {
-  const response = await fetchWithCache(`https://praneeth7781.github.io/f1nsight-api-2/drivers/driversList.json`);
+  const response = await fetchWithCache(`https://praneeth7781.github.io/f1nsight-api-2/driversList.json`);
   // console.log("New one");
   return response.map(driver => ({
     id: driver.driverId,
