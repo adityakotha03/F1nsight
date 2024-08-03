@@ -63,6 +63,8 @@ export function DriverComparison(){
                 setDriver1Data(DriversData.driver1);
                 setDriver2Data(DriversData.driver2);
 
+                // console.log(DriversData.driver1);
+
                 // Convert finalStandings objects to arrays of years
                 const driver1Years = Object.keys(DriversData.driver1.finalStandings);
                 const driver2Years = Object.keys(DriversData.driver2.finalStandings);
@@ -216,6 +218,106 @@ export function DriverComparison(){
         )
     }
 
+    const StatRow = ({ label, value1, value2 }) => (
+        <tr className="border-b border-neutral-700">
+          <td className="py-2 px-4 text-left text-neutral-400">{label}</td>
+          <td className="py-2 px-4 text-right gradient-text-white">{value1}</td>
+          <td className="py-2 px-4 text-right gradient-text-white">{value2}</td>
+        </tr>
+      );
+      
+    const PeakSeasonRow = ({ category, data1, data2 }) => (
+        <tr className="border-b border-neutral-700">
+          <td className="py-2 px-4 text-left text-neutral-400">{category.charAt(0).toUpperCase() + category.slice(1)}</td>
+          <td className="py-2 px-4 text-right gradient-text-white">
+            {data1.season} ({data1[category]})
+          </td>
+          <td className="py-2 px-4 text-right gradient-text-white">
+            {data2.season} ({data2[category]})
+          </td>
+        </tr>
+    );
+
+    const ConsistencyTable = ({ title, data1, data2, driver1, driver2, formatFunc }) => (
+        <div className="mb-8">
+          <h2 className="heading-4 text-neutral-400 ml-24 mt-8 mb-4">{title}</h2>
+          <div className="overflow-x-auto">
+            <table className="w-full bg-glow-dark rounded-[1.2rem]">
+              <thead>
+                <tr className="border-b border-neutral-700">
+                  <th className="py-4 px-4 text-left text-neutral-400">Metric (Per Season)</th>
+                  <th className="py-4 px-4 text-right gradient-text-white">{driver1}</th>
+                  <th className="py-4 px-4 text-right gradient-text-white">{driver2}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <StatRow label="Wins" value1={formatFunc(data1.wins)} value2={formatFunc(data2.wins)} />
+                <StatRow label="Podiums" value1={formatFunc(data1.podiums)} value2={formatFunc(data2.podiums)} />
+                <StatRow label="Poles" value1={formatFunc(data1.poles)} value2={formatFunc(data2.poles)} />
+                <StatRow label="Points" value1={formatFunc(data1.points)} value2={formatFunc(data2.points)} />
+              </tbody>
+            </table>
+          </div>
+        </div>
+    );
+      
+    const DriverStatsSection = ({ driver1, driver2, driver1Data, driver2Data }) => {
+        // const formatDecimal = (value) => (value * 100).toFixed(2) + '%';
+        const formatNumber = (value) => value.toFixed(2);
+      
+        return (
+          <div className="mb-96">
+            <h2 className="heading-4 text-neutral-400 ml-24 mb-8">Driver Statistics Comparison</h2>
+            
+            <ConsistencyTable 
+              title="Coefficient of Variation (lower is more consistent)"
+              data1={driver1Data.consistency.cv} 
+              data2={driver2Data.consistency.cv} 
+              driver1={driver1} 
+              driver2={driver2} 
+              formatFunc={formatNumber}
+            />
+      
+            <ConsistencyTable 
+              title="Mean"
+              data1={driver1Data.consistency.mean} 
+              data2={driver2Data.consistency.mean} 
+              driver1={driver1} 
+              driver2={driver2} 
+              formatFunc={formatNumber}
+            />
+      
+            <ConsistencyTable 
+              title="Standard Deviation"
+              data1={driver1Data.consistency.std} 
+              data2={driver2Data.consistency.std} 
+              driver1={driver1} 
+              driver2={driver2} 
+              formatFunc={formatNumber}
+            />
+      
+            <h2 className="heading-4 text-neutral-400 ml-24 mt-16 mb-8">Peak Seasons</h2>
+            
+            <div className="overflow-x-auto">
+              <table className="w-full bg-glow-dark rounded-[1.2rem]">
+                <thead>
+                  <tr className="border-b border-neutral-700">
+                    <th className="py-4 px-4 text-left text-neutral-400">Category</th>
+                    <th className="py-4 px-4 text-right gradient-text-white">{driver1}</th>
+                    <th className="py-4 px-4 text-right gradient-text-white">{driver2}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <PeakSeasonRow category="wins" data1={driver1Data.peakSeason.wins} data2={driver2Data.peakSeason.wins} />
+                  <PeakSeasonRow category="podiums" data1={driver1Data.peakSeason.podiums} data2={driver2Data.peakSeason.podiums} />
+                  <PeakSeasonRow category="poles" data1={driver1Data.peakSeason.poles} data2={driver2Data.peakSeason.poles} />
+                </tbody>
+              </table>
+            </div>
+          </div>
+        );
+    };
+
 
     return(
         <div className='global-container px-8'>
@@ -339,6 +441,13 @@ export function DriverComparison(){
                                     />
                                 </>
                             )}
+
+                            <DriverStatsSection
+                                driver1={driversList.find(q => q.id === driver1)?.name}
+                                driver2={driversList.find(q => q.id === driver2)?.name}
+                                driver1Data={driver1Data}
+                                driver2Data={driver2Data}
+                            />
 
                             <h2 className="heading-4 text-neutral-400 ml-24">Finish positions</h2>
                             <p className="mb-16 text-neutral-400 ml-24">Number of times position achieved</p>
