@@ -6,7 +6,7 @@ import { Popover } from "flowbite-react";
 import { useInView } from "framer-motion";
 
 export const DriverCard = (props) => {
-    const { className, driver, driverColor, stint, fastestLap, startPosition, endPosition, isActive, layoutSmall, time, year, hasHover, index, mobileSmall, f1a} = props;
+    const { className, driver, driverColor, stint, fastestLap, startPosition, endPosition, isActive, layoutSmall, time, year, hasHover, index, mobileSmall, f1a, isRace} = props;
 
     const ref = useRef(null);
     const isInView = useInView(ref, { once: true });
@@ -59,26 +59,30 @@ export const DriverCard = (props) => {
         <div 
             className={classNames(
                 className, 
-                'driver-card flex items-center bg-glow relative rounded-r-sm',
+                'driver-card flex items-center bg-glow relative',
                 { 
                     'driver-card--canvas': mobileSmall,
                 },
                 isActive ? "bg-glow--active" : hasHover ? "bg-glow--hover" : "",
-                layoutSmall ? 'rounded-r-sm' : 'rounded-r-md',
+                !isRace ? 'rounded-sm mb-4' : layoutSmall && isRace ? 'rounded-r-sm' : 'rounded-r-md',
             )}
             style={{borderColor: isActive && `#${driverColor}`}}
         >
             {layoutSmall ? (
                 <div className={classNames("flex items-center justify-between w-full", { "max-md:hidden": mobileSmall})}>
                     <div className="flex items-center">
-                        <p className="heading-4 w-64 bg-neutral-600 py-2">P{endPosition}</p>
+                        <p className={classNames("heading-4 w-64 bg-neutral-600 py-2 text-center" , { "rounded-l-sm": !isRace })}>P{isRace ? endPosition : index + 1}</p>
                         <span className="font-display pl-16 mr-4">{driver.code}</span>
                     </div>
                     <p className=" text-xs pr-8">{time}</p>
                 </div>
             ) : (
                 <div className={classNames('flex item-center w-full', { "max-md:hidden": mobileSmall})}>
-                    <p className="driver-card-position heading-1 px-8 py-4 bg-neutral-700">P{endPosition}</p>
+                    <p 
+                        className={classNames("driver-card-position heading-1 px-8 py-4 bg-neutral-700" , { "rounded-l-sm": !isRace })}
+                    >
+                        P{isRace ? endPosition : index + 1}
+                    </p>
                     <img 
                         alt="" 
                         src={f1a ? 
@@ -104,8 +108,8 @@ export const DriverCard = (props) => {
             {mobileSmall && (
                 <div className="md:hidden">
                     <div className="flex items-center text-xs font-display">
-                        <p className="w-24 bg-neutral-600 py-1">P{endPosition}</p>
-                        <p className="pl-8">{driver.code}</p>
+                        <p className="w-24 bg-neutral-600 py-1 text-center rounded-tl-[.4rem]">P{isRace ? endPosition : index + 1}</p>
+                        <p className="pl-8 pr-8">{driver.code}</p>
                     </div>
                     <div>
                         <p className="text-xs pl-8">{time}</p>
@@ -155,7 +159,7 @@ export const DriverCard = (props) => {
                         </span>
                     </Popover>
                 )}
-                {positionMovement()}
+                {isRace && positionMovement()}
             </div>
         </div>
     );

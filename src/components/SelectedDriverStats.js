@@ -5,7 +5,7 @@ export const SelectedDriverStats = (props) => {
 
     return (
         <div className="mb-32">
-            <div className="flex items-end relative">
+            <div className="flex items-end relative w-[23.6rem] mx-auto">
                 <img
                     alt=""
                     src={`${
@@ -18,7 +18,6 @@ export const SelectedDriverStats = (props) => {
                     }`}
                     width={120}
                     height={120}
-                    className="-ml-8"
                 />
                 <img
                     alt=""
@@ -72,9 +71,9 @@ export const SelectedDriverStats = (props) => {
                     </div>
                 </div>
 
-                <div className="divider-glow-dark mt-16 mb-10" />
+                <div className="divider-glow-dark mt-12 mb-10" />
 
-                <p className="font-display text-center mb-16 ml-24">
+                <p className="font-display text-center mb-14 ml-24">
                     fastest lap
                 </p>
 
