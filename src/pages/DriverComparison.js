@@ -25,14 +25,14 @@ export function DriverComparison(){
     let navigate = useNavigate();
 
     function compare( a, b ) {
-    if ( a.name < b.name ){
-        return -1;
-    }
-    if ( a.name > b.name ){
-        return 1;
-    }
-        return 0;
-    }
+        if ( a.name < b.name ){
+            return -1;
+        }
+        if ( a.name > b.name ){
+            return 1;
+        }
+            return 0;
+        }
 
     useEffect(() => {
         const loadDrivers = async () => {
@@ -227,7 +227,7 @@ export function DriverComparison(){
                     <div className="flex max-md:flex-col justify-center items-center gap-16 z-[2] relative">
                         <Select
                             placeholder={urlDriverName1 ? urlDriverName1 : (driver1 ? driversList.find(driver => driver.id === driver1).name : "Select Driver 1")}
-                            options={driversList.map(driver => ({ value: driver.id, label: driver.name }))}
+                            options={driversList.sort((a,b) => a.name-b.name).map(driver => ({ value: driver.id, label: driver.name }))}
                             onChange={(selectedOption) => setInputDriver1(selectedOption)}
                             styles={customSelectStyles}
                             className="w-full md:w-[30rem]"
