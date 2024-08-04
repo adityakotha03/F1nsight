@@ -2,11 +2,16 @@ import React, { useRef } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { useInView } from "framer-motion";
+import { wildCards } from '../utils/wildCards';
 
 export const ConstructorDriver = (props) => {
     const { className, points, image, car, firstName, lastName, year, index, showStanding, f1a} = props;
     const ref = useRef(null);
     const isInView = useInView(ref, { once: true });
+
+    const imageSrc = wildCards.includes(image) 
+  ? `${process.env.PUBLIC_URL + "/images/" + year + "/F1A/carSideView/F1N-side.png"}`
+  : `${process.env.PUBLIC_URL + "/images/" + year + "/F1A/carSideView/" + image + "-side.png"}`;
 
     return (
         <div>
@@ -47,7 +52,7 @@ export const ConstructorDriver = (props) => {
                         <img 
                             alt="" 
                             className="constructor-driver-card__car -mb-8 z-10 -ml-32 w-[20rem]"
-                            src={`${process.env.PUBLIC_URL + "/images/" + year + "/F1A/carSideView/" + image + "-side.png"}`}
+                            src={imageSrc}
                             width={200} 
                             style={{
                                 transform: isInView ? "none" : "translateX(-50px)",

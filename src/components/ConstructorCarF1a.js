@@ -29,7 +29,7 @@ export const ConstructorCarF1a = (props) => {
                     src={`${process.env.PUBLIC_URL + "/images/" + year + "/F1A/carSideView2/" + driver + "-side2.png"}`}
                     width={90} 
                     style={{
-                        transform: isInView ? "none" : "translateX(-300px)",
+                        transform: isInView ? "none" : "translateX(25px) translateY(-15px)",
                         opacity: isInView ? 1 : 0,
                         transition: "all 1s cubic-bezier(0.17, 0.55, 0.55, 1) .2s",
                         bottom: "-.8rem",

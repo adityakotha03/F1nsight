@@ -1,5 +1,6 @@
 import classNames from "classnames";
 import React from "react";
+import { wildCards } from "../utils/wildCards";
 
 export const StartingGrid = (props) => {
     const {
@@ -158,7 +159,7 @@ export const StartingGridF1A = (props) => {
                           <img
                               alt=""
                               className="-mt-32 drop-shadow-[0_0_14px_rgba(0,0,0,0.75)]"
-                              src={driverCode === 'JUF' ? 
+                              src={wildCards.includes(driverCode) ? 
                                 `${ process.env.PUBLIC_URL + "/images/2024/F1A/carTopView/F1N-top.png"}` :
                                 `${ process.env.PUBLIC_URL + "/images/2024/F1A/carTopView/" + driverCode + "-top.png"}` 
                               }

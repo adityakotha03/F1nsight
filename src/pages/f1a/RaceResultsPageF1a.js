@@ -63,7 +63,7 @@ const Top3Drivers = ({ year, circuitId, index }) => {
             </ul>
           ) : (
             <div className="flex justify-center">
-              <img alt="" src={`${process.env.PUBLIC_URL + "/images/podium.png"}`} width={324} />
+              <img alt="" src={`${process.env.PUBLIC_URL + "/images/f1a-podium.png"}`} width={324} />
             </div>
           )}
         </div>
@@ -91,7 +91,7 @@ const Top3Drivers = ({ year, circuitId, index }) => {
             </ul>
           ) : (
             <div className="flex justify-center">
-              <img alt="" src={`${process.env.PUBLIC_URL + "/images/podium.png"}`} width={324} />
+              <img alt="" src={`${process.env.PUBLIC_URL + "/images/f1a-podium.png"}`} width={324} />
             </div>
           )}
         </div>
