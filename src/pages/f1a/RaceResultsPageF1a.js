@@ -34,9 +34,6 @@ const Top3Drivers = ({ year, circuitId, index }) => {
     fetchData();
   }, [year, circuitId]);
 
-  console.log('top3RaceResults', top3RaceResults);
-  console.log('top3RaceResults2', top3RaceResults2);
-
   return (
     <NavLink to={`/race-f1a/2024${index}`} className="bg-glow-dark rounded-[2.4rem] p-32 block mt-32 clickable-hover w-fit m-auto">
       <h3 className='font-display tracking-xs leading-none text-center font-bold mb-32'>{raceName}</h3>
@@ -121,18 +118,18 @@ export function RaceResultsPageF1a({ selectedYear }) {
     fetchData();
   }, [year]);
 
-  const handleYearChange = (event) => {
-    const selectedYear = event.target.value;
-    setYear(selectedYear);
-    setFilteredCircuits(Object.values(circuitData).filter(circuit => circuit.year === selectedYear));
-  };
+  // const handleYearChange = (event) => {
+  //   const selectedYear = event.target.value;
+  //   setYear(selectedYear);
+  //   setFilteredCircuits(Object.values(circuitData).filter(circuit => circuit.year === selectedYear));
+  // };
   
   return (
     <div className="race-results max-w-[120rem] m-auto mt-[12rem]">
-      <Select className="m-auto w-fit" label="Year" value={year} onChange={handleYearChange}>
+      {/* <Select className="m-auto w-fit" label="Year" value={year} onChange={handleYearChange}>
         <option value={2023}>2023</option>
         <option value={2024}>2024</option>
-      </Select>
+      </Select> */}
 
       {isLoading ? (
         <Loading className="mt-[20rem] mb-[20rem]" message={`Loading ${selectedYear} Race Results`} />

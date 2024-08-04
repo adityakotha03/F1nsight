@@ -5,7 +5,7 @@ import { Select } from './Select';
 import classNames from 'classnames';
 import { fetchRaceDetails } from '../utils/api';
 
-export const ResultsSelector = ({ className, setSelectedYear, selectedYear, resultPage, resultPagePath }) => {
+export const ResultsSelector = ({ className, setSelectedYear, selectedYear, resultPage, resultPagePath, f1a }) => {
   const navigate = useNavigate();
 
   const [selectValue, setSelectValue] = useState(resultPage);
@@ -49,9 +49,9 @@ export const ResultsSelector = ({ className, setSelectedYear, selectedYear, resu
           ))}
       </Select>
       <Select label="Select Result" onChange={handleResultChange} value={internal ? selectValue : resultPagePath}>
-          <option value="/race-results">Race results</option>
-          <option value="/constructor-standings">Constructor standings</option>
-          <option value="/driver-standings">Driver standings</option>
+          <option value={f1a ? "/f1a/race-results" : "/race-results"}>Race results</option>
+          <option value={f1a ? "/f1a/constructor-standings" : "/constructor-standings"}>Constructor standings</option>
+          <option value={f1a ? "/f1a/driver-standings" : "/driver-standings"}>Driver standings</option>
       </Select>
     </div>
   );

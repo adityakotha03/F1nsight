@@ -61,7 +61,7 @@ export function ConstructorStandingsF1a({ selectedYear }) {
       ) : (
         <ul>
           {standings.map((standing, index) => (
-            <li key={index} className='clickable-hover group -mb-32'>
+            <li key={index} className='-mb-32'>
               <ConstructorCarF1a 
                 image={standing.constructorId} 
                 points={standing.points}

@@ -40,6 +40,7 @@ function App() {
 function MainContent({ setSelectedYear, selectedYear, resultPage, resultPagePath }) {
   const location = useLocation();
   const validPaths = ['/race-results', '/constructor-standings', '/driver-standings'];
+  const validF1APaths = ['/f1a/race-results', '/f1a/constructor-standings', '/f1a/driver-standings'];
 
   return (
     <div className="grow">
@@ -52,6 +53,17 @@ function MainContent({ setSelectedYear, selectedYear, resultPage, resultPagePath
           resultPagePath={resultPagePath} 
         />
       )}
+      {validF1APaths.includes(location.pathname) && (
+        <ResultsSelector 
+          className="mt-[12.4rem] relative z-[100]" 
+          setSelectedYear={setSelectedYear} 
+          selectedYear={selectedYear} 
+          resultPage={resultPage} 
+          resultPagePath={resultPagePath} 
+          f1a
+        />
+      )}
+
       <Routes>
         <Route exact path="/" element={<LandingPage />} />
         <Route path="/race-results" element={<RaceResultsPage setSelectedYear={setSelectedYear} selectedYear={selectedYear} />} />
@@ -60,11 +72,12 @@ function MainContent({ setSelectedYear, selectedYear, resultPage, resultPagePath
         <Route path="/teammates-comparison/:urlYear?/:urlTeam?" element={<TeammatesComparison />}/>
         <Route path="/driver-comparison/:urlDriver1?/:urlDriver2?" element={<DriverComparison selectedYear={selectedYear} />} />
         <Route path="/race/:raceId" element={<RacePage />} />
+        <Route path="/apxar" element={<APXAR />} />
+        {/* F1A Routes */}
         <Route path="/race-f1a/:raceId" element={<RacePageF1a />} />
         <Route path="/f1a/race-results" element={<RaceResultsPageF1a />} />
         <Route path="/f1a/driver-standings" element={<DriverStandingsF1a setSelectedYear={setSelectedYear} selectedYear={selectedYear} />} />
         <Route path="/f1a/constructor-standings" element={<ConstructorStandingsF1a setSelectedYear={setSelectedYear} selectedYear={selectedYear} />} />
-        <Route path="/apxar" element={<APXAR />} />
       </Routes>
     </div>
   );
