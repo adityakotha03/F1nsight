@@ -6,7 +6,7 @@ import classNames from 'classnames';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { ReactComponent as Logo} from './f1nsight.svg';
-import { Select } from './Select';
+import { ReactSelectComponent } from './Select';
 import { RaceSelector } from './RaceSelector';
 import { fetchRacesAndSessions } from '../utils/api';
 
@@ -55,32 +55,37 @@ export const Header = ({ setResultPage, setResultPagePath }) => {
         }
     };
     
-
-    const currentYear = new Date().getFullYear();
     const generateYears = (startYear) => {
         const years = [];
+        const currentYear = new Date().getFullYear();
         for (let year = currentYear; year >= startYear; year--) {
-          years.push(year);
+          years.push({ value: year.toString(), label: year.toString() });
         }
         return years;
     };
 
-    const handleYearChange = (e) => {
-        setSelectedYear(e.target.value);
+    const yearOptions = generateYears(2023);
+
+    const handleYearChange = (selectedOption) => {
+        setSelectedYear(selectedOption.value);
     };
 
     const toggleOpen = () => {
         setIsOpen(!isOpen);
     };
 
+    console.log('Header rendered', selectedYear);
+
     const raceSelectorContent = (
         <>
-            <Select className="mb-8" label="Year" value={selectedYear} onChange={handleYearChange} fullWidth>
-                <option value="">---</option>
-                {generateYears(2023).map((year) => (
-                    <option key={year} value={year}>{year}</option>
-                ))}
-            </Select>
+            <ReactSelectComponent
+                placeholder="Select Year"
+                options={yearOptions}
+                onChange={handleYearChange}
+                value={yearOptions.find(option => option.value === selectedYear)}
+                className="w-full mb-8"
+                isSearchable={false}
+            />
             <RaceSelector 
                 races={races} 
                 selectedYear={selectedYear} 

@@ -14,14 +14,14 @@ import { organizeQualifyingResults } from "../utils/organizeQualifyingResults.js
 import {
     DriverCard,
     Loading,
-    Select,
     ThreeCanvas,
     LapChart,
     TireStrategy,
     StartingGrid,
     SelectedDriverStats,
     FastestLaps,
-    PositionCharts
+    PositionCharts,
+    ReactSelectComponent,
 } from "../components";
 
 export function RacePage() {
@@ -81,8 +81,8 @@ export function RacePage() {
         }
     },[])
 
-    const handleOptionChange = (event) => {
-        setSelectedSession(event.target.value);
+    const handleOptionChange = (selectedOption) => {
+        setSelectedSession(selectedOption.value);
     };
 
 
@@ -436,14 +436,24 @@ export function RacePage() {
     };
 
     // console.log(location, MapPath);
-    console.log({raceResults});
-    console.log({startingGrid});
+    // console.log({raceResults});
+    // console.log({startingGrid});
 
     const { q1Results, q2Results, q3Results } = organizeQualifyingResults(raceResults);
 
-    console.log('Q1 Results:', q1Results);
-    console.log('Q2 Results:', q2Results);
-    console.log('Q3 Results:', q3Results);
+    // console.log('Q1 Results:', q1Results);
+    // console.log('Q2 Results:', q2Results);
+    // console.log('Q3 Results:', q3Results);
+
+    const sessionOptions = [];
+    if (hasRaceSession) {
+        sessionOptions.push({ value: 'Race', label: 'Race' });
+    }
+    if (hasQualifyingSession) {
+        sessionOptions.push({ value: 'Qualifying', label: 'Qualifying' });
+    }
+
+    console.log('selectedSession', selectedSession);
 
     return isLoading ? (
         <Loading
@@ -458,17 +468,14 @@ export function RacePage() {
                         {raceName} {year}
                     </p>
                 )}
-                <Select
-                    className="w-fit"
-                    label="Select Session"
+                <ReactSelectComponent
+                    placeholder="Select Session"
+                    options={sessionOptions}
                     onChange={handleOptionChange}
-                    value={selectedSession}
-                >
-                    {hasRaceSession && <option value="Race">Race</option>}
-                    {hasQualifyingSession && (
-                        <option value="Qualifying">Qualifying</option>
-                    )}
-                </Select>
+                    value={sessionOptions.find(option => option.value === selectedSession)}
+                    isSearchable={false}
+                    className="w-[17rem] m-auto"
+                />
             </div>
 
             {selectedSession !== "Race" && (

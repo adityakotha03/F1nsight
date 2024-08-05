@@ -65,7 +65,7 @@ select option {
         &:focus-within  {
             margin-top: 1.4rem;
             .placeholder {
-                top: 0;
+                top: -.2rem;
             }
         }
     }

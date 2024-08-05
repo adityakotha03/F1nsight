@@ -3,8 +3,9 @@ import classNames from 'classnames';
 import axios from 'axios';
 import { useLocation, useParams, useNavigate } from 'react-router-dom';
 
+
 import { fetchDriverStats } from '../utils/api';
-import { HeadToHeadChart, PositionsGainedLostChart, QualifyingLapTimesChart, QualifyingLapTimesDeltaChart, PositionsComparisonChart, Select, Loading, Button } from '../components';
+import { HeadToHeadChart, PositionsGainedLostChart, QualifyingLapTimesChart, QualifyingLapTimesDeltaChart, PositionsComparisonChart, ReactSelectComponent, Loading, Button } from '../components';
 
 
 export const TeammatesComparison = () => {
@@ -30,7 +31,7 @@ export const TeammatesComparison = () => {
   const [renderHead, setRenderHead] = useState(true);
   const [showTimes, setShowTimes] = useState(true);
 
-  console.log(headToHeadData);
+  // console.log(headToHeadData);
 
   const handleShowTimes = () => {
     setShowTimes(true);
@@ -78,8 +79,8 @@ export const TeammatesComparison = () => {
 
   const teamsMemo = useMemo(() => teamCache[year] || [], [year, teamCache]);
 
-  const handleYearChange = (e) => {
-    const selectedYear = e.target.value;
+  const handleYearChange = (selectedOption) => {
+    const selectedYear = selectedOption.value;
     setYear(selectedYear);
     setTeam('');
     setDrivers([]);
@@ -87,8 +88,9 @@ export const TeammatesComparison = () => {
     navigate(team ? `/teammates-comparison/${selectedYear}/${team}` : `/teammates-comparison/${selectedYear}`, { replace: true });
   };
 
-  const handleTeamChange = (e) => {
-    const selectedTeam = e.target.value;
+  
+  const handleTeamChange = (selectedOption) => {
+    const selectedTeam = selectedOption.value;
     setTeam(selectedTeam);
     navigate(`/teammates-comparison/${year}/${selectedTeam}`, { replace: true });
     submit(selectedTeam);
@@ -159,26 +161,26 @@ export const TeammatesComparison = () => {
     }
   };
 
-  const handleDriver1Change = async (e) => {
-    setSelectedDriver1(e.target.value);
+  const handleDriver1Change = async (selectedOption) => {
+    setSelectedDriver1(selectedOption.value);
     if (selectedDriver2) {
       setAmbQ(true);
       setAmbR(true);
       setRenderHead(true);
-      const driver1Data = drivers.find(driver => driver.driverId === e.target.value);
+      const driver1Data = drivers.find(driver => driver.driverId === selectedOption.value);
       const driver2Data = drivers.find(driver => driver.driverId === selectedDriver2);
       await fetchDriverData([driver1Data, driver2Data]);
     }
   };
 
-  const handleDriver2Change = async (e) => {
-    setSelectedDriver2(e.target.value);
+  const handleDriver2Change = async (selectedOption) => {
+    setSelectedDriver2(selectedOption.value);
     if (selectedDriver1) {
       setAmbQ(true);
       setAmbR(true);
       setRenderHead(true);
       const driver1Data = drivers.find(driver => driver.driverId === selectedDriver1);
-      const driver2Data = drivers.find(driver => driver.driverId === e.target.value);
+      const driver2Data = drivers.find(driver => driver.driverId === selectedOption.value);
       await fetchDriverData([driver1Data, driver2Data]);
     }
   };
@@ -363,44 +365,60 @@ const GridRow = (label, driver1, driver2, title) => {
   );
 }
 
+  const yearOptions = years.map(year => ({ value: year, label: year }));
+  const teamOptions = teamsMemo.map(team => ({ value: team.constructorId, label: team.name }));
+  const driverOptions = drivers.map(driver => ({ value: driver.driverId, label: `${driver.givenName} ${driver.familyName}` }));
+
+console.log('year', year);
+console.log('team', team);
+
+  const formattedTeamOptions = teamOptions.map(team => ({
+    value: team.value,
+    label: team.label.replace('F1 Team', '').trim(),
+  }));
+
   return (
     <div className='global-container'>
 
       <div className="flex items-center justify-center gap-8">
-        <Select label="Year" value={year} onChange={handleYearChange}>
-          <option value="" disabled={!!year}>Select Year</option>
-          {years.map((year) => (
-            <option key={year} value={year}>{year}</option>
-          ))}
-        </Select>
-        <Select label="Team" value={team} onChange={handleTeamChange} disabled={!year}>
-          <option value="" disabled={!!team}>Select Team</option>
-          {teamsMemo.map(t => (
-            <option key={t.constructorId} value={t.constructorId}>{t.name}</option>
-          ))}
-        </Select>
+        <ReactSelectComponent
+          placeholder="Select Year"
+          options={yearOptions}
+          onChange={handleYearChange}
+          value={yearOptions.find(option => option.value === year)}
+          disabled={!!year}
+          isSearchable={false}
+          className="w-[17rem]"
+        />
+        <ReactSelectComponent
+          placeholder="Select Team"
+          options={teamOptions}
+          onChange={handleTeamChange}
+          value={formattedTeamOptions.find(option => option.value === team)}
+          disabled={!year}
+          isSearchable={false}
+          className="w-[17rem]"
+        />
       </div>
 
       {showDriverSelectors && (
       <div className="flex flex-col items-center justify-center gap-8">
         <p className="pt-24 pb-16">This team had more than 2 drivers competing this season. Please select two drivers to compare.</p>
         <div className="flex items-center gap-8">
-          <Select label="Driver 1" value={selectedDriver1} onChange={handleDriver1Change}>
-            <option value="" disabled={!!selectedDriver1}>Select Driver</option>
-            {drivers.map(d => (
-              <option key={d.driverId} value={d.driverId} disabled={d.driverId === selectedDriver2}>
-                {d.givenName} {d.familyName}
-              </option>
-            ))}
-          </Select>
-          <Select label="Driver 2" value={selectedDriver2} onChange={handleDriver2Change} disabled={!selectedDriver1}>
-            <option value="" disabled={!!selectedDriver2}>Select Driver</option>
-            {drivers.map(d => (
-              <option key={d.driverId} value={d.driverId} disabled={d.driverId === selectedDriver1}>
-                {d.givenName} {d.familyName}
-              </option>
-            ))}
-          </Select>
+          <ReactSelectComponent
+            placeholder="Select Driver 1"
+            options={driverOptions.map(driver => ({ ...driver, isDisabled: driver.value === selectedDriver1.value }))}
+            onChange={handleDriver1Change}
+            value={driverOptions.find(option => option.value === selectedDriver1)}
+            isSearchable={false}
+          />
+          <ReactSelectComponent
+            placeholder="Select Driver 2"
+            options={driverOptions.map(driver => ({ ...driver, isDisabled: driver.value === selectedDriver2.value }))}
+            onChange={handleDriver2Change}
+            value={driverOptions.find(option => option.value === selectedDriver2)}
+            isSearchable={false}
+          />
         </div>
       </div>
     )}
