@@ -6,7 +6,7 @@ import classNames from 'classnames';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { ReactComponent as Logo} from './f1nsight.svg';
-import { Select } from './Select';
+import { ReactSelectComponent } from './Select';
 import { RaceSelector } from './RaceSelector';
 import { fetchRacesAndSessions } from '../utils/api';
 
@@ -15,8 +15,9 @@ export const Header = ({ setResultPage, setResultPagePath }) => {
     const [races, setRaces] = useState([]);
     const [selectedYear, setSelectedYear] = useState([]);
     const [isOpen, setIsOpen] = useState(false);
+    const [raceViewerDropdownOpen, setRaceViewerDropdownOpen] = useState(false);
 
-    const navRef = useRef(null);
+    const raceViewerRef = useRef(null);
     const headerRef = useRef(null);
 
     useEffect(() => {
@@ -30,6 +31,19 @@ export const Header = ({ setResultPage, setResultPagePath }) => {
         }
     }, [selectedYear]);
 
+    const handleClickOutside = (event) => {
+        if (raceViewerRef.current && !raceViewerRef.current.contains(event.target)) {
+            setRaceViewerDropdownOpen(false);
+        }
+    };
+
+    useEffect(() => {
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+          document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
+
     const handleNavLinkClick = (page) => {
         setResultPage(page);
         if (page === 'Race Results') {
@@ -40,18 +54,20 @@ export const Header = ({ setResultPage, setResultPagePath }) => {
             setResultPagePath('/driver-standings');
         }
     };
-
-    const currentYear = new Date().getFullYear();
+    
     const generateYears = (startYear) => {
         const years = [];
+        const currentYear = new Date().getFullYear();
         for (let year = currentYear; year >= startYear; year--) {
-          years.push(year);
+          years.push({ value: year.toString(), label: year.toString() });
         }
         return years;
     };
 
-    const handleYearChange = (e) => {
-        setSelectedYear(e.target.value);
+    const yearOptions = generateYears(2023);
+
+    const handleYearChange = (selectedOption) => {
+        setSelectedYear(selectedOption.value);
     };
 
     const toggleOpen = () => {
@@ -60,23 +76,24 @@ export const Header = ({ setResultPage, setResultPagePath }) => {
 
     const raceSelectorContent = (
         <>
-            <Select className="mb-8" label="Year" value={selectedYear} onChange={handleYearChange} fullWidth>
-                <option value="">---</option>
-                {generateYears(2023).map((year) => (
-                    <option key={year} value={year}>{year}</option>
-                ))}
-            </Select>
+            <ReactSelectComponent
+                placeholder="Select Year"
+                options={yearOptions}
+                onChange={handleYearChange}
+                value={yearOptions.find(option => option.value === selectedYear)}
+                className="w-full mb-8"
+                isSearchable={false}
+            />
             <RaceSelector 
                 races={races} 
                 selectedYear={selectedYear} 
-                onChange={toggleOpen}
+                onChange={() => {
+                    setRaceViewerDropdownOpen(false)
+                    setIsOpen(false)
+                }}
             />
         </>
     )
-
-    const disableClick = (e) => {
-        e.preventDefault();
-    }
     
     const comparisonContent = (
         <>
@@ -116,7 +133,7 @@ export const Header = ({ setResultPage, setResultPagePath }) => {
     return (
         <>
         <header className="global-header" ref={headerRef}>
-            <div className="global-header__main-nav shadow-lg bg-glow bg-neutral-800/90 backdrop-blur-sm uppercase tracking-xs text-sm " >
+            <div className="global-header__main-nav shadow-lg bg-glow bg-neutral-800/90 backdrop-blur-sm" >
 
                 <div className="global-header__main-nav__left flex items-center gap-32">
                     <a href="/"><Logo height={48} /></a>
@@ -131,10 +148,10 @@ export const Header = ({ setResultPage, setResultPagePath }) => {
                 
                 {/* Desktop */}
                 <div className="flex items-center gap-16 max-md:hidden">
-                    <div className="relative group w-max">
+                    <div className="relative group w-max uppercase tracking-xs text-sm ">
                         <button className="global-header__main-nav__button py-12 px-24 rounded-[.8rem] uppercase">
                             Results
-                            <FontAwesomeIcon icon="chevron-down" className='global-header__main-nav__button__icon' />
+                            <FontAwesomeIcon icon="chevron-down" className='global-header__main-nav__button__icon opacity-0 group-hover:opacity-100' />
                         </button>
                         <div className="absolute right-1 -mt-2 pt-12 w-max hidden group-hover:block">
                             <div className="flex flex-col gap-8 p-16 rounded-md bg-glow bg-neutral-800 shadow-lg">
@@ -142,10 +159,10 @@ export const Header = ({ setResultPage, setResultPagePath }) => {
                             </div>
                         </div>
                     </div>
-                    <div className="relative group w-max">
+                    <div className="relative group w-max uppercase tracking-xs text-sm ">
                         <button className="global-header__main-nav__button py-12 px-24 rounded-[.8rem] uppercase">
                             Comparisons
-                            <FontAwesomeIcon icon="chevron-down" className='global-header__main-nav__button__icon' />
+                            <FontAwesomeIcon icon="chevron-down" className='global-header__main-nav__button__icon opacity-0 group-hover:opacity-100' />
                         </button>
                         <div className="absolute right-1 -mt-2 pt-12 w-max hidden group-hover:block">
                             <div className="flex flex-col gap-8 p-16 rounded-md bg-glow bg-neutral-800 shadow-lg">
@@ -153,9 +170,12 @@ export const Header = ({ setResultPage, setResultPagePath }) => {
                             </div>
                         </div>
                     </div>
-                    <div className="relative group w-max">
-                        <button className="global-header__main-nav__button py-12 px-24 rounded-[.8rem] uppercase">Race Viewer</button>
-                        <div className="absolute right-1 -mt-2 pt-12 w-max hidden group-hover:block min-w-[20rem]">
+                    <div className="relative w-max" ref={raceViewerRef}>
+                        <button className="global-header__main-nav__button py-12 px-24 rounded-[.8rem] uppercase tracking-xs text-sm " onClick={() => setRaceViewerDropdownOpen(!raceViewerDropdownOpen)}>
+                            Race Viewer
+                            <FontAwesomeIcon icon="chevron-down" className={classNames('global-header__main-nav__button__icon opacity-0', {"opacity-100": raceViewerDropdownOpen})} />
+                        </button>
+                        <div className={classNames("absolute right-1 -mt-2 pt-12 w-max min-w-[20rem]", raceViewerDropdownOpen ? 'block' : 'hidden' )}>
                             <div className="flex flex-col p-16 rounded-md bg-glow bg-neutral-800 shadow-lg">
                                 {raceSelectorContent}
                             </div>
@@ -173,14 +193,14 @@ export const Header = ({ setResultPage, setResultPagePath }) => {
                 </button>
                 <div className="pt-64 px-32">
                     <p className="font-display tracking-xs my-16">Results</p>
-                    <div className="flex flex-col gap-16">
+                    <div className="flex flex-col gap-16 ml-8">
                         {resultsContent}
                     </div>
-                    <p className="font-display tracking-xs my-16 mt-32">Comparisons</p>
-                    <div className="flex flex-col gap-16">
+                    <p className="font-display tracking-xs my-16">Comparisons</p>
+                    <div className="flex flex-col gap-16  ml-8">
                         {comparisonContent}
                     </div>
-                    <p className="font-display tracking-xs my-16 mt-32">Race Viewer</p>
+                    <p className="font-display tracking-xs my-16">Race Viewer</p>
                     <div className="flex flex-col gap-16">
                         {raceSelectorContent}
                     </div>

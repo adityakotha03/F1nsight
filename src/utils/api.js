@@ -1,7 +1,7 @@
 const BASE_URL = 'http://ergast.com/api/f1';
 
 export const fetchDriversList = async () => {
-  const response = await fetchWithCache(`https://praneeth7781.github.io/f1nsight-api-2/drivers/driversList.json`);
+  const response = await fetchWithCache(`https://praneeth7781.github.io/f1nsight-api-2/driversList.json`);
   // console.log("New one");
   return response.map(driver => ({
     id: driver.driverId,
@@ -61,7 +61,7 @@ export const fetchDriverStandings = async (driverId) => {
     const response  = await fetch(url);
     if(response.ok){
       const data = await response.json();
-      console.log(data);
+      // console.log(data);
     } else {
       console.error('Failed to f data');
     }
@@ -76,7 +76,7 @@ export const fetchDriverResults = async (driverId) => {
     const response  = await fetch(url);
     if(response.ok){
       const data = await response.json();
-      console.log(data);
+      // console.log(data);
     } else {
       console.error('Failed to f data');
     }
@@ -91,7 +91,7 @@ export const fetchDriverQualifying = async (driverId) => {
     const response  = await fetch(url);
     if(response.ok){
       const data = await response.json();
-      console.log(data);
+      // console.log(data);
     } else {
       console.error('Failed to f data');
     }
@@ -235,7 +235,7 @@ export const getPartialConstructorStandings = async (selectedYear, start, end) =
       driverResponse.json()
     ]);
 
-    console.log("Here", constructorData, start, end);
+    // console.log("Here", constructorData, start, end);
 
     let startStandings = []
     if(parseInt(start)===1){
@@ -246,7 +246,7 @@ export const getPartialConstructorStandings = async (selectedYear, start, end) =
         driverCodes: []
       }))
     } else {
-      console.log("Value of start is: ", start)
+      // console.log("Value of start is: ", start)
       startStandings = constructorData[start-1].map(standing => ({
         constructorName: standing.Constructor.name,
         constructorId: standing.Constructor.constructorId,
@@ -254,7 +254,7 @@ export const getPartialConstructorStandings = async (selectedYear, start, end) =
         driverCodes: []
       }))
     }
-    console.log(startStandings);
+    // console.log(startStandings);
 
 
     let endStandings = constructorData[end].map(standing => ({
@@ -387,7 +387,7 @@ export const getPartialDriverStandings = async (selectedYear, start, end) => {
       let endStandings = data[end];
       let startStandings = [];
       if(parseInt(start)!==1) startStandings = data[start-1];
-      console.log(endStandings);
+      // console.log(endStandings);
       const standings =  endStandings.map(end => {
         const start = startStandings.find(start => start.Driver.driverId === end.Driver.driverId);
         return {

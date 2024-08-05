@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import Select from 'react-select';
 import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
 
-import { customSelectStyles } from './Select';
+import { ReactSelectComponent } from './Select';
 import { Button } from './Button';
 import classNames from 'classnames';
 
@@ -36,8 +35,11 @@ export const RangeSelector = (props) => {
         setIsOpen(!isOpen);
     };
 
+    const race1name = raceDetails ? start > 0 && raceDetails.find(race => (race.round === start)).raceName : ''
+    const race2name = raceDetails ? end > 0 && raceDetails.find(race => (race.round === end)).raceName : ''
+
     return (
-        <div className={classNames(className,"flex flex-col items-center z-[2] relative bg-glow-dark p-16 rounded-lg mb-48")}>
+        <><div className={classNames(className,"flex flex-col items-center z-[2] relative bg-glow-dark p-16 rounded-lg mb-48")}>
             <button 
                 onClick={toggleOpen}
                 className="flex items-center gap-8 text-lg font-semibold"
@@ -50,18 +52,16 @@ export const RangeSelector = (props) => {
                 className={`transition-all duration-300 ease-in-out ${isOpen ? 'max-h-screen' : 'max-h-[0] overflow-hidden'}`}
             >
                 <div className="flex max-md:flex-col justify-center items-center gap-16 z-[2] relative p-16">
-                    <Select 
-                        placeholder={start === -1 ? "Select Start Race" : (raceDetails ? raceDetails.find(race => (race.round === start)).raceName : '')}
+                    <ReactSelectComponent 
+                        placeholder="Select Start Race"
                         options={raceDetails ? raceDetails.map(race => ({value: race.round, label: race.raceName})) : ''}
                         onChange={handleStartChange}
-                        styles={customSelectStyles}
                         className="w-full md:w-[30rem]"
                     />
-                    <Select 
-                        placeholder={end === -1 ? "Select End Race" : (raceDetails ? raceDetails.find(race => (race.round === end)).raceName : '')}
+                    <ReactSelectComponent 
+                        placeholder="Select End Race"
                         options={raceDetails ? raceDetails.map(race => ({value: race.round, label: race.raceName})).filter(x => (parseInt(x.value) > parseInt(start))) : ''}
                         onChange={(selectedOption) => setEnd(selectedOption.value)}
-                        styles={customSelectStyles}
                         className="w-full md:w-[30rem]"
                     />
                 </div>
@@ -74,5 +74,19 @@ export const RangeSelector = (props) => {
                 </Button>
             </div>
         </div>
+        {(race1name && race2name) && (
+            <div className="flex justify-center gap-16 px-8 items-center">
+                <div className="text-right w-1/2">
+                    <div className="text-neutral-400 text-sm leading-[1]">Round {start}</div>
+                    <div className="font-display">{race1name.replace(/Grand Prix/g, "GP")}</div>
+                </div>
+                <div>-</div>
+                <div className="w-1/2">
+                    <div className="text-neutral-400 text-sm leading-[1]">Round {end}</div>
+                    <div className="font-display">{race2name.replace(/Grand Prix/g, "GP")}</div>
+                </div>
+            </div>
+        )} 
+        </>
     );
 };

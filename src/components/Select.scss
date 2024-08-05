@@ -47,3 +47,31 @@ select {
 select option {
     color: theme('colors.neutral.950');
 }
+
+.custom-select {
+    width: 100%;
+
+    .placeholder {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        transition: all 0.2s ease;
+        pointer-events: none;
+        font-size: 1rem;
+        white-space: nowrap;
+    }
+
+    .custom-select-container {
+        &.has-value,
+        &:focus-within  {
+            margin-top: 1.4rem;
+            .placeholder {
+                top: -.2rem;
+            }
+        }
+    }
+    
+    [type='text']:focus {
+        box-shadow: none;
+    }
+}
