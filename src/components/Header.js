@@ -74,8 +74,6 @@ export const Header = ({ setResultPage, setResultPagePath }) => {
         setIsOpen(!isOpen);
     };
 
-    console.log('Header rendered', selectedYear);
-
     const raceSelectorContent = (
         <>
             <ReactSelectComponent

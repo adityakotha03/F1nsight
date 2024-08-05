@@ -369,9 +369,6 @@ const GridRow = (label, driver1, driver2, title) => {
   const teamOptions = teamsMemo.map(team => ({ value: team.constructorId, label: team.name }));
   const driverOptions = drivers.map(driver => ({ value: driver.driverId, label: `${driver.givenName} ${driver.familyName}` }));
 
-console.log('year', year);
-console.log('team', team);
-
   const formattedTeamOptions = teamOptions.map(team => ({
     value: team.value,
     label: team.label.replace('F1 Team', '').trim(),

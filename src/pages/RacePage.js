@@ -72,7 +72,7 @@ export function RacePage() {
             setYear(response[raceId]["year"]);
             setLocation(response[raceId]["location"]);
             setRaceName(response[raceId]["raceName"]);
-            console.log(raceName);
+            // console.log(raceName);
         };
         if(raceName){}
         else{

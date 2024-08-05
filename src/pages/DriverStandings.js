@@ -19,7 +19,7 @@ export function DriverStandings({ selectedYear }) {
       const data2 = await fetchRaceDetails(selectedYear);
       setRaceDetails(data2.filter(race => (race.url)))
       setStandings(data);
-      console.log(data);
+      // console.log(data);
       setIsLoading(false);
     };
 
@@ -31,7 +31,7 @@ export function DriverStandings({ selectedYear }) {
       setIsLoading(true);
       if(parseInt(start)<parseInt(end) && start!==-1 && end!==-1){
         const data = await getPartialDriverStandings(selectedYear, start, end);
-        console.log(data);
+        // console.log(data);
         setStandings(data);
       }
       setIsLoading(false);
@@ -40,7 +40,7 @@ export function DriverStandings({ selectedYear }) {
     start > 0 || end > 0 ? setRangeOpen(true) : setRangeOpen(false);
   }, [start, end]);
 
-  console.log({start}, {end});
+  // console.log({start}, {end});
   return (
     <div className="max-w-[45rem] m-auto">
       {isLoading ? (
