@@ -21,7 +21,7 @@ export function ConstructorStandings({ selectedYear }) {
       const data2 = await fetchRaceDetails(selectedYear);
       const data3 = data2.filter(race => (race.url))
       setRaceDetails(data3);
-      console.log(data3);
+      // console.log(data3);
       setStandings(data);
       // console.log(data);
       // setEnd(data3.length);

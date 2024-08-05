@@ -1,58 +1,66 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-
-import { Select } from './Select';
+import { ReactSelectComponent } from './Select';
 import classNames from 'classnames';
-import { fetchRaceDetails } from '../utils/api';
 
 export const ResultsSelector = ({ className, setSelectedYear, selectedYear, resultPage, resultPagePath }) => {
   const navigate = useNavigate();
 
   const [selectValue, setSelectValue] = useState(resultPage);
-  const [internal, setInternal] = useState(resultPage);
+  const [internal, setInternal] = useState(false);
 
   useEffect(() => {
     setInternal(false);
     setSelectValue(resultPage);
   }, [resultPage]);
 
-  const handleResultChange = (e) => {
-    if (e.target.value === "") {
+  const handleResultChange = (selectedOption) => {
+    if (selectedOption.value === "") {
       navigate("/");
     } else {
       setInternal(true);
-      setSelectValue(e.target.value);
-      navigate(
-        e.target.value, 
-      );
+      setSelectValue(selectedOption.value);
+      navigate(selectedOption.value);
     }
   };
 
-  const generateYears = (startYear) => {
-      const years = [];
-      let currentYear = new Date().getFullYear();
-      for (let year = currentYear; year >= startYear; year--) {
-        years.push(year);
-      }
-      return years;
+  const generateYearOptions = (startYear) => {
+    const years = [];
+    let currentYear = new Date().getFullYear();
+    for (let year = currentYear; year >= startYear; year--) {
+      years.push({ value: year, label: year.toString() });
+    }
+    return years;
   };
 
-  const handleYearChange = (e) => {
-    setSelectedYear(e.target.value);
+  const handleYearChange = (selectedOption) => {
+    setSelectedYear(selectedOption.value);
   };
+
+  const resultsOptions = [
+    { value: '/race-results', label: 'Race results' },
+    { value: '/constructor-standings', label: 'Constructor standings' },
+    { value: '/driver-standings', label: 'Driver standings' }
+  ];
 
   return (
     <div className={classNames(className, 'flex items-center justify-center gap-16 m-auto')}>
-      <Select label="Year" value={selectedYear} onChange={handleYearChange}>
-          {generateYears(2023).map((year) => (
-            <option key={year} value={year}>{year}</option>
-          ))}
-      </Select>
-      <Select label="Select Result" onChange={handleResultChange} value={internal ? selectValue : resultPagePath}>
-          <option value="/race-results">Race results</option>
-          <option value="/constructor-standings">Constructor standings</option>
-          <option value="/driver-standings">Driver standings</option>
-      </Select>
+      <ReactSelectComponent
+        placeholder="Select Year"
+        options={generateYearOptions(2023)}
+        onChange={handleYearChange}
+        value={generateYearOptions(2023).find(option => option.value === selectedYear)}
+        isSearchable={false}
+        className="w-[17rem]"
+      />
+      <ReactSelectComponent
+        placeholder="Select Result"
+        options={resultsOptions}
+        onChange={handleResultChange}
+        isSearchable={false}
+        value={internal ? resultsOptions.find(option => option.value === selectValue) : resultsOptions.find(option => option.value === resultPagePath)}
+        className="w-[29rem]"
+      />
     </div>
   );
 };

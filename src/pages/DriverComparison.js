@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import Select from 'react-select';
 import classNames from 'classnames';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { fetchDriverStats, fetchDriversList } from '../utils/api';
-import { Loading, LineChartByYear, BarChartTotal, Button, customSelectStyles } from "../components";
+import { Loading, LineChartByYear, BarChartTotal, Button, ReactSelectComponent } from "../components";
 
 export function DriverComparison(){
     const {urlDriver1, urlDriver2} = useParams();
@@ -224,20 +223,16 @@ export function DriverComparison(){
                 <Loading className="mt-[20rem] mb-[20rem]" message={`Comparing ${driversList.find(q=> q.id === driver1).name} and ${driversList.find(q=> q.id === driver2).name}`} />
             ) : (
                 <div>
-                    <div className="flex max-md:flex-col justify-center items-center gap-16 z-[2] relative">
-                        <Select
-                            placeholder={urlDriverName1 ? urlDriverName1 : (driver1 ? driversList.find(driver => driver.id === driver1).name : "Select Driver 1")}
+                    <div className="flex max-md:flex-col justify-center items-center gap-16 z-[2] relative max-w-[45rem] m-auto">
+                        <ReactSelectComponent
+                            placeholder="Select Driver 1"
                             options={driversList.sort((a,b) => a.name-b.name).map(driver => ({ value: driver.id, label: driver.name }))}
                             onChange={(selectedOption) => setInputDriver1(selectedOption)}
-                            styles={customSelectStyles}
-                            className="w-full md:w-[30rem]"
                         />
-                        <Select
-                            placeholder={urlDriverName2 ? urlDriverName2 : (driver2 ? driversList.find(driver => driver.id === driver2).name : "Select Driver 2")}
+                        <ReactSelectComponent
+                            placeholder="Select Driver 2"
                             options={driversList.map(driver => ({ value: driver.id, label: driver.name }))}
                             onChange={(selectedOption) => setInputDriver2(selectedOption)}
-                            styles={customSelectStyles}
-                            className="w-full md:w-[30rem]"
                         />
                     </div>
 

@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { Select } from './Select';
+import { ReactSelectComponent } from './Select';
 
 export const RaceSelector = ({ races, selectedYear, onChange }) => {
   const navigate = useNavigate();
 
   const [selectValue, setSelectValue] = useState('');
 
-  const handleRaceChange = (e) => {
-      const race = races.find(r => r.meeting_name === e.target.value);
+  const handleRaceChange = (selectedOption) => {
+      const race = races.find(r => r.meeting_name === selectedOption.value);
       setSelectValue(race.meeting_name);
       localStorage.setItem('selectValue', race.meeting_name);
       if (race) {
@@ -28,12 +28,20 @@ export const RaceSelector = ({ races, selectedYear, onChange }) => {
       onChange()
   };
 
+  const raceOptions = races.map(race => ({
+    value: race.meeting_name,
+    label: race.meeting_name,
+  }));
+
   return (
-    <Select label="Select Track" onChange={handleRaceChange} value={selectValue} disabled={!!races === false} fullWidth>
-        <option value="">---</option>
-        {races?.map((race) => (
-          <option key={race.meeting_key} value={race.meeting_name}>{race.meeting_name}</option>
-        ))}
-    </Select>
+    <ReactSelectComponent
+      placeholder="Select Track"
+      options={raceOptions}
+      onChange={handleRaceChange}
+      value={raceOptions.find(option => option.value === selectValue)}
+      isDisabled={!races.length}
+      className="w-full"
+      isSearchable={false}
+    />
   );
 };
