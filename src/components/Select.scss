@@ -58,6 +58,7 @@ select option {
         transition: all 0.2s ease;
         pointer-events: none;
         font-size: 1rem;
+        white-space: nowrap;
     }
 
     .custom-select-container {

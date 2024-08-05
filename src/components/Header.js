@@ -87,7 +87,10 @@ export const Header = ({ setResultPage, setResultPagePath }) => {
             <RaceSelector 
                 races={races} 
                 selectedYear={selectedYear} 
-                onChange={() => setRaceViewerDropdownOpen(false)}
+                onChange={() => {
+                    setRaceViewerDropdownOpen(false)
+                    setIsOpen(false)
+                }}
             />
         </>
     )
@@ -130,7 +133,7 @@ export const Header = ({ setResultPage, setResultPagePath }) => {
     return (
         <>
         <header className="global-header" ref={headerRef}>
-            <div className="global-header__main-nav shadow-lg bg-glow bg-neutral-800/90 backdrop-blur-sm uppercase tracking-xs text-sm " >
+            <div className="global-header__main-nav shadow-lg bg-glow bg-neutral-800/90 backdrop-blur-sm" >
 
                 <div className="global-header__main-nav__left">
                     <a href="/"><Logo height={48} /></a>
@@ -143,7 +146,7 @@ export const Header = ({ setResultPage, setResultPagePath }) => {
                 
                 {/* Desktop */}
                 <div className="flex items-center gap-16 max-md:hidden">
-                    <div className="relative group w-max">
+                    <div className="relative group w-max uppercase tracking-xs text-sm ">
                         <button className="global-header__main-nav__button py-12 px-24 rounded-[.8rem] uppercase">
                             Results
                             <FontAwesomeIcon icon="chevron-down" className='global-header__main-nav__button__icon opacity-0 group-hover:opacity-100' />
@@ -154,7 +157,7 @@ export const Header = ({ setResultPage, setResultPagePath }) => {
                             </div>
                         </div>
                     </div>
-                    <div className="relative group w-max">
+                    <div className="relative group w-max uppercase tracking-xs text-sm ">
                         <button className="global-header__main-nav__button py-12 px-24 rounded-[.8rem] uppercase">
                             Comparisons
                             <FontAwesomeIcon icon="chevron-down" className='global-header__main-nav__button__icon opacity-0 group-hover:opacity-100' />
@@ -166,7 +169,7 @@ export const Header = ({ setResultPage, setResultPagePath }) => {
                         </div>
                     </div>
                     <div className="relative w-max" ref={raceViewerRef}>
-                        <button className="global-header__main-nav__button py-12 px-24 rounded-[.8rem] uppercase" onClick={() => setRaceViewerDropdownOpen(!raceViewerDropdownOpen)}>
+                        <button className="global-header__main-nav__button py-12 px-24 rounded-[.8rem] uppercase tracking-xs text-sm " onClick={() => setRaceViewerDropdownOpen(!raceViewerDropdownOpen)}>
                             Race Viewer
                             <FontAwesomeIcon icon="chevron-down" className={classNames('global-header__main-nav__button__icon opacity-0', {"opacity-100": raceViewerDropdownOpen})} />
                         </button>
@@ -188,14 +191,14 @@ export const Header = ({ setResultPage, setResultPagePath }) => {
                 </button>
                 <div className="pt-64 px-32">
                     <p className="font-display tracking-xs my-16">Results</p>
-                    <div className="flex flex-col gap-16">
+                    <div className="flex flex-col gap-16 ml-8">
                         {resultsContent}
                     </div>
-                    <p className="font-display tracking-xs my-16 mt-32">Comparisons</p>
-                    <div className="flex flex-col gap-16">
+                    <p className="font-display tracking-xs my-16">Comparisons</p>
+                    <div className="flex flex-col gap-16  ml-8">
                         {comparisonContent}
                     </div>
-                    <p className="font-display tracking-xs my-16 mt-32">Race Viewer</p>
+                    <p className="font-display tracking-xs my-16">Race Viewer</p>
                     <div className="flex flex-col gap-16">
                         {raceSelectorContent}
                     </div>
