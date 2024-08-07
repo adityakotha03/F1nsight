@@ -1927,6 +1927,10 @@ input[type="range"]::-ms-fill-lower {
   min-width: 22.4rem;
 }
 
+.min-w-\[17rem\] {
+  min-width: 17rem;
+}
+
 .max-w-2xl {
   max-width: 42rem;
 }
