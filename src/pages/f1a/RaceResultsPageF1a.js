@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { fetchF1aRaceResultsByCircuit } from '../../utils/apiF1a';
 
-import { RaceResultItem, Loading, Select } from '../../components';
+import { RaceResultItem, Loading, Button } from '../../components';
 import { NavLink } from 'react-router-dom';
+import classNames from 'classnames';
 
 const fetchCircuitData = async () => {
   try {
@@ -20,12 +21,12 @@ const Top3Drivers = ({ year, circuitId, index }) => {
   const [raceName, setRaceName] = useState('');
   const [top3RaceResults, setTop3RaceResults] = useState([]);
   const [top3RaceResults2, setTop3RaceResults2] = useState([]);
-  console.log(year, circuitId);
+  // console.log(year, circuitId);
 
   useEffect(() => {
     const fetchData = async () => {
       const results = await fetchF1aRaceResultsByCircuit(year, circuitId, true);
-      console.log('results', results);
+      // console.log('results', results);
       setRaceName(results.raceName);
       setTop3RaceResults(results.race1);
       setTop3RaceResults2(results.race2);
@@ -34,13 +35,24 @@ const Top3Drivers = ({ year, circuitId, index }) => {
     fetchData();
   }, [year, circuitId]);
 
+  const hasResults =  top3RaceResults && top3RaceResults.length > 0
+
   return (
-    <NavLink to={`/race-f1a/2024${index}`} className="bg-glow-dark rounded-[2.4rem] p-32 block mt-32 clickable-hover w-fit m-auto">
+    <div className="relative group w-fit m-auto">
+    <NavLink 
+      disabled={!hasResults} 
+      to={hasResults ? `/race-f1a/2024${index}`: null} 
+      className={classNames(
+        "bg-glow-dark rounded-[2.4rem] p-32 block mt-32 w-fit m-auto", 
+        "bg-gradient-to-br from-neutral-950/50 via-neutral-800/50 to-neutral-900/50",
+        {"clickable-hover" : hasResults}
+      )}
+    >
       <h3 className='font-display tracking-xs leading-none text-center font-bold mb-32'>{raceName}</h3>
       <div className="flex flex-col md:flex-row items-center md:justify-center gap-16">
         <div>
           <p className="uppercase text-sm text-center text-neutral-400 tracking-sm leading-none mb-24">Race 1 Results</p>
-          {top3RaceResults && top3RaceResults.length > 0 ? (
+          {hasResults ? (
             <ul className="bg-glow-dark rounded-[2.4rem] race-results__list">
               {top3RaceResults.map((result, index) => (
                 <RaceResultItem 
@@ -69,7 +81,7 @@ const Top3Drivers = ({ year, circuitId, index }) => {
         </div>
         <div>
           <p className="uppercase text-sm text-center text-neutral-400 tracking-sm leading-none mb-24">Race 2 Results</p>
-          {top3RaceResults && top3RaceResults.length > 0 ? (
+          {hasResults ? (
             <ul className="bg-glow-dark rounded-[2.4rem] race-results__list">
               {top3RaceResults2.map((result, index) => (
                 <RaceResultItem 
@@ -97,45 +109,34 @@ const Top3Drivers = ({ year, circuitId, index }) => {
         </div>
       </div>
     </NavLink>
+    { hasResults && <Button size='sm' disabled className="opacity-0 group-hover:opacity-100 absolute bottom-[2rem] left-1/2 -translate-x-1/2">View Race Details</Button>}
+    </div>
   );
 };
 
 
 export function RaceResultsPageF1a({ selectedYear }) {
-  const [year, setYear] = useState('2024');
-  const [circuitData, setCircuitData] = useState({});
   const [filteredCircuits, setFilteredCircuits] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
-
   useEffect(() => {
     const fetchData = async () => {
+      setIsLoading(true);
       const data = await fetchCircuitData();
-      setCircuitData(data);
-      setFilteredCircuits(Object.values(data).filter(circuit => circuit.year === year));
+      setFilteredCircuits(Object.values(data).filter(circuit => circuit.year === selectedYear.toString()));
+      setIsLoading(false);
     };
 
     fetchData();
-  }, [year]);
-
-  // const handleYearChange = (event) => {
-  //   const selectedYear = event.target.value;
-  //   setYear(selectedYear);
-  //   setFilteredCircuits(Object.values(circuitData).filter(circuit => circuit.year === selectedYear));
-  // };
+  }, [selectedYear]);
   
   return (
     <div className="race-results max-w-[120rem] m-auto mt-[12rem]">
-      {/* <Select className="m-auto w-fit" label="Year" value={year} onChange={handleYearChange}>
-        <option value={2023}>2023</option>
-        <option value={2024}>2024</option>
-      </Select> */}
-
       {isLoading ? (
         <Loading className="mt-[20rem] mb-[20rem]" message={`Loading ${selectedYear} Race Results`} />
       ) : (
         filteredCircuits.map((circuit, index) => (
-          <Top3Drivers key={circuit.circuitId} year={year} index={index+1} circuitId={circuit.circuitId} />
+          <Top3Drivers key={circuit.circuitId} year={selectedYear} index={index+1} circuitId={circuit.circuitId} />
         ))
       )}
     </div>

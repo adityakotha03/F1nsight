@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { HashRouter as Router, Routes, Route } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
 import { library } from '@fortawesome/fontawesome-svg-core';
@@ -30,6 +30,7 @@ function App() {
           selectedYear={selectedYear}
           resultPage={resultPage}
           resultPagePath={resultPagePath}
+          setResultPagePath={setResultPagePath} 
         />
         <Footer />
       </Router>
@@ -37,14 +38,28 @@ function App() {
   );
 }
 
-function MainContent({ setSelectedYear, selectedYear, resultPage, resultPagePath }) {
-  const location = useLocation();
+function MainContent({ setSelectedYear, selectedYear, resultPage, resultPagePath, setResultPagePath }) {
+  const location = useLocation().pathname;
   const validPaths = ['/race-results', '/constructor-standings', '/driver-standings'];
-  const validF1APaths = ['/f1a/race-results', '/f1a/constructor-standings', '/f1a/driver-standings'];
+  const validF1APaths = useMemo(() => ['/f1a/race-results', '/f1a/constructor-standings', '/f1a/driver-standings', '/race-f1a/'], []);
+
+  
+  useEffect(() => {
+    if (validF1APaths.includes(location) || location.startsWith('/race-f1a/')) {
+      console.log('here');
+      document.body.classList.add('bg-gradient');
+    } else {
+      console.log('here2');
+      document.body.classList.remove('bg-gradient');
+    }
+    return () => {
+      document.body.classList.remove('bg-gradient');
+    };
+  }, [location, validF1APaths]);
 
   return (
     <div className="grow">
-      {validPaths.includes(location.pathname) && (
+      {validPaths.includes(location) && (
         <ResultsSelector 
           className="mt-[12.4rem] relative z-[100]" 
           setSelectedYear={setSelectedYear} 
@@ -53,7 +68,7 @@ function MainContent({ setSelectedYear, selectedYear, resultPage, resultPagePath
           resultPagePath={resultPagePath} 
         />
       )}
-      {validF1APaths.includes(location.pathname) && (
+      {(validF1APaths.includes(location) || location.startsWith('/race-f1a/')) && (
         <ResultsSelector 
           className="mt-[12.4rem] relative z-[100]" 
           setSelectedYear={setSelectedYear} 
@@ -65,19 +80,19 @@ function MainContent({ setSelectedYear, selectedYear, resultPage, resultPagePath
       )}
 
       <Routes>
-        <Route exact path="/" element={<LandingPage />} />
-        <Route path="/race-results" element={<RaceResultsPage setSelectedYear={setSelectedYear} selectedYear={selectedYear} />} />
-        <Route path="/constructor-standings" element={<ConstructorStandings setSelectedYear={setSelectedYear} selectedYear={selectedYear} />} />
-        <Route path="/driver-standings" element={<DriverStandings setSelectedYear={setSelectedYear} selectedYear={selectedYear} />} />
+        <Route exact path="/" element={<LandingPage setResultPagePath={setResultPagePath} />} />
+        <Route path="/race-results" element={<RaceResultsPage selectedYear={selectedYear} />} />
+        <Route path="/constructor-standings" element={<ConstructorStandings selectedYear={selectedYear} />} />
+        <Route path="/driver-standings" element={<DriverStandings selectedYear={selectedYear} />} />
         <Route path="/teammates-comparison/:urlYear?/:urlTeam?" element={<TeammatesComparison />}/>
         <Route path="/driver-comparison/:urlDriver1?/:urlDriver2?" element={<DriverComparison selectedYear={selectedYear} />} />
         <Route path="/race/:raceId" element={<RacePage />} />
         <Route path="/apxar" element={<APXAR />} />
         {/* F1A Routes */}
         <Route path="/race-f1a/:raceId" element={<RacePageF1a />} />
-        <Route path="/f1a/race-results" element={<RaceResultsPageF1a />} />
-        <Route path="/f1a/driver-standings" element={<DriverStandingsF1a setSelectedYear={setSelectedYear} selectedYear={selectedYear} />} />
-        <Route path="/f1a/constructor-standings" element={<ConstructorStandingsF1a setSelectedYear={setSelectedYear} selectedYear={selectedYear} />} />
+        <Route path="/f1a/race-results" element={<RaceResultsPageF1a selectedYear={selectedYear} />} />
+        <Route path="/f1a/driver-standings" element={<DriverStandingsF1a selectedYear={selectedYear} />} />
+        <Route path="/f1a/constructor-standings" element={<ConstructorStandingsF1a selectedYear={selectedYear} />} />
       </Routes>
     </div>
   );

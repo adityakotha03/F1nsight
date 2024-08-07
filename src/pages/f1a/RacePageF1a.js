@@ -171,7 +171,7 @@ export function RacePageF1a() {
                 
                 <p className="heading-2 mb-32">Race 1</p>
 
-                <div className="w-[20rem] mb-32">
+                <div className="bg-glow-large p-24 rounded-lg w-[25rem] mb-32">
                     {raceResults.map((result, index) => (
                         <DriverCard
                             f1a={true}
@@ -215,7 +215,7 @@ export function RacePageF1a() {
 
                 <p className="heading-2 mb-32">Race 2</p>
 
-                <div className="w-[20rem] mb-32">
+                <div className="bg-glow-large p-24 rounded-lg w-[25rem] mb-32">
                     {raceResults2.map((result, index) => (
                         <DriverCard
                             f1a={true}

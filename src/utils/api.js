@@ -477,21 +477,6 @@ export const fetchRaceResultsByCircuit = async (year, circuitId) => {
   // }
 };
 
-const enrichDriverData = (raceData, driverInfo) => {
-  return raceData.map(driver => {
-    const driverDetails = driverInfo[driver.number];
-    return {
-      ...driver,
-      Driver: {
-        ...driverDetails.Driver
-      },
-      Constructor: {
-        ...driverDetails.Constructor
-      }
-    };
-  });
-};
-
 export const fetchQualifyingResultsByCircuit = async(year, circuitId) => {
   try {
     const url = `https://praneeth7781.github.io/f1nsight-api-2/races/${year}/qualifying.json`;

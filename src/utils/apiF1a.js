@@ -54,7 +54,7 @@ export const fetchF1aRaceResultsByCircuit = async (year, circuitId, top3 = false
       return { raceName: '', race1: [], race2: [] };
     }
   
-    console.log('fetchF1aRaceResultsByCircuit', {results});
+    // console.log('fetchF1aRaceResultsByCircuit', {results});
     const driverInfo = await fetchF1aDriverInfo(year);
     
     // Combine results from all races

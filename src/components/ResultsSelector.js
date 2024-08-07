@@ -47,6 +47,8 @@ export const ResultsSelector = ({ className, setSelectedYear, selectedYear, resu
     { value: '/driver-standings', label: 'Driver standings' }
   ];
 
+  console.log('resultPagePath', resultPagePath);
+
   return (
     <div className={classNames(className, 'flex items-center justify-center gap-16 m-auto')}>
       <ReactSelectComponent
