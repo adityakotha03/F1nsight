@@ -408,13 +408,15 @@ const GridRow = (label, driver1, driver2, title) => {
             onChange={handleDriver1Change}
             value={driverOptions.find(option => option.value === selectedDriver1)}
             isSearchable={false}
-          />
+            className="w-fit min-w-[17rem]"
+            />
           <ReactSelectComponent
             placeholder="Select Driver 2"
             options={driverOptions.map(driver => ({ ...driver, isDisabled: driver.value === selectedDriver2.value }))}
             onChange={handleDriver2Change}
             value={driverOptions.find(option => option.value === selectedDriver2)}
             isSearchable={false}
+            className="w-fit min-w-[17rem]"
           />
         </div>
       </div>
