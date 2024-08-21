@@ -86,8 +86,8 @@ export const ThreeCanvas = ({ MapFile, locData, driverColor, driverSelected, dri
         const box = new THREE.Box3().setFromObject(map);
         const center = box.getCenter(new THREE.Vector3());
 
-        const boxHelper = new THREE.Box3Helper(box, 0xff0000); // Red color for the box
-        scene.add(boxHelper);
+        // const boxHelper = new THREE.Box3Helper(box, 0xff0000); // Red color for the box
+        // scene.add(boxHelper);
 
         // const min = box.min;
         // const max = box.max;
