@@ -86,7 +86,7 @@ export function RacePage() {
     };
 
 
-    const animatedLocations = ["Sakhir", "Suzuka", "Melbourne", "Monaco", "Silverstone", "Budapest", "Spa-Francorchamps"];
+    const animatedLocations = ["Sakhir", "Suzuka", "Melbourne", "Monaco", "Silverstone", "Budapest", "Spa-Francorchamps", "Zandvoort"];
 
     const selectedDriverData = drivers.find(
         (obj) => obj["acronym"] === driverCode
@@ -453,7 +453,7 @@ export function RacePage() {
         sessionOptions.push({ value: 'Qualifying', label: 'Qualifying' });
     }
 
-    console.log('selectedSession', selectedSession);
+    // console.log('selectedSession', selectedSession);
 
     return isLoading ? (
         <Loading
