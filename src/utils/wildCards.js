@@ -1,1 +1,1 @@
-export const wildCards = ['JUF', 'CRO'];
+export const wildCards = ['JUF', 'CRO', 'GAD'];
