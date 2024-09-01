@@ -4,6 +4,7 @@ import { useLocation } from 'react-router-dom';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { fas } from '@fortawesome/free-solid-svg-icons';
 import { fab } from '@fortawesome/free-brands-svg-icons'
+import ReactGA from 'react-ga';
 
 import { Header, Footer, ResultsSelector } from './components';
 import {  ReactComponent as Logo} from './components/F1Ansight.svg';
@@ -12,6 +13,9 @@ import { DriverComparison, TeammatesComparison, RacePage, LandingPage, RaceResul
 import './App.scss';
 
 library.add(fas, fab);
+
+const TRACKING_ID = "G-4XK3QG9WVJ";
+ReactGA.initialize(TRACKING_ID);
 
 function App() {
   const currentYear = new Date().getFullYear();
@@ -57,6 +61,10 @@ function MainContent({ setSelectedYear, selectedYear, resultPage, resultPagePath
       document.body.classList.remove('bg-gradient');
     };
   }, [location, validF1APaths]);
+
+  useEffect(() => {
+    ReactGA.pageview(window.location.pathname + window.location.search);
+  }, []);
 
   return (
     <div className="grow">
