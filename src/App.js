@@ -6,6 +6,7 @@ import { fas } from '@fortawesome/free-solid-svg-icons';
 import { fab } from '@fortawesome/free-brands-svg-icons'
 
 import { Header, Footer, ResultsSelector } from './components';
+import {  ReactComponent as Logo} from './components/F1Ansight.svg';
 import { DriverComparison, TeammatesComparison, RacePage, LandingPage, RaceResultsPage, DriverStandings, ConstructorStandings, APXAR, RaceResultsPageF1a, RacePageF1a, DriverStandingsF1a, ConstructorStandingsF1a } from './pages'; 
 
 import './App.scss';
@@ -69,14 +70,16 @@ function MainContent({ setSelectedYear, selectedYear, resultPage, resultPagePath
         />
       )}
       {(validF1APaths.includes(location) || location.startsWith('/race-f1a/')) && (
-        <ResultsSelector 
-          className="mt-[12.4rem] relative z-[100]" 
-          setSelectedYear={setSelectedYear} 
-          selectedYear={selectedYear} 
-          resultPage={resultPage} 
-          resultPagePath={resultPagePath} 
-          f1a
-        />
+        <div className="mt-[12.4rem] relative z-[100]">
+          <Logo height={48} className="mx-auto mb-16" />
+          <ResultsSelector 
+            setSelectedYear={setSelectedYear} 
+            selectedYear={selectedYear} 
+              resultPage={resultPage} 
+              resultPagePath={resultPagePath} 
+              f1a
+          />
+        </div>
       )}
 
       <Routes>
