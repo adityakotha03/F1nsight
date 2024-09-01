@@ -135,7 +135,7 @@ export const Header = ({ setResultPage, setResultPagePath }) => {
         <header className="global-header" ref={headerRef}>
             <div className="global-header__main-nav shadow-lg bg-glow bg-neutral-800/90 backdrop-blur-sm" >
 
-                <div className="global-header__main-nav__left">
+                <div className="global-header__main-nav__left flex items-center gap-32">
                     <a href="/"><Logo height={48} /></a>
                 </div>
 
