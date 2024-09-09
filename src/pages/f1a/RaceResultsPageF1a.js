@@ -4,6 +4,7 @@ import { fetchF1aRaceResultsByCircuit } from '../../utils/apiF1a';
 import { RaceResultItem, Loading, Button } from '../../components';
 import { NavLink } from 'react-router-dom';
 import classNames from 'classnames';
+import { trackButtonClick } from '../../utils/gaTracking';
 
 const fetchCircuitData = async () => {
   try {
@@ -42,6 +43,7 @@ const Top3Drivers = ({ year, circuitId, index }) => {
     <NavLink 
       disabled={!hasResults} 
       to={hasResults ? `/race-f1a/2024${index}`: null} 
+      onClick={trackButtonClick(`race-result-item-${raceName}`)}
       className={classNames(
         "bg-glow-dark rounded-[2.4rem] p-32 block mt-32 w-fit m-auto", 
         "bg-gradient-to-br from-neutral-950/50 via-neutral-800/50 to-neutral-900/50",

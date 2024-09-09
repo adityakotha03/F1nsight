@@ -4,18 +4,15 @@ import { useLocation } from 'react-router-dom';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { fas } from '@fortawesome/free-solid-svg-icons';
 import { fab } from '@fortawesome/free-brands-svg-icons'
-import ReactGA from 'react-ga';
 
 import { Header, Footer, ResultsSelector } from './components';
 import {  ReactComponent as Logo} from './components/F1Ansight.svg';
 import { DriverComparison, TeammatesComparison, RacePage, LandingPage, RaceResultsPage, DriverStandings, ConstructorStandings, APXAR, RaceResultsPageF1a, RacePageF1a, DriverStandingsF1a, ConstructorStandingsF1a } from './pages'; 
+import { usePageTracking } from './utils/gaTracking';
 
 import './App.scss';
 
 library.add(fas, fab);
-
-const TRACKING_ID = "G-4XK3QG9WVJ";
-ReactGA.initialize(TRACKING_ID);
 
 function App() {
   const currentYear = new Date().getFullYear();
@@ -48,6 +45,7 @@ function MainContent({ setSelectedYear, selectedYear, resultPage, resultPagePath
   const validPaths = ['/race-results', '/constructor-standings', '/driver-standings'];
   const validF1APaths = useMemo(() => ['/f1a/race-results', '/f1a/constructor-standings', '/f1a/driver-standings', '/race-f1a/'], []);
 
+  usePageTracking();
   
   useEffect(() => {
     if (validF1APaths.includes(location) || location.startsWith('/race-f1a/')) {
@@ -61,10 +59,6 @@ function MainContent({ setSelectedYear, selectedYear, resultPage, resultPagePath
       document.body.classList.remove('bg-gradient');
     };
   }, [location, validF1APaths]);
-
-  useEffect(() => {
-    ReactGA.pageview(window.location.pathname + window.location.search);
-  }, []);
 
   return (
     <div className="grow">
