@@ -4,6 +4,7 @@ import { useInView } from "framer-motion";
 import classNames from 'classnames';
 
 import { Button } from '../components';
+import { trackButtonClick } from '../utils/gaTracking';
 
 export function LandingPage({setResultPagePath}) {
   const ref = useRef(null);
@@ -89,8 +90,8 @@ export function LandingPage({setResultPagePath}) {
             <p className="heading-3 mb-24">Driver & team comparisons</p>
             <p className="mb-24">Compare drivers and teams from any generation based on performance metrics and statistics.</p>
             <div className="flex max-lg:flex-col max-lg:w-full lg:flex-row items-center gap-16">
-              <Button to="/driver-comparison" buttonStyle="solid" className="w-full">Driver Comparison</Button>
-              <Button to="/teammates-comparison" buttonStyle="solid" className="w-full">Team Comparison</Button>
+              <Button to="/driver-comparison" onClick={() => trackButtonClick('driver-comparison-landing')} buttonStyle="solid" className="w-full">Driver Comparison</Button>
+              <Button to="/teammates-comparison" onClick={() => trackButtonClick('team-comparison-landing')} buttonStyle="solid" className="w-full">Team Comparison</Button>
             </div>
           </div>
         </div>
@@ -104,7 +105,7 @@ export function LandingPage({setResultPagePath}) {
             <p className="mb-24">Place and scale your favorite F1 car model in your environment. Walk around it, inspect every detail.</p>
             <p className="mb-24">Capture stunning photos and videos of your AR F1 car in different settings. Share these memorable moments with friends and fellow F1 enthusiasts and be sure to mention @f1nsight1.</p>
             <div className="flex flex-col items-center gap-16">
-              <Button to="/apxar" buttonStyle="solid">Click here to try it out</Button>
+              <Button to="/apxar" buttonStyle="solid" onClick={() => trackButtonClick('ar-viewer-landing')}>Click here to try it out</Button>
               <div>or scan QR code</div>
               <img className="rounded-lg shadow-12-dark w-[12rem]" alt="" src={`${process.env.PUBLIC_URL + "/images/arQr.png"}`} />
             </div>
@@ -132,7 +133,17 @@ export function LandingPage({setResultPagePath}) {
             <p className="heading-3 mb-24">F1 ACADEMY™</p>
             <p className="mb-8">We’re thrilled to announce that F1nsight now includes comprehensive statistics and insights from the exciting F1 Academy series!</p>
             <p className="mb-24">Get ready to dive into detailed results, driver performances, and constructor standings from each thrilling race of the F1 Academy season. Whether you’re following the rising stars or analyzing the latest trends, our new features will keep you updated and informed.</p>
-            <Button to="/f1a/race-results" buttonStyle="solid" className="w-full mb-24" onClick={setResultPagePath('/f1a/race-results')}>Explore F1A Results</Button>
+            <Button 
+              to="/f1a/race-results" 
+              buttonStyle="solid" 
+              className="w-full mb-24" 
+              onClick={() => {
+                setResultPagePath('/f1a/race-results')
+                trackButtonClick('f1a-results-landing')
+              }}
+            >
+              Explore F1A Results
+            </Button>
             <p className="mb-24">Stay tuned as we continue to enhance our coverage with even more insights and data visualizations. Your ultimate source for F1 Academy stats is here—experience it now and be at the forefront of the racing action!</p>
           </div>
         </div>
