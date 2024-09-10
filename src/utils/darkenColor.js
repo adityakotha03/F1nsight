@@ -1,7 +1,7 @@
-export const darkenColor = (hex) => {
+export const darkenColor = (hex, percent = 20) => {
     let color = hex.startsWith('#') ? hex.slice(1) : hex;
     let num = parseInt(color, 16),
-        amt = Math.round(2.55 * 20),
+        amt = Math.round(2.55 * percent),
         R = (num >> 16) - amt,
         G = (num >> 8 & 0x00FF) - amt,
         B = (num & 0x0000FF) - amt;
