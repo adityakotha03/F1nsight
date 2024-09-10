@@ -7,7 +7,7 @@ import { fab } from '@fortawesome/free-brands-svg-icons'
 
 import { Header, Footer, ResultsSelector } from './components';
 import {  ReactComponent as Logo} from './components/F1Ansight.svg';
-import { DriverComparison, TeammatesComparison, RacePage, LandingPage, RaceResultsPage, DriverStandings, ConstructorStandings, APXAR, RaceResultsPageF1a, RacePageF1a, DriverStandingsF1a, ConstructorStandingsF1a } from './pages'; 
+import { DriverComparison, TeammatesComparison, RacePage, LandingPage, RaceResultsPage, DriverStandings, ConstructorStandings, ARViewer, RaceResultsPageF1a, RacePageF1a, DriverStandingsF1a, ConstructorStandingsF1a } from './pages'; 
 import { usePageTracking } from './utils/gaTracking';
 
 import './App.scss';
@@ -92,7 +92,7 @@ function MainContent({ setSelectedYear, selectedYear, resultPage, resultPagePath
         <Route path="/teammates-comparison/:urlYear?/:urlTeam?" element={<TeammatesComparison />}/>
         <Route path="/driver-comparison/:urlDriver1?/:urlDriver2?" element={<DriverComparison selectedYear={selectedYear} />} />
         <Route path="/race/:raceId" element={<RacePage />} />
-        <Route path="/apxar" element={<APXAR />} />
+        <Route path="/ar-viewer" element={<ARViewer />} />
         {/* F1A Routes */}
         <Route path="/race-f1a/:raceId" element={<RacePageF1a />} />
         <Route path="/f1a/race-results" element={<RaceResultsPageF1a selectedYear={selectedYear} />} />
