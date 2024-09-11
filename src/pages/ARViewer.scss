@@ -40,40 +40,37 @@ model-viewer::before {
   }
 }
 .ar-button {
-  position: absolute;
-  bottom: 14px;
-  left: 50%;
-  transform: translateX(-50%);
+  align-items: center;
   background-color: #3182ce;
-  color: white;
   border: none;
   border-radius: 4px;
-  padding: 8px 16px;
-  font-size: 14px;
+  color: white;
   cursor: pointer;
   display: flex;
-  align-items: center;
+  font-size: 14px;
+  position: absolute;
+  top: 0;
+  padding: 8px 16px;
+  right: 0;
 }
 .ar-button img {
   width: 15px;
   margin-right: 8px;
 }
+@media (min-width: 769px) {
+  .ar-button {
+    display: none;
+  }
+}
+
 .ar-badge {
   background-color: rgba(0, 0, 0, .25);
   position: absolute;
-  right: -50px;
+  right: -70px;
   top: 2rem;
-  width: 200px;
+  width: 250px;
   transform: rotate(45deg);
   padding: 8px;
-}
-.ar-history {
-  background-color: rgba(0, 0, 0, .25);
-  backdrop-filter: blur(12px);
-  position: absolute;
-  bottom: 0px;
-  left: 50%;
-  transform: translateX(-50%);
 }
 .ar-badge span {
   font-size: 12px;
@@ -86,6 +83,15 @@ model-viewer::before {
   .ar-badge {
     display: none;
   }
+}
+
+.ar-history {
+  background-color: rgba(0, 0, 0, .25);
+  backdrop-filter: blur(12px);
+  position: absolute;
+  bottom: 0px;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .Hotspot {

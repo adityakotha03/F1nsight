@@ -4,6 +4,7 @@ import classNames from 'classnames';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { darkenColor } from '../utils/darkenColor';
+import { HistoryBar } from '../components/HistoryBar';
 
 import './ARViewer.scss';
 
@@ -20,6 +21,8 @@ export const ARViewer = () => {
   const ref = useRef(null);
 
   const showHistroy = team.name !== "F1Nsight" && team.name !== "apx"
+
+  const currentYear = new Date().getFullYear();
   
   const teams = {
     mercedes: {
@@ -27,11 +30,18 @@ export const ARViewer = () => {
       color: '#27F4D2',
       constructorTitles: ['2014', '2015', '2016', '2017', '2018', '2019', '2020', '2021'],
       driversChampionships: ['1954', '1955', '2014', '2015', '2016', '2017', '2018', '2019', '2020'],
-      teamExistedSince: '1954-1955, 2010 - present',
-      teamHistory: [],
-      raceVictories: 111,
-      podiums: 11,
-      polePositions: 1,
+      teamExistedSince: '2010',
+      teamHistory: [
+        { team: 'Mercedes', startYear: 1954, endYear: 1956 },
+        { team: 'Tyrrell', startYear: 1976, endYear: 1998 },
+        { team: 'BAR', startYear: 1999, endYear: 2005 },
+        { team: 'Honda', startYear: 2006, endYear: 2008 },
+        { team: 'Brawn GP', startYear: 2009, endYear: 2009 },
+        { team: 'Mercedes', startYear: 2010, endYear: currentYear }
+      ],
+      // raceVictories: 111,
+      // podiums: 11,
+      // polePositions: 1,
     },
     ferrari: {
       name: 'ferrari',
@@ -39,21 +49,27 @@ export const ARViewer = () => {
       constructorTitles: ['1961', '1964', '1975', '1976', '1977', '1979', '1982', '1983', '1999', '2000', '2001', '2002', '2003', '2004', '2007', '2008'],
       driversChampionships: ['1952', '1953', '1956', '1958', '1961', '1964', '1975', '1977', '1979', '2000', '2001', '2002', '2003', '2004', '2007'],
       teamExistedSince: '1950',
-      teamHistory: [],
-      raceVictories: 245,
-      podiums: 815,
-      polePositions: 251,
+      teamHistory: [
+        { team: 'Ferrari', startYear: 1950, endYear: currentYear },
+      ],
+      // raceVictories: 245,
+      // podiums: 815,
+      // polePositions: 251,
     },
     redbull: {
       name: 'red_bull',
       color: '#3671C6',
-      constructorTitles: ['2014'],
-      driversChampionships: ['2014'],
-      teamExistedSince: 1111,
-      teamHistory: [],
-      raceVictories: 111,
-      podiums: 11,
-      polePositions: 1,
+      constructorTitles: ['2010', '2011', '2012', '2013', '2022', '2023'],
+      driversChampionships: ['2010', '2011', '2012', '2013', '2021', '2022', '2023'],
+      teamExistedSince: 2005,
+      teamHistory: [
+        { team: 'Stewart', startYear: 1997, endYear: 199 },
+        { team: 'Jaguar', startYear: 2000, endYear: 2004 },
+        { team: 'Red Bull', startYear: 2005, endYear: currentYear },
+      ],
+      // raceVictories: 111,
+      // podiums: 11,
+      // polePositions: 1,
     },
     mclaren: {
       name: 'mclaren',
@@ -61,54 +77,82 @@ export const ARViewer = () => {
       constructorTitles: ['1974', '1984', '1985', '1988', '1989', '1990', '1991', '1998'],
       driversChampionships: ['1974', '1976', '1984', '1985', '1986', '1988', '1989', '1990', '1991', '1998', '1999', '2008'],
       teamExistedSince: '1966',
-      teamHistory: [],
-      raceVictories: 111,
-      podiums: 11,
-      polePositions: 1,
+      teamHistory: [
+        { team: 'Mclaren', startYear: 1966, endYear: currentYear },
+      ],
+      // raceVictories: 111,
+      // podiums: 11,
+      // polePositions: 1,
     },
     astonmartin: {
       name: 'aston_martin',
       color: '#229971',
-      constructorTitles: ['2014'],
-      driversChampionships: ['2014'],
-      teamExistedSince: 1111,
-      teamHistory: [],
-      raceVictories: 111,
-      podiums: 11,
-      polePositions: 1,
+      constructorTitles: [],
+      driversChampionships: [],
+      teamExistedSince: '2021',
+      teamHistory: [
+        { team: 'Aston Martin', startYear: 1959, endYear: 1960 },
+        { team: 'Jordan', startYear: 1991, endYear: 2005 },
+        { team: 'Midland', startYear: 2006, endYear: 2006 },
+        { team: 'Spyker', startYear: 2007, endYear: 2007 },
+        { team: 'Force India', startYear: 2008, endYear: 2018 },
+        { team: 'Racing Point', startYear: 2019, endYear: 2020 },
+        { team: 'Aston Martin', startYear: 2021, endYear: currentYear }
+      ],
+      // raceVictories: 111,
+      // podiums: 11,
+      // polePositions: 1,
     },
     rb: {
       name: 'rb',
       color: '#6692FF',
-      constructorTitles: ['2014'],
-      driversChampionships: ['2014'],
-      teamExistedSince: 1111,
-      teamHistory: [],
-      raceVictories: 111,
-      podiums: 11,
-      polePositions: 1,
+      constructorTitles: [],
+      driversChampionships: [],
+      teamExistedSince: '2024',
+      teamHistory: [
+        { team: 'Minardi', startYear: 1985, endYear: 2005 },
+        { team: 'Torro Rosso', startYear: 2006, endYear: 2019 },
+        { team: 'Alpha Tauri', startYear: 2020, endYear: 2023 },
+        { team: 'rb', startYear: 2024, endYear: currentYear }
+      ],
+      // raceVictories: 111,
+      // podiums: 11,
+      // polePositions: 1,
     },
     alpine: {
       name: 'alpine',
       color: '#FF87BC',
       constructorTitles: ['1995', '2005', '2006'],
       driversChampionships: ['1994', '1995', '2005', '2006'],
-      teamExistedSince: 2021,
-      teamHistory: ['Alpine (since 2021)', 'Renault (2016 - 2020)', 'Lotus (2012 - 2016)', 'Renault (2002 - 2011)', 'Benetton (1986 - 2001)', 'Toleman (1981 - 1985)'],
-      raceVictories: 111,
-      podiums: 11,
-      polePositions: 1,
+      teamExistedSince: '2021',
+      teamHistory: [
+        { team: 'Toleman', startYear: 1981, endYear: 1985 },
+        { team: 'Benetton', startYear: 1986, endYear: 2001 },
+        { team: 'Renault', startYear: 2002, endYear: 2011 },
+        { team: 'Lotus', startYear: 2012, endYear: 2015 },
+        { team: 'Renault', startYear: 2016, endYear: 2020 },
+        { team: 'Alpine', startYear: 2021, endYear: currentYear }
+      ],
+      // raceVictories: 111,
+      // podiums: 11,
+      // polePositions: 1,
     },
     sauber: {
       name: 'sauber',
       color: '#52E252',
-      constructorTitles: ['1995', '2005', '2006'],
-      driversChampionships: ['1994', '1995', '2005', '2006'],
-      teamExistedSince: 1111,
-      teamHistory: [],
-      raceVictories: 111,
-      podiums: 11,
-      polePositions: 1,
+      constructorTitles: [],
+      driversChampionships: [],
+      teamExistedSince: '2024',
+      teamHistory: [
+        { team: 'Sauber', startYear: 1993, endYear: 2005 },
+        { team: 'BMW', startYear: 2006, endYear: 2009 },
+        { team: 'Sauber', startYear: 2010, endYear: 2018 },
+        { team: 'Alfa Romeo', startYear: 2019, endYear: 2023 },
+        { team: 'Stake', startYear: 2024, endYear: currentYear },
+      ],
+      // raceVictories: 111,
+      // podiums: 11,
+      // polePositions: 1,
     },
     haas: {
       name: 'haas',
@@ -116,10 +160,12 @@ export const ARViewer = () => {
       constructorTitles: [],
       driversChampionships: [],
       teamExistedSince: '2016',
-      teamHistory: [],
-      raceVictories: 111,
-      podiums: 11,
-      polePositions: 1,
+      teamHistory: [
+        { team: 'HAAS', startYear: 2016, endYear: currentYear },
+      ],
+      // raceVictories: 111,
+      // podiums: 11,
+      // polePositions: 1,
     },
     williams: {
       name: 'williams',
@@ -127,17 +173,17 @@ export const ARViewer = () => {
       constructorTitles: ['1980', '1981', '1986', '1987', '1992', '1993', '1994', '1996', '1997'],
       driversChampionships: ['1980', '1982', '1987', '1992', '1993', '1996', '1997'],
       teamExistedSince: '1977',
-      teamHistory: [],
-      raceVictories: 111,
-      podiums: 11,
-      polePositions: 1,
+      teamHistory: [
+        { team: 'Williams', startYear: 1977, endYear: currentYear },
+      ],
+      // raceVictories: 111,
+      // podiums: 11,
+      // polePositions: 1,
     }
   };
 
   const teamList = Object.values(teams);
   const teamName = team.name.replace(/_/g, ' ')
-
-  console.log('team', team)
 
   useEffect(() => {
     showHistroy && setStatsHeight(ref.current.clientHeight);
@@ -174,7 +220,7 @@ export const ARViewer = () => {
         modelViewer.removeEventListener('load', handleModelLoad);
       }
     };
-  }, [glbLink]); // Depend on glbLink to re-run the effect when it changes
+  }, [team]); // Depend on glbLink to re-run the effect when it changes
 
   useEffect(() => {
     // Reset loading state when `glbLink` changes
@@ -201,27 +247,29 @@ export const ARViewer = () => {
           alt={ARViewer.defaultProps.alt}
         >
           <div class="progress-bar" slot="progress-bar">
-              <div class="update-bar" />
+            <div class="update-bar" />
           </div>
-
-          <button
-            slot="ar-button"
-            className="ar-button"
-          >
-            <img src={ARViewer.defaultProps.buttonIcon} alt="AR icon" />
-            Launch AR
-          </button>
+          
         </model-viewer>
 
-        <div className="ar-badge">
-          <span>AR Enabled</span>
+        <div className="ar-badge leading-none text-sm">
+          <div>AR Enabled</div>
+          <div>Mobile Devices</div>
         </div>
+
+        <button
+          slot="ar-button"
+          className="ar-button shadow-md"
+        >
+            <img src={ARViewer.defaultProps.buttonIcon} alt="AR icon" />
+            Launch AR
+        </button> 
 
         {/* Team History */}
         {(team.name !== "F1Nsight" && team.name !== "apx") && (
           <div 
             className={classNames(
-              "ar-history shadow-md pt-8 px-32 rounded-t-lg w-[90%]",
+              "ar-history shadow-md pt-8 px-8 sm:px-32 rounded-t-lg w-[90%]",
               "transition-all ease-in-out duration-500",
               "absolute left-1/2 translate-x-[-50%]",
             )}
@@ -260,15 +308,9 @@ export const ARViewer = () => {
                       {team.driversChampionships.length}
                     </div>
                 </div>
-                <div className="text-center">
-                    <div className="uppercase tracking-xs text-xs">
-                      Team Existance
-                    </div>
-                    <div className="font-display">
-                      {team.teamExistedSince}
-                    </div>
-                </div>
               </div>
+              <div className="uppercase tracking-xs text-xs w-full text-center">Team History</div>
+              <HistoryBar history={team.teamHistory} color={team.color} />
             </div>
           </div>
         )}
