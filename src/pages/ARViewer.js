@@ -249,21 +249,19 @@ export const ARViewer = () => {
           <div class="progress-bar" slot="progress-bar">
             <div class="update-bar" />
           </div>
-          
+          <button
+            slot="ar-button"
+            className="ar-button shadow-md"
+          >
+              <img src={ARViewer.defaultProps.buttonIcon} alt="AR icon" />
+              Launch AR
+          </button> 
         </model-viewer>
 
         <div className="ar-badge leading-none text-sm">
           <div>AR Enabled</div>
           <div>Mobile Devices</div>
         </div>
-
-        <button
-          slot="ar-button"
-          className="ar-button shadow-md"
-        >
-            <img src={ARViewer.defaultProps.buttonIcon} alt="AR icon" />
-            Launch AR
-        </button> 
 
         {/* Team History */}
         {(team.name !== "F1Nsight" && team.name !== "apx") && (
