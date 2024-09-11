@@ -49,10 +49,8 @@ function MainContent({ setSelectedYear, selectedYear, resultPage, resultPagePath
   
   useEffect(() => {
     if (validF1APaths.includes(location) || location.startsWith('/race-f1a/')) {
-      console.log('here');
       document.body.classList.add('bg-gradient');
     } else {
-      console.log('here2');
       document.body.classList.remove('bg-gradient');
     }
     return () => {
