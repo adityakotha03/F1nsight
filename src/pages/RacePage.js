@@ -86,7 +86,7 @@ export function RacePage() {
     };
 
 
-    const animatedLocations = ["Sakhir", "Suzuka", "Melbourne", "Monaco", "Silverstone", "Budapest", "Spa-Francorchamps", "Zandvoort", "Monza"];
+    const animatedLocations = ["Sakhir", "Suzuka", "Melbourne", "Monaco", "Silverstone", "Budapest", "Spa-Francorchamps", "Zandvoort", "Monza", "Baku"];
 
     const selectedDriverData = drivers.find(
         (obj) => obj["acronym"] === driverCode
