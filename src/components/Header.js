@@ -9,6 +9,7 @@ import { ReactComponent as Logo} from './f1nsight.svg';
 import { ReactSelectComponent } from './Select';
 import { RaceSelector } from './RaceSelector';
 import { fetchRacesAndSessions } from '../utils/api';
+import { trackButtonClick } from '../utils/gaTracking';
 
 export const Header = ({ setResultPage, setResultPagePath }) => {
 
@@ -97,8 +98,25 @@ export const Header = ({ setResultPage, setResultPagePath }) => {
     
     const comparisonContent = (
         <>
-            <NavLink to="/driver-comparison" className="block px-4 py-2 text-neutral-300 hover:text-white" onClick={toggleOpen}>Driver Comparison</NavLink>
-            <NavLink to="/teammates-comparison" className="block px-4 py-2 text-neutral-300 hover:text-white" onClick={toggleOpen}>Teammates Comparison</NavLink>
+            <NavLink 
+                to="/driver-comparison" 
+                className="block px-4 py-2 text-neutral-300 hover:text-white" 
+                onClick={() => {
+                    toggleOpen()
+                    trackButtonClick('Driver Comparison')}}
+            >
+                Driver Comparison
+            </NavLink>
+            <NavLink 
+                to="/teammates-comparison" 
+                className="block px-4 py-2 text-neutral-300 hover:text-white" 
+                onClick={() => {
+                    toggleOpen()
+                    trackButtonClick('Teammates Comparison')
+                }}
+            >
+                Teammates Comparison
+            </NavLink>
         </>
     )
     const resultsContent = (
@@ -109,6 +127,7 @@ export const Header = ({ setResultPage, setResultPagePath }) => {
                 onClick={() => {
                     handleNavLinkClick('Race Results')
                     toggleOpen()
+                    trackButtonClick('Race Results')
                 }}
                 >Race Results</NavLink>
             <NavLink 
@@ -117,6 +136,7 @@ export const Header = ({ setResultPage, setResultPagePath }) => {
                 onClick={() => {
                     handleNavLinkClick('Constructor Standings')
                     toggleOpen()
+                    trackButtonClick('Constructor Standings')
                 }} 
                 >Constructor Standings</NavLink>
             <NavLink 
@@ -125,6 +145,7 @@ export const Header = ({ setResultPage, setResultPagePath }) => {
                 onClick={() => {
                     handleNavLinkClick('Driver Standing')
                     toggleOpen()
+                    trackButtonClick('Driver Standings')
                 }}
                 >Driver Standings</NavLink>
         </>
@@ -135,7 +156,7 @@ export const Header = ({ setResultPage, setResultPagePath }) => {
         <header className="global-header" ref={headerRef}>
             <div className="global-header__main-nav shadow-lg bg-glow bg-neutral-800/90 backdrop-blur-sm" >
 
-                <div className="global-header__main-nav__left">
+                <div className="global-header__main-nav__left flex items-center gap-32">
                     <a href="/"><Logo height={48} /></a>
                 </div>
 

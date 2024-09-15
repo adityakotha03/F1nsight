@@ -22,6 +22,10 @@ body {
   margin: 0;
   overflow-x: hidden;
 }
+body.bg-gradient {
+  background: #000000;
+  background: linear-gradient(90deg, rgba(31,34,64,1) 0%, rgba(38,32,47,1) 48%, rgba(55,38,46,1) 100%);
+}
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',

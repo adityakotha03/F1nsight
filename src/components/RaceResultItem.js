@@ -6,7 +6,7 @@ import { Popover } from "flowbite-react";
 import { useInView } from "framer-motion";
 
 export const RaceResultItem = (props) => {
-    const { className, driver, driverColor, fastestLap, startPosition, endPosition, isActive, layoutSmall, time, year, hasHover, index, mobileSmall} = props;
+    const { className, driver, driverColor, fastestLap, startPosition, endPosition, isActive, layoutSmall, time, year, hasHover, index, mobileSmall, f1a} = props;
 
     const ref = useRef(null);
     const isInView = useInView(ref, { once: true });
@@ -22,7 +22,11 @@ export const RaceResultItem = (props) => {
             <div className={classNames('flex item-center w-full', { "max-md:hidden": mobileSmall})}>
                 <img 
                     alt="" 
-                    src={`${process.env.PUBLIC_URL + "/images/" + year + "/drivers/" + driver.code + ".png"}`}
+                    src={
+                        f1a ?
+                        `${process.env.PUBLIC_URL + "/images/" + year + "/F1A/" + driver.code + ".png"}` :
+                        `${process.env.PUBLIC_URL + "/images/" + year + "/drivers/" + driver.code + ".png"}`
+                    }
                     width={72} 
                     height={72} 
                     ref={ref}
@@ -32,7 +36,9 @@ export const RaceResultItem = (props) => {
                     }}
                 />
                 <div className="stand bg-glow px-14 text-center">
-                    <div className="font-display text-[1.8rem] "><span className="text-neutral-500">P{endPosition}</span> {driver.code}</div>
+                    <div className="font-display text-[1.8rem] ">
+                        <span className="text-neutral-500">P{endPosition}</span> {driver.code}
+                    </div>
                     <div className="divider-glow w-full" /> 
                     <div className="text-sm -mt-8 flex items-center justify-center gap-4">
                         {time}

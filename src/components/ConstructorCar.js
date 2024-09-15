@@ -10,7 +10,6 @@ export const ConstructorCar = (props) => {
     const ref = useRef(null);
     const isInView = useInView(ref, { once: true });
 
-
     return (
         <div 
             className={classNames(

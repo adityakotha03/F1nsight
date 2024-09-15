@@ -4,6 +4,7 @@ import classNames from 'classnames';
 
 import { RaceResultItem, Loading } from '../components';
 import { useNavigate } from 'react-router-dom';
+import { trackButtonClick } from '../utils/gaTracking';
 
 
 export function RaceResultsPage({ selectedYear }) {
@@ -66,7 +67,10 @@ export function RaceResultsPage({ selectedYear }) {
                   "bg-glow-dark rounded-[2.4rem] mt-56 px-32 clickable-hover", 
                   `${race.raceName}`
               )}
-              onClick={()=>{if(race.results && race.results.length >0 ) navigateToRaceResult(race)}}
+              onClick={()=>{
+                if(race.results && race.results.length >0 ) navigateToRaceResult(race)
+                trackButtonClick(`race-result-item-${race.raceName}`)
+              }}
             >
               {race.results && race.results.length > 0 ? (
                 <ul className="race-results__list -mt-48">

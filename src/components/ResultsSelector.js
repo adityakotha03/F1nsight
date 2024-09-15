@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { ReactSelectComponent } from './Select';
 import classNames from 'classnames';
 
-export const ResultsSelector = ({ className, setSelectedYear, selectedYear, resultPage, resultPagePath }) => {
+export const ResultsSelector = ({ className, setSelectedYear, selectedYear, resultPage, resultPagePath, f1a }) => {
   const navigate = useNavigate();
 
   const [selectValue, setSelectValue] = useState(resultPage);
@@ -37,11 +37,17 @@ export const ResultsSelector = ({ className, setSelectedYear, selectedYear, resu
     setSelectedYear(selectedOption.value);
   };
 
-  const resultsOptions = [
+  const resultsOptions = f1a ? [
+    { value: '/f1a/race-results', label: 'Race results' },
+    { value: '/f1a/constructor-standings', label: 'Constructor standings' },
+    { value: '/f1a/driver-standings', label: 'Driver standings' }
+  ] : [
     { value: '/race-results', label: 'Race results' },
     { value: '/constructor-standings', label: 'Constructor standings' },
     { value: '/driver-standings', label: 'Driver standings' }
   ];
+
+  console.log('resultPagePath', resultPagePath);
 
   return (
     <div className={classNames(className, 'flex items-center justify-center gap-16 m-auto')}>
