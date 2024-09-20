@@ -80,11 +80,11 @@ export function LandingPage({setResultPagePath}) {
       </div>
      
       {/* Comparisons */}
-      <div className="landing-section py-64">
+      <div className="landing-section py-96 md:py-64">
         <div className="landing-section__content md:mt-24">
-          <div className="landing-section__content__media  max-md:-mt-64 md:flex md:gap-4 md:mr-4">
-            <img className="rounded-lg shadow-12-dark max-lg:w-full lg:w-1/2 lg:h-fit" alt="" src={`${process.env.PUBLIC_URL + "/images/teamComparison.png"}`} /> 
-            <img className="rounded-lg shadow-12-dark max-lg:hidden lg:w-1/2 lg:h-fit" alt="" src={`${process.env.PUBLIC_URL + "/images/driverComparison.png"}`} /> 
+          <div className="landing-section__content__media max-md:-mt-64 max-md:mb-16  md:flex md:gap-4 md:mr-4">
+            <img className="rounded-lg shadow-12-dark max-md:w-2/3 max-md:mx-auto lg:w-1/2 h-fit" alt="" src={`${process.env.PUBLIC_URL + "/images/teamComparison.png"}`} /> 
+            <img className="rounded-lg shadow-12-dark max-lg:hidden lg:w-1/2 h-fit" alt="" src={`${process.env.PUBLIC_URL + "/images/driverComparison.png"}`} /> 
           </div>
           <div className="md:min-w-[50%]">
             <p className="heading-3 mb-24">Driver & team comparisons</p>
@@ -110,24 +110,24 @@ export function LandingPage({setResultPagePath}) {
               <img className="rounded-lg shadow-12-dark w-[12rem]" alt="" src={`${process.env.PUBLIC_URL + "/images/arQr.png"}`} />
             </div>
           </div>
-          <div className="landing-section__content__media flex-grow max-md:-mt-64">
+          <div className="landing-section__content__media flex-grow max-md:-mt-64 max-md:mb-16 ">
             <video
                 src={`${process.env.PUBLIC_URL + "/images/arCapture2.mp4"}`}
                 loop
                 autoPlay
                 muted
                 playsInline
-                className="max-md:h-[30rem] md:h-full w-full object-cover rounded-lg shadow-12-dark"
+                className="max-md:h-[40rem] max-md:w-2/3 max-md:mx-auto md:h-full w-full object-cover rounded-lg shadow-12-dark"
             />
           </div>
         </div>
       </div>
 
       {/* F1A */}
-      <div className="landing-section pt-64 pb-[16rem]">
+      <div className="landing-section pt-96 pb-[16rem]">
         <div className="landing-section__content md:mt-24">
-          <div className="landing-section__content__media max-md:-mt-64 md:mr-4">
-            <img className="rounded-lg shadow-12-dark w-full shrink-0" alt="" src={`${process.env.PUBLIC_URL + "/images/F1AnsightMedia1.jpg"}`} /> 
+          <div className="landing-section__content__media max-md:-mt-64 max-md:mb-16 md:mr-4">
+            <img className="rounded-lg shadow-12-dark w-full max-md:w-2/3 max-md:mx-auto shrink-0" alt="" src={`${process.env.PUBLIC_URL + "/images/F1AnsightMedia1.jpg"}`} /> 
           </div>
           <div className="md:min-w-[50%] shrink">
             <p className="heading-3 mb-24">F1 ACADEMY™</p>
