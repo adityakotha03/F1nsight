@@ -9,6 +9,7 @@ import { Header, Footer, ResultsSelector } from './components';
 import {  ReactComponent as Logo} from './components/F1Ansight.svg';
 import { DriverComparison, TeammatesComparison, RacePage, LandingPage, RaceResultsPage, DriverStandings, ConstructorStandings, ARViewer, RaceResultsPageF1a, RacePageF1a, DriverStandingsF1a, ConstructorStandingsF1a } from './pages'; 
 import { usePageTracking } from './utils/gaTracking';
+import { ScrollToTop } from './utils/ScrollToTop';
 
 import './App.scss';
 
@@ -23,6 +24,7 @@ function App() {
   return (
     <div className="flex flex-col min-h-screen">
       <Router>
+        <ScrollToTop />
         <Header 
           setResultPage={setResultPage} 
           setResultPagePath={setResultPagePath} 
@@ -59,7 +61,7 @@ function MainContent({ setSelectedYear, selectedYear, resultPage, resultPagePath
   }, [location, validF1APaths]);
 
   return (
-    <div className="grow">
+    <div className="h-full grow">
       {validPaths.includes(location) && (
         <ResultsSelector 
           className="mt-[12.4rem] relative z-[100]" 

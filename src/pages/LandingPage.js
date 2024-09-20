@@ -112,7 +112,7 @@ export function LandingPage({setResultPagePath}) {
           </div>
           <div className="landing-section__content__media flex-grow max-md:-mt-64">
             <video
-                src={`${process.env.PUBLIC_URL + "/images/arcapture.mp4"}`}
+                src={`${process.env.PUBLIC_URL + "/images/arCapture2.mp4"}`}
                 loop
                 autoPlay
                 muted
