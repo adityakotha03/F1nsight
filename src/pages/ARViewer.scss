@@ -5,7 +5,7 @@
   overflow: hidden;
   top: 65px;
   width: 100vw;
-  height: 60vh;
+  height: 70vh;
   display: flex;
   flex-direction: column;
 }
@@ -41,26 +41,16 @@ model-viewer::before {
 }
 .ar-button {
   align-items: center;
-  background-color: #3182ce;
-  border: none;
-  border-radius: 4px;
+  background-color: rgba(0, 0, 0, .25);
   color: white;
   cursor: pointer;
-  display: flex;
   font-size: 14px;
-  position: absolute;
   top: 0;
   padding: 8px 16px;
-  right: 0;
 }
 .ar-button img {
   width: 15px;
   margin-right: 8px;
-}
-@media (min-width: 769px) {
-  .ar-button {
-    display: none;
-  }
 }
 
 .ar-badge {

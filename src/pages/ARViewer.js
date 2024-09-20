@@ -66,7 +66,6 @@ export const ARViewer = () => {
     <>
     <div className="ar-container">
       <div className="model-viewer-wrapper">
-        {isGLBLoading && <div className="loading-overlay">Loading...</div>}
         <model-viewer
           ref={modelViewerRef}
           poster={ARViewer.defaultProps.img}
@@ -86,7 +85,10 @@ export const ARViewer = () => {
           </div>
           <button
             slot="ar-button"
-            className="ar-button shadow-md"
+            className="ar-button shadow-md absolute left-1/2 translate-x-[-50%] w-[90%] flex justify-center items-center rounded-b-lg"
+            style={{
+              borderBottom: `1px solid ${team.color}`
+            }}
           >
               <img src={ARViewer.defaultProps.buttonIcon} alt="AR icon" />
               Launch AR
@@ -174,7 +176,11 @@ export const ARViewer = () => {
               setTeam(team)
             }}
           >
-            <img src={`${process.env.PUBLIC_URL + "/images/2024/cars/" + team.name + ".png"}`} alt={team.name} className='w-[10rem] -mt-16' />
+            <img 
+              src={`${process.env.PUBLIC_URL + "/images/2024/cars/" + team.name + ".png"}`} 
+              alt={team.name} 
+              className='w-[10rem] -mt-16' 
+            />
             <p className="font-display">{team.name.replace(/_/g, ' ')}</p>
           </button>
         );
@@ -210,7 +216,7 @@ export const ARViewer = () => {
         }}
       >
         <img src={`${process.env.PUBLIC_URL + "/images/2024/cars/F1Nsight.png"}`} alt={team.name} className='w-[10rem] -mt-16' />
-        <p className="font-display">F1NSIGHT 2024</p>
+        <p className="font-display">F1NSIGHT</p>
       </button>
     </div>
   </>
