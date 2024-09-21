@@ -82,9 +82,17 @@ export function LandingPage({setResultPagePath}) {
       {/* Comparisons */}
       <div className="landing-section py-96 md:py-64">
         <div className="landing-section__content md:mt-24">
-          <div className="landing-section__content__media max-md:-mt-64 max-md:mb-16  md:flex md:gap-4 md:mr-4">
-            <img className="rounded-lg shadow-12-dark max-md:w-2/3 max-md:mx-auto lg:w-1/2 h-fit" alt="" src={`${process.env.PUBLIC_URL + "/images/teamComparison.png"}`} /> 
-            <img className="rounded-lg shadow-12-dark max-lg:hidden lg:w-1/2 h-fit" alt="" src={`${process.env.PUBLIC_URL + "/images/driverComparison.png"}`} /> 
+          <div className="landing-section__content__media max-md:-mt-64 max-md:mb-16">
+            <img 
+              className="rounded-lg max-lg:hidden" 
+              alt="" 
+              src={`${process.env.PUBLIC_URL + "/images/comparisons-lg.png"}`}
+            /> 
+            <img
+              className="rounded-lg lg:hidden max-md:w-2/3 max-md:mx-auto" 
+              alt="" 
+              src={`${process.env.PUBLIC_URL + "/images/comparisons-sm.png"}`} 
+            /> 
           </div>
           <div className="md:min-w-[50%]">
             <p className="heading-3 mb-24">Driver & team comparisons</p>

@@ -50,9 +50,10 @@ export const ConstructorCarF1a = (props) => {
             ref={ref}
         >
             <div className="flex flex-col justify-between pb-40">
-                <div className="flex flex-row items-end justify-center gap-4 mb-48 mt-32 w-3/4 m-auto leading-none">
-                    <div className="font-display text-16 gradient-text-dark">{index + 1}</div> 
-                    <p className="uppercase text-24 tracking-sm gradient-text-light font-light mr-12">{name}</p>
+                <div className="flex flex-row items-center justify-center gap-12
+                 mb-48 mt-32 w-3/4 m-auto leading-none">
+                    {/* <div className="font-display text-16 gradient-text-light ">{index + 1}</div>  */}
+                    <p className="uppercase text-24 tracking-sm gradient-text-light font-light">{name}</p>
                     <span className="font-display text-24 gradient-text-light">{points}</span>
                 </div>
 

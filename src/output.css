@@ -1646,6 +1646,10 @@ input[type="range"]::-ms-fill-lower {
   margin-top: 9rem;
 }
 
+.mt-40 {
+  margin-top: 4rem;
+}
+
 .block {
   display: block;
 }
@@ -1778,6 +1782,10 @@ input[type="range"]::-ms-fill-lower {
 
 .h-screen {
   height: 100vh;
+}
+
+.h-\[30rem\] {
+  height: 30rem;
 }
 
 .max-h-\[0\] {
@@ -1961,6 +1969,10 @@ input[type="range"]::-ms-fill-lower {
 .w-max {
   width: -webkit-max-content;
   width: max-content;
+}
+
+.w-2\/3 {
+  width: 66.666667%;
 }
 
 .min-w-\[17rem\] {
@@ -2273,6 +2285,10 @@ input[type="range"]::-ms-fill-lower {
 
 .gap-8 {
   gap: .8rem;
+}
+
+.gap-12 {
+  gap: 1.2rem;
 }
 
 .-space-x-4 > :not([hidden]) ~ :not([hidden]) {
@@ -3585,11 +3601,6 @@ input[type="range"]::-ms-fill-lower {
   padding-bottom: .4rem;
 }
 
-.py-64 {
-  padding-top: 6.4rem;
-  padding-bottom: 6.4rem;
-}
-
 .py-8 {
   padding-top: .8rem;
   padding-bottom: .8rem;
@@ -3724,16 +3735,16 @@ input[type="range"]::-ms-fill-lower {
   padding-top: .8rem;
 }
 
+.pt-96 {
+  padding-top: 9.6rem;
+}
+
 .pt-\[10rem\] {
   padding-top: 10rem;
 }
 
 .pt-\[6\.4rem\] {
   padding-top: 6.4rem;
-}
-
-.pt-96 {
-  padding-top: 9.6rem;
 }
 
 .text-left {
@@ -6838,17 +6849,8 @@ button:hover {
 }
 
 @media not all and (min-width: 1024px) {
-  .max-lg\:mx-auto {
-    margin-left: auto;
-    margin-right: auto;
-  }
-
   .max-lg\:hidden {
     display: none;
-  }
-
-  .max-lg\:w-2\/3 {
-    width: 66.666667%;
   }
 
   .max-lg\:w-full {
@@ -6875,20 +6877,16 @@ button:hover {
     margin-top: -6.4rem;
   }
 
+  .max-md\:mb-16 {
+    margin-bottom: 1.6rem;
+  }
+
   .max-md\:ml-\[-50\%\] {
     margin-left: -50%;
   }
 
   .max-md\:mt-16 {
     margin-top: 1.6rem;
-  }
-
-  .max-md\:mb-4 {
-    margin-bottom: .4rem;
-  }
-
-  .max-md\:mb-16 {
-    margin-bottom: 1.6rem;
   }
 
   .max-md\:hidden {
@@ -6899,12 +6897,12 @@ button:hover {
     height: 20rem;
   }
 
-  .max-md\:h-\[30rem\] {
-    height: 30rem;
-  }
-
   .max-md\:h-\[40rem\] {
     height: 40rem;
+  }
+
+  .max-md\:w-2\/3 {
+    width: 66.666667%;
   }
 
   .max-md\:w-\[200\%\] {
@@ -6917,10 +6915,6 @@ button:hover {
 
   .max-md\:w-full {
     width: 100%;
-  }
-
-  .max-md\:w-2\/3 {
-    width: 66.666667%;
   }
 
   .max-md\:-translate-y-\[20\%\] {
@@ -7317,14 +7311,6 @@ button:hover {
     padding-top: 18rem;
   }
 
-  .md\:pt-96 {
-    padding-top: 9.6rem;
-  }
-
-  .md\:pt-64 {
-    padding-top: 6.4rem;
-  }
-
   .md\:text-center {
     text-align: center;
   }
@@ -7373,6 +7359,14 @@ button:hover {
   .lg\:my-8 {
     margin-top: .8rem;
     margin-bottom: .8rem;
+  }
+
+  .lg\:hidden {
+    display: none;
+  }
+
+  .lg\:h-\[30rem\] {
+    height: 30rem;
   }
 
   .lg\:w-1\/2 {
