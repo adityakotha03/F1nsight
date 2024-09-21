@@ -2428,6 +2428,11 @@ input[type="range"]::-ms-fill-lower {
   border-bottom-left-radius: .8rem;
 }
 
+.rounded-b-lg {
+  border-bottom-right-radius: 1.6rem;
+  border-bottom-left-radius: 1.6rem;
+}
+
 .rounded-e-lg {
   border-start-end-radius: 1.6rem;
   border-end-end-radius: 1.6rem;
@@ -3590,6 +3595,11 @@ input[type="range"]::-ms-fill-lower {
   padding-bottom: .8rem;
 }
 
+.py-96 {
+  padding-top: 9.6rem;
+  padding-bottom: 9.6rem;
+}
+
 .pb-16 {
   padding-bottom: 1.6rem;
 }
@@ -3720,6 +3730,10 @@ input[type="range"]::-ms-fill-lower {
 
 .pt-\[6\.4rem\] {
   padding-top: 6.4rem;
+}
+
+.pt-96 {
+  padding-top: 9.6rem;
 }
 
 .text-left {
@@ -6824,8 +6838,17 @@ button:hover {
 }
 
 @media not all and (min-width: 1024px) {
+  .max-lg\:mx-auto {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
   .max-lg\:hidden {
     display: none;
+  }
+
+  .max-lg\:w-2\/3 {
+    width: 66.666667%;
   }
 
   .max-lg\:w-full {
@@ -6843,6 +6866,11 @@ button:hover {
 }
 
 @media not all and (min-width: 768px) {
+  .max-md\:mx-auto {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
   .max-md\:-mt-64 {
     margin-top: -6.4rem;
   }
@@ -6853,6 +6881,14 @@ button:hover {
 
   .max-md\:mt-16 {
     margin-top: 1.6rem;
+  }
+
+  .max-md\:mb-4 {
+    margin-bottom: .4rem;
+  }
+
+  .max-md\:mb-16 {
+    margin-bottom: 1.6rem;
   }
 
   .max-md\:hidden {
@@ -6867,6 +6903,10 @@ button:hover {
     height: 30rem;
   }
 
+  .max-md\:h-\[40rem\] {
+    height: 40rem;
+  }
+
   .max-md\:w-\[200\%\] {
     width: 200%;
   }
@@ -6877,6 +6917,10 @@ button:hover {
 
   .max-md\:w-full {
     width: 100%;
+  }
+
+  .max-md\:w-2\/3 {
+    width: 66.666667%;
   }
 
   .max-md\:-translate-y-\[20\%\] {
@@ -7256,6 +7300,11 @@ button:hover {
     padding-bottom: 1.6rem;
   }
 
+  .md\:py-64 {
+    padding-top: 6.4rem;
+    padding-bottom: 6.4rem;
+  }
+
   .md\:pb-32 {
     padding-bottom: 3.2rem;
   }
@@ -7266,6 +7315,14 @@ button:hover {
 
   .md\:pt-\[18rem\] {
     padding-top: 18rem;
+  }
+
+  .md\:pt-96 {
+    padding-top: 9.6rem;
+  }
+
+  .md\:pt-64 {
+    padding-top: 6.4rem;
   }
 
   .md\:text-center {
@@ -7316,12 +7373,6 @@ button:hover {
   .lg\:my-8 {
     margin-top: .8rem;
     margin-bottom: .8rem;
-  }
-
-  .lg\:h-fit {
-    height: -webkit-fit-content;
-    height: -moz-fit-content;
-    height: fit-content;
   }
 
   .lg\:w-1\/2 {
