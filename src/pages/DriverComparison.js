@@ -88,12 +88,18 @@ export function DriverComparison(){
     const yearsToDisplay = displayCompetingYears && competingYears.length > 0 ? competingYears : allYears;
 
     const handleCompare = () => {
-        navigate(`/driver-comparison/${inputdriver1.value}/${inputdriver2.value}`, {replace : true});
+        const encodedDriver1 = encodeURIComponent(inputdriver1.value);
+        const encodedDriver2 = encodeURIComponent(inputdriver2.value);
+    
+        navigate(`/driver-comparison/${encodedDriver1}/${encodedDriver2}`, { replace: true });
+        
         setDriver1(inputdriver1.value);
         setDriver2(inputdriver2.value);
+        
         setInputDriver1('');
         setInputDriver2('');
     };
+    
 
     const renderFinalStandings = () => {
         return (
