@@ -2,6 +2,7 @@ import React, { useRef } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { useInView } from "framer-motion";
+
 import { wildCards } from '../utils/wildCards';
 
 export const ConstructorDriver = (props) => {
@@ -10,7 +11,7 @@ export const ConstructorDriver = (props) => {
     const isInView = useInView(ref, { once: true });
 
     const f1aImageSrc = wildCards.includes(image) 
-        ? `${process.env.PUBLIC_URL + "/images/" + year + "/F1A/carSideView/F1N-side.png"}`
+        ? `${process.env.PUBLIC_URL + "/images/" + year + "/F1A/carSideView/wildcard-side.png"}`
         : `${process.env.PUBLIC_URL + "/images/" + year + "/F1A/carSideView/" + image + "-side.png"}`;
     const imageSrc = `${process.env.PUBLIC_URL + "/images/" + year + "/cars/" + car + ".png"}`;
 
@@ -19,7 +20,7 @@ export const ConstructorDriver = (props) => {
             <div 
                 className={classNames(
                     className, 
-                    'constructor-driver-card flex justify-center items-end',
+                    'constructor-driver-card flex justify-center items-end relative',
                 )}
                 ref={ref}
             >
@@ -32,6 +33,13 @@ export const ConstructorDriver = (props) => {
                         transition: "all 2s cubic-bezier(0.17, 0.55, 0.55, 1)"
                     }}
                 />
+                {f1a && wildCards.includes(image) && (
+                    <img 
+                        alt=''
+                        className="absolute left-[4rem] md:left-[6.4rem] bottom-[-1rem] w-64"
+                        src={`${process.env.PUBLIC_URL + "/images/wildcardicon.png"}`}
+                    />
+                )}
                 <div className="-mb-10">
                     {/* position / firstname */}
                     <div className="w-fit mb-4">

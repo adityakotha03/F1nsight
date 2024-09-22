@@ -160,7 +160,7 @@ export const StartingGridF1A = (props) => {
                               alt=""
                               className="-mt-32 drop-shadow-[0_0_14px_rgba(0,0,0,0.75)]"
                               src={wildCards.includes(driverCode) ? 
-                                `${ process.env.PUBLIC_URL + "/images/2024/F1A/carTopView/F1N-top.png"}` :
+                                `${ process.env.PUBLIC_URL + "/images/2024/F1A/carTopView/wildcard-top.png"}` :
                                 `${ process.env.PUBLIC_URL + "/images/2024/F1A/carTopView/" + driverCode + "-top.png"}` 
                               }
                               width={56}
