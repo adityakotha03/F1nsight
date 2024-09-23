@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { fetchF1aAllRaceResults } from '../../utils/apiF1a';
 
+import { fetchF1aAllRaceResults } from '../../utils/apiF1a';
 import { ConstructorCarF1a, Loading } from '../../components';
+import {wildCards} from '../../utils/wildCards';
 
 export function ConstructorStandingsF1a({ selectedYear }) {
   const [standings, setStandings] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-
-  const wildCards = ['JUF', 'CRO', 'GAD'];
 
   useEffect(() => {
     const fetchData = async () => {
