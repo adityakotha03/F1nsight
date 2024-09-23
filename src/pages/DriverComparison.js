@@ -17,7 +17,7 @@ export function DriverComparison(){
     const [driver1Data, setDriver1Data] = useState(null);
     const [driver2Data, setDriver2Data] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
-
+    const [raceNamesByYear, setRaceNamesByYear] = useState({});
     const [competingYears, setCompetingYears] = useState([]);
     const [allYears, setAllYears] = useState([]);
     const [displayCompetingYears, setDisplayCompetingYears] = useState(false);
@@ -71,7 +71,7 @@ export function DriverComparison(){
 
                 // Determine all years combined
                 const combinedYears = Array.from(new Set([...driver1Years, ...driver2Years])).sort();
-
+                console.log(overlappingYears);
                 setCompetingYears(overlappingYears);
                 setDisplayCompetingYears(overlappingYears.length > 0)
                 setAllYears(combinedYears);
@@ -83,6 +83,36 @@ export function DriverComparison(){
 
         fetchData();
     }, [driver1, driver2]);
+
+    useEffect(() => {
+        const fetchRaceNames = async (year) => {
+            try {
+                const response = await fetch(`https://praneeth7781.github.io/f1nsight-api-2/races/${year}/raceDetails.json`);
+                const races = await response.json();
+                return races.map(race => race.raceName);
+            } catch (error) {
+                console.error("Error fetching race names:", error);
+                return [];
+            }
+        };
+    
+        const loadRaceNames = async () => {
+            if (competingYears.length > 0) {
+                const allRaceNames = {};
+                for (const year of competingYears) {
+                    const raceNames = await fetchRaceNames(year);
+                    allRaceNames[year] = raceNames;
+                }
+                console.log(allRaceNames);
+                setRaceNamesByYear(allRaceNames); // Update the state with the fetched race names
+            }
+            else{
+                setRaceNamesByYear({});
+            }
+        };
+    
+        loadRaceNames();
+    }, [competingYears]); 
 
     // Determine which years to display
     const yearsToDisplay = displayCompetingYears && competingYears.length > 0 ? competingYears : allYears;
@@ -314,6 +344,7 @@ export function DriverComparison(){
                                         competingYears={competingYears}
                                         displayCompetingYears={displayCompetingYears}
                                         type="position"
+                                        raceNamesByYear={raceNamesByYear}
                                     />
                                     <h2 className="heading-4 text-neutral-400 ml-24">Qualifying Position Comparison</h2>
                                     <p className="text-sm text-neutral-400 mb-16 ml-24 leading-none">* Only seasons both drivers competed against each other</p> 
@@ -326,6 +357,7 @@ export function DriverComparison(){
                                         competingYears={competingYears}
                                         displayCompetingYears={displayCompetingYears}
                                         type="position"
+                                        raceNamesByYear={raceNamesByYear}
                                     />
                                     <h2 className="heading-4 text-neutral-400 ml-24">Points after each race</h2>
                                     <p className="text-sm text-neutral-400 mb-16 ml-24 leading-none">* Only seasons both drivers competed against each other</p> 
@@ -336,6 +368,7 @@ export function DriverComparison(){
                                         driver1Data={driver1Data.posAfterRace}
                                         driver2Data={driver2Data.posAfterRace}
                                         competingYears={competingYears}
+                                        raceNamesByYear={raceNamesByYear}
                                         displayCompetingYears={displayCompetingYears}
                                     />
                                 </>
