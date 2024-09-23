@@ -37,19 +37,19 @@ export const LineChartByYear = ({ driver1Name, driver2Name, driver1Data, driver2
   const getCumulativePointsData = (year) => {
     const driver1Points = driver1Data[year]?.pos || {};
     const driver2Points = driver2Data[year]?.pos || {};
-    
+
     const races = raceNamesByYear[year] && raceNamesByYear[year].length > 0 ? raceNamesByYear[year] : Object.keys(driver1Points); // Use race names if available
 
     const data = races.map(race => ({
-      race,
-      [driver1Name]: driver1Points[race]?.points || undefined,
-      [driver2Name]: driver2Points[race]?.points || undefined,
+        race,
+        [driver1Name]: driver1Points[race]?.points !== undefined ? driver1Points[race].points : undefined,
+        [driver2Name]: driver2Points[race]?.points !== undefined ? driver2Points[race].points : undefined,
     })).filter(data => data[driver1Name] !== undefined || data[driver2Name] !== undefined); // Exclude entries with no data
 
     return data.map(data => ({
-      race: data.race,
-      [driver1Name]: data[driver1Name] !== undefined ? data[driver1Name] : 'DNP', 
-      [driver2Name]: data[driver2Name] !== undefined ? data[driver2Name] : 'DNP', 
+        race: data.race,
+        [driver1Name]: data[driver1Name] !== undefined ? data[driver1Name] : 'DNP', 
+        [driver2Name]: data[driver2Name] !== undefined ? data[driver2Name] : 'DNP', 
     }));
   };
 

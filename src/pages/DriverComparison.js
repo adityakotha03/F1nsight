@@ -71,7 +71,6 @@ export function DriverComparison(){
 
                 // Determine all years combined
                 const combinedYears = Array.from(new Set([...driver1Years, ...driver2Years])).sort();
-                console.log(overlappingYears);
                 setCompetingYears(overlappingYears);
                 setDisplayCompetingYears(overlappingYears.length > 0)
                 setAllYears(combinedYears);
@@ -103,7 +102,6 @@ export function DriverComparison(){
                     const raceNames = await fetchRaceNames(year);
                     allRaceNames[year] = raceNames;
                 }
-                console.log(allRaceNames);
                 setRaceNamesByYear(allRaceNames); // Update the state with the fetched race names
             }
             else{
