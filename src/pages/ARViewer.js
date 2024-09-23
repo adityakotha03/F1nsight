@@ -226,19 +226,9 @@ export const ARViewer = () => {
 export default ARViewer;
 
 ARViewer.defaultProps = {
-  glbLink: `${process.env.PUBLIC_URL + "/ArFiles/glbs/f1nsight2024.glb"}`,
-  team: {
-    name: 'F1Nsight',
-    color: '#7500AD',
-    constructorTitles: ['2024'],
-    driversChampionships: ['2024'],
-    teamExistedSince: 2024,
-    teamHistory: [],
-    raceVictories: 1,
-    podiums: 1,
-    polePositions: 1,
-  },
-  img: `${process.env.PUBLIC_URL + "/ArFiles/poster.webp"}`,
+  glbLink: `${process.env.PUBLIC_URL + "/ArFiles/glbs/mclaren.glb"}`,
+  team: teamHistory.mclaren,
+  img: `${process.env.PUBLIC_URL + "/ArFiles/poster-mclaren.webp"}`,
   buttonIcon: `${process.env.PUBLIC_URL + "/APX/3diconWhite.png"}`,
   loading: 'auto',
   reveal: 'auto',
