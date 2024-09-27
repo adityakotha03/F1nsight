@@ -82,25 +82,41 @@ export function LandingPage({setResultPagePath}) {
       {/* Comparisons */}
       <div className="landing-section py-96 md:py-64">
         <div className="landing-section__content md:mt-24">
-          <div className="landing-section__content__media max-md:-mt-64 max-md:mb-16">
+          <div className="max-md:-mt-64 max-md:mb-16">
             <img 
-              className="rounded-lg max-lg:hidden" 
+              className="rounded-lg md:hidden shadow-12-dark" 
               alt="" 
               src={`${process.env.PUBLIC_URL + "/images/comparisons-lg.png"}`}
-            /> 
-            <img
-              className="rounded-lg lg:hidden max-md:w-2/3 max-md:mx-auto" 
-              alt="" 
-              src={`${process.env.PUBLIC_URL + "/images/comparisons-sm.png"}`} 
-            /> 
+            />
           </div>
           <div className="md:min-w-[50%]">
             <p className="heading-3 mb-24">Driver & team comparisons</p>
-            <p className="mb-24">Compare drivers and teams from any generation based on performance metrics and statistics.</p>
-            <div className="flex max-lg:flex-col max-lg:w-full lg:flex-row items-center gap-16">
-              <Button to="/driver-comparison" onClick={() => trackButtonClick('driver-comparison-landing')} buttonStyle="solid" className="w-full">Driver Comparison</Button>
-              <Button to="/teammates-comparison" onClick={() => trackButtonClick('team-comparison-landing')} buttonStyle="solid" className="w-full">Team Comparison</Button>
+            <p className="mb-24">Dive into the exciting world of Formula 1 with our innovative comparison feature, allowing you to analyze performance metrics and statistics of drivers and teams across all generations. Whether you’re a die-hard fan or a casual observer, this tool provides invaluable insights into the rich history of the sport..</p>
+            <div className="flex items-center gap-16 mb-24">
+              <img
+                className="rounded-lg max-md:hidden w-1/3 shadow-12-dark" 
+                alt="" 
+                src={`${process.env.PUBLIC_URL + "/images/comparisons-sm.png"}`} 
+              /> 
+              <div className="">
+                <p className="text-sm uppercase text-neutral-400 tracking-xs">Head-to-Head Teammate Comparisons</p>
+                <p className="mb-24">With our head-to-head feature, you can compare teammates directly, evaluating their performances in the same car during specific seasons. This comparison reveals how drivers stack up against one another under identical conditions, highlighting their strengths and weaknesses. Discover who consistently outperformed their partner, and understand the dynamics within the team.</p>
+                <Button to="/teammates-comparison" onClick={() => trackButtonClick('team-comparison-landing')} buttonStyle="solid" className="w-full">Team Comparison</Button>
+              </div>
             </div>
+            <div className="flex items-center gap-16">
+              <div className="">
+                <p className="text-sm uppercase text-neutral-400 tracking-xs">All-Time Driver Comparisons</p>
+                <p className="mb-24">Extend your analysis beyond teammates to include any driver from any team throughout F1’s illustrious history. This feature empowers you to examine a vast array of performance metrics, such as the number of race wins, pole positions, and qualifying statistics. Whether you want to pit legendary drivers against current stars or compare up-and-coming talents with established champions, our platform provides a detailed look at their achievements.</p>
+                <Button to="/driver-comparison" onClick={() => trackButtonClick('driver-comparison-landing')} buttonStyle="solid" className="w-full">Driver Comparison</Button>
+              </div>
+              <img
+                className="rounded-lg max-md:hidden w-1/3 shadow-12-dark" 
+                alt="" 
+                src={`${process.env.PUBLIC_URL + "/images/driverComparison.png"}`} 
+              /> 
+            </div>
+
           </div>
         </div>
       </div>
@@ -108,17 +124,20 @@ export function LandingPage({setResultPagePath}) {
       {/* AR */}
       <div className="landing-section">
         <div className="landing-section__content landing-section__content--reverse md:mt-24">
-          <div className="">
+          <div className="md:w-1/2">
             <p className="heading-3 mb-24">AR Experience</p>
-            <p className="mb-24">Place and scale your favorite F1 car model in your environment. Walk around it, inspect every detail.</p>
-            <p className="mb-24">Capture stunning photos and videos of your AR F1 car in different settings. Share these memorable moments with friends and fellow F1 enthusiasts and be sure to mention @f1nsight1.</p>
+            <p className="mb-24">Place and scale your favorite F1 car model right in your environment. Walk around it and inspect every intricate detail as if you were in the paddock!</p>
+            <p className="text-sm uppercase text-neutral-400 tracking-xs">Capture stunning moments</p>
+            <p className="mb-24">With our AR feature, you can snap breathtaking photos and videos of your F1 car in various settings. Share these memorable moments with friends and fellow F1 enthusiasts, and don’t forget to mention @f1nsight1! #f1nsight</p>
+            <p className="text-sm uppercase text-neutral-400 tracking-xs">Learn about team history</p>
+            <p className="mb-24">As you explore, dive deeper into the legacy of your favorite teams. For example, did you know that Ferrari has a storied history spanning over 70 years, while Red Bull, known for its recent dominance, has been racing for nearly 20 years under its current name? Discover the rich heritage of constructors and their drivers’ championships, including the transformations of teams from their origins to present-day achievements.</p>
             <div className="flex flex-col items-center gap-16">
               <Button to="/ar-viewer" buttonStyle="solid" onClick={() => trackButtonClick('ar-viewer-landing')}>Click here to try it out</Button>
               <div>or scan QR code</div>
-              <img className="rounded-lg shadow-12-dark w-[12rem]" alt="" src={`${process.env.PUBLIC_URL + "/images/arQr.png"}`} />
+              <img className="rounded-sm shadow-12-dark w-[12rem]" alt="" src={`${process.env.PUBLIC_URL + "/images/arQr.png"}`} />
             </div>
           </div>
-          <div className="landing-section__content__media flex-grow max-md:-mt-64 max-md:mb-16 ">
+          <div className="landing-section__content__media flex-grow max-md:-mt-64 max-md:mb-16 md:w-1/2">
             <video
                 src={`${process.env.PUBLIC_URL + "/images/arCapture2.mp4"}`}
                 loop
