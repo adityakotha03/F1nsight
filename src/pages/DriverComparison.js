@@ -252,7 +252,19 @@ export function DriverComparison(){
 
     return(
         <div className='global-container px-8'>
+
             <h2 className='heading-2 text-center mb-40 text-neutral-400'>Drivers Comparison</h2>
+
+            <div className="flex flex-col items-center mb-40">
+                <p className="text-sm uppercase text-neutral-400 tracking-xs">popular comparisons</p>
+                <div className="flex flex-wrap gap-8 mt-16 justify-center">
+                    <button className="py-4 px-16 bg-glow-dark rounded-[2.4rem]" onClick={() => navigate('/driver-comparison/max_verstappen/hamilton')}>Hamilton vs Verstappen</button>
+                    <button className="py-4 px-16 bg-glow-dark rounded-[2.4rem]" onClick={() => navigate('/driver-comparison/senna/prost')}>Senna vs Prost</button>
+                    <button className="py-4 px-16 bg-glow-dark rounded-[2.4rem]" onClick={() => navigate('/driver-comparison/vettel/alonso')}>Vettle vs Alonso</button>
+                    <button className="py-4 px-16 bg-glow-dark rounded-[2.4rem]" onClick={() => navigate('/driver-comparison/michael_schumacher/hamilton')}>Schumacher vs Hamilton</button>
+                </div>
+            </div>
+
             {isLoading ? (
                 <Loading className="mt-[20rem] mb-[20rem]" message={`Comparing ${driversList.find(q=> q.id === driver1).name} and ${driversList.find(q=> q.id === driver2).name}`} />
             ) : (
