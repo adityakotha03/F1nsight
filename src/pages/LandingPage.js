@@ -79,39 +79,52 @@ export function LandingPage({setResultPagePath}) {
         </div>
       </div>
      
-      {/* Comparisons */}
-      <div className="landing-section py-96 md:py-64">
+      {/* Team Comparisons */} 
+      <div className="landing-section py-96">
         <div className="landing-section__content md:mt-24">
           <div className="max-md:-mt-64 max-md:mb-16">
             <img 
               className="rounded-lg md:hidden shadow-12-dark" 
               alt="" 
-              src={`${process.env.PUBLIC_URL + "/images/comparisons-lg.png"}`}
+              src={`${process.env.PUBLIC_URL + "/images/comparisons-sm.png"}`}
             />
           </div>
           <div className="md:min-w-[50%]">
-            <p className="heading-3 mb-24">Driver & team comparisons</p>
-            <p className="mb-24">Dive into the exciting world of Formula 1 with our innovative comparison feature, allowing you to analyze performance metrics and statistics of drivers and teams across all generations. Whether you’re a die-hard fan or a casual observer, this tool provides invaluable insights into the rich history of the sport..</p>
             <div className="flex items-center gap-16 mb-24">
               <img
-                className="rounded-lg max-md:hidden w-1/3 shadow-12-dark" 
+                className="landing-section__content__media rounded-lg max-md:hidden w-1/3 shadow-12-dark" 
                 alt="" 
                 src={`${process.env.PUBLIC_URL + "/images/comparisons-sm.png"}`} 
               /> 
               <div className="">
                 <p className="text-sm uppercase text-neutral-400 tracking-xs">Head-to-Head Teammate Comparisons</p>
-                <p className="mb-24">With our head-to-head feature, you can compare teammates directly, evaluating their performances in the same car during specific seasons. This comparison reveals how drivers stack up against one another under identical conditions, highlighting their strengths and weaknesses. Discover who consistently outperformed their partner, and understand the dynamics within the team.</p>
+                <p className="mb-24">Compare teammates directly, evaluating their performances in the same car during specific seasons. Discover who consistently outperformed their partner and understand team dynamics.</p>
                 <Button to="/teammates-comparison" onClick={() => trackButtonClick('team-comparison-landing')} buttonStyle="solid" className="w-full">Team Comparison</Button>
               </div>
             </div>
+          </div>
+        </div>
+      </div>
+      
+      {/* Driver Comparisons */}
+      <div className="landing-section py-96">
+        <div className="landing-section__content md:mt-24">
+          <div className="max-md:-mt-64 max-md:mb-16">
+            <img 
+              className="rounded-lg md:hidden shadow-12-dark" 
+              alt="" 
+              src={`${process.env.PUBLIC_URL + "/images/driverComparison.png"}`}
+            />
+          </div>
+          <div className="md:min-w-[50%]">
             <div className="flex items-center gap-16">
               <div className="">
                 <p className="text-sm uppercase text-neutral-400 tracking-xs">All-Time Driver Comparisons</p>
-                <p className="mb-24">Extend your analysis beyond teammates to include any driver from any team throughout F1’s illustrious history. This feature empowers you to examine a vast array of performance metrics, such as the number of race wins, pole positions, and qualifying statistics. Whether you want to pit legendary drivers against current stars or compare up-and-coming talents with established champions, our platform provides a detailed look at their achievements.</p>
+                <p className="mb-24">Extend your analysis to any driver from any team throughout F1’s illustrious history. Examine performance metrics like race wins, pole positions, and qualifying statistics to compare legends with current stars and emerging talents.</p>
                 <Button to="/driver-comparison" onClick={() => trackButtonClick('driver-comparison-landing')} buttonStyle="solid" className="w-full">Driver Comparison</Button>
               </div>
               <img
-                className="rounded-lg max-md:hidden w-1/3 shadow-12-dark" 
+                className="landing-section__content__media rounded-lg max-md:hidden w-1/3 shadow-12-dark" 
                 alt="" 
                 src={`${process.env.PUBLIC_URL + "/images/driverComparison.png"}`} 
               /> 
@@ -123,14 +136,12 @@ export function LandingPage({setResultPagePath}) {
       
       {/* AR */}
       <div className="landing-section">
-        <div className="landing-section__content landing-section__content--reverse md:mt-24">
+        <div className="landing-section__content landing-section__content--reverse md:mt-64">
           <div className="md:w-1/2">
             <p className="heading-3 mb-24">AR Experience</p>
-            <p className="mb-24">Place and scale your favorite F1 car model right in your environment. Walk around it and inspect every intricate detail as if you were in the paddock!</p>
-            <p className="text-sm uppercase text-neutral-400 tracking-xs">Capture stunning moments</p>
-            <p className="mb-24">With our AR feature, you can snap breathtaking photos and videos of your F1 car in various settings. Share these memorable moments with friends and fellow F1 enthusiasts, and don’t forget to mention @f1nsight1! #f1nsight</p>
-            <p className="text-sm uppercase text-neutral-400 tracking-xs">Learn about team history</p>
-            <p className="mb-24">As you explore, dive deeper into the legacy of your favorite teams. For example, did you know that Ferrari has a storied history spanning over 70 years, while Red Bull, known for its recent dominance, has been racing for nearly 20 years under its current name? Discover the rich heritage of constructors and their drivers’ championships, including the transformations of teams from their origins to present-day achievements.</p>
+            <p className="mb-24">Place and scale your favorite F1 car model right in your environment. Walk around and inspect every intricate detail as if you were in the paddock!</p>
+            <p className="mb-24"><span className="font-bold">Capture stunning moments. </span>With our AR feature, snap breathtaking photos and videos of your F1 car in various settings. Share these moments with friends and fellow enthusiasts, and don’t forget to tag @f1nsight1! #f1nsight</p>
+            <p className="mb-24"><span className="font-bold">Learn about team history. </span>Explore the legacy of your favorite teams, like Ferrari’s 70-year journey and Red Bull’s recent dominance. Discover the transformations of constructors and their drivers’ championships.</p>
             <div className="flex flex-col items-center gap-16">
               <Button to="/ar-viewer" buttonStyle="solid" onClick={() => trackButtonClick('ar-viewer-landing')}>Click here to try it out</Button>
               <div>or scan QR code</div>
@@ -187,13 +198,10 @@ export function LandingPage({setResultPagePath}) {
               <a href="https://www.instagram.com/f1nsight1/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2">
                   <FaInstagram size={24} />
               </a>
-              <a href="https://github.com/adityakotha03/F1nsight" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2">
-                  <FaGithub size={24} />
-              </a>
             </div>
           </div>
 
-          <p className="mt-16">At F1nsight, we're passionate about fostering a collaborative environment. Whether you’re a developer, a data analyst, or an F1 enthusiast, there's a place for you here. We welcome your insights, suggestions, and ideas to help us grow and improve.</p>
+          <p className="mt-16">Thank you for visiting F1nsight! We hope you enjoy exploring the site and discovering the wealth of Formula 1 data at your fingertips. If you have any feature suggestions, feedback, or just want to share your thoughts, feel free to reach out to us on Instagram. Your insights are invaluable in helping us enhance your experience.</p>
         </div>
       </div>
     </div>
