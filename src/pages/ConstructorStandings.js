@@ -81,7 +81,7 @@ export function ConstructorStandings({ selectedYear }) {
                   drivers={standing.driverCodes}
                   index={index}
                   />
-                  <Button size='sm' disabled className="opacity-0 group-hover:opacity-100 absolute bottom-[2.4rem] left-1/2 -translate-x-1/2">See Comparison</Button>
+                  <Button size='sm' disabled className="opacity-0 group-hover:opacity-100 absolute bottom-[2.4rem] left-1/2 -translate-x-1/2">View Comparison</Button>
               </li>
             ))}
           </ul>

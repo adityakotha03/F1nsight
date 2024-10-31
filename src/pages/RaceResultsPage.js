@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { fetchRaceDetails, fetch, fetchRaceMeetingKeys } from '../utils/api';
 import classNames from 'classnames';
 
-import { RaceResultItem, Loading } from '../components';
+import { RaceResultItem, Loading, Button } from '../components';
 import { useNavigate } from 'react-router-dom';
 import { trackButtonClick } from '../utils/gaTracking';
 
@@ -64,7 +64,7 @@ export function RaceResultsPage({ selectedYear }) {
             <li 
               key={index}
               className={classNames(
-                  "bg-glow-dark rounded-[2.4rem] mt-56 px-32 clickable-hover", 
+                  "bg-glow-dark rounded-[2.4rem] mt-[7.2rem] lg:mt-56 px-32 clickable-hover group", 
                   `${race.raceName}`
               )}
               onClick={()=>{
@@ -96,7 +96,7 @@ export function RaceResultsPage({ selectedYear }) {
                   <img alt="" src={`${process.env.PUBLIC_URL + "/images/podium.png"}`} width={324} />
                 </div>
               )}
-              <div className='text-center mb-24 mt-12'>
+              <div className='text-center mb-8 mt-12'>
                 <div className='uppercase text-xs text-neutral-400 tracking-sm leading-none mb-4 mt-24'>
                   {`Round ${index + 1}`}
                 </div>
@@ -108,6 +108,7 @@ export function RaceResultsPage({ selectedYear }) {
                 </div>
               </div>
               {/* <div className={classNames("divider-glow-medium mb-16",  {"mt-32" : !race.results})} /> */}
+              <Button size='sm' disabled className="opacity-0 group-hover:opacity-100 absolute bottom-[-.8rem] left-1/2 -translate-x-1/2">View Race Data</Button>
             </li>
           ))}
         </ul>
