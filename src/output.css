@@ -1118,6 +1118,10 @@ input[type="range"]::-ms-fill-lower {
   bottom: -2.8rem;
 }
 
+.bottom-\[-6\.4rem\] {
+  bottom: -6.4rem;
+}
+
 .bottom-\[2\.4rem\] {
   bottom: 2.4rem;
 }
@@ -1232,6 +1236,18 @@ input[type="range"]::-ms-fill-lower {
 
 .top-full {
   top: 100%;
+}
+
+.bottom-\[-2\.4rem\] {
+  bottom: -2.4rem;
+}
+
+.bottom-\[-\.4rem\] {
+  bottom: -.4rem;
+}
+
+.bottom-\[-\.8rem\] {
+  bottom: -.8rem;
 }
 
 .-z-10 {
@@ -1626,10 +1642,6 @@ input[type="range"]::-ms-fill-lower {
   margin-top: .8rem;
 }
 
-.mt-\[-12rem\] {
-  margin-top: -12rem;
-}
-
 .mt-\[12\.4rem\] {
   margin-top: 12.4rem;
 }
@@ -1650,8 +1662,20 @@ input[type="range"]::-ms-fill-lower {
   margin-top: 9rem;
 }
 
-.mt-\[-6rem\] {
-  margin-top: -6rem;
+.mt-96 {
+  margin-top: 9.6rem;
+}
+
+.mt-80 {
+  margin-top: 8.8rem;
+}
+
+.mt-\[8rem\] {
+  margin-top: 8rem;
+}
+
+.mt-\[7\.2rem\] {
+  margin-top: 7.2rem;
 }
 
 .block {
@@ -2826,11 +2850,6 @@ input[type="range"]::-ms-fill-lower {
   border-color: rgb(159 88 10 / var(--tw-border-opacity));
 }
 
-.border-gray-800 {
-  --tw-border-opacity: 1;
-  border-color: rgb(31 41 55 / var(--tw-border-opacity));
-}
-
 .\!bg-transparent {
   background-color: transparent !important;
 }
@@ -3270,12 +3289,6 @@ input[type="range"]::-ms-fill-lower {
   --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
 }
 
-.from-gray-700 {
-  --tw-gradient-from: #374151 var(--tw-gradient-from-position);
-  --tw-gradient-to: rgb(55 65 81 / 0) var(--tw-gradient-to-position);
-  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
-}
-
 .via-cyan-500 {
   --tw-gradient-to: rgb(6 182 212 / 0)  var(--tw-gradient-to-position);
   --tw-gradient-stops: var(--tw-gradient-from), #06b6d4 var(--tw-gradient-via-position), var(--tw-gradient-to);
@@ -3405,10 +3418,6 @@ input[type="range"]::-ms-fill-lower {
 
 .to-yellow-200 {
   --tw-gradient-to: #FCE96A var(--tw-gradient-to-position);
-}
-
-.to-gray-900 {
-  --tw-gradient-to: #111827 var(--tw-gradient-to-position);
 }
 
 .fill-current {
@@ -3605,11 +3614,6 @@ input[type="range"]::-ms-fill-lower {
   padding-bottom: .4rem;
 }
 
-.py-64 {
-  padding-top: 6.4rem;
-  padding-bottom: 6.4rem;
-}
-
 .py-8 {
   padding-top: .8rem;
   padding-bottom: .8rem;
@@ -3646,10 +3650,6 @@ input[type="range"]::-ms-fill-lower {
 
 .pb-\[16rem\] {
   padding-bottom: 16rem;
-}
-
-.pb-\[18rem\] {
-  padding-bottom: 18rem;
 }
 
 .pl-10 {
@@ -4361,11 +4361,6 @@ input[type="range"]::-ms-fill-lower {
   --tw-ring-color: rgb(250 202 21 / var(--tw-ring-opacity));
 }
 
-.blur {
-  --tw-blur: blur(8px);
-  filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
-}
-
 .drop-shadow-\[0_0_14px_rgba\(0\2c 0\2c 0\2c 0\.75\)\] {
   --tw-drop-shadow: drop-shadow(0 0 14px rgba(0,0,0,0.75));
   filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
@@ -4482,6 +4477,8 @@ input[type="range"]::-ms-fill-lower {
 .\[scrollbar-width\:none\] {
   scrollbar-width: none;
 }
+
+/* npx tailwindcss -i ./src/index.css -o ./src/output.css --watch */
 
 html {
   font-size: 62.5%;
@@ -4849,12 +4846,6 @@ button:hover {
 .even\:bg-gray-50:nth-child(even) {
   --tw-bg-opacity: 1;
   background-color: rgb(249 250 251 / var(--tw-bg-opacity));
-}
-
-.hover\:scale-110:hover {
-  --tw-scale-x: 1.1;
-  --tw-scale-y: 1.1;
-  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
 }
 
 .hover\:cursor-not-allowed:hover {
@@ -7299,25 +7290,12 @@ button:hover {
     padding-bottom: 1.6rem;
   }
 
-  .md\:py-64 {
-    padding-top: 6.4rem;
-    padding-bottom: 6.4rem;
-  }
-
   .md\:pb-32 {
     padding-bottom: 3.2rem;
   }
 
-  .md\:pb-\[16rem\] {
-    padding-bottom: 16rem;
-  }
-
   .md\:pt-16 {
     padding-top: 1.6rem;
-  }
-
-  .md\:pt-\[14rem\] {
-    padding-top: 14rem;
   }
 
   .md\:pt-\[18rem\] {
@@ -7372,6 +7350,10 @@ button:hover {
   .lg\:my-8 {
     margin-top: .8rem;
     margin-bottom: .8rem;
+  }
+
+  .lg\:mt-56 {
+    margin-top: 5.6rem;
   }
 
   .lg\:px-64 {
