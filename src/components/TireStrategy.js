@@ -11,18 +11,19 @@ export const TireStrategy = (props) => {
     .sort((a, b) => parseInt(a.position, 10) - parseInt(b.position, 10))
     .map(result => result.Driver.code);
 
-  const transformedData = drivers.map(driver => {
-    const driverData = { acronym: driver.acronym };
-    let previousLapEnd = 0;
-
-    driver.tires.forEach((tire, index) => {
-      const lapEndValue = index === 0 ? tire.lap_end : tire.lap_end - previousLapEnd;
-      driverData[`${tire.compound.toLowerCase()}${index}`] = lapEndValue;
-      previousLapEnd = tire.lap_end;
+    const transformedData = drivers.map(driver => {
+      const driverData = { acronym: driver.acronym };
+      let previousLapEnd = 0;
+    
+      driver.tires.forEach((tire, index) => {
+        const lapEndValue = index === 0 ? tire.lap_end : tire.lap_end - previousLapEnd;
+        const compoundKey = tire.compound ? tire.compound.toLowerCase() : "N/A";
+        driverData[`${compoundKey}${index}`] = lapEndValue;
+        previousLapEnd = tire.lap_end;
+      });
+    
+      return driverData;
     });
-
-    return driverData;
-  });
 
   // Filter the transformed data based on the driverCode if it's not null
   const filteredTransformedData = driverCode
@@ -67,8 +68,6 @@ export const TireStrategy = (props) => {
     
       return null;
     }; 
-
-    //console.log(tireKeys)
 
     return (
         <>
