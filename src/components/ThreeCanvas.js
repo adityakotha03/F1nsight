@@ -59,19 +59,8 @@ export const ThreeCanvas = ({ MapFile, locData, driverColor, driverSelected, dri
     control.maxDistance = 10;
     control.minDistance = 5;
 
-    const axesHelper = new THREE.AxesHelper( 20 );
+    // const axesHelper = new THREE.AxesHelper( 20 );
     // scene.add( axesHelper );
-
-    // const textureLoader = new THREE.TextureLoader();
-    // textureLoader.load('/maps/imola.png', texture => {
-    //   const imageWidth = texture.image.width / 100;
-    //   const imageHeight = texture.image.height / 100;
-    //   const geometry = new THREE.PlaneGeometry(imageWidth, imageHeight);
-    //   const material = new THREE.MeshBasicMaterial({ map: texture });
-    //   const plane = new THREE.Mesh(geometry, material);
-    //   plane.rotation.z = -Math.PI / 2;
-    //   scene.add(plane);
-    // });
 
     let map;
     const lo = new GLTFLoader();
@@ -97,7 +86,7 @@ export const ThreeCanvas = ({ MapFile, locData, driverColor, driverSelected, dri
         // control.update();
         
         // Update camera position to be at the center of the map
-        camera.position.set(center.x, center.y, center.z + 7);
+        camera.position.set(center.x, center.y - 10, center.z + 7);
         // Update the target of the OrbitControls to the center of the map
         control.target.set(center.x, center.y, center.z);
         control.update(); // Apply the changes to the controls
@@ -122,11 +111,8 @@ export const ThreeCanvas = ({ MapFile, locData, driverColor, driverSelected, dri
         control.enabled = false;
       }
       else{
-        control.enablePan = true;
-        control.enableRotate = true;
-        control.enableZoom = true;
+        control.enabled = true;
       }
-      
       carModel.traverse(object => {
         if (object.isMesh && object.material.name === 'main_body_colour_Red.001') {
           // Change the color of the car material
@@ -187,8 +173,8 @@ export const ThreeCanvas = ({ MapFile, locData, driverColor, driverSelected, dri
     
     return () => {
       if (mountRef.current && renderer.domElement) {
-        mountRef.current.removeChild(renderer.domElement);
-    }
+          mountRef.current.removeChild(renderer.domElement);
+      }
       renderer.dispose();
       scene.traverse(object => {
         if (object.material) object.material.dispose();
