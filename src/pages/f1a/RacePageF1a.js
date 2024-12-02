@@ -81,7 +81,7 @@ export function RacePageF1a() {
                 Miami: "miami",
                 Monza: "monza",
                 Barcelona: "catalunya",
-                Lusail: "losail",
+                Lusail: "lusail",
                 "Yas Island": "yas_marina",
             };
 
@@ -212,46 +212,48 @@ export function RacePageF1a() {
             
             {/* Race 2 */}
             <div className="flex flex-col items-center md:w-1/2 bg-gradient-to-br from-pink-500/10 via-purple-500/10 to-indigo-500/10 p-32">
-
                 <p className="heading-2 mb-32">Race 2</p>
+                {raceResults2.length > 0 ? (
+                    <>
+                    <div className="bg-glow-large p-24 rounded-lg w-[25rem] mb-32">
+                        {raceResults2.map((result, index) => (
+                            <DriverCard
+                                f1a={true}
+                                hasHover
+                                isActive={activeButtonIndex === index}
+                                index={index}
+                                driver={result.Driver}
+                                stint={drivers}
+                                startPosition={parseInt(
+                                    result.grid,
+                                    10
+                                )}
+                                endPosition={parseInt(
+                                    result.position,
+                                    10
+                                )}
+                                year={year}
+                                time={
+                                    result.Time?.time || result.status
+                                }
+                                fastestLap={result.FastestLap}
+                                layoutSmall={index > 2}
+                            />
+                        ))}
+                    </div>
 
-                <div className="bg-glow-large p-24 rounded-lg w-[25rem] mb-32">
-                    {raceResults2.map((result, index) => (
-                        <DriverCard
-                            f1a={true}
-                            hasHover
-                            isActive={activeButtonIndex === index}
-                            index={index}
-                            driver={result.Driver}
-                            stint={drivers}
-                            startPosition={parseInt(
-                                result.grid,
-                                10
-                            )}
-                            endPosition={parseInt(
-                                result.position,
-                                10
-                            )}
-                            year={year}
-                            time={
-                                result.Time?.time || result.status
-                            }
-                            fastestLap={result.FastestLap}
-                            layoutSmall={index > 2}
-                        />
-                    ))}
-                </div>
-
-                <StartingGridF1A
-                    raceResults={raceResults2}
-                />
-
-                <div className="page-container-centered">
-                    <FastestLapsF1A
+                    <StartingGridF1A
                         raceResults={raceResults2}
-                        drivers={drivers}
                     />
-                </div>
+
+                    <div className="page-container-centered">
+                        <FastestLapsF1A
+                            raceResults={raceResults2}
+                            drivers={drivers}
+                        />
+                    </div>
+                    </>
+                ) : "no race data"}
             </div>
         </div>
         </>
