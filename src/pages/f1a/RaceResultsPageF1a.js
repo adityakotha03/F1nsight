@@ -30,7 +30,7 @@ const Top3Drivers = ({ year, circuitId, index }) => {
       // console.log('results', results);
       setRaceName(results.raceName);
       setTop3RaceResults(results.race1);
-      setTop3RaceResults2(results.race2);
+      results.race2 && setTop3RaceResults2(results.race2);
     };
 
     fetchData();
@@ -83,7 +83,7 @@ const Top3Drivers = ({ year, circuitId, index }) => {
         </div>
         <div>
           <p className="uppercase text-sm text-center text-neutral-400 tracking-sm leading-none mb-24">Race 2 Results</p>
-          {hasResults ? (
+          {hasResults && top3RaceResults2.length > 0 ? (
             <ul className="bg-glow-dark rounded-[2.4rem] race-results__list">
               {top3RaceResults2.map((result, index) => (
                 <RaceResultItem 
@@ -131,6 +131,8 @@ export function RaceResultsPageF1a({ selectedYear }) {
 
     fetchData();
   }, [selectedYear]);
+
+  // console.log('filteredCircuits', filteredCircuits);
   
   return (
     <div className="race-results max-w-[120rem] m-auto mt-[7rem]">
