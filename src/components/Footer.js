@@ -24,9 +24,6 @@ export const Footer = ({ className }) => {
                             <a href="https://www.linkedin.com/in/antonicommodore/" className="icon-link" style={{ marginLeft: '10px' }}>
                                 <FaLinkedin size={24} />
                             </a>
-                            <a href="https://ant-dot-comm.github.io/ant-folio/" className="icon-link" style={{ marginLeft: '10px' }}>
-                                <FaGlobe size={24} />
-                            </a>
                             </div>
                         }
                     />
