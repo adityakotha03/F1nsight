@@ -35,7 +35,7 @@ export const teamHistory = {
       name: 'red_bull',
       color: '#3671C6',
       constructorTitles: ['2010', '2011', '2012', '2013', '2022', '2023'],
-      driversChampionships: ['2010', '2011', '2012', '2013', '2021', '2022', '2023'],
+      driversChampionships: ['2010', '2011', '2012', '2013', '2021', '2022', '2023', '2024'],
       teamExistedSince: 2005,
       teamHistory: [
         { team: 'Stewart', startYear: 1997, endYear: 199 },
@@ -49,7 +49,7 @@ export const teamHistory = {
     mclaren: {
       name: 'mclaren',
       color: '#FF8000',
-      constructorTitles: ['1974', '1984', '1985', '1988', '1989', '1990', '1991', '1998'],
+      constructorTitles: ['1974', '1984', '1985', '1988', '1989', '1990', '1991', '1998', '2024'],
       driversChampionships: ['1974', '1976', '1984', '1985', '1986', '1988', '1989', '1990', '1991', '1998', '1999', '2008'],
       teamExistedSince: '1966',
       teamHistory: [
