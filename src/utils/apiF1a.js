@@ -54,7 +54,7 @@ export const fetchF1aRaceResultsByCircuit = async (year, circuitId, top3 = false
     // console.log('fetchF1aRaceResultsByCircuit', circuitId, {results});
     if (results.length === 0) {
       console.error('No results found for the given circuitId');
-      return { raceName: '', race1: [], race2: [] };
+      return { raceName: '', race1: [], race2: [], race3: [] };
     }
   
     const driverInfo = await fetchF1aDriverInfo(year);
@@ -65,17 +65,19 @@ export const fetchF1aRaceResultsByCircuit = async (year, circuitId, top3 = false
 
     let race1Results = results.Results.race1 ? enrichDriverData(results.Results.race1, driverInfo) : [];
     let race2Results = results.Results.race2 ? enrichDriverData(results.Results.race2, driverInfo) : [];
+    let race3Results = results.Results.race3 ? enrichDriverData(results.Results.race3, driverInfo) : [];
 
     if (top3) {
       race1Results = race1Results ? filterTop3(race1Results) : [];
       race2Results = race2Results ? filterTop3(race2Results) : [];
+      race3Results = race3Results ? filterTop3(race3Results) : [];
     }
 
-    return { raceName: results.raceName, race1: race1Results, race2: race2Results };
+    return { raceName: results.raceName, race1: race1Results, race2: race2Results, race3: race3Results };
 
   } catch (error) {
     console.error("Error fetching race results:", error);
-    return { raceName: '', race1: [], race2: [] };
+    return { raceName: '', race1: [], race2: [], race3: [] };
   }
 };
 
@@ -93,12 +95,14 @@ export const fetchF1aAllRaceResults = async (year) => {
     const races = data.map(race => {
       let race1Results = race.Results.race1 ? enrichDriverData(race.Results.race1, driverInfo) : [];
       let race2Results = race.Results.race2 ? enrichDriverData(race.Results.race2, driverInfo) : [];
+      let race3Results = race.Results.race3 ? enrichDriverData(race.Results.race3, driverInfo) : [];
 
       return {
         raceName: race.raceName,
         circuitId: race.Circuit.circuitId,
         race1: race1Results,
-        race2: race2Results
+        race2: race2Results,
+        race3: race3Results,
       };
     });
 

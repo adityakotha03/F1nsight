@@ -16,7 +16,7 @@ export function DriverStandingsF1a({ selectedYear }) {
 
       // Aggregate points for each driver
       allRaceResults.forEach(race => {
-        ['race1', 'race2'].forEach(raceKey => {
+        ['race1', 'race2', 'race3'].forEach(raceKey => {
           race[raceKey].forEach(result => {
             const driverId = result.Driver.driverId;
             const points = parseInt(result.points, 10);
@@ -42,7 +42,7 @@ export function DriverStandingsF1a({ selectedYear }) {
     fetchData();
   }, [selectedYear]);
 
-  console.log('DriverStandingsF1a', standings);
+  // console.log('DriverStandingsF1a', standings);
 
   return (
     <div className="max-w-[45rem] m-auto mt-64">

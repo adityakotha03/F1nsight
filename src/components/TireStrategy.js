@@ -16,6 +16,7 @@ export const TireStrategy = (props) => {
       let previousLapEnd = 0;
     
       driver.tires.forEach((tire, index) => {
+        console.log('tire', tire);
         const lapEndValue = index === 0 ? tire.lap_end : tire.lap_end - previousLapEnd;
         const compoundKey = tire.compound ? tire.compound.toLowerCase() : "N/A";
         driverData[`${compoundKey}${index}`] = lapEndValue;
@@ -46,6 +47,8 @@ export const TireStrategy = (props) => {
   const tireKeys = [
     ...new Set(sortedTransformedData.flatMap(Object.keys).filter(key => key !== 'acronym')),
   ];
+
+  console.log('tireKeys', sortedTransformedData);
 
     const capitalizeFirstLetter = (string) => {
       return string.charAt(0).toUpperCase() + string.slice(1);

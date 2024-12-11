@@ -18,7 +18,7 @@ export function ConstructorStandingsF1a({ selectedYear }) {
 
       // Aggregate points for each constructor and store driver codes
       allRaceResults.forEach(race => {
-        ['race1', 'race2'].forEach(raceKey => {
+        ['race1', 'race2', 'race3'].forEach(raceKey => {
           race[raceKey].forEach(result => {
             const constructorId = result.Constructor.constructorId;
             const points = parseInt(result.points, 10);
@@ -51,7 +51,7 @@ export function ConstructorStandingsF1a({ selectedYear }) {
       const sortedConstructors = Object.values(constructorPoints).sort((a, b) => b.points - a.points);
 
 
-      console.log('ConstructorStandingsF1a', sortedConstructors, constructorDrivers);
+      // console.log('ConstructorStandingsF1a', sortedConstructors, constructorDrivers);
 
       setStandings(sortedConstructors);
       setIsLoading(false);
