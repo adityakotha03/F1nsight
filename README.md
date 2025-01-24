@@ -31,6 +31,10 @@ Please note that F1nsight is an unofficial project and is not associated in any 
 
 For more information and to access the interactive features, visit our website at [F1nsight](https://f1nsight.com/).
 
+## Our Custom API
+
+Some of the information related to driver comparison and other important statistics are provided by our own API found at [F1nsight API](https://github.com/praneeth7781/f1nsight-api-2)
+
 ## Support and Contribution
 
 Contributions to F1nsight are always welcome! Whether it's improving the codebase, adding new features, or fixing bugs, please feel free to fork the repository and submit a pull request.
