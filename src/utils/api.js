@@ -56,7 +56,7 @@ export const fetchDriverStats = async (driverId1, driverId2) => {
 }
 
 export const fetchDriverStandings = async (driverId) => {
-  const url = `https://ergast.com/api/f1/drivers/${driverId}/driverStandings.json`;
+  const url = `https://api.jolpi.ca/ergast/f1/drivers/${driverId}/driverStandings.json`;
   try {
     const response  = await fetch(url);
     if(response.ok){
@@ -71,7 +71,7 @@ export const fetchDriverStandings = async (driverId) => {
 }
 
 export const fetchDriverResults = async (driverId) => {
-  const url = `https://ergast.com/api/f1/drivers/${driverId}/results.json`;
+  const url = `https://api.jolpi.ca/ergast/f1/drivers/${driverId}/results.json`;
   try {
     const response  = await fetch(url);
     if(response.ok){
@@ -86,7 +86,7 @@ export const fetchDriverResults = async (driverId) => {
 }
 
 export const fetchDriverQualifying = async (driverId) => {
-  const url = `https://ergast.com/api/f1/drivers/${driverId}/qualifying.json`;
+  const url = `https://api.jolpi.ca/ergast/f1/drivers/${driverId}/qualifying.json`;
   try {
     const response  = await fetch(url);
     if(response.ok){
@@ -326,14 +326,19 @@ export const getConstructorStandings = async (selectedYear) => {
       driverResponse.json()
     ]);
 
-    const constructorStandings = constructorData['latest'].map(standing => ({
+    const raceKeys = Object.keys(constructorData).sort();
+    const lastRaceKey = raceKeys[raceKeys.length - 1];
+    const data_constructor = constructorData[lastRaceKey] || [];
+    const constructorStandings = data_constructor.map(standing => ({
       constructorName: standing.Constructor.name,
       constructorId: standing.Constructor.constructorId,
       points: standing.points,
       driverCodes: []
     }));
 
-    const driverStandings = driverData['latest'];
+    const Keys = Object.keys(driverData).sort();
+    const lastKey = raceKeys[Keys.length - 1];
+    const driverStandings = driverData[lastKey] || [];
 
     driverStandings.forEach(standing => {
       standing.Constructors.forEach(constructor => {
@@ -362,7 +367,9 @@ export const getDriverStandings = async (selectedYear) => {
     const response = await fetch(url);
     if (response.ok) {
       const data = await response.json();
-      const standings = data['latest'];
+      const raceKeys = Object.keys(data).sort();
+      const lastRaceKey = raceKeys[raceKeys.length - 1];
+      const standings = data[lastRaceKey] || [];
       return standings.map(standing => ({
         driverCode: standing.Driver.code,
         firstName: standing.Driver.givenName,
