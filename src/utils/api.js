@@ -282,7 +282,10 @@ export const getPartialConstructorStandings = async (selectedYear, start, end) =
     // }));
     // const baseURL = `https://praneeth7781.github.io/f1nsight-api-2/constructors/${selectedYear}`
 
-    const driverStandings = driverData['latest'];
+    // const driverStandings = driverData['latest'];
+    const Keys = Object.keys(driverData).sort();
+    const lastKey = Keys[Keys.length - 1];
+    const driverStandings = driverData[lastKey] || [];
 
     driverStandings.forEach(standing => {
       standing.Constructors.forEach(constructor => {
@@ -337,7 +340,7 @@ export const getConstructorStandings = async (selectedYear) => {
     }));
 
     const Keys = Object.keys(driverData).sort();
-    const lastKey = raceKeys[Keys.length - 1];
+    const lastKey = Keys[Keys.length - 1];
     const driverStandings = driverData[lastKey] || [];
 
     driverStandings.forEach(standing => {
