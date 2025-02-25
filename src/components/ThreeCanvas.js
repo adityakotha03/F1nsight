@@ -8,7 +8,7 @@ import Stats from 'three/addons/libs/stats.module.js';
 
 import { Loading } from "./Loading"
 
-export const ThreeCanvas = ({ MapFile, locData, driverColor, driverSelected, driverCode, fastestLap, isPaused, haloView, controls, speedFactor }) => {
+export const ThreeCanvas = ({ MapFile, locData, driverColor, driverSelected, driverCode, fastestLap, isPaused, haloView, speedFactor, className }) => {
   const [driverDetails, setDriverDetails] = useState(null);
   const [carPosition, setCarPosition] = useState({ x: 0, y: 0, z: 0 });
   const [unit, setUnit] = useState('km/h');
@@ -195,9 +195,8 @@ export const ThreeCanvas = ({ MapFile, locData, driverColor, driverSelected, dri
   };
 
   return (
-    <div className="relative">
-      <div ref={mountRef} className="canvas-container max-sm:pointer-events-none" />
-      {controls}
+    <div className={classNames(className, "relative")}>
+      <div ref={mountRef} className="three-canvas-container max-sm:pointer-events-none" />
       {driverSelected &&
         <div className="driver-data absolute top-1 right-1" ref={infoRef}>
           {(infoRef.current && driverDetails) ? (

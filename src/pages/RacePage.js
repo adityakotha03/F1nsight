@@ -22,13 +22,19 @@ import {
     FastestLaps,
     PositionCharts,
     ReactSelectComponent,
+    Modal,
 } from "../components";
+import Drawer from "../components/Drawer.js";
+import Accordion from "../components/Accordion.js";
+import { locationMaps } from "../utils/locationMaps.js";
 
 export function RacePage() {
     const { state } = useLocation();
     const { raceId } = useParams();
-    const [raceName, setRaceName] = useState(state? state.raceName : null);
-    const [meetingKey, setMeetingKey] = useState(state ? state.meetingKey : raceId);
+    const [raceName, setRaceName] = useState(state ? state.raceName : null);
+    const [meetingKey, setMeetingKey] = useState(
+        state ? state.meetingKey : raceId
+    );
     const [year, setYear] = useState(state ? state.year : null);
     const [location, setLocation] = useState(state ? state.location : null);
     const [drivers, setDrivers] = useState([]);
@@ -54,6 +60,10 @@ export function RacePage() {
     const [selectedSession, setSelectedSession] = useState("Race");
     const [hasRaceSession, sethasRaceSession] = useState(false);
     const [hasQualifyingSession, sethasQualifyingSession] = useState(false);
+    const [modalOpen, setModalOpen] = useState(false);
+    const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+    const [driverDrawerOpen, setDriverDrawerOpen] = useState(false);
+    const [showStartingGrid, setShowStartingGrid] = useState(false);
 
     useEffect(() => {
         const setBaseData = async () => {
@@ -61,32 +71,57 @@ export function RacePage() {
             setYear(state.year);
             setLocation(state.location);
             setMeetingKey(state.meetingKey);
-        }
-        if(state) setBaseData();
-    }, [state])
+        };
+        if (state) setBaseData();
+    }, [state]);
 
     useEffect(() => {
-        const fetchByMeetingKey = async() => {
+        const fetchByMeetingKey = async () => {
             setIsLoading(true);
-            const response = await fetch(`https://praneeth7781.github.io/f1nsight-api-2/races/racesbyMK.json`).then((res) => res.json());
+            const response = await fetch(
+                `https://praneeth7781.github.io/f1nsight-api-2/races/racesbyMK.json`
+            ).then((res) => res.json());
             setYear(response[raceId]["year"]);
             setLocation(response[raceId]["location"]);
             setRaceName(response[raceId]["raceName"]);
             // console.log(raceName);
         };
-        if(raceName){}
-        else{
+
+        if (raceName) {
+        } else {
             fetchByMeetingKey();
             fetchData();
         }
-    },[])
 
-    const handleOptionChange = (selectedOption) => {
-        setSelectedSession(selectedOption.value);
-    };
+        const handleResize = () => {
+            setShowStartingGrid(window.innerWidth > 640 && true);
+        };
+        window.addEventListener("resize", handleResize);
+        // Cleanup event listener on unmount
+        return () => window.removeEventListener("resize", handleResize);
 
+    }, []);
 
-    const animatedLocations = ["Sakhir", "Suzuka", "Melbourne", "Monaco", "Silverstone", "Budapest", "Spa-Francorchamps", "Zandvoort", "Monza", "Baku", "Marina Bay", "Austin", "Mexico City", "São Paulo", "Las Vegas", "Lusail", "Yas Island", "Miami"];
+    const animatedLocations = [
+        "Sakhir",
+        "Suzuka",
+        "Melbourne",
+        "Monaco",
+        "Silverstone",
+        "Budapest",
+        "Spa-Francorchamps",
+        "Zandvoort",
+        "Monza",
+        "Baku",
+        "Marina Bay",
+        "Austin",
+        "Mexico City",
+        "São Paulo",
+        "Las Vegas",
+        "Lusail",
+        "Yas Island",
+        "Miami",
+    ];
 
     const selectedDriverData = drivers.find(
         (obj) => obj["acronym"] === driverCode
@@ -95,45 +130,15 @@ export function RacePage() {
         (obj) => obj["number"] === driverNumber
     );
 
-
     const fetchData = async () => {
         if (!raceName) return;
-
 
         try {
             setDriverSelected(false);
             setActiveButtonIndex(null);
-
-            const locationMap = {
-                Melbourne: "albert_park",
-                Austin: "americas",
-                Sakhir: "bahrain",
-                Baku: "baku",
-                Budapest: "hungaroring",
-                Imola: "imola",
-                "São Paulo": "interlagos",
-                Jeddah: "jeddah",
-                "Marina Bay": "marina_bay",
-                Monaco: "monaco",
-                Spielberg: "red_bull_ring",
-                "Mexico City": "rodriguez",
-                Shanghai: "shanghai",
-                Silverstone: "silverstone",
-                "Spa-Francorchamps": "spa",
-                Suzuka: "suzuka",
-                "Las Vegas": "vegas",
-                Montréal: "villeneuve",
-                Zandvoort: "zandvoort",
-                Miami: "miami",
-                Monza: "monza",
-                Barcelona: "catalunya",
-                Lusail: "losail",
-                "Yas Island": "yas_marina",
-            };
-
             setIsLoading(true);
 
-            const circuitId = locationMap[location];
+            const circuitId = locationMaps[location];
             const sessionsResponse = await fetch(
                 `https://api.openf1.org/v1/sessions?meeting_key=${meetingKey}`
             );
@@ -152,12 +157,7 @@ export function RacePage() {
                 setIsLoading(true);
 
                 setMapPath(
-                    `${
-                        process.env.PUBLIC_URL +
-                        "/map/" +
-                        circuitId +
-                        ".gltf"
-                    }`
+                    `${process.env.PUBLIC_URL + "/map/" + circuitId + ".gltf"}`
                 );
                 setAnimatedMap(
                     `${
@@ -198,7 +198,7 @@ export function RacePage() {
                     fetchDriversAndTires(sessionKey),
                     fetch(
                         `https://api.openf1.org/v1/laps?session_key=${sessionKey}`
-                    ).then((res) => res.json())
+                    ).then((res) => res.json()),
                 ]);
 
                 setPos(startingGridData);
@@ -232,9 +232,7 @@ export function RacePage() {
                 const updatedDate = date.toISOString();
 
                 setStartTime(updatedDate);
-                setEndTime(
-                    startingGridData[startingGridData.length - 1].date
-                );
+                setEndTime(startingGridData[startingGridData.length - 1].date);
 
                 const earliestDateTime = startingGridData[0]?.date;
                 const filteredStartingGrid = startingGridData.filter(
@@ -256,12 +254,7 @@ export function RacePage() {
                 setIsLoading(true);
 
                 setMapPath(
-                    `${
-                        process.env.PUBLIC_URL +
-                        "/map/" +
-                        circuitId +
-                        ".gltf"
-                    }`
+                    `${process.env.PUBLIC_URL + "/map/" + circuitId + ".gltf"}`
                 );
                 setAnimatedMap(
                     `${
@@ -334,9 +327,7 @@ export function RacePage() {
                 const updatedDate = date.toISOString();
 
                 setStartTime(updatedDate);
-                setEndTime(
-                    startingGridData[startingGridData.length - 1].date
-                );
+                setEndTime(startingGridData[startingGridData.length - 1].date);
 
                 const earliestDateTime = startingGridData[0]?.date;
                 const filteredStartingGrid = startingGridData.filter(
@@ -410,28 +401,36 @@ export function RacePage() {
         }
     };
 
-    const DriverList = ({ results, activeButtonIndex, handleDriverSelectionClick, drivers, driversColor, year, session }) => {
+    const DriverList = ({
+        results,
+        activeButtonIndex,
+        handleDriverSelectionClick,
+        drivers,
+        driversColor,
+        year,
+        session,
+    }) => {
         return (
-          <ul className="w-fit mx-auto">
-            {results.map((result, index) => (
-                <DriverCard
-                  hasHover={false}
-                  isActive={activeButtonIndex === index}
-                  index={index}
-                  driver={result.Driver}
-                  stint={drivers}
-                  driverColor={driversColor[result.Driver.code]} // Use driver code here
-                  startPosition={parseInt(result.grid, 10)}
-                  endPosition={parseInt(result.position, 10)}
-                  year={parseInt(year)}
-                  time={result[session]}
-                  fastestLap={result.FastestLap}
-                  layoutSmall={index > 2}
-                  mobileSmall
-                  isRace={false}
-                />
-            ))}
-          </ul>
+            <ul className="w-fit mx-auto">
+                {results.map((result, index) => (
+                    <DriverCard
+                        hasHover={false}
+                        isActive={activeButtonIndex === index}
+                        index={index}
+                        driver={result.Driver}
+                        stint={drivers}
+                        driverColor={driversColor[result.Driver.code]} // Use driver code here
+                        startPosition={parseInt(result.grid, 10)}
+                        endPosition={parseInt(result.position, 10)}
+                        year={parseInt(year)}
+                        time={result[session]}
+                        fastestLap={result.FastestLap}
+                        layoutSmall={index > 2}
+                        mobileSmall
+                        isRace={false}
+                    />
+                ))}
+            </ul>
         );
     };
 
@@ -439,21 +438,50 @@ export function RacePage() {
     // console.log({raceResults});
     // console.log({startingGrid});
 
-    const { q1Results, q2Results, q3Results } = organizeQualifyingResults(raceResults);
+    const { q1Results, q2Results, q3Results } =
+        organizeQualifyingResults(raceResults);
 
     // console.log('Q1 Results:', q1Results);
     // console.log('Q2 Results:', q2Results);
     // console.log('Q3 Results:', q3Results);
 
-    const sessionOptions = [];
-    if (hasRaceSession) {
-        sessionOptions.push({ value: 'Race', label: 'Race' });
-    }
-    if (hasQualifyingSession) {
-        sessionOptions.push({ value: 'Qualifying', label: 'Qualifying' });
-    }
-
     // console.log('selectedSession', selectedSession);
+
+    const driverSelectedShowTrack =
+        (driverSelected && animatedLocations.includes(location)) ||
+        !animatedLocations.includes(location);
+
+    const driverButtons = (layoutSmall) => (
+        <ul className="flex flex-col p-16">
+            {raceResults.map((result, index) => (
+                <button
+                    key={index}
+                    className="block w-full mb-2 relative"
+                    onClick={() => {
+                        handleDriverSelectionClick(index);
+                        setModalOpen(false);
+                    }}
+                >
+                    <DriverCard
+                        hasHover
+                        isActive={activeButtonIndex === index}
+                        index={index}
+                        driver={result.Driver}
+                        stint={drivers}
+                        driverColor={driversColor[driverCode]}
+                        startPosition={parseInt(result.grid, 10)}
+                        endPosition={parseInt(result.position, 10)}
+                        year={parseInt(year)}
+                        time={result.Time?.time || result.status}
+                        fastestLap={result.FastestLap}
+                        layoutSmall={layoutSmall}
+                        // mobileSmall
+                        isRace={true}
+                    />
+                </button>
+            ))}
+        </ul>
+    )
 
     return isLoading ? (
         <Loading
@@ -461,113 +489,149 @@ export function RacePage() {
             message={`Loading ${raceName} ${year} ${selectedSession}`}
         />
     ) : (
-        <div className="pt-[10rem]">
-            <div className="flex flex-col items-center justify-center mb-32">
-                {raceName && (
-                    <p className="heading-2 text-center text-neutral-400 mb-8">
-                        {raceName} {year}
-                    </p>
-                )}
-                <ReactSelectComponent
-                    placeholder="Select Session"
-                    options={sessionOptions}
-                    onChange={handleOptionChange}
-                    value={sessionOptions.find(option => option.value === selectedSession)}
-                    isSearchable={false}
-                    className="w-[17rem] m-auto"
-                />
-            </div>
-
-            {selectedSession !== "Race" && (
-                <div className="flex items-start justify-center gap-8 sm:gap-32 mx-8 mb-32">
-                    <div className="p-16 bg-glow-dark rounded-md max-md:w-full">
-                        <h3 className="heading-3 mb-32 gradient-text-light">Q1</h3>
-                        <DriverList 
-                            results={q1Results} 
-                            activeButtonIndex={activeButtonIndex} 
-                            handleDriverSelectionClick={handleDriverSelectionClick} 
-                            drivers={drivers} 
-                            driversColor={driversColor} 
-                            year={year} 
-                            session="Q1"
-                        />
-                    </div>
-                    <div className="p-16 bg-glow-dark rounded-md max-md:w-full">
-                        <h3 className="heading-3 mb-32 gradient-text-light">Q2</h3>
-                        <DriverList 
-                            results={q2Results} 
-                            activeButtonIndex={activeButtonIndex} 
-                            handleDriverSelectionClick={handleDriverSelectionClick} 
-                            drivers={drivers} 
-                            driversColor={driversColor} 
-                            year={year} 
-                            session="Q2"
-                        />
-                    </div>
-                    <div className="p-16 bg-glow-dark rounded-md max-md:w-full">
-                        <h3 className="heading-3 mb-32 gradient-text-light">Q3</h3>
-                        <DriverList 
-                            results={q3Results} 
-                            activeButtonIndex={activeButtonIndex} 
-                            handleDriverSelectionClick={handleDriverSelectionClick} 
-                            drivers={drivers} 
-                            driversColor={driversColor} 
-                            year={year} 
-                            session="Q3"
-                        />
-                    </div>
-                </div>
-            )}
-
-            {selectedSession === "Race" && (
-                <>
-                    {!driverSelected && (
-                        <div className="w-full tracking-xs text-center text-neutral-300 gradient-border-extreme py-8 px-32 leading-none">
-                            Select driver from the leaderboard to activate race
-                            mode
+        <div className="race-page">
+            <div className="race-page__track-view relative">
+                <div className="absolute bottom-8 w-full flex justify-between sm:justify-end items-center z-10 gap-8 px-8">
+                    {driverSelected && (
+                        <div className="flex items-center gap-8">
+                            <button
+                                className="race-controls__play bg-glow w-32 h-32 rounded-sm"
+                                onClick={() => setIsPaused(false)}
+                            >
+                                <FontAwesomeIcon icon="play" />
+                            </button>
+                            <button
+                                className="race-controls__pause bg-glow w-32 h-32 rounded-sm"
+                                onClick={() => setIsPaused(true)}
+                            >
+                                <FontAwesomeIcon icon="pause" />
+                            </button>
                         </div>
                     )}
-                    <div className="race-display mb-64 relative">
-                        <ul className="flex flex-col absolute top-1 left-1 z-10">
-                            {raceResults.map((result, index) => (
-                                <button
-                                    key={index}
-                                    className="block w-full mb-2 relative "
-                                    onClick={() =>
-                                        handleDriverSelectionClick(index)
+                    <div className="flex items-center gap-8">
+                        <button 
+                            className="bg-glow w-32 h-32 rounded-sm"
+                            onClick={() => setIsDrawerOpen(true)}
+                        >
+                            <FontAwesomeIcon icon="gear" />
+                        </button>
+                        <button 
+                            className="bg-glow w-32 h-32 rounded-sm sm:hidden"
+                            onClick={() => setDriverDrawerOpen(true)}
+                        >
+                            <FontAwesomeIcon icon="user" />
+                        </button>
+                    </div>
+                </div>
+
+                <Drawer isOpen={driverDrawerOpen} onClose={() => setDriverDrawerOpen(false)}>
+                    <div className="w-full tracking-xs text-center text-neutral-300 py-24 leading-none">
+                        Select driver from the leaderboard to activate race mode
+                    </div>
+                    {driverButtons(true)}
+                </Drawer>
+                <Drawer isOpen={isDrawerOpen} onClose={() => setIsDrawerOpen(false)}>
+                    {/* {driverSelected && ( */}
+                        <>
+                        <Accordion title="Playback Speed" contentClasses="flex flex-col gap-8 items-start">
+                            <button
+                                className={classNames(
+                                    "tracking-sm uppercase block",
+                                    {
+                                        "text-neutral-400":
+                                            speedFactor !== 4,
                                     }
-                                >
-                                    <DriverCard
-                                        hasHover
-                                        isActive={activeButtonIndex === index}
-                                        index={index}
-                                        driver={result.Driver}
-                                        stint={drivers}
-                                        driverColor={driversColor[driverCode]}
-                                        startPosition={parseInt(
-                                            result.grid,
-                                            10
-                                        )}
-                                        endPosition={parseInt(
-                                            result.position,
-                                            10
-                                        )}
-                                        year={parseInt(year)}
-                                        time={
-                                            result.Time?.time || result.status
-                                        }
-                                        fastestLap={result.FastestLap}
-                                        layoutSmall={index > 2}
-                                        mobileSmall
-                                        isRace={true}
-                                    />
-                                </button>
-                            ))}
-                        </ul>
-                        {(driverSelected &&
-                            animatedLocations.includes(location)) ||
-                        !animatedLocations.includes(location) ? (
+                                )}
+                                onClick={() => setSpeedFactor(4)}
+                            >
+                                Normal
+                            </button>
+                            <button
+                                className={classNames(
+                                    "tracking-sm uppercase block",
+                                    {
+                                        "text-neutral-400":
+                                            speedFactor !== 1.5,
+                                    }
+                                )}
+                                onClick={() => setSpeedFactor(1.5)}
+                            >
+                                Push Push
+                            </button>
+                            <button
+                                className={classNames(
+                                    "tracking-sm uppercase block",
+                                    {
+                                        "text-neutral-400":
+                                            speedFactor !== 0.2,
+                                    }
+                                )}
+                                onClick={() => setSpeedFactor(0.2)}
+                            >
+                                DRS
+                            </button>
+                        </Accordion>
+                        <Accordion title="Camera Angle" contentClasses="flex flex-col gap-8 items-start">
+                            <button
+                                className={classNames(
+                                    "tracking-sm uppercase block",
+                                    {
+                                        "text-neutral-400": !haloView,
+                                    }
+                                )}
+                                onClick={() => setHaloView(false)}
+                            >
+                                Sky View
+                            </button>
+                            <button
+                                className={classNames(
+                                    "tracking-sm uppercase block",
+                                    {
+                                        "text-neutral-400": haloView,
+                                    }
+                                )}
+                                onClick={() => setHaloView(true)}
+                            >
+                                Halo View
+                            </button>
+                        </Accordion>
+                        </>
+                    {/* )} */}
+                    <Accordion title="Race Selection" contentClasses="flex flex-col gap-8 items-start">
+                        {hasRaceSession && (
+                            <button
+                                className={classNames(
+                                    "tracking-sm uppercase block",
+                                    {
+                                        "text-neutral-400": haloView,
+                                    }
+                                )}
+                                onClick={() => setSelectedSession("Race")}
+                            >
+                                Race
+                            </button>
+                        )}
+                        {hasQualifyingSession && (
+                            <button
+                                className={classNames(
+                                    "tracking-sm uppercase block",
+                                    {
+                                        "text-neutral-400": haloView,
+                                    }
+                                )}
+                                onClick={() => setSelectedSession("Qualifying")}
+                            >
+                                Qualifying
+                            </button>
+                        )}
+                    </Accordion>
+                </Drawer>
+
+                {selectedSession === "Race" && (
+                    <div className="race-page__track-view__display relative">
+                        {driverSelectedShowTrack ? (
                             <ThreeCanvas
+                                className="race-page__track-view__display__canvas"
                                 MapFile={MapPath}
                                 locData={locData}
                                 driverSelected={driverSelected}
@@ -575,92 +639,10 @@ export function RacePage() {
                                 driverColor={driversColor[driverCode]}
                                 isPaused={isPaused}
                                 haloView={haloView}
-                                controls={
-                                    <div className="relative z-10">
-                                        {driverSelected && (
-                                            <div className="race-controls">
-                                                <button
-                                                    className="race-controls__play gradient-border-extreme py-16 px-32"
-                                                    onClick={() =>
-                                                        setIsPaused(false)
-                                                    }
-                                                >
-                                                    <FontAwesomeIcon icon="play" />
-                                                </button>
-                                                <button
-                                                    className="race-controls__pause gradient-border-extreme py-16 px-32"
-                                                    onClick={() =>
-                                                        setIsPaused(true)
-                                                    }
-                                                >
-                                                    <FontAwesomeIcon icon="pause" />
-                                                </button>
-                                                <button
-                                                    className="race-controls__view gradient-border-extreme py-16 px-32 tracking-sm uppercase text-xs"
-                                                    onClick={() =>
-                                                        setHaloView(!haloView)
-                                                    }
-                                                >
-                                                    {haloView
-                                                        ? "Sky View"
-                                                        : "Halo View"}
-                                                </button>
-                                                <div className="race-controls__speed gradient-border-extreme flex text-xs max-sm:flex-col sm:items-center sm:justify-center gap-16 py-16 px-32 tracking-sm uppercase text-center">
-                                                    <p>Playback Speed:</p>
-                                                    <button
-                                                        className={classNames(
-                                                            "tracking-sm uppercase",
-                                                            {
-                                                                "text-neutral-400":
-                                                                    speedFactor !==
-                                                                    4,
-                                                            }
-                                                        )}
-                                                        onClick={() =>
-                                                            setSpeedFactor(4)
-                                                        }
-                                                    >
-                                                        Normal
-                                                    </button>
-                                                    <button
-                                                        className={classNames(
-                                                            "tracking-sm uppercase",
-                                                            {
-                                                                "text-neutral-400":
-                                                                    speedFactor !==
-                                                                    1.5,
-                                                            }
-                                                        )}
-                                                        onClick={() =>
-                                                            setSpeedFactor(1.5)
-                                                        }
-                                                    >
-                                                        Push Push
-                                                    </button>
-                                                    <button
-                                                        className={classNames(
-                                                            "tracking-sm uppercase",
-                                                            {
-                                                                "text-neutral-400":
-                                                                    speedFactor !==
-                                                                    0.2,
-                                                            }
-                                                        )}
-                                                        onClick={() =>
-                                                            setSpeedFactor(0.2)
-                                                        }
-                                                    >
-                                                        DRS
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        )}
-                                    </div>
-                                }
                                 speedFactor={speedFactor}
                             />
                         ) : (
-                            <div className="track-preview">
+                            <div className="race-page__track-view__display__preview">
                                 <video
                                     src={animatedMap}
                                     loop
@@ -671,70 +653,193 @@ export function RacePage() {
                                 />
                             </div>
                         )}
+                        <div className="max-sm:hidden absolute top-[0] left-[0]">
+                            {driverButtons(true)}
+                        </div>
                     </div>
-                </>
-            )}
+                )}
+            </div>
+            {/* End .race-page__track-view */}
 
-            <div className="page-container-centered flex flex-col justify-center sm:flex-row gap-16 mt-32">
-                {selectedSession === "Race" && (
-                    <div className="sm:w-[26rem]">
-                        {driverSelected && (
-                            <SelectedDriverStats
-                                selectedDriverData={selectedDriverData}
-                                selectedDriverRaceData={selectedDriverRaceData}
+            <div className="race-page__scroll-container">
+                {selectedSession === "Qualifying" && (
+                    <button className="text-xs tracking-xs uppercase mb-16 bg-glow rounded-sm p-4 ml-8" onClick={() => setSelectedSession("Race")}>
+                        <FontAwesomeIcon icon="chevron-left" className="mr-16" />
+                        race
+                    </button>
+                )}
+
+                <div className="mb-40 flex flex-col gap-4 items-center uppercase">
+                    <p className="text-sm tracking-sm">{year}</p> 
+                    <h1 className="heading-3">{raceName}</h1> 
+                    {selectedSession === "Qualifying" && <p className="text-sm tracking-sm">{selectedSession}</p>}
+                    <div className="divider-glow-dark mt-32" />
+                </div>
+
+                {/* Qualifying View */}
+                {selectedSession !== "Race" && (
+                    <div className="flex items-start justify-center gap-8 sm:gap-32 mx-8 mb-32">
+                        <div className="p-16 bg-glow-dark rounded-md sm:rounded-xlarge max-md:w-full">
+                            <h3 className="heading-3 mb-32 gradient-text-light">
+                                Q1
+                            </h3>
+                            <DriverList
+                                results={q1Results}
+                                activeButtonIndex={activeButtonIndex}
+                                handleDriverSelectionClick={
+                                    handleDriverSelectionClick
+                                }
+                                drivers={drivers}
+                                driversColor={driversColor}
                                 year={year}
+                                session="Q1"
+                            />
+                        </div>
+                        <div className="p-16 bg-glow-dark rounded-md sm:rounded-xlarge max-md:w-full">
+                            <h3 className="heading-3 mb-32 gradient-text-light">
+                                Q2
+                            </h3>
+                            <DriverList
+                                results={q2Results}
+                                activeButtonIndex={activeButtonIndex}
+                                handleDriverSelectionClick={
+                                    handleDriverSelectionClick
+                                }
+                                drivers={drivers}
+                                driversColor={driversColor}
+                                year={year}
+                                session="Q2"
+                            />
+                        </div>
+                        <div className="p-16 bg-glow-dark rounded-md sm:rounded-xlarge max-md:w-full">
+                            <h3 className="heading-3 mb-32 gradient-text-light">
+                                Q3
+                            </h3>
+                            <DriverList
+                                results={q3Results}
+                                activeButtonIndex={activeButtonIndex}
+                                handleDriverSelectionClick={
+                                    handleDriverSelectionClick
+                                }
+                                drivers={drivers}
+                                driversColor={driversColor}
+                                year={year}
+                                session="Q3"
+                            />
+                        </div>
+                    </div>
+                )}
+
+                {/* Raace View */}
+                <div className="page-container-centered flex flex-col justify-center sm:flex-row gap-16 mt-32">
+                    {selectedSession === "Race" && (
+                        <div className="sm:w-[26rem]">
+                            {driverSelected && (
+                                <SelectedDriverStats
+                                    selectedDriverData={selectedDriverData}
+                                    selectedDriverRaceData={
+                                        selectedDriverRaceData
+                                    }
+                                    year={year}
+                                />
+                            )}
+                            <div 
+                                className={classNames(
+                                    "flex flex-row justify-between gap-4 max-sm:mb-16",
+                                )}
+                            >
+                                <button 
+                                    className={classNames(
+                                        "text-neutral-400 font-display sm:ml-24 sm:text-xl sm:mb-16 leading-none", 
+                                        showStartingGrid && "max-sm:text-white"
+                                    )} 
+                                    onClick={() => setShowStartingGrid(true)}
+                                >
+                                    Starting Grid
+                                </button>
+                                <button 
+                                    className={classNames("text-neutral-400 font-display sm:hidden", !showStartingGrid && "text-white")}
+                                    onClick={() => setShowStartingGrid(false)}
+                                >
+                                    Race Results
+                                </button>
+                            </div>
+                            <div className={classNames("flex flex-row items-start gap-4 sm:hidden mb-24")}>
+                                <StartingGrid
+                                    className={classNames("transition-all overflow-hidden", showStartingGrid ? "w-2/3" : "w-1/3 opacity-15")}
+                                    raceResults={raceResults}
+                                    startingGrid={startingGrid}
+                                    year={year}
+                                    driverCode={driverCode}
+                                    driversDetails={driversDetails}
+                                    driversColor={driversColor}
+                                />
+                                <div 
+                                    className={classNames(
+                                        "bg-glow-large h-fit rounded-md sm:rounded-xlarge transition-all overflow-hidden",
+                                        showStartingGrid ? "w-1/3 opacity-15" : "w-2/3"
+                                    )}>
+                                    {driverButtons(false)}
+                                </div>
+                            </div>
+                            <StartingGrid
+                                className={classNames("max-sm:hidden w-[26rem]")}
+                                raceResults={raceResults}
+                                startingGrid={startingGrid}
+                                year={year}
+                                driverCode={driverCode}
+                                driversDetails={driversDetails}
+                                driversColor={driversColor}
+                            />
+                        </div>
+                    )}
+
+                    <div className="sm:grow-0">
+                        {selectedSession === "Race" && (
+                            <PositionCharts
+                                laps={laps}
+                                pos={pos}
+                                startGrid={startingGrid}
+                                driversDetails={driversDetails}
+                                driversColor={driversColor}
+                                raceResults={raceResults}
+                                driverCode={
+                                    driverSelected
+                                        ? driversDetails[driverNumber]
+                                        : null
+                                }
                             />
                         )}
-                        <StartingGrid
-                            raceResults={raceResults}
-                            startingGrid={startingGrid}
-                            year={year}
-                            driverCode={driverCode}
+                        <LapChart
+                            laps={laps}
+                            setLaps={() => setLaps}
                             driversDetails={driversDetails}
                             driversColor={driversColor}
-                        />
-                    </div>
-                )}
-
-                <div className="sm:grow-0">
-                {selectedSession === "Race" && (
-                    <PositionCharts
-                        laps={laps}
-                        pos={pos}
-                        startGrid={startingGrid}
-                        driversDetails={driversDetails}
-                        driversColor={driversColor}
-                        raceResults={raceResults}
-                        driverCode={
-                            driverSelected ? driversDetails[driverNumber] : null
-                        }
-                    />
-                )}
-                    <LapChart
-                        laps={laps}
-                        setLaps={() => setLaps}
-                        driversDetails={driversDetails}
-                        driversColor={driversColor}
-                        raceResults={raceResults}
-                        className="lap-chart"
-                        driverCode={
-                            driverSelected ? driversDetails[driverNumber] : null
-                        }
-                    />
-                    <TireStrategy
-                        drivers={drivers}
-                        raceResults={raceResults}
-                        driverCode={
-                            driverSelected ? driversDetails[driverNumber] : null
-                        }
-                        driverColor={driversColor[driverCode]}
-                    />
-                    {!driverSelected && selectedSession === "Race" && (
-                        <FastestLaps
                             raceResults={raceResults}
-                            drivers={drivers}
+                            className="lap-chart"
+                            driverCode={
+                                driverSelected
+                                    ? driversDetails[driverNumber]
+                                    : null
+                            }
                         />
-                    )}
+                        <TireStrategy
+                            drivers={drivers}
+                            raceResults={raceResults}
+                            driverCode={
+                                driverSelected
+                                    ? driversDetails[driverNumber]
+                                    : null
+                            }
+                            driverColor={driversColor[driverCode]}
+                        />
+                        {!driverSelected && selectedSession === "Race" && (
+                            <FastestLaps
+                                raceResults={raceResults}
+                                drivers={drivers}
+                            />
+                        )}
+                    </div>
                 </div>
             </div>
         </div>

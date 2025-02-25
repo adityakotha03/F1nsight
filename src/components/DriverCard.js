@@ -54,6 +54,24 @@ export const DriverCard = (props) => {
         }
         return
     }
+
+    const driverImage = (
+        <img 
+            alt="" 
+            src={f1a ? 
+                `${process.env.PUBLIC_URL + "/images/" + year + "/F1A/" + driver.code + ".png"}`
+                : `${process.env.PUBLIC_URL + "/images/" + year + "/drivers/" + driver.code + ".png"}`
+            }
+            width={72} 
+            height={72} 
+            ref={ref}
+            className="absolute block left-[28px] sm:left-52 inset-x-0 -bottom-1"
+            style={{
+                opacity: isInView ? 1 : 0,
+                transition: `all 1s cubic-bezier(0.17, 0.55, 0.55, 1) .${index}s`
+            }}
+        />
+    )
     
     return (
         <div 
@@ -64,47 +82,30 @@ export const DriverCard = (props) => {
                     'driver-card--canvas': mobileSmall,
                 },
                 isActive ? "bg-glow--active" : hasHover ? "bg-glow--hover" : "",
-                !isRace ? 'rounded-sm mb-4' : layoutSmall && isRace ? 'rounded-r-sm' : 'rounded-r-md',
+                mobileSmall ? "rounded-sm mb-4" : "rounded-md"
             )}
             style={{borderColor: isActive && `#${driverColor}`}}
         >
-            {layoutSmall ? (
-                <div className={classNames("flex items-center justify-between w-full", { "max-md:hidden": mobileSmall})}>
-                    <div className="flex items-center">
-                        <p className={classNames("heading-4 w-64 bg-neutral-600 py-2 text-center" , { "rounded-l-sm": !isRace })}>P{isRace ? endPosition : index + 1}</p>
-                        <span className="font-display pl-16 mr-4">{driver.code}</span>
-                    </div>
-                    <p className=" text-xs pr-8">{time}</p>
+            <div className={classNames("flex items-center justify-between w-full", { "max-md:hidden": mobileSmall, "hidden": !layoutSmall})}>
+                <div className="flex items-center">
+                    <p className={classNames("heading-4 w-64 bg-neutral-600 py-2 text-center rounded-l-md")}>P{isRace ? endPosition : index + 1}</p>
+                    <span className="font-display pl-16 mr-4">{driver.code}</span>
                 </div>
-            ) : (
-                <div className={classNames('flex item-center w-full', { "max-md:hidden": mobileSmall})}>
-                    <p 
-                        className={classNames("driver-card-position heading-1 px-8 py-4 bg-neutral-700" , { "rounded-l-sm": !isRace })}
-                    >
-                        P{isRace ? endPosition : index + 1}
-                    </p>
-                    <img 
-                        alt="" 
-                        src={f1a ? 
-                            `${process.env.PUBLIC_URL + "/images/" + year + "/F1A/" + driver.code + ".png"}`
-                            : `${process.env.PUBLIC_URL + "/images/" + year + "/drivers/" + driver.code + ".png"}`
-                        }
-                        width={72} 
-                        height={72} 
-                        ref={ref}
-                        className="absolute left-52 inset-x-0 -bottom-1"
-                        style={{
-                            opacity: isInView ? 1 : 0,
-                            transition: `all 1s cubic-bezier(0.17, 0.55, 0.55, 1) .${index}s`
-                        }}
-                    />
-                    <div className="grow py-4 px-12 text-right">
-                        <span className="heading-4 mb-12 pl-60">{driver.code}</span>
-                        <div className="divider-glow w-full" /> 
-                        <p className={classNames("text-sm -mt-8")}>{time}</p>
-                    </div>
+                <p className=" text-xs pr-8">{time}</p>
+            </div>
+            <div className={classNames('flex item-center w-full', { "max-md:hidden": mobileSmall, "hidden": layoutSmall})}>
+                <p 
+                    className={classNames("driver-card-position heading-1 px-8 py-4 bg-neutral-700 rounded-l-md flex items-center")}
+                >
+                    P{isRace ? endPosition : index + 1}
+                </p>
+                {driverImage}
+                <div className="grow py-4 px-12 text-right">
+                    <span className="heading-4 mb-12 pl-60">{driver.code}</span>
+                    <div className="divider-glow w-full" /> 
+                    <p className={classNames("text-sm -mt-8")}>{time}</p>
                 </div>
-            )}
+            </div>
             {mobileSmall && (
                 <div className="md:hidden">
                     <div className="flex items-center text-xs font-display">

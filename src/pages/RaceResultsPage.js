@@ -17,7 +17,7 @@ export function RaceResultsPage({ selectedYear }) {
       setIsLoading(true);
       const details = await fetchRaceDetails(selectedYear);
       const races = await fetchRaceMeetingKeys(selectedYear);
-      // console.log('details', details) 
+      // console.log('details', races) 
 
       setRaceDetails(details);
       setRaces(races);

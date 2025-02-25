@@ -127,8 +127,8 @@ export const LapChart = (props) => {
 
     return (
         <>
-        <h3 className="heading-4 mb-16 text-neutral-400 ml-24">Lap Data</h3>
-        <div className="mb-16 bg-glow-large max-sm:py-[3.2rem] sm:p-32 rounded-xlarge">
+        <h3 className="heading-4 mt-32 mb-16 text-neutral-400 ml-24">Lap Data</h3>
+        <div className="mb-16 bg-glow-large max-sm:py-[3.2rem] sm:p-32 rounded-md sm:rounded-xlarge">
             <ResponsiveContainer width="100%" height={299}>
                 <LineChart
                     data={chartData}

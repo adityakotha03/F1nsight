@@ -10,6 +10,8 @@ export const RaceResultItem = (props) => {
 
     const ref = useRef(null);
     const isInView = useInView(ref, { once: true });
+
+    // console.log({driver})
     
     return (
         <li 

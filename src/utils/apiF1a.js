@@ -11,6 +11,18 @@ export const fetchRaceMeetingKeysF1a = async (selectedYear) => {
   }
 };
 
+export const fetchCircuitData = async () => {
+    try {
+        const url = `https://ant-dot-comm.github.io/f1aapi/races/racesbyMK.json`;
+        const response = await fetch(url);
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error("Error fetching circuit data:", error);
+        return {};
+    }
+};
+
 export const fetchF1aDriverInfo = async (year) => {
   try {
     const url = `https://ant-dot-comm.github.io/f1aapi/constructors/${year}/drivers.json`;
@@ -112,5 +124,49 @@ export const fetchF1aAllRaceResults = async (year) => {
   } catch (error) {
     console.error("Error fetching all race results:", error);
     return [];
+  }
+};
+
+export const fetchMostRecentRaceWeekendF1a = async (selectedYear) => {
+  try {
+    // Step 1: Fetch all races for the selected year
+    const raceDetailsResponse = await fetch(`https://ant-dot-comm.github.io/f1aapi/races/${selectedYear}/resullts.json`);
+    if (!raceDetailsResponse.ok) {
+      throw new Error('Failed to fetch race details');
+    }
+
+    const races = await raceDetailsResponse.json();
+
+    
+    // Step 2: Sort races based on the `round` to get the most recent one
+    const sortedRaces = races.sort((a, b) => parseInt(b.round) - parseInt(a.round)); // Sort in descending order by `round`
+    
+    const driverInfo = await fetchF1aDriverInfo(selectedYear);
+    
+    // Step 3: Extract top 3 results for each race (race1, race2, race3, etc.)
+    const mostRecentRace = sortedRaces[0]; // Take the first race as the most recent
+    // console.log('here', {mostRecentRace})
+    const race1Top3 = filterTop3(mostRecentRace.Results.race1 ? enrichDriverData(mostRecentRace.Results.race1, driverInfo) : []);
+    const race2Top3 = filterTop3(mostRecentRace.Results.race2 ? enrichDriverData(mostRecentRace.Results.race2, driverInfo) : []);
+    const race3Top3 = filterTop3(mostRecentRace.Results.race3 ? enrichDriverData(mostRecentRace.Results.race3, driverInfo) : []);
+
+    // Step 4: Combine the results into one object with all the top 3 results
+    return {
+      raceName: mostRecentRace.raceName,
+      round: mostRecentRace.round,
+      season: mostRecentRace.season,
+      race1: race1Top3,
+      race2: race2Top3,
+      race3: race3Top3,
+    };
+
+  } catch (error) {
+    console.error("Error fetching most recent race weekend data:", error);
+    return {
+      raceName: '',
+      race1: [],
+      race2: [],
+      race3: [],
+    };
   }
 };

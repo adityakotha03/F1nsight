@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 import classNames from 'classnames';
@@ -10,16 +10,31 @@ import { ReactSelectComponent } from './Select';
 import { RaceSelector } from './RaceSelector';
 import { fetchRacesAndSessions } from '../utils/api';
 import { trackButtonClick } from '../utils/gaTracking';
+import { Modal } from './Modal';
 
 export const Header = ({ setResultPage, setResultPagePath }) => {
-
     const [races, setRaces] = useState([]);
     const [selectedYear, setSelectedYear] = useState([]);
     const [isOpen, setIsOpen] = useState(false);
+    const [headerOpen, setHeaderOpen] = useState(false);
     const [raceViewerDropdownOpen, setRaceViewerDropdownOpen] = useState(false);
 
     const raceViewerRef = useRef(null);
     const headerRef = useRef(null);
+
+    const location = useLocation().pathname;
+    const collapsible = location.startsWith('/race/');
+
+    useEffect(() => {
+        const handleResize = () => {
+            setHeaderOpen(window.innerWidth > 768);
+        };
+    
+        window.addEventListener("resize", handleResize);
+        
+        // Cleanup event listener on unmount
+        return () => window.removeEventListener("resize", handleResize);
+      }, []);
 
     useEffect(() => {
         if (selectedYear.length > 0) {
@@ -100,7 +115,7 @@ export const Header = ({ setResultPage, setResultPagePath }) => {
         <>
             <NavLink 
                 to="/driver-comparison" 
-                className="block px-4 py-2 text-neutral-300 hover:text-white" 
+                className="block uppercase tracking-xs px-4 py-2 text-neutral-300 hover:text-white" 
                 onClick={() => {
                     toggleOpen()
                     trackButtonClick('Driver Comparison')}}
@@ -109,7 +124,7 @@ export const Header = ({ setResultPage, setResultPagePath }) => {
             </NavLink>
             <NavLink 
                 to="/teammates-comparison" 
-                className="block px-4 py-2 text-neutral-300 hover:text-white" 
+                className="block uppercase tracking-xs px-4 py-2 text-neutral-300 hover:text-white" 
                 onClick={() => {
                     toggleOpen()
                     trackButtonClick('Teammates Comparison')
@@ -123,7 +138,7 @@ export const Header = ({ setResultPage, setResultPagePath }) => {
         <>
              <NavLink 
                 to="/race-results" 
-                className="block px-4 py-2 text-neutral-300 hover:text-white" 
+                className="block uppercase tracking-xs px-4 py-2 text-neutral-300 hover:text-white" 
                 onClick={() => {
                     handleNavLinkClick('Race Results')
                     toggleOpen()
@@ -132,7 +147,7 @@ export const Header = ({ setResultPage, setResultPagePath }) => {
                 >Race Results</NavLink>
             <NavLink 
                 to="/constructor-standings" 
-                className="block px-4 py-2 text-neutral-300 hover:text-white"
+                className="block uppercase tracking-xs px-4 py-2 text-neutral-300 hover:text-white"
                 onClick={() => {
                     handleNavLinkClick('Constructor Standings')
                     toggleOpen()
@@ -141,7 +156,7 @@ export const Header = ({ setResultPage, setResultPagePath }) => {
                 >Constructor Standings</NavLink>
             <NavLink 
                 to="/driver-standings" 
-                className="block px-4 py-2 text-neutral-300 hover:text-white"
+                className="block uppercase tracking-xs px-4 py-2 text-neutral-300 hover:text-white"
                 onClick={() => {
                     handleNavLinkClick('Driver Standing')
                     toggleOpen()
@@ -153,7 +168,14 @@ export const Header = ({ setResultPage, setResultPagePath }) => {
     
     return (
         <>
-        <header className="global-header" ref={headerRef}>
+        <header 
+            className={classNames(
+                "global-header max-md:transition-all",
+                {"!top-[-58px]": !headerOpen}
+
+            )}
+            ref={headerRef}
+        >
             <div className="global-header__main-nav shadow-lg bg-glow bg-neutral-800/90 backdrop-blur-sm" >
 
                 <div className="global-header__main-nav__left flex items-center gap-32">
@@ -164,6 +186,18 @@ export const Header = ({ setResultPage, setResultPagePath }) => {
                 <button className="md:hidden p-8" onClick={toggleOpen}>
                     <FontAwesomeIcon icon="bars" className="fa-2x" />
                 </button>
+
+                {collapsible && (
+                    <button className="absolute top-full right-16 bg-glow-large p-4 rounded-b-sm md:hidden" onClick={() => setHeaderOpen(!headerOpen)}>
+                        <FontAwesomeIcon 
+                            icon="chevron-down" 
+                            className={classNames(
+                                "fa-1x transition-all",
+                                {"transform rotate-180": headerOpen}
+                            )} 
+                        />
+                    </button>
+                )}
                 
                 {/* Desktop */}
                 <div className="flex items-center gap-16 max-md:hidden">
@@ -205,27 +239,27 @@ export const Header = ({ setResultPage, setResultPagePath }) => {
         </header>
 
         {/* Mobile */}
-        {isOpen && (
-            <div className="fixed top-[0] left-[0] w-full h-full bg-glow bg-neutral-900/95 backdrop-blur-sm md:hidden z-[1001] text-[2rem]">
-                <button className="absolute top-8 right-16 p-8" onClick={toggleOpen}>
-                    <FontAwesomeIcon icon="xmark" className="fa-2x" />
-                </button>
+        <Modal isOpen={isOpen} onClose={toggleOpen}>
+            <div className="fixed top-[0] left-[0] w-full h-full bg-glow bg-neutral-900/95 backdrop-blur-sm md:hidden z-[1001]">
                 <div className="pt-64 px-32">
-                    <p className="font-display tracking-xs my-16">Results</p>
-                    <div className="flex flex-col gap-16 ml-8">
+                    <p className="font-display mt-16 border-b border-neutral-700">Results</p>
+                    <div className="divider-glow-dark" />
+                    <div className="flex flex-col gap-16 ml-8 mb-32 mt-16">
                         {resultsContent}
                     </div>
-                    <p className="font-display tracking-xs my-16">Comparisons</p>
-                    <div className="flex flex-col gap-16  ml-8">
+                    <p className="font-display mt-16 border-b border-neutral-700">Comparisons</p>
+                    <div className="divider-glow-dark" />
+                    <div className="flex flex-col gap-16 ml-8 mb-32 mt-16">
                         {comparisonContent}
                     </div>
-                    <p className="font-display tracking-xs my-16">Race Viewer</p>
-                    <div className="flex flex-col gap-16">
+                    <p className="font-display mt-16 border-b border-neutral-700">Race Viewer</p>
+                    <div className="divider-glow-dark" />
+                    <div className="flex flex-col gap-16 mt-16">
                         {raceSelectorContent}
                     </div>
                 </div>
             </div>
-        )}
+        </Modal>
         </>
     );
 };
