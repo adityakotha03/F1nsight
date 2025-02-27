@@ -1,22 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { fetchF1aRaceResultsByCircuit } from "../../utils/apiF1a";
+import { fetchF1aRaceResultsByCircuit, fetchCircuitData } from "../../utils/apiF1a";
 
 import { RaceResultItem, Loading, Button } from "../../components";
 import { NavLink } from "react-router-dom";
 import classNames from "classnames";
 import { trackButtonClick } from "../../utils/gaTracking";
-
-const fetchCircuitData = async () => {
-    try {
-        const url = `https://ant-dot-comm.github.io/f1aapi/races/racesbyMK.json`;
-        const response = await fetch(url);
-        const data = await response.json();
-        return data;
-    } catch (error) {
-        console.error("Error fetching circuit data:", error);
-        return {};
-    }
-};
 
 const Top3Drivers = ({ year, circuitId, index }) => {
     const [raceName, setRaceName] = useState("");
@@ -45,7 +33,7 @@ const Top3Drivers = ({ year, circuitId, index }) => {
     const hasResults = top3RaceResults && top3RaceResults.length > 0;
 
     return (
-        <div className="relative group w-fit m-auto">
+        <div className="relative group w-fit m-auto  pb-64">
             <NavLink
                 disabled={!hasResults}
                 to={hasResults ? `/race-f1a/2024${index}` : null}
@@ -68,9 +56,7 @@ const Top3Drivers = ({ year, circuitId, index }) => {
                             <ul className="bg-glow-dark rounded-[2.4rem] race-results__list">
                                 {top3RaceResults.map((result, index) => (
                                     <RaceResultItem
-                                        className={`race-results__list__item-${
-                                            index + 1
-                                        }`}
+                                        className={`race-results__list__item-${index + 1}`}
                                         carNumber={result.number}
                                         driver={result.Driver}
                                         fastestLap={result.fastestLap}
@@ -89,7 +75,7 @@ const Top3Drivers = ({ year, circuitId, index }) => {
                                         year={year}
                                         wireframe={result.length === 0}
                                         f1a={true}
-                                        hasHover={false}
+                                        // hasHover={false}
                                     />
                                 ))}
                             </ul>

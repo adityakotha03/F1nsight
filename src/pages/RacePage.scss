@@ -1,13 +1,49 @@
-/* race canvas and controls */
-.canvas-container {
-  position: relative;
-  height: 680px;
-  width: 100%;
-  overflow: hidden;
-  @media (min-width: 768px) {
-    height: 616px;
+@mixin viewHeight {
+  height: 300px;
+  @media (min-width: 640px) {
+    height: 544px;
+  }
+  // @media (min-width: 1280px) {
+  //   height: 638px;
+  // }
+}
+
+.race-page {
+  display: flex;
+  flex-direction: column;
+
+  @media (max-width: 767px) {
+    margin-top: .8rem;
+    height: 100vh;
+    height: calc(100vh - .8rem);
+    overflow: hidden;
+  }
+
+  &__track-view {
+    &__display {
+      &__canvas {
+        .three-canvas-container {
+          position: relative;
+          width: 100%;
+          overflow: hidden;
+          @include viewHeight;
+        }
+      }
+      &__preview {
+        @include viewHeight;
+      }
+    }
+  }
+  &__scroll-container {
+    padding: 3rem 0;
+    @media (max-width: 767px) {
+      overflow-y: auto;
+      overflow-x: hidden;
+      flex: 1;
+    }
   }
 }
+
 
 .canvas-container:after,
 .track-preview:after {
@@ -22,11 +58,6 @@
 }
 
 .track-preview {
-  height: 68rem;
-  opacity: .6;
-  @media (min-width: 768px) {
-    height: 61.6rem;
-  }
 }
 
 .race-controls {

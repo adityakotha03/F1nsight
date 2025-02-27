@@ -5,9 +5,9 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 import { fas } from '@fortawesome/free-solid-svg-icons';
 import { fab } from '@fortawesome/free-brands-svg-icons'
 
-import { Header, Footer, ResultsSelector } from './components';
+import { Header, Footer2025, ResultsSelector } from './components';
 import {  ReactComponent as Logo} from './components/F1Ansight.svg';
-import { DriverComparison, TeammatesComparison, RacePage, LandingPage, RaceResultsPage, DriverStandings, ConstructorStandings, ARViewer, RaceResultsPageF1a, RacePageF1a, DriverStandingsF1a, ConstructorStandingsF1a } from './pages'; 
+import { DriverComparison, TeammatesComparison, RacePage, LandingPage2025, RaceResultsPage, DriverStandings, ConstructorStandings, ARViewer, RaceResultsPageF1a, RacePageF1a, DriverStandingsF1a, ConstructorStandingsF1a } from './pages'; 
 import { usePageTracking } from './utils/gaTracking';
 import { ScrollToTop } from './utils/ScrollToTop';
 
@@ -17,7 +17,7 @@ library.add(fas, fab);
 
 function App() {
   const currentYear = new Date().getFullYear();
-  const [selectedYear, setSelectedYear] = useState(currentYear);
+  const [selectedYear, setSelectedYear] = useState(2024);
   const [resultPage, setResultPage] = useState('');
   const [resultPagePath, setResultPagePath] = useState('');
 
@@ -36,7 +36,7 @@ function App() {
           resultPagePath={resultPagePath}
           setResultPagePath={setResultPagePath} 
         />
-        <Footer />
+        <Footer2025 />
       </Router>
     </div>
   );
@@ -85,7 +85,7 @@ function MainContent({ setSelectedYear, selectedYear, resultPage, resultPagePath
       )}
 
       <Routes>
-        <Route exact path="/" element={<LandingPage setResultPagePath={setResultPagePath} />} />
+        <Route exact path="/" element={<LandingPage2025 setResultPagePath={setResultPagePath} />} />
         <Route path="/race-results" element={<RaceResultsPage selectedYear={selectedYear} />} />
         <Route path="/constructor-standings" element={<ConstructorStandings selectedYear={selectedYear} />} />
         <Route path="/driver-standings" element={<DriverStandings selectedYear={selectedYear} />} />

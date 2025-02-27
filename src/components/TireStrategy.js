@@ -16,7 +16,7 @@ export const TireStrategy = (props) => {
       let previousLapEnd = 0;
     
       driver.tires.forEach((tire, index) => {
-        console.log('tire', tire);
+        // console.log('tire', tire);
         const lapEndValue = index === 0 ? tire.lap_end : tire.lap_end - previousLapEnd;
         const compoundKey = tire.compound ? tire.compound.toLowerCase() : "N/A";
         driverData[`${compoundKey}${index}`] = lapEndValue;
@@ -48,7 +48,7 @@ export const TireStrategy = (props) => {
     ...new Set(sortedTransformedData.flatMap(Object.keys).filter(key => key !== 'acronym')),
   ];
 
-  console.log('tireKeys', sortedTransformedData);
+  // console.log('tireKeys', sortedTransformedData);
 
     const capitalizeFirstLetter = (string) => {
       return string.charAt(0).toUpperCase() + string.slice(1);
@@ -75,7 +75,7 @@ export const TireStrategy = (props) => {
     return (
         <>
         <h3 className="heading-4 mb-16 mt-32 text-neutral-400 ml-24">Tyre Strategy</h3>
-        <div className="bg-glow-large h-fit max-sm:py-32 sm:p-32 mb-16 relative rounded-xlarge">
+        <div className="bg-glow-large h-fit max-sm:py-32 sm:p-32 mb-16 relative rounded-md sm:rounded-xlarge">
           <ResponsiveContainer width="100%" height={driverCode ? 100 :  700}>
             <BarChart
               data={sortedTransformedData}

@@ -375,7 +375,7 @@ const GridRow = (label, driver1, driver2, title) => {
   }));
 
   return (
-    <div className='global-container min-h-[40rem]'>
+    <div className='global-container min-h-[40rem] pb-64'>
 
       <div className="flex items-center justify-center gap-8">
         <ReactSelectComponent

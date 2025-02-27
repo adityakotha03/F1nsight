@@ -576,3 +576,39 @@ export async function fetchLocationData(sessionKey, driverId, startTime, endTime
 
   return mergedData;
 }
+
+export const fetchMostRecentRace = async (selectedYear) => {
+  try {
+    // Fetch the race details
+    const raceDetailsResponse = await fetch(`https://praneeth7781.github.io/f1nsight-api-2/races/${selectedYear}/raceDetails.json`);
+    if (!raceDetailsResponse.ok) {
+      throw new Error('Failed to fetch race details');
+    }
+    const raceDetails = await raceDetailsResponse.json();
+
+    // Fetch the meeting keys
+    const meetingKeys = await fetchRaceMeetingKeys(selectedYear);
+
+    // Sort races by date in descending order (most recent first)
+    const sortedRaces = raceDetails.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+    // Get the most recent race (first after sorting)
+    const mostRecentRace = sortedRaces[0];
+    const meetingKey = meetingKeys[mostRecentRace.raceName]?.meeting_key || 'unknown';
+
+    // Fetch race results for the most recent race
+    const raceResults = await fetchRaceResults(selectedYear, mostRecentRace.round);
+
+    // Combine the race details and results, including the meeting key
+    const raceWithDetails = {
+      ...mostRecentRace,
+      meetingKey,
+      raceResults,
+    };
+
+    return raceWithDetails;
+  } catch (error) {
+    console.error('Error fetching race details:', error);
+  }
+  return null;  // Return null if there's an error
+};
