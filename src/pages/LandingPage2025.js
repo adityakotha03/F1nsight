@@ -8,12 +8,17 @@ import { Button, RaceResultItem, DriverCard } from "../components";
 import { trackButtonClick } from "../utils/gaTracking";
 import { fetchMostRecentRace } from "../utils/api";
 import { fetchMostRecentRaceWeekendF1a } from "../utils/apiF1a";
+import PngSequencePlayer from "../components/PngSequencePlayer";
+import HeroSection from "../layouts/HeroSection";
+import ComparisonsSection from "../layouts/ComparisonsSection";
+import ArSection from "../layouts/ArSection";
 
 export function LandingPage2025({ setResultPagePath }) {
     const [raceData, setRaceData] = useState(null);
     const [F1aRaceData, setF1aRaceData] = useState(null);
     const [selectedYear, setSelectedYear] = useState(2024);
-    const [layoutSmall, setLayoutSmall] = useState(2024);
+    const [layoutSmall, setLayoutSmall] = useState();
+    const [layoutMobile, setLayoutMobile] = useState();
     const ref = useRef(null);
     const isInView = useInView(ref, { once: true });
 
@@ -33,14 +38,13 @@ export function LandingPage2025({ setResultPagePath }) {
 
         const handleLayout = () => {
             setLayoutSmall(window.innerWidth > 767 && window.innerWidth < 1024);
+            setLayoutMobile(window.innerWidth < 768);
         };
         handleLayout();
 
         window.addEventListener("resize", handleLayout);
         return () => window.removeEventListener("resize", handleLayout);
     }, []);
-
-    useEffect(() => {}, []);
 
     let navigate = useNavigate();
     const navigateToRaceResult = (race) => {
@@ -102,7 +106,7 @@ export function LandingPage2025({ setResultPagePath }) {
                         <div className="divider-glow-dark mb-32" />
                     </div>
 
-                    <div className="bg-neutral-900/50 absolute w-full h-full rounded-md overflow-hidden">
+                    <div className="bg-neutral-950/40 absolute w-full h-full rounded-md overflow-hidden">
                         <video
                             src={
                                 raceData &&
@@ -120,7 +124,7 @@ export function LandingPage2025({ setResultPagePath }) {
                             autoPlay
                             muted
                             playsInline
-                            className="object-cover opacity-15"
+                            className="object-cover opacity-15 h-full w-full"
                         />
                     </div>
                     <div className="divider-glow-dark absolute bottom-[-16px] !w-[95%]" />
@@ -133,7 +137,7 @@ export function LandingPage2025({ setResultPagePath }) {
                         View Full Results
                     </Button>
                 </div>
-                
+
                 <div className="flex flex-col lg:flex-row items-center gap-8 w-full">
                     <Button
                         as="button"
@@ -165,7 +169,7 @@ export function LandingPage2025({ setResultPagePath }) {
     const latestF1aResultsLayout = () => {
         return (
             <div className="flex flex-col items-center gap-16 ">
-                <div className="bg-gradient-to-b from-neutral-950/30 to-neutral-950/5 rounded-md w-full py-32 flex flex-col items-center relative">
+                <div className="bg-gradient-to-b from-neutral-950/50 to-neutral-950/5 rounded-md w-full py-32 flex flex-col items-center relative">
                     <div className="text-center">
                         <p className="text-sm tracking-xs uppercase">
                             Latest F1A Race Results
@@ -275,30 +279,53 @@ export function LandingPage2025({ setResultPagePath }) {
 
     return (
         <div>
-            <section className="bg-black relative">
-                <video
-                    className=""
-                    autoPlay
-                    loop
-                    muted
-                    playsInline
-                    style={{ opacity: 0.15 }}
-                >
-                    <source
-                        src={`${process.env.PUBLIC_URL + "/Media/Hero.mp4"}`}
-                        type="video/mp4"
-                    />
-                </video>
-                <h1 className="heading-1 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full md:w-2/3">
-                    Your Ultimate Destination for F1 Data and Analysis
-                </h1>
-            </section>
+            <HeroSection layoutMobile={layoutMobile} />
+
             <section className="flex flex-col md:flex-row items-stretch">
-                <div className="px-16 py-32 w-full md:w-1/2 bg-gradient-to-b from-neutral-950 to-plum-500">
+                <div className="px-16 py-48 w-full md:w-1/2 bg-gradient-to-b from-neutral-950 to-neutral-950/10">
                     {latestResultsLayout()}
                 </div>
-                <div className="px-16 py-32 w-full md:w-1/2 bg-gradient-to-b from-neutral-950 to-fuchsia-500">
+                <div className="px-16 py-48 w-full md:w-1/2 bg-gradient-to-b from-neutral-950 to-neutral-700/10">
                     {latestF1aResultsLayout()}
+                </div>
+            </section>
+
+            <ComparisonsSection layoutMobile={layoutMobile} />
+            <ArSection layoutMobile={layoutMobile} />
+
+            <section className="py-64 bg-gradient-to-b from-neutral-950/30 to-neutral-950/5">
+                <div className="max-w-screen-lg flex flex-col sm:flex-row items-center mx-auto gap-16">
+                    <img
+                        className="w-1/2"
+                        src={`${
+                            process.env.PUBLIC_URL + "/images/testTelemetry.png"
+                        }`}
+                        alt="AR Car"
+                    />
+                    <div className="w-full sm:w-2/3 flex flex-col gap-16">
+                        <div>
+                            <h2 className="heading-3">
+                                Interactive Telemetry{" "}
+                            </h2>
+                            <p>Select a Driver</p>
+                            <p>Monitor their race progress lap by lap.</p>
+                            <p>Multiple Camera Views</p>
+                            <p>
+                                Get closer to the action with various
+                                perspectives.
+                            </p>
+                            <p>Detailed Telemetry Data</p>
+                            <p>Analyze every aspect of driver performance.</p>
+                        </div>
+                        <Button
+                            as="button"
+                            onClick={() => navigateToRaceResult(raceData)}
+                            size="sm"
+                            className="shadow-xl w-fit"
+                        >
+                            View Latest F1 Race
+                        </Button>
+                    </div>
                 </div>
             </section>
         </div>

@@ -3,9 +3,7 @@
     top: 0;
     width: 100vw;
     z-index: 1000;
-    @media screen and (max-width: 768px) {
-        position: fixed;
-    }
+    position: fixed;
 }
 
 .global-header__main-nav {

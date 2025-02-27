@@ -25,14 +25,15 @@ export const Header = ({ setResultPage, setResultPagePath }) => {
     const location = useLocation().pathname;
     const collapsible = location.startsWith('/race/');
 
+    console.log(collapsible ? "collapsible" : "not collapsible")
+    console.log(headerOpen ? "headerOpen" : "not headerOpen")
+
     useEffect(() => {
         const handleResize = () => {
             setHeaderOpen(window.innerWidth > 768);
         };
-    
+        handleResize()
         window.addEventListener("resize", handleResize);
-        
-        // Cleanup event listener on unmount
         return () => window.removeEventListener("resize", handleResize);
       }, []);
 
@@ -171,12 +172,12 @@ export const Header = ({ setResultPage, setResultPagePath }) => {
         <header 
             className={classNames(
                 "global-header max-md:transition-all",
-                {"!top-[-58px]": !headerOpen}
+                {"!top-[-58px]": !headerOpen && collapsible}
 
             )}
             ref={headerRef}
         >
-            <div className="global-header__main-nav shadow-lg bg-glow bg-neutral-800/90 backdrop-blur-sm" >
+            <div className="global-header__main-nav shadow-lg bg-neutral-900/60 backdrop-blur-md" >
 
                 <div className="global-header__main-nav__left flex items-center gap-32">
                     <a href="/"><Logo height={48} /></a>
@@ -236,6 +237,7 @@ export const Header = ({ setResultPage, setResultPagePath }) => {
                     </div>
                 </div>
             </div>
+        <div className="divider-glow-dark" />
         </header>
 
         {/* Mobile */}

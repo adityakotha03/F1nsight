@@ -490,7 +490,7 @@ export function RacePage() {
         />
     ) : (
         <div className="race-page">
-            <div className="race-page__track-view relative">
+            <div className="race-page__track-view relative md:pt-64">
                 <div className="absolute bottom-8 w-full flex justify-between sm:justify-end items-center z-10 gap-8 px-8">
                     {driverSelected && (
                         <div className="flex items-center gap-8">
