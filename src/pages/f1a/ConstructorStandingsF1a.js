@@ -61,7 +61,7 @@ export function ConstructorStandingsF1a({ selectedYear }) {
   }, [selectedYear]);
 
   return (
-    <div className="max-w-[45rem] m-auto mt-48">
+    <div className="max-w-[45rem] m-auto mt-48  pb-64">
       {isLoading ? (
         <Loading className="mt-[20rem] mb-[20rem]" message={`Loading ${selectedYear} Constructor Standings`} />
       ) : (

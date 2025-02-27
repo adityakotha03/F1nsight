@@ -33,7 +33,7 @@ const Top3Drivers = ({ year, circuitId, index }) => {
     const hasResults = top3RaceResults && top3RaceResults.length > 0;
 
     return (
-        <div className="relative group w-fit m-auto">
+        <div className="relative group w-fit m-auto  pb-64">
             <NavLink
                 disabled={!hasResults}
                 to={hasResults ? `/race-f1a/2024${index}` : null}

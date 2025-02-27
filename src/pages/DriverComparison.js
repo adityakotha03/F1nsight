@@ -251,7 +251,7 @@ export function DriverComparison(){
 
 
     return(
-        <div className='global-container px-8'>
+        <div className='global-container px-8 pb-64'>
 
             <h2 className='heading-2 text-center mb-40 text-neutral-400'>Drivers Comparison</h2>
 

@@ -460,6 +460,7 @@ export function RacePage() {
                     onClick={() => {
                         handleDriverSelectionClick(index);
                         setModalOpen(false);
+                        setIsDrawerOpen(false)
                     }}
                 >
                     <DriverCard
@@ -531,7 +532,7 @@ export function RacePage() {
                     {driverButtons(true)}
                 </Drawer>
                 <Drawer isOpen={isDrawerOpen} onClose={() => setIsDrawerOpen(false)}>
-                    {/* {driverSelected && ( */}
+                    {driverSelected && (
                         <>
                         <Accordion title="Playback Speed" contentClasses="flex flex-col gap-8 items-start">
                             <button
@@ -542,7 +543,10 @@ export function RacePage() {
                                             speedFactor !== 4,
                                     }
                                 )}
-                                onClick={() => setSpeedFactor(4)}
+                                onClick={() => {
+                                    setSpeedFactor(4)
+                                    setIsDrawerOpen(false)
+                                }}
                             >
                                 Normal
                             </button>
@@ -554,7 +558,10 @@ export function RacePage() {
                                             speedFactor !== 1.5,
                                     }
                                 )}
-                                onClick={() => setSpeedFactor(1.5)}
+                                onClick={() => {
+                                    setSpeedFactor(1.5)
+                                    setIsDrawerOpen(false)
+                                }}
                             >
                                 Push Push
                             </button>
@@ -566,7 +573,10 @@ export function RacePage() {
                                             speedFactor !== 0.2,
                                     }
                                 )}
-                                onClick={() => setSpeedFactor(0.2)}
+                                onClick={() => {
+                                    setSpeedFactor(0.2)
+                                    setIsDrawerOpen(false)
+                                }}
                             >
                                 DRS
                             </button>
@@ -579,7 +589,10 @@ export function RacePage() {
                                         "text-neutral-400": !haloView,
                                     }
                                 )}
-                                onClick={() => setHaloView(false)}
+                                onClick={() => {
+                                    setHaloView(false)
+                                    setIsDrawerOpen(false)
+                                }}
                             >
                                 Sky View
                             </button>
@@ -590,13 +603,16 @@ export function RacePage() {
                                         "text-neutral-400": haloView,
                                     }
                                 )}
-                                onClick={() => setHaloView(true)}
+                                onClick={() => {
+                                    setHaloView(true)
+                                    setIsDrawerOpen(false)
+                                }}
                             >
                                 Halo View
                             </button>
                         </Accordion>
                         </>
-                    {/* )} */}
+                    )}
                     <Accordion title="Race Selection" contentClasses="flex flex-col gap-8 items-start">
                         {hasRaceSession && (
                             <button
@@ -606,7 +622,10 @@ export function RacePage() {
                                         "text-neutral-400": haloView,
                                     }
                                 )}
-                                onClick={() => setSelectedSession("Race")}
+                                onClick={() => {
+                                    setSelectedSession("Race")
+                                    setIsDrawerOpen(false)
+                                }}
                             >
                                 Race
                             </button>
@@ -619,7 +638,10 @@ export function RacePage() {
                                         "text-neutral-400": haloView,
                                     }
                                 )}
-                                onClick={() => setSelectedSession("Qualifying")}
+                                onClick={() => {
+                                    setSelectedSession("Qualifying")
+                                    setIsDrawerOpen(false)
+                                }}
                             >
                                 Qualifying
                             </button>

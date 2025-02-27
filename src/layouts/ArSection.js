@@ -3,7 +3,7 @@ import { motion, useInView, useScroll, useTransform } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 
 import { Button } from "../components";
-import { Navigate } from "react-router-dom";
+import PngSequencePlayer from "../components/PngSequencePlayer";
 
 const ArSection = ({ layoutMobile }) => {
     const navigate = useNavigate();
@@ -11,11 +11,15 @@ const ArSection = ({ layoutMobile }) => {
     const isInView = useInView(sectionRef, { once: true, margin: "-100px" });
 
     const { scrollYProgress } = useScroll({
-            target: sectionRef,
-            offset: ["start end", "end start"],
-        });
+        target: sectionRef,
+        offset: ["start end", "end start"],
+    });
 
-    const yTextContent = useTransform(scrollYProgress, [0, 1], layoutMobile ? [0, 0] : [50, -50]);
+    const yTextContent = useTransform(
+        scrollYProgress,
+        [0, 1],
+        layoutMobile ? [0, 0] : [50, -50]
+    );
 
     return (
         <section className="ar-experience-section py-64 bg-gradient-to-b from-neutral-950/30 to-neutral-950/5">
@@ -23,9 +27,12 @@ const ArSection = ({ layoutMobile }) => {
                 <h2 className="heading-3 text-center mb-64">
                     bring the excitement of F1 right into your own space
                 </h2>
-                <div ref={sectionRef} className="flex flex-col sm:flex-row items-center mx-auto relative">
+                <div
+                    ref={sectionRef}
+                    className="flex max-sm:flex-col-reverse sm:flex-row items-center mx-auto relative"
+                >
                     <motion.div
-                        className="w-full sm:w-1/2 flex flex-col gap-16 relative z-10 bg-gradient-to-b from-neutral-900 to-neutral-900/10 py-32 pl-32 pr-64 sm:mr-[-40px] rounded-xlarge"
+                        className="w-full sm:w-1/2 flex flex-col max-sm:items-center gap-16 relative z-10 sm:bg-gradient-to-b sm:from-neutral-900 sm:to-neutral-900/10 p-32 sm:py-32 sm:pl-32 sm:pr-64 sm:mr-[-40px] sm:rounded-xlarge max-sm:text-center"
                         initial={{ opacity: 0, scale: 0.8 }}
                         animate={isInView ? { opacity: 1, scale: 1 } : {}}
                         transition={{ duration: 0.8, ease: "easeOut" }}
@@ -39,7 +46,7 @@ const ArSection = ({ layoutMobile }) => {
                         </p>
                         <Button
                             as="button"
-                            onClick={() => Navigate("/ar-viewer")}
+                            onClick={() => navigate("/ar-viewer")}
                             size="sm"
                             className="shadow-xl w-fit"
                         >
@@ -62,16 +69,23 @@ const ArSection = ({ layoutMobile }) => {
                             alt=""
                         />
                     </motion.div>
-                    <motion.img
+                    <motion.div
                         className="w-2/3 sm:w-1/2 ar-experience-section__phone z-10"
-                        src={`${
-                            process.env.PUBLIC_URL + "/images/testPhone.png"
-                        }`}
-                        alt="AR Car"
                         initial={{ opacity: 0, scale: 1.2 }}
                         animate={isInView ? { opacity: 1, scale: 1 } : {}}
                         transition={{ duration: 0.8, ease: "easeOut" }}
-                    />
+                    >
+                        <PngSequencePlayer
+                            frameCount={301}
+                            path={`${
+                                process.env.PUBLIC_URL +
+                                "/Media/pngSequencePhone/PhoneAnimation_"
+                            }`}
+                            className=""
+                            canvasClasses="w-full"
+                        />
+                    </motion.div>
+                    
                 </div>
             </div>
         </section>

@@ -55,7 +55,7 @@ export function RaceResultsPage({ selectedYear }) {
   }
   
   return (
-    <div className="race-results max-w-[120rem] m-auto mt-32">
+    <div className="race-results max-w-[120rem] m-auto mt-32  pb-64">
       {isLoading ? (
         <Loading className="mt-[20rem] mb-[20rem]" message={`Loading ${selectedYear} Race Results`} />
       ) : (
