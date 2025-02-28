@@ -14,13 +14,14 @@ export const Footer2025 = ({ className }) => {
     return (
         <footer
             className={classNames(
-                "bg-neutral-900 text-white py-10 px-6",
+                "bg-neutral-900 text-white pb-10 px-6",
                 className,
                 {
                     hidden: hideFooter,
                 }
             )}
         >
+            <div className="divider-glow-dark" />
             <div className="container mx-auto flex flex-col md:flex-row justify-between items-center py-64 text-sm max-md:text-center">
                 {/* Left side: Logo, tagline, and social links */}
                 <div className="flex flex-col items-center md:items-start gap-16 mb-24 md:mb-0">
@@ -121,7 +122,8 @@ export const Footer2025 = ({ className }) => {
             </div>
 
             {/* Footer Bottom: Year and Copyright */}
-            <div className="text-center text-neutral-400 mt-6 bg-gradient-to-b from-neutral-950/30 to-neutral-950/10 p-16 text-sm">
+            <div className="text-center text-neutral-400 mt-6 bg-gradient-to-b from-neutral-950/30 to-neutral-950/10 px-16 pb-16 text-sm">
+                <div className="divider-glow-dark mb-6" />
                 <p>&copy; {currentYear} F1NSIGHT. All rights reserved.</p>
             </div>
         </footer>
