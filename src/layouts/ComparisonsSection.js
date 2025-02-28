@@ -57,8 +57,9 @@ const ComparisonsSection = ({ layoutMobile }) => {
     return (
         <section
             ref={sectionRef}
-            className="pt-64 max-sm:pb-[128px] sm:pb-64 px-16 bg-gradient-to-b from-neutral-950/30 to-neutral-950/5 relative"
+            className="max-sm:pb-[128px] sm:pb-64 px-16 bg-gradient-to-b from-neutral-950/30 to-neutral-950/5 relative"
         >
+            <div className="divider-glow-dark mb-64" />
             {/* Heading Animates in & Scrolls */}
             <motion.div
                 className="max-w-screen-md mx-auto text-center"
