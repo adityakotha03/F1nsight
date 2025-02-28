@@ -8,6 +8,7 @@ const PngSequencePlayer = ({
   frameRate = 30,
   className,
   canvasClasses,
+  loadingImage,
 }) => {
   const canvasRef = useRef(null);
   const [images, setImages] = useState([]);
@@ -83,7 +84,8 @@ const PngSequencePlayer = ({
 
   return (
     <div className={classNames(className, "png-sequence-player flex justify-center items-center")}>
-      {!loaded && <p className="text-gray-500">Loading animation...</p>}
+      {!loaded && <img className={classNames(canvasClasses, "png-sequence-player__image")} src={loadingImage} alt="Loading..." />}
+      {/* <img className={classNames(canvasClasses, "png-sequence-player__image")} src={loadingImage} alt="Loading..." /> */}
       <canvas ref={canvasRef} className={classNames(canvasClasses, "png-sequence-player__canvas")} />
     </div>
   );
