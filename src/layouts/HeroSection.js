@@ -58,7 +58,8 @@ const HeroSection = ({ layoutMobile }) => {
         frameCount={301} 
         path={`${process.env.PUBLIC_URL + "/Media/pngSequence/car-animation_"}`} 
         className="absolute bottom-[-32px]"
-        canvasClasses="max-sm:w-[100%] sm:w-[90%] sm:max-w-screen-xl drop-shadow-[0_-64px_64px_rgba(0,0,0,1)]"
+        canvasClasses="max-sm:w-[100%] sm:w-[90%] sm:max-w-screen-xl drop-shadow-[0_-64px_64px_rgba(0,0,0,1)] mx-auto"
+        loadingImage={`${process.env.PUBLIC_URL}/images/HeroImage.png`}
       />
     </section>
   );

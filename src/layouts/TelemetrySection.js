@@ -3,6 +3,7 @@ import { motion, useInView, useScroll, useTransform } from "framer-motion";
 
 import { Button } from "../components";
 import PngSequencePlayer from "../components/PngSequencePlayer";
+import classNames from "classnames";
 
 const TelemetrySection = ({ layoutMobile, onClick }) => {
     const sectionRef = useRef(null);
@@ -27,10 +28,14 @@ const TelemetrySection = ({ layoutMobile, onClick }) => {
                 </h2>
                 <div
                     ref={sectionRef}
-                    className="flex flex-col-reverse sm:flex-row-reverse items-center mx-auto relative"
+                    className="flex flex-col-reverse md:flex-row-reverse items-center mx-auto relative md:ml-[-80px]"
                 >
                     <motion.div
-                        className="w-full sm:w-1/3 flex flex-col max-sm:items-center gap-8 relative z-10 sm:bg-gradient-to-b sm:from-neutral-900 sm:to-neutral-900/10 p-32 sm:py-32 sm:pr-32 sm:pl-64 sm:ml-[-40px] sm:rounded-xlarge max-sm:text-small"
+                        className={classNames(
+                            "p-32 md:py-32 md:pr-32 md:pl-64 md:ml-[-100px] md:rounded-xlarge max-md:text-small max-md:text-center",
+                            "w-full md:w-1/3 flex flex-col max-md:items-center gap-8 relative z-10",
+                            "md:bg-gradient-to-b md:from-neutral-900 md:to-neutral-900/10"
+                        )}
                         initial={{ opacity: 0, scale: 0.8 }}
                         animate={isInView ? { opacity: 1, scale: 1 } : {}}
                         transition={{ duration: 0.8, ease: "easeOut" }}
@@ -77,6 +82,7 @@ const TelemetrySection = ({ layoutMobile, onClick }) => {
                             }`}
                             className=""
                             canvasClasses="w-full"
+                            loadingImage={`${process.env.PUBLIC_URL}/images/telemetryImage.png`}
                         />
                         <div className="divider-glow-dark -mt-8" />
                     </motion.div>

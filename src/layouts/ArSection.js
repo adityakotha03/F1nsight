@@ -83,6 +83,7 @@ const ArSection = ({ layoutMobile }) => {
                             }`}
                             className=""
                             canvasClasses="w-full"
+                            loadingImage={`${process.env.PUBLIC_URL}/images/ArPhoneImage.png`}
                         />
                     </motion.div>
                     
