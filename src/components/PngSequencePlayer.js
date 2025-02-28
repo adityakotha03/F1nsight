@@ -85,8 +85,7 @@ const PngSequencePlayer = ({
   return (
     <div className={classNames(className, "png-sequence-player flex justify-center items-center")}>
       {!loaded && <img className={classNames(canvasClasses, "png-sequence-player__image")} src={loadingImage} alt="Loading..." />}
-      {/* <img className={classNames(canvasClasses, "png-sequence-player__image")} src={loadingImage} alt="Loading..." /> */}
-      <canvas ref={canvasRef} className={classNames(canvasClasses, "png-sequence-player__canvas")} />
+      <canvas ref={canvasRef} className={classNames(canvasClasses, !loaded ? "hidden" : "", "png-sequence-player__canvas")} />      
     </div>
   );
 };
