@@ -14,7 +14,7 @@ export const ARViewer = () => {
     const [glbLink, setGlbLink] = useState(ARViewer.defaultProps.glbLink);
     const [team, setTeam] = useState(ARViewer.defaultProps.team);
     const [teamStatsOpen, setTeamStatsOpen] = useState(false);
-    const [year, setYear] = useState("2024");
+    const [year, setYear] = useState("2025");
     const [isGLBLoading, setIsGLBLoading] = useState(true);
     const modelViewerRef = useRef(null);
 

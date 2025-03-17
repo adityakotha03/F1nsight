@@ -512,18 +512,25 @@ export const fetchMostRecentRace = async (selectedYear) => {
     if (!raceDetailsResponse.ok) {
       throw new Error('Failed to fetch race details');
     }
-    const raceDetails = await raceDetailsResponse.json();
-
+    const raceDetails = await raceDetailsResponse.json();    
     // Fetch the meeting keys
-    const meetingKeys = await fetchRaceMeetingKeys(selectedYear);
-
+    const meetingKeys = await fetchRaceMeetingKeys(selectedYear);    
+    // Filter out races that haven't happened yet
+    const pastRaces = raceDetails.filter(race => new Date(race.date) <= new Date());    
     // Sort races by date in descending order (most recent first)
-    const sortedRaces = raceDetails.sort((a, b) => new Date(b.date) - new Date(a.date));
+    const sortedRaces = pastRaces.sort((a, b) => new Date(b.date) - new Date(a.date));
 
     // Get the most recent race (first after sorting)
-    const mostRecentRace = sortedRaces[0];
+    const mostRecentRace = sortedRaces[0];    
+    // If no past races exist (all races are in the future), handle gracefully
+    if (!mostRecentRace) {
+      console.log("No past races available.");
+      return null;
+    }
+    
+    // Get the meeting key for the most recent race
     const meetingKey = meetingKeys[mostRecentRace.raceName]?.meeting_key || 'unknown';
-
+    
     // Fetch race results for the most recent race
     const raceResults = await fetchRaceResults(selectedYear, mostRecentRace.round);
 

@@ -17,7 +17,7 @@ library.add(fas, fab);
 
 function App() {
   const currentYear = new Date().getFullYear();
-  const [selectedYear, setSelectedYear] = useState(2024);
+  const [selectedYear, setSelectedYear] = useState(currentYear);
   const [resultPage, setResultPage] = useState('');
   const [resultPagePath, setResultPagePath] = useState('');
 
