@@ -147,8 +147,8 @@ export const DriverCard = (props) => {
                                 <div className="flex flex-col items-center">
                                     <span className="text-sm">Avg Speed</span>
                                     <div>
-                                        <span className="font-display">{fastestLap.AverageSpeed.speed}</span>
-                                        <span className="text-sm">{fastestLap.AverageSpeed.units}</span>
+                                        <span className="font-display">{fastestLap?.AverageSpeed?.speed}</span>
+                                        <span className="text-sm">{fastestLap?.AverageSpeed?.units}</span>
                                     </div>
                                 </div>
                             </div>

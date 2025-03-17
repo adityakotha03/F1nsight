@@ -108,8 +108,7 @@ export const SelectedDriverStats = (props) => {
                             </span>
                             <span className="uppercase tracking-xs text-xs">
                                 {
-                                    selectedDriverRaceData.FastestLap
-                                        .AverageSpeed.units
+                                    selectedDriverRaceData.FastestLap?.AverageSpeed?.units
                                 }
                             </span>
                         </div>
