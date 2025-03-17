@@ -278,6 +278,34 @@ export const ARViewer = () => {
                             setGlbLink(
                                 `${
                                     process.env.PUBLIC_URL +
+                                    "/ArFiles/glbs/2024/f1nsight2022.glb"
+                                }`
+                            );
+                            setTeam({
+                                name: "F1Nsight",
+                                color: "#7500AD",
+                            });
+                        }}
+                    >
+                        <img
+                            src={`${
+                                process.env.PUBLIC_URL +
+                                "/images/2024/cars/f1nsight-sideview.png"
+                            }`}
+                            alt={team.name}
+                            className="w-[10rem] -mt-16"
+                        />
+                        <p className="font-display">F1NSIGHT 2022</p>
+                    </button>
+                    <button
+                        style={{ backgroundColor: "#7500AD" }}
+                        className={classNames(
+                            "text-white p-2 rounded inline-flex flex-col items-center text-center bg-glow-dark mt-16 max-md:w-[45%]"
+                        )}
+                        onClick={() => {
+                            setGlbLink(
+                                `${
+                                    process.env.PUBLIC_URL +
                                     "/ArFiles/glbs/2024/f1nsight2024.glb"
                                 }`
                             );

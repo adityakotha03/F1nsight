@@ -33,7 +33,7 @@ For more information and to access the interactive features, visit our website a
 
 ## Our Custom API
 
-Some of the information related to driver comparison and other important statistics are provided by our own API found at [F1nsight API](https://github.com/praneeth7781/f1nsight-api-2)
+Some of the information related to driver comparison and other important statistics are provided by our own API found at [F1nsight API](https://github.com/a2odysseylabs/f1nsight-api-2)
 
 ## Support and Contribution
 
@@ -46,7 +46,7 @@ This project is licensed under our custom license. For more details, please refe
 ## Acknowledgements
 
 - Thanks to all the Formula 1 fans and community contributors who keep this project running!
-- Special thanks to data providers and API services [OpenF1](https://openf1.org/) and [Ergast](http://ergast.com/mrd/) that enable access to current and historical F1 data.
+- Special thanks to data providers and API service [OpenF1](https://openf1.org/) that enable access to current and historical F1 data.
 - This work is based on "basic Lowpoly F1 Car V1" by arthihalder, available under a Creative Commons Attribution 4.0 International license. [View the model on Sketchfab](https://sketchfab.com/3d-models/basic-lowpoly-f1-car-v1-b4c6a1cfe0154f4d86b39ff3b7f955a1). License details can be found at [CC-BY-4.0](http://creativecommons.org/licenses/by/4.0/).
 
 ## Contact

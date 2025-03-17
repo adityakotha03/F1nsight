@@ -86,7 +86,7 @@ export function DriverComparison(){
     useEffect(() => {
         const fetchRaceNames = async (year) => {
             try {
-                const response = await fetch(`https://praneeth7781.github.io/f1nsight-api-2/races/${year}/raceDetails.json`);
+                const response = await fetch(`https://a2odysseylabs.github.io/f1nsight-api-2/races/${year}/raceDetails.json`);
                 const races = await response.json();
                 return races.map(race => race.raceName);
             } catch (error) {

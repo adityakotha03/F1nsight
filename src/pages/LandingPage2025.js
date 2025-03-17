@@ -25,9 +25,9 @@ export function LandingPage2025({ setResultPagePath }) {
 
     useEffect(() => {
         const fetchData = async () => {
-            const mostRecentRace = await fetchMostRecentRace(selectedYear);
+            const mostRecentRace = await fetchMostRecentRace(2024);
             const mostRecentF1aRaceWeekend =
-                await fetchMostRecentRaceWeekendF1a(selectedYear);
+                await fetchMostRecentRaceWeekendF1a(2024);
             setRaceData(mostRecentRace);
             setF1aRaceData(mostRecentF1aRaceWeekend);
             // console.log({ mostRecentRace });
