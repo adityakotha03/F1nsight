@@ -63,8 +63,7 @@ export const Footer2025 = ({ className }) => {
                             to="/race-results"
                             className="text-white hover:text-gray-300"
                         >
-                            {/* {currentYear} Race Results */}
-                            2024 Race Results
+                            {currentYear} Race Results
                         </Link>
                         <Link
                             to="/constructor-standings"

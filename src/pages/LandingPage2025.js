@@ -17,7 +17,7 @@ import TelemetrySection from "../layouts/TelemetrySection";
 export function LandingPage2025({ setResultPagePath }) {
     const [raceData, setRaceData] = useState(null);
     const [F1aRaceData, setF1aRaceData] = useState(null);
-    const [selectedYear, setSelectedYear] = useState(2024);
+    const [selectedYear, setSelectedYear] = useState(2025);
     const [layoutSmall, setLayoutSmall] = useState();
     const [layoutMobile, setLayoutMobile] = useState();
     const ref = useRef(null);
@@ -25,7 +25,7 @@ export function LandingPage2025({ setResultPagePath }) {
 
     useEffect(() => {
         const fetchData = async () => {
-            const mostRecentRace = await fetchMostRecentRace(2024);
+            const mostRecentRace = await fetchMostRecentRace(2025);
             const mostRecentF1aRaceWeekend =
                 await fetchMostRecentRaceWeekendF1a(2024);
             setRaceData(mostRecentRace);
@@ -98,7 +98,7 @@ export function LandingPage2025({ setResultPagePath }) {
                                         )}
                                         status={result.status}
                                         time={result.time}
-                                        year={2024}
+                                        year={selectedYear}
                                         // wireframe={race.results.length === 0}
                                     />
                                 )
@@ -183,7 +183,7 @@ export function LandingPage2025({ setResultPagePath }) {
                             Latest F1A Race Results
                         </p>
                         <p className="font-display text-xl">
-                            {F1aRaceData?.raceName}
+                            2024 {F1aRaceData?.raceName}
                         </p>
                     </div>
                     <div className="flex flex-col sm:flex-row gap-8 items-center py-[26px]">
@@ -205,7 +205,7 @@ export function LandingPage2025({ setResultPagePath }) {
                                                     result.position,
                                                     10
                                                 )}
-                                                year={selectedYear}
+                                                year={2024} // back to selectedYear once season start
                                                 time={
                                                     result.Time?.time ||
                                                     result.status
@@ -236,7 +236,7 @@ export function LandingPage2025({ setResultPagePath }) {
                                                     result.position,
                                                     10
                                                 )}
-                                                year={selectedYear}
+                                                year={2024} // back to selectedYear once season start
                                                 time={
                                                     result.Time?.time ||
                                                     result.status
