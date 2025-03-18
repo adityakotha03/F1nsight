@@ -17,30 +17,22 @@ const PngSequencePlayer = ({
 
   // Load the image sequence
   useEffect(() => {
-    const loadImagesInBatches = async (frameCount, batchSize = 5) => {
-      const loadedImages = [];
-      for (let i = 0; i < frameCount; i += batchSize) {
-        const batch = [];
-        for (let j = i; j < Math.min(i + batchSize, frameCount); j++) {
-          const img = new Image();
-          img.src = `${path}${String(j).padStart(5, "0")}.${fileExtension}`;
-          img.onload = () => {
-            batch.push(img);
-            if (batch.length === batchSize || j === frameCount - 1) {
-              loadedImages.push(...batch);
-              if (loadedImages.length === frameCount) {
-                setImages(loadedImages);
-                setLoaded(true);
-              }
-            }
-          };
-          img.onerror = (e) => console.error(`Error loading image: ${img.src}`, e);
-        }
-        await new Promise((resolve) => setTimeout(resolve, 100)); // Small delay between batches to avoid overwhelming the browser
-      }
-    };
+    const loadedImages = [];
+    let imagesLoaded = 0;
 
-    loadImagesInBatches(frameCount);
+    for (let i = 0; i < frameCount; i++) {
+      const img = new Image();
+      img.src = `${path}${String(i).padStart(5, "0")}.${fileExtension}`;
+      img.onload = () => {
+        imagesLoaded++;
+        if (imagesLoaded === frameCount) {
+          setImages(loadedImages);
+          setLoaded(true);
+        }
+      };
+      img.onerror = (e) => console.error(`Error loading image: ${img.src}`, e);
+      loadedImages.push(img);
+    }
   }, [frameCount, path, fileExtension]);
 
   // Use IntersectionObserver to detect if the element is in view
