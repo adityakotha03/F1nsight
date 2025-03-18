@@ -60,7 +60,7 @@ export const TeammatesComparison = () => {
     if (year && !teamCache[year]) {
       setIsLoading(true);
       try {
-        const response = await axios.get(`https://a2odysseylabs.github.io/f1nsight-api-2/constructors/${year}.json`);
+        const response = await axios.get(`https://praneeth7781.github.io/f1nsight-api-2/constructors/${year}.json`);
         const constructors = response.data;
         setTeamCache(prevCache => ({ ...prevCache, [year]: constructors }));
 
@@ -98,11 +98,11 @@ export const TeammatesComparison = () => {
 
   const submit = async (selectedTeam) => {
     try {
-      const response = await axios.get(`https://a2odysseylabs.github.io/f1nsight-api-2/constructors/${year}/${selectedTeam}.json`);
+      const response = await axios.get(`https://praneeth7781.github.io/f1nsight-api-2/constructors/${year}/${selectedTeam}.json`);
       const fetchedDrivers = response.data;
       setDrivers(fetchedDrivers);
 
-      const colorsResponse = await axios.get('https://a2odysseylabs.github.io/f1nsight-api-2/colors/teams.json');
+      const colorsResponse = await axios.get('https://praneeth7781.github.io/f1nsight-api-2/colors/teams.json');
       const teamColors = colorsResponse.data;
 
       setTeamColor(teamColors[year]?.[selectedTeam] || '5F0B84');

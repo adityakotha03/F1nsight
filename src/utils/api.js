@@ -1,6 +1,6 @@
 
 export const fetchDriversList = async () => {
-  const response = await fetchWithCache(`https://a2odysseylabs.github.io/f1nsight-api-2/driversList.json`);
+  const response = await fetchWithCache(`https://praneeth7781.github.io/f1nsight-api-2/driversList.json`);
   // console.log("New one");
   return response.map(driver => ({
     id: driver.driverId,
@@ -31,7 +31,7 @@ const fetchWithCache = async (url) => {
 export const fetchDriverStats = async (driverId1, driverId2) => {
   const fetchDriverData = async (driverId) => {
     try{
-      const dataResponse1 = await fetch(`https://a2odysseylabs.github.io/f1nsight-api-2/drivers/${driverId}.json`);
+      const dataResponse1 = await fetch(`https://praneeth7781.github.io/f1nsight-api-2/drivers/${driverId}.json`);
       if(dataResponse1.ok){
         const data1 = await dataResponse1.json();
         // console.log("here", data1);
@@ -53,7 +53,7 @@ export const fetchDriverStats = async (driverId1, driverId2) => {
 
 export const fetchRaceMeetingKeys = async (selectedYear) => {
   try {
-    const raceResponse = await fetch(`https://a2odysseylabs.github.io/f1nsight-api-2/races/races.json`);
+    const raceResponse = await fetch(`https://praneeth7781.github.io/f1nsight-api-2/races/races.json`);
     if(!raceResponse.ok) {
       throw new Error('Failed to fetch races');
     }
@@ -94,7 +94,7 @@ export const fetchRacesAndSessions = async (selectedYear) => {
   
 // race results page
 export const fetchRaceDetails = async (selectedYear) => {
-  const url = `https://a2odysseylabs.github.io/f1nsight-api-2/races/${selectedYear}/raceDetails.json`; 
+  const url = `https://praneeth7781.github.io/f1nsight-api-2/races/${selectedYear}/raceDetails.json`; 
   try {
     const response = await fetch(url);
     if (response.ok) {
@@ -128,7 +128,7 @@ export const fetchRaceDetails = async (selectedYear) => {
 };
   
 const fetchRaceResults = async (selectedYear, raceId) => {
-  const resultsUrl = `https://a2odysseylabs.github.io/f1nsight-api-2/races/${selectedYear}/results.json`;
+  const resultsUrl = `https://praneeth7781.github.io/f1nsight-api-2/races/${selectedYear}/results.json`;
   try {
     const response = await fetch(resultsUrl);
     if (response.ok) {
@@ -163,7 +163,7 @@ export const fetchUpcomingRace = async (selectedYear) => {
 
 
 export const getPartialConstructorStandings = async (selectedYear, start, end) => {
-  const baseURL = `https://a2odysseylabs.github.io/f1nsight-api-2/races/${selectedYear}`;
+  const baseURL = `https://praneeth7781.github.io/f1nsight-api-2/races/${selectedYear}`;
   const urls = {
     constructorUrl: `${baseURL}/constructorStandings.json`,
     driverUrl: `${baseURL}/driverStandings.json`
@@ -232,7 +232,7 @@ export const getPartialConstructorStandings = async (selectedYear, start, end) =
     //   points: standing.points,
     //   driverCodes: []
     // }));
-    // const baseURL = `https://a2odysseylabs.github.io/f1nsight-api-2/constructors/${selectedYear}`
+    // const baseURL = `https://praneeth7781.github.io/f1nsight-api-2/constructors/${selectedYear}`
 
     // const driverStandings = driverData['latest'];
     const Keys = Object.keys(driverData).sort();
@@ -260,7 +260,7 @@ export const getPartialConstructorStandings = async (selectedYear, start, end) =
 }
 
 export const getConstructorStandings = async (selectedYear) => {
-  const baseURL = `https://a2odysseylabs.github.io/f1nsight-api-2/races/${selectedYear}`;
+  const baseURL = `https://praneeth7781.github.io/f1nsight-api-2/races/${selectedYear}`;
   const urls = {
     constructorUrl: `${baseURL}/constructorStandings.json`,
     driverUrl: `${baseURL}/driverStandings.json`
@@ -317,7 +317,7 @@ export const getConstructorStandings = async (selectedYear) => {
   
 
 export const getDriverStandings = async (selectedYear) => {
-  const url = `https://a2odysseylabs.github.io/f1nsight-api-2/races/${selectedYear}/driverStandings.json`;
+  const url = `https://praneeth7781.github.io/f1nsight-api-2/races/${selectedYear}/driverStandings.json`;
   try {
     const response = await fetch(url);
     if (response.ok) {
@@ -341,7 +341,7 @@ export const getDriverStandings = async (selectedYear) => {
 };
 
 export const getPartialDriverStandings = async (selectedYear, start, end) => {
-  const url = `https://a2odysseylabs.github.io/f1nsight-api-2/races/${selectedYear}/driverStandings.json`;
+  const url = `https://praneeth7781.github.io/f1nsight-api-2/races/${selectedYear}/driverStandings.json`;
   try {
     const response = await fetch(url);
     if (response.ok) {
@@ -413,7 +413,7 @@ export const fetchDriversAndTires = async (sessionKey) => {
 export const fetchRaceResultsByCircuit = async (year, circuitId) => {
   try {
 
-    const url = `https://a2odysseylabs.github.io/f1nsight-api-2/races/${year}/results.json`;
+    const url = `https://praneeth7781.github.io/f1nsight-api-2/races/${year}/results.json`;
     const response = await fetch(url);
     const data = await response.json();
     // console.log(data);
@@ -427,7 +427,7 @@ export const fetchRaceResultsByCircuit = async (year, circuitId) => {
 
 export const fetchQualifyingResultsByCircuit = async(year, circuitId) => {
   try {
-    const url = `https://a2odysseylabs.github.io/f1nsight-api-2/races/${year}/qualifying.json`;
+    const url = `https://praneeth7781.github.io/f1nsight-api-2/races/${year}/qualifying.json`;
     const response = await fetch(url);
     const data = await response.json();
     const results = data.find(element => element.Circuit.circuitId === circuitId).QualifyingResults;
@@ -508,7 +508,7 @@ export async function fetchLocationData(sessionKey, driverId, startTime, endTime
 export const fetchMostRecentRace = async (selectedYear) => {
   try {
     // Fetch the race details
-    const raceDetailsResponse = await fetch(`https://a2odysseylabs.github.io/f1nsight-api-2/races/${selectedYear}/raceDetails.json`);
+    const raceDetailsResponse = await fetch(`https://praneeth7781.github.io/f1nsight-api-2/races/${selectedYear}/raceDetails.json`);
     if (!raceDetailsResponse.ok) {
       throw new Error('Failed to fetch race details');
     }

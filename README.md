@@ -33,7 +33,7 @@ For more information and to access the interactive features, visit our website a
 
 ## Our Custom API
 
-Some of the information related to driver comparison and other important statistics are provided by our own API found at [F1nsight API](https://github.com/a2odysseylabs/f1nsight-api-2)
+Some of the information related to driver comparison and other important statistics are provided by our own API found at [F1nsight API](https://github.com/praneeth7781/f1nsight-api-2)
 
 ## Support and Contribution
 
