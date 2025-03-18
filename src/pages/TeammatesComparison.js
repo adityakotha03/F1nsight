@@ -325,8 +325,8 @@ const driverLockup = (driverId, driverName) => {
       <img 
         alt="NotAvailable" 
         src={year >= 2023 ? 
-          `${process.env.PUBLIC_URL + "/images/2024/drivers/" + driverId +  ".png"}` 
-          : `${process.env.PUBLIC_URL + "/images/2024/drivers/default" + randomNumber + ".png"}`}
+          `${process.env.PUBLIC_URL + "/images/" + year + "/drivers/" + driverId +  ".png"}` 
+          : `${process.env.PUBLIC_URL + "/images/" + year + "/drivers/default" + randomNumber + ".png"}`}
         width={150} 
         height={150} 
         className={classNames("-mt-32", {"group-[:first-of-type]:scale-x-[-1]" : year <= 2023 })}
