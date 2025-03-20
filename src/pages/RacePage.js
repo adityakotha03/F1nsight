@@ -121,6 +121,7 @@ export function RacePage() {
         "Lusail",
         "Yas Island",
         "Miami",
+        "Shanghai"
     ];
 
     const selectedDriverData = drivers.find(

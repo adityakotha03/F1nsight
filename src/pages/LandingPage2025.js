@@ -180,7 +180,7 @@ export function LandingPage2025({ setResultPagePath }) {
                 <div className="bg-gradient-to-b from-neutral-950/50 to-neutral-950/5 rounded-md w-full py-32 flex flex-col items-center relative">
                     <div className="text-center">
                         <p className="text-sm tracking-xs uppercase gradient-text-light">
-                            Latest F1A Race Results
+                            Latest F1 Academy Race Results
                         </p>
                         <p className="font-display text-xl">
                             2024 {F1aRaceData?.raceName}

@@ -95,6 +95,7 @@ export const SelectedDriverStats = (props) => {
                 </div>
 
                 <div className="flex items-center justify-between mt-16">
+                    
                     <div>
                         <div className="uppercase tracking-xs text-xs">
                             avg speed
@@ -102,7 +103,7 @@ export const SelectedDriverStats = (props) => {
                         <div>
                             <span className="font-display">
                                 {
-                                    selectedDriverRaceData.FastestLap?.AverageSpeed?.speed
+                                    selectedDriverRaceData.FastestLap?.AverageSpeed ? selectedDriverRaceData.FastestLap?.AverageSpeed?.speed : "N/A"
                                 }
                             </span>
                             <span className="uppercase tracking-xs text-xs">
@@ -116,8 +117,8 @@ export const SelectedDriverStats = (props) => {
                         <div className="uppercase tracking-xs text-xs">
                             Rank
                         </div>
-                        <div className="font-display">
-                            {selectedDriverRaceData.FastestLap.rank}
+                        <div>
+                            <span className="font-display">{selectedDriverRaceData.FastestLap.rank}</span> <span className="text-xs">/ 20</span>
                         </div>
                     </div>
                 </div>
