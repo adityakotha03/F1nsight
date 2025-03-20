@@ -1,6 +1,6 @@
 import React from 'react';
 import classNames from 'classnames';
-import { FaLinkedin, FaGlobe, FaInstagram } from 'react-icons/fa';
+import { FaLinkedin, FaInstagram } from 'react-icons/fa';
 
 import { ConstructorDriver } from './ConstructorDriver';
 
