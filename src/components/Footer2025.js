@@ -5,6 +5,7 @@ import { FaLinkedin, FaGlobe, FaInstagram } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { ReactComponent as Logo } from "./f1nsight-outlined.svg";
 import { Button } from "./Button";
+import { F1ALinks, F1Links } from "./Links";
 
 export const Footer2025 = ({ className }) => {
     const location = useLocation().pathname;
@@ -51,71 +52,12 @@ export const Footer2025 = ({ className }) => {
                 </div>
 
                 {/* Right side: Page path links */}
-                <div className="flex flex-col md:flex-row md:items-start gap-16">
+                <div className="flex flex-col md:flex-row md:items-start gap-16 uppercase">
                     <div className="flex flex-col gap-4">
-                        <div>
-                            <p className="uppercase tracking-xs gradient-text-light">
-                                Formula 1
-                            </p>
-                            <div className="divider-glow-dark mt-8 border-t border-neutral-700" />
-                        </div>
-                        <Link
-                            to="/race-results"
-                            className="text-white hover:text-gray-300"
-                        >
-                            {currentYear} Race Results
-                        </Link>
-                        <Link
-                            to="/constructor-standings"
-                            className="text-white hover:text-gray-300"
-                        >
-                            Contructor Standings
-                        </Link>
-                        <Link
-                            to="/driver-standings"
-                            className="text-white hover:text-gray-300"
-                        >
-                            Driver Standings
-                        </Link>
-                        <Link
-                            to="/driver-comparison"
-                            className="text-white hover:text-gray-300"
-                        >
-                            Driver Comparisons
-                        </Link>
-                        <Link
-                            to="/teammates-comparison"
-                            className="text-white hover:text-gray-300"
-                        >
-                            Team Comparisons
-                        </Link>
+                        <F1Links />
                     </div>
                     <div className="flex flex-col gap-4">
-                        <div>
-                            <p className="uppercase tracking-xs gradient-text-light">
-                                Formula 1 Academy
-                            </p>
-                            <div className="divider-glow-dark mt-8 border-t border-neutral-700" />
-                        </div>
-                        <Link
-                            to="/f1a/race-results"
-                            className="text-white hover:text-gray-300"
-                        >
-                            {/* {currentYear} Race Results */}
-                            2024 Race Results
-                        </Link>
-                        <Link
-                            to="/f1a/constructor-standings"
-                            className="text-white hover:text-gray-300"
-                        >
-                            Contructor Standings
-                        </Link>
-                        <Link
-                            to="/f1a/driver-standings"
-                            className="text-white hover:text-gray-300"
-                        >
-                            Driver Standings
-                        </Link>
+                        <F1ALinks />
                     </div>
                 </div>
             </div>

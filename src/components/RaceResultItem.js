@@ -70,13 +70,15 @@ export const RaceResultItem = (props) => {
                                                 </div>
                                             </div>
 
-                                            <div className="flex flex-col items-center">
-                                                <span className="text-sm">Avg Speed</span>
-                                                <div>
-                                                    <span className="font-display">{fastestLap?.AverageSpeed?.speed}</span>
-                                                    <span className="text-sm">{fastestLap?.AverageSpeed?.units}</span>
+                                            {fastestLap?.AverageSpeed && (
+                                                <div className="flex flex-col items-center">
+                                                    <span className="text-sm">Avg Speed</span>
+                                                    <div>
+                                                        <span className="font-display">{fastestLap?.AverageSpeed?.speed}</span>
+                                                        <span className="text-sm">{fastestLap?.AverageSpeed?.units}</span>
+                                                    </div>
                                                 </div>
-                                            </div>
+                                            )}
                                         </div>
                                     }
                                 >

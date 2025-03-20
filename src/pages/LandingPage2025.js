@@ -194,6 +194,7 @@ export function LandingPage2025({ setResultPagePath }) {
                                     {F1aRaceData?.race1.map(
                                         (result, resultIndex) => (
                                             <DriverCard
+                                                key={resultIndex}
                                                 f1a={true}
                                                 index={resultIndex}
                                                 driver={result.Driver}
@@ -225,6 +226,7 @@ export function LandingPage2025({ setResultPagePath }) {
                                     {F1aRaceData?.race2.map(
                                         (result, resultIndex) => (
                                             <DriverCard
+                                                key={resultIndex}
                                                 f1a={true}
                                                 index={resultIndex}
                                                 driver={result.Driver}
