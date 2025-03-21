@@ -56,6 +56,7 @@ export function RacePage() {
     const [speedFactor, setSpeedFactor] = useState(0.2);
     const [isPaused, setIsPaused] = useState(false);
     const [haloView, setHaloView] = useState(false);
+    const [topFollowView, setTopFollowView] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [selectedSession, setSelectedSession] = useState("Race");
     const [hasRaceSession, sethasRaceSession] = useState(false);
@@ -540,7 +541,7 @@ export function RacePage() {
                                 className={classNames(
                                     "tracking-sm uppercase block",
                                     {
-                                        "text-neutral-400":
+                                        "text-plum-300":
                                             speedFactor !== 4,
                                     }
                                 )}
@@ -555,7 +556,7 @@ export function RacePage() {
                                 className={classNames(
                                     "tracking-sm uppercase block",
                                     {
-                                        "text-neutral-400":
+                                        "text-plum-300":
                                             speedFactor !== 1.5,
                                     }
                                 )}
@@ -570,7 +571,7 @@ export function RacePage() {
                                 className={classNames(
                                     "tracking-sm uppercase block",
                                     {
-                                        "text-neutral-400":
+                                        "text-plum-300":
                                             speedFactor !== 0.2,
                                     }
                                 )}
@@ -587,11 +588,12 @@ export function RacePage() {
                                 className={classNames(
                                     "tracking-sm uppercase block",
                                     {
-                                        "text-neutral-400": !haloView,
+                                        "text-plum-300": !haloView || !topFollowView,
                                     }
                                 )}
                                 onClick={() => {
                                     setHaloView(false)
+                                    setTopFollowView(false)
                                     setIsDrawerOpen(false)
                                 }}
                             >
@@ -601,15 +603,30 @@ export function RacePage() {
                                 className={classNames(
                                     "tracking-sm uppercase block",
                                     {
-                                        "text-neutral-400": haloView,
+                                        "text-plum-300": haloView,
                                     }
                                 )}
                                 onClick={() => {
                                     setHaloView(true)
+                                    setTopFollowView(false)
                                     setIsDrawerOpen(false)
                                 }}
                             >
                                 Halo View
+                            </button>
+                            <button
+                                className={classNames(
+                                    "tracking-sm uppercase block",
+                                    {
+                                        "text-plum-300": topFollowView,
+                                    }
+                                )}
+                                onClick={() => {
+                                    setTopFollowView(true)
+                                    setIsDrawerOpen(false)
+                                }}
+                            >
+                                Top Follow View
                             </button>
                         </Accordion>
                         </>
@@ -620,7 +637,7 @@ export function RacePage() {
                                 className={classNames(
                                     "tracking-sm uppercase block",
                                     {
-                                        "text-neutral-400": haloView,
+                                        "text-plum-300": selectedSession === 'Race',
                                     }
                                 )}
                                 onClick={() => {
@@ -636,7 +653,7 @@ export function RacePage() {
                                 className={classNames(
                                     "tracking-sm uppercase block",
                                     {
-                                        "text-neutral-400": haloView,
+                                        "text-plum-300": selectedSession === 'Qualifying',
                                     }
                                 )}
                                 onClick={() => {
@@ -658,11 +675,14 @@ export function RacePage() {
                                 MapFile={MapPath}
                                 locData={locData}
                                 driverSelected={driverSelected}
+                                constructorId={selectedDriverRaceData ? selectedDriverRaceData.Constructor.constructorId : ""}
                                 driverCode={driverCode}
                                 driverColor={driversColor[driverCode]}
                                 isPaused={isPaused}
                                 haloView={haloView}
+                                topFollowView={topFollowView}
                                 speedFactor={speedFactor}
+                                year={year}
                             />
                         ) : (
                             <div className="race-page__track-view__display__preview">

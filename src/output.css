@@ -3322,10 +3322,6 @@ input[type="range"]::-ms-fill-lower {
   background-color: rgb(159 88 10 / var(--tw-bg-opacity));
 }
 
-.bg-inherit {
-  background-color: inherit;
-}
-
 .bg-opacity-50 {
   --tw-bg-opacity: 0.5;
 }
@@ -3697,10 +3693,6 @@ input[type="range"]::-ms-fill-lower {
   padding: .8rem;
 }
 
-.\!p-\[0\] {
-  padding: 0 !important;
-}
-
 .px-12 {
   padding-left: 1.2rem;
   padding-right: 1.2rem;
@@ -3844,11 +3836,6 @@ input[type="range"]::-ms-fill-lower {
 .py-\[26px\] {
   padding-top: 26px;
   padding-bottom: 26px;
-}
-
-.py-10 {
-  padding-top: 1rem;
-  padding-bottom: 1rem;
 }
 
 .pb-10 {
@@ -4353,6 +4340,11 @@ input[type="range"]::-ms-fill-lower {
   color: rgb(117 26 61 / var(--tw-text-opacity));
 }
 
+.text-plum-300 {
+  --tw-text-opacity: 1;
+  color: rgb(131 88 151 / var(--tw-text-opacity));
+}
+
 .text-plum-500 {
   --tw-text-opacity: 1;
   color: rgb(95 11 132 / var(--tw-text-opacity));
@@ -4642,6 +4634,11 @@ input[type="range"]::-ms-fill-lower {
 
 .drop-shadow-md {
   --tw-drop-shadow: drop-shadow(0 4px 3px rgb(0 0 0 / 0.07)) drop-shadow(0 2px 2px rgb(0 0 0 / 0.06));
+  filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
+}
+
+.invert {
+  --tw-invert: invert(100%);
   filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
 }
 
@@ -5147,10 +5144,6 @@ button:hover {
   cursor: not-allowed;
 }
 
-.hover\:border-2:hover {
-  border-width: 2px;
-}
-
 .hover\:border-gray-300:hover {
   --tw-border-opacity: 1;
   border-color: rgb(209 213 219 / var(--tw-border-opacity));
@@ -5226,6 +5219,11 @@ button:hover {
   background-color: rgb(217 249 157 / var(--tw-bg-opacity));
 }
 
+.hover\:bg-neutral-900:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgb(23 23 23 / var(--tw-bg-opacity));
+}
+
 .hover\:bg-pink-200:hover {
   --tw-bg-opacity: 1;
   background-color: rgb(250 209 232 / var(--tw-bg-opacity));
@@ -5254,31 +5252,6 @@ button:hover {
 .hover\:bg-yellow-200:hover {
   --tw-bg-opacity: 1;
   background-color: rgb(252 233 106 / var(--tw-bg-opacity));
-}
-
-.hover\:bg-neutral-500:hover {
-  --tw-bg-opacity: 1;
-  background-color: rgb(115 115 115 / var(--tw-bg-opacity));
-}
-
-.hover\:bg-neutral-700:hover {
-  --tw-bg-opacity: 1;
-  background-color: rgb(64 64 64 / var(--tw-bg-opacity));
-}
-
-.hover\:bg-neutral-800:hover {
-  --tw-bg-opacity: 1;
-  background-color: rgb(38 38 38 / var(--tw-bg-opacity));
-}
-
-.hover\:bg-neutral-950:hover {
-  --tw-bg-opacity: 1;
-  background-color: rgb(10 10 10 / var(--tw-bg-opacity));
-}
-
-.hover\:bg-neutral-900:hover {
-  --tw-bg-opacity: 1;
-  background-color: rgb(23 23 23 / var(--tw-bg-opacity));
 }
 
 .hover\:bg-gradient-to-br:hover {
@@ -5829,11 +5802,6 @@ button:hover {
 
 .group:hover .group-hover\:block {
   display: block;
-}
-
-.group:hover .group-hover\:rotate-180 {
-  --tw-rotate: 180deg;
-  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
 }
 
 .group:hover .group-hover\:bg-blue-200 {
