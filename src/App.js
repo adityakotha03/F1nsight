@@ -22,7 +22,7 @@ function App() {
   const [resultPagePath, setResultPagePath] = useState('');
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="app-container flex flex-col min-h-screen">
       <Router>
         <ScrollToTop />
         <Header 
