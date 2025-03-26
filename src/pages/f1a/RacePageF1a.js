@@ -192,7 +192,7 @@ export function RacePageF1a() {
                         ))}
                     </div>
 
-                    <StartingGridF1A raceResults={raceResults} />
+                    <StartingGridF1A raceResults={raceResults} year={year} />
 
                     <div className="page-container-centered">
                         <FastestLapsF1A
@@ -233,7 +233,7 @@ export function RacePageF1a() {
                             ))}
                         </div>
 
-                        <StartingGridF1A raceResults={raceResults2} />
+                        <StartingGridF1A raceResults={raceResults2} year={year} />
 
                         <div className="page-container-centered">
                             <FastestLapsF1A
@@ -275,7 +275,7 @@ export function RacePageF1a() {
                             ))}
                         </div>
 
-                        <StartingGridF1A raceResults={raceResults3} />
+                        <StartingGridF1A raceResults={raceResults3} year={year} />
 
                         <div className="page-container-centered">
                             <FastestLapsF1A

@@ -27,7 +27,7 @@ export function LandingPage2025({ setResultPagePath }) {
         const fetchData = async () => {
             const mostRecentRace = await fetchMostRecentRace(2025);
             const mostRecentF1aRaceWeekend =
-                await fetchMostRecentRaceWeekendF1a(2024);
+                await fetchMostRecentRaceWeekendF1a(2025);
             setRaceData(mostRecentRace);
             setF1aRaceData(mostRecentF1aRaceWeekend);
             // console.log({ mostRecentRace });
@@ -183,7 +183,7 @@ export function LandingPage2025({ setResultPagePath }) {
                             Latest F1 Academy Race Results
                         </p>
                         <p className="font-display text-xl">
-                            2024 {F1aRaceData?.raceName}
+                            2025 {F1aRaceData?.raceName}
                         </p>
                     </div>
                     <div className="flex flex-col sm:flex-row gap-8 items-center py-[26px]">

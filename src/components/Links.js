@@ -43,6 +43,7 @@ export const F1Links = () => {
 };
 
 export const F1ALinks = () => {
+    const currentYear = new Date().getFullYear(); // Get the current year dynamically
     return (
         <>
             <div>
@@ -55,8 +56,7 @@ export const F1ALinks = () => {
                 to="/f1a/race-results"
                 className="hover:text-gray-300"
             >
-                {/* {currentYear} Race Results */}
-                2024 Race Results
+                {currentYear} Race Results
             </Link>
             <Link
                 to="/f1a/constructor-standings"

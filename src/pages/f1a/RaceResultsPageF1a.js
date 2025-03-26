@@ -36,7 +36,7 @@ const Top3Drivers = ({ year, circuitId, index }) => {
         <div className="relative group w-fit m-auto  pb-64">
             <NavLink
                 disabled={!hasResults}
-                to={hasResults ? `/race-f1a/2024${index}` : null}
+                to={hasResults ? `/race-f1a/${year}${index}` : null}
                 onClick={trackButtonClick(`race-result-item-${raceName}`)}
                 className={classNames(
                     "bg-glow-dark rounded-[2.4rem] p-32 block mt-32 w-fit m-auto",

@@ -1,6 +1,6 @@
 import classNames from "classnames";
 import React from "react";
-import { wildCards } from "../utils/wildCards";
+import { wildCardDrivers } from "../utils/wildCards";
 
 export const StartingGrid = (props) => {
     const {
@@ -12,6 +12,7 @@ export const StartingGrid = (props) => {
         driversColor,
         className,
     } = props;
+
     return (
         <div className={classNames(className, "bg-glow-large py-32 h-fit rounded-md sm:rounded-xlarge")}>
             <ul className="flex flex-col w-fit m-auto">
@@ -117,7 +118,7 @@ export const StartingGrid = (props) => {
 };
 
 export const StartingGridF1A = (props) => {
-    const { raceResults } = props;
+    const { raceResults, year } = props;
 
      // Function to create an array of driver codes in the order of grid positions 1-16
      const getDriverCodesByGridPosition = (results) => {
@@ -155,9 +156,9 @@ export const StartingGridF1A = (props) => {
                           <img
                               alt=""
                               className="-mt-32 drop-shadow-[0_0_14px_rgba(0,0,0,0.75)]"
-                              src={wildCards.includes(driverCode) ? 
+                              src={wildCardDrivers[year].includes(driverCode) ? 
                                 `${ process.env.PUBLIC_URL + "/images/2024/F1A/carTopView/wildcard-top.png"}` :
-                                `${ process.env.PUBLIC_URL + "/images/2024/F1A/carTopView/" + driverCode + "-top.png"}` 
+                                `${ process.env.PUBLIC_URL + "/images/" + year + "/F1A/carTopView/" + driverCode + "-top.png"}` 
                               }
                               width={56}
                           />
