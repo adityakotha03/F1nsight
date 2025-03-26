@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { fetchF1aAllRaceResults } from '../../utils/apiF1a';
-
+import { calculateF1aPoints2025 } from '../../utils/calculateF1aPoints2025';
 import { ConstructorDriver, Loading } from '../../components';
 
 export function DriverStandingsF1a({ selectedYear }) {
@@ -12,30 +12,32 @@ export function DriverStandingsF1a({ selectedYear }) {
       setIsLoading(true);
       const allRaceResults = await fetchF1aAllRaceResults(selectedYear.toString());
 
-      const driverPoints = {};
+      if (selectedYear === 2025) {
+        const { formattedDrivers } = calculateF1aPoints2025(allRaceResults);
+        setStandings(formattedDrivers);
+      } else {
+        const driverPoints = {};
+        // Aggregate points for each driver
+        allRaceResults.forEach(race => {
+          ['race1', 'race2', 'race3'].forEach(raceKey => {
+            race[raceKey].forEach(result => {
+              const driverId = result.Driver.driverId;
+              const points = parseInt(result.points, 10);
 
-      // Aggregate points for each driver
-      allRaceResults.forEach(race => {
-        ['race1', 'race2', 'race3'].forEach(raceKey => {
-          race[raceKey].forEach(result => {
-            const driverId = result.Driver.driverId;
-            const points = parseInt(result.points, 10);
-
-            if (!driverPoints[driverId]) {
-              driverPoints[driverId] = {
-                ...result.Driver,
-                points: 0
-              };
-            }
-            driverPoints[driverId].points += points;
+              if (!driverPoints[driverId]) {
+                driverPoints[driverId] = {
+                  ...result.Driver,
+                  points: 0
+                };
+              }
+              driverPoints[driverId].points += points;
+            });
           });
         });
-      });
-
-      // Convert to array and sort by points in descending order
-      const sortedDrivers = Object.values(driverPoints).sort((a, b) => b.points - a.points);
-
-      setStandings(sortedDrivers);
+        // Convert to array and sort by points in descending order
+        const sortedDrivers = Object.values(driverPoints).sort((a, b) => b.points - a.points);
+        setStandings(sortedDrivers);
+      }
       setIsLoading(false);
     };
 

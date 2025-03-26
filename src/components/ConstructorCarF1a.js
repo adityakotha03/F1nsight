@@ -2,6 +2,7 @@ import React, { useRef } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { useInView } from "framer-motion";
+import { wildCardDrivers } from '../utils/wildCards';
 
 import './ConstructorCar.scss';
 
@@ -11,6 +12,7 @@ export const ConstructorCarF1a = (props) => {
     const isInView = useInView(ref, { once: true });
 
     const driverImage = (driver) => {
+        const imageCode = wildCardDrivers[year].includes(driver) ? 'WILDCARD' : driver;
         return (
             <div className="-mt-40 z-[1] relative">
                 <img 

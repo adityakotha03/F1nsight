@@ -3,15 +3,15 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { useInView } from "framer-motion";
 
-import { wildCards } from '../utils/wildCards';
+import { wildCardDrivers } from '../utils/wildCards';
 
 export const ConstructorDriver = (props) => {
     const { className, points, image, car, firstName, lastName, year, index, showStanding, f1a} = props;
     const ref = useRef(null);
     const isInView = useInView(ref, { once: true });
 
-    const f1aImageSrc = wildCards.includes(image) 
-        ? `${process.env.PUBLIC_URL + "/images/" + year + "/F1A/carSideView/wildcard-side.png"}`
+    const f1aImageSrc = wildCardDrivers[year].includes(image) 
+        ? `${process.env.PUBLIC_URL + "/images/2024/F1A/carSideView/wildcard-side.png"}`
         : `${process.env.PUBLIC_URL + "/images/" + year + "/F1A/carSideView/" + image + "-side.png"}`;
     const imageSrc = `${process.env.PUBLIC_URL + "/images/" + year + "/cars/" + car + ".png"}`;
 
@@ -33,7 +33,7 @@ export const ConstructorDriver = (props) => {
                         transition: "all 2s cubic-bezier(0.17, 0.55, 0.55, 1)"
                     }}
                 />
-                {f1a && wildCards.includes(image) && (
+                {f1a && wildCardDrivers[year].includes(image) && (
                     <img 
                         alt=''
                         className="absolute left-[4rem] md:left-[6.4rem] bottom-[-1rem] w-64"
