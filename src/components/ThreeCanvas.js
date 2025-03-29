@@ -151,6 +151,56 @@ export const ThreeCanvas = ({
             renderer.domElement.addEventListener("wheel", onWheel);
         }
 
+        // --- Light Trail Setup ---
+        // This creates a trail that records the car’s positions.
+        const maxTrailPoints = 50;
+        let trailPoints = [];
+
+        const trailGeometry = new THREE.BufferGeometry();
+        const trailPositions = new Float32Array(maxTrailPoints * 3);
+        trailGeometry.setAttribute(
+            "position",
+            new THREE.BufferAttribute(trailPositions, 3)
+        );
+        const trailColors = new Float32Array(maxTrailPoints * 3);
+        trailGeometry.setAttribute(
+            "color",
+            new THREE.BufferAttribute(trailColors, 3)
+        );
+        const trailMaterial = new THREE.LineBasicMaterial({
+            transparent: true,
+            vertexColors: true,
+            linewidth: 3,
+            // Note: linewidth support is limited in many browsers.
+        });
+        const trailLine = new THREE.Line(trailGeometry, trailMaterial);
+        scene.add(trailLine);
+
+        // Update the trail geometry each frame.
+        function updateTrail() {
+            const positions = trailGeometry.attributes.position.array;
+            const colors = trailGeometry.attributes.color.array;
+            const baseColor = new THREE.Color(
+                `#${driverColor ? driverColor : "737373"}`
+            );
+            const offset = 0.05; // Raise the trail 0.1 units off the ground
+            for (let i = 0; i < trailPoints.length; i++) {
+                const point = trailPoints[i];
+                positions[i * 3] = point.x;
+                positions[i * 3 + 1] = point.y;
+                positions[i * 3 + 2] = point.z + offset;
+                // Fade: newest points (at end) are brighter.
+                const fade = (i + 1) / trailPoints.length;
+                colors[i * 3] = baseColor.r * fade;
+                colors[i * 3 + 1] = baseColor.g * fade;
+                colors[i * 3 + 2] = baseColor.b * fade;
+            }
+            trailGeometry.setDrawRange(0, trailPoints.length);
+            trailGeometry.attributes.position.needsUpdate = true;
+            trailGeometry.attributes.color.needsUpdate = true;
+        }
+        // --- End Light Trail Setup ---
+
         // --- Load Map and Car Model (your existing code) ---
         let map;
         const lo = new GLTFLoader();
@@ -272,6 +322,15 @@ export const ThreeCanvas = ({
                 tween.start();
             }
 
+            // Update the trail by recording the car's current position.
+            if (carModel) {
+                trailPoints.push(carModel.position.clone());
+                if (trailPoints.length > maxTrailPoints) {
+                trailPoints.shift();
+                }
+                updateTrail();
+            }
+
             renderer.render(
                 scene,
                 haloView ? haloCamera : topFollowView ? topFollowCamera : camera
@@ -340,69 +399,68 @@ export const ThreeCanvas = ({
             />
 
             {driverSelected && (
-              <>
-                <div
-                    className={classNames(
-                      "driver-data absolute top-40 transition-all duration-300",
-                      showCarDetails ? "right-1" : "right-[-400px]",
+                <>
+                    <div
+                        className={classNames(
+                            "driver-data absolute top-40 transition-all duration-300",
+                            showCarDetails ? "right-1" : "right-[-400px]"
+                        )}
+                        ref={infoRef}
+                    >
+                        {infoRef.current && driverDetails ? (
+                            <DriverCarDetails driverDetails={driverDetails} />
+                        ) : (
+                            <Loading message={`Loading car data`} />
+                        )}
+                    </div>
+                    {showCameraControls && (
+                        <div
+                            className={classNames(
+                                "p-16 shadow-xl bg-neutral-800/90 backdrop-blur-sm mt-2 absolute w-full sm:w-[232px] max-sm:top-full sm:bottom-64 sm:rounded-l-md transition-all duration-300 z-50",
+                                showCameraControls
+                                    ? "max-sm:left-0 sm:right-1 "
+                                    : "max-sm:left-full sm:right-[200%]"
+                            )}
+                        >
+                            <div className="mb-4">
+                                <label className="gradient-text-light text-xs tracking-xs uppercase">
+                                    Rotation ({thetaInDegrees.toFixed(0)}°)
+                                </label>
+                                <RangeSlider
+                                    min="-180"
+                                    max="180"
+                                    step="1"
+                                    value={thetaInDegrees}
+                                    onChange={handleRotationChange}
+                                />
+                            </div>
+                            <div className="mb-4">
+                                <label className="gradient-text-light text-xs tracking-xs uppercase">
+                                    Camera Height ({cameraHeight.toFixed(1)})
+                                </label>
+                                <RangeSlider
+                                    min="0"
+                                    max="50"
+                                    step="0.1"
+                                    value={cameraHeight}
+                                    onChange={handleHeightChange}
+                                />
+                            </div>
+                            <div>
+                                <label className="gradient-text-light text-xs tracking-xs uppercase">
+                                    Zoom ({radius.toFixed(1)})
+                                </label>
+                                <RangeSlider
+                                    min="5"
+                                    max="20"
+                                    step="0.1"
+                                    value={radius}
+                                    onChange={handleZoomChange}
+                                />
+                            </div>
+                        </div>
                     )}
-                    ref={infoRef}
-                >
-                    {infoRef.current && driverDetails ? (
-                        <DriverCarDetails 
-                          driverDetails={driverDetails} 
-                        />
-                    ) : (
-                        <Loading message={`Loading car data`} />
-                    )}
-                </div>
-                {showCameraControls && (
-                  <div 
-                    className={classNames(
-                      "p-16 shadow-xl bg-neutral-800/90 backdrop-blur-sm mt-2 absolute w-full sm:w-[232px] max-sm:top-full sm:bottom-64 sm:rounded-l-md transition-all duration-300 z-50",
-                      showCameraControls ? "max-sm:left-0 sm:right-1 " : "max-sm:left-full sm:right-[200%]",
-                    )}
-                  >
-                      <div className="mb-4">
-                          <label className="gradient-text-light text-xs tracking-xs uppercase">
-                              Rotation ({thetaInDegrees.toFixed(0)}°)
-                          </label>
-                          <RangeSlider
-                              min="-180"
-                              max="180"
-                              step="1"
-                              value={thetaInDegrees}
-                              onChange={handleRotationChange}
-                          />
-                      </div>
-                      <div className="mb-4">
-                          <label className="gradient-text-light text-xs tracking-xs uppercase">
-                              Camera Height ({cameraHeight.toFixed(1)}
-                              )
-                          </label>
-                          <RangeSlider
-                              min="0"
-                              max="50"
-                              step="0.1"
-                              value={cameraHeight}
-                              onChange={handleHeightChange}
-                          />
-                      </div>
-                      <div>
-                          <label className="gradient-text-light text-xs tracking-xs uppercase">
-                              Zoom ({radius.toFixed(1)})
-                          </label>
-                          <RangeSlider
-                              min="5"
-                              max="20"
-                              step="0.1"
-                              value={radius}
-                              onChange={handleZoomChange}
-                          />
-                      </div>
-                  </div>
-                )}
-              </>
+                </>
             )}
         </div>
     );
