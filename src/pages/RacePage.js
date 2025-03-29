@@ -65,6 +65,8 @@ export function RacePage() {
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const [driverDrawerOpen, setDriverDrawerOpen] = useState(false);
     const [showStartingGrid, setShowStartingGrid] = useState(false);
+    const [showCarDetails, setShowCarDetails] = useState(true);
+    const [showCameraControls, setShowCameraControls] = useState(false);
 
     useEffect(() => {
         const setBaseData = async () => {
@@ -462,7 +464,7 @@ export function RacePage() {
                     onClick={() => {
                         handleDriverSelectionClick(index);
                         setModalOpen(false);
-                        setIsDrawerOpen(false)
+                        setIsDrawerOpen(false);
                     }}
                 >
                     <DriverCard
@@ -498,32 +500,65 @@ export function RacePage() {
                     {driverSelected && (
                         <div className="flex items-center gap-8">
                             <button
-                                className="race-controls__play bg-glow w-32 h-32 rounded-sm"
+                                className={classNames(
+                                    "race-controls__play bg-glow w-32 h-32 rounded-sm",
+                                    {
+                                        "bg-plum-500": !isPaused,
+                                    }
+                                )}
                                 onClick={() => setIsPaused(false)}
                             >
                                 <FontAwesomeIcon icon="play" />
                             </button>
                             <button
-                                className="race-controls__pause bg-glow w-32 h-32 rounded-sm"
+                                className={classNames(
+                                    "race-controls__pause bg-glow w-32 h-32 rounded-sm",
+                                    {
+                                        "bg-plum-500": isPaused,
+                                    }
+                                )}
                                 onClick={() => setIsPaused(true)}
                             >
                                 <FontAwesomeIcon icon="pause" />
                             </button>
+                            <button 
+                                className={classNames(
+                                    "bg-glow w-32 h-32 rounded-sm",
+                                    {
+                                        "bg-plum-500": showCameraControls,
+                                    }
+                                )}
+                                onClick={() => setShowCameraControls(!showCameraControls)}
+                            >
+                                <FontAwesomeIcon icon="camera-rotate" />
+                            </button>
+                            <button 
+                                className={classNames(
+                                    "bg-glow w-32 h-32 rounded-sm",
+                                    {
+                                        "bg-plum-500": showCarDetails,
+                                    }
+                                )}
+                                onClick={() => setShowCarDetails(!showCarDetails)}
+                            >
+                                <FontAwesomeIcon icon="gauge" />
+                            </button>
                         </div>
+                        
                     )}
                     <div className="flex items-center gap-8">
-                        <button 
-                            className="bg-glow w-32 h-32 rounded-sm"
-                            onClick={() => setIsDrawerOpen(true)}
-                        >
-                            <FontAwesomeIcon icon="gear" />
-                        </button>
                         <button 
                             className="bg-glow w-32 h-32 rounded-sm sm:hidden"
                             onClick={() => setDriverDrawerOpen(true)}
                         >
                             <FontAwesomeIcon icon="user" />
                         </button>
+                        <button 
+                            className="bg-glow w-32 h-32 rounded-sm"
+                            onClick={() => setIsDrawerOpen(true)}
+                        >
+                            <FontAwesomeIcon icon="gear" />
+                        </button>                        
                     </div>
                 </div>
 
@@ -683,6 +718,8 @@ export function RacePage() {
                                 topFollowView={topFollowView}
                                 speedFactor={speedFactor}
                                 year={year}
+                                showCarDetails={showCarDetails}
+                                showCameraControls={showCameraControls}
                             />
                         ) : (
                             <div className="race-page__track-view__display__preview">
@@ -837,7 +874,7 @@ export function RacePage() {
                         </div>
                     )}
 
-                    <div className="sm:grow-0">
+                    <div className="sm:grow">
                         {selectedSession === "Race" && (
                             <PositionCharts
                                 laps={laps}
