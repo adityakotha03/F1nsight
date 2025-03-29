@@ -202,7 +202,7 @@ export const Header = ({ setResultPage, setResultPagePath }) => {
 
                     {collapsible && (
                         <button
-                            className="absolute top-full right-16 bg-glow-large p-4 rounded-b-sm md:hidden"
+                            className="absolute top-full right-20 bg-glow-large py-2 px-10 rounded-b-sm md:hidden"
                             onClick={() => setHeaderOpen(!headerOpen)}
                         >
                             <FontAwesomeIcon
