@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 import { Button } from "../components";
 import PngSequencePlayer from "../components/PngSequencePlayer";
+import { trackButtonClick } from "../utils/gaTracking";
 
 const ArSection = ({ layoutMobile }) => {
     const navigate = useNavigate();
@@ -47,7 +48,12 @@ const ArSection = ({ layoutMobile }) => {
                         </p>
                         <Button
                             as="button"
-                            onClick={() => navigate("/ar-viewer")}
+                            onClick={() => {
+                                navigate("/ar-viewer")
+                                trackButtonClick(
+                                    `Home/Click/Section/AR Viewer - /ar-viewer`
+                                );
+                            }}
                             size="sm"
                             className="shadow-xl w-fit"
                         >

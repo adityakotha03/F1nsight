@@ -3,7 +3,9 @@ import "@google/model-viewer/";
 import classNames from "classnames";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
+
 import { darkenColor } from "../utils/darkenColor";
+import { trackButtonClick } from "../utils/gaTracking";
 import { HistoryBar } from "../components/HistoryBar";
 import { teamHistory } from "../utils/teamHistory";
 
@@ -121,7 +123,10 @@ export const ARViewer = () => {
                         >
                             <button
                                 className="mb-8"
-                                onClick={() => setTeamStatsOpen(!teamStatsOpen)}
+                                onClick={() => {
+                                    setTeamStatsOpen(!teamStatsOpen)
+                                    trackButtonClick(`team-history-${team.name}`);
+                                }}
                             >
                                 <span className="font-display">
                                     {teamName} History
@@ -216,6 +221,7 @@ export const ARViewer = () => {
                                         }`
                                     );
                                     setTeam(team);
+                                    trackButtonClick(`team-viewer-${team.name}-${year}`);
                                 }}
                             >
                                 <img
@@ -257,6 +263,7 @@ export const ARViewer = () => {
                                 name: "apx",
                                 color: "#AE7D0E",
                             });
+                            trackButtonClick(`team-viewer-apx`);
                         }}
                     >
                         <img
@@ -285,6 +292,7 @@ export const ARViewer = () => {
                                 name: "F1Nsight",
                                 color: "#7500AD",
                             });
+                            trackButtonClick(`team-viewer-f1nsight2022`);
                         }}
                     >
                         <img
@@ -313,6 +321,7 @@ export const ARViewer = () => {
                                 name: "F1Nsight",
                                 color: "#7500AD",
                             });
+                            trackButtonClick(`team-viewer-f1nsight2024`);
                         }}
                     >
                         <img
@@ -341,6 +350,7 @@ export const ARViewer = () => {
                                 name: "F1Nsight",
                                 color: "#7500AD",
                             });
+                            trackButtonClick(`team-viewer-f1nsight2025`);
                         }}
                     >
                         <img
@@ -362,7 +372,7 @@ export const ARViewer = () => {
 export default ARViewer;
 
 ARViewer.defaultProps = {
-    glbLink: `${process.env.PUBLIC_URL + "/ArFiles/glbs/mclaren.glb"}`,
+    glbLink: `${process.env.PUBLIC_URL + "/ArFiles/glbs/2024/mclaren.glb"}`,
     team: teamHistory.mclaren,
     img: `${process.env.PUBLIC_URL + "/ArFiles/poster-mclaren.webp"}`,
     buttonIcon: `${process.env.PUBLIC_URL + "/APX/3diconWhite.png"}`,

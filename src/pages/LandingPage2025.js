@@ -51,6 +51,7 @@ export function LandingPage2025({ setResultPagePath }) {
     const navigateToRaceResult = (race) => {
         if (race?.meetingKey) {
             navigate(`/race/${race.meetingKey}`);
+            trackButtonClick(`Home/Click/F1/View Full Results - ${`/race/${race.meetingKey}`}`);
         } else {
             console.error("Meeting key not found for this race.");
         }
@@ -58,6 +59,7 @@ export function LandingPage2025({ setResultPagePath }) {
     const navigateToF1aRaceResult = (race) => {
         if (race?.season && race?.round) {
             navigate(`/race-f1a/${race.season}${race.round}`);
+            trackButtonClick(`Home/Click/F1A/View Full Results - ${race.season}${race.round}`)
         } else {
             console.error("Meeting key not found for this race.");
         }
@@ -141,7 +143,12 @@ export function LandingPage2025({ setResultPagePath }) {
 
                 <div className="flex flex-row items-center gap-32 md:gap-64 md:px-32 w-full ">
                     <button
-                        onClick={() => navigate("/driver-standings")}
+                        onClick={() => {
+                            navigate("/driver-standings")
+                            trackButtonClick(
+                                `Home/Click/F1/View Driver Standings - /driver-standings`
+                            );
+                        }}
                         className="w-full hover:scale-105 transition-all"
                     >
                         <img
@@ -153,7 +160,12 @@ export function LandingPage2025({ setResultPagePath }) {
                         />
                     </button>
                     <button
-                        onClick={() => navigate("/constructor-standings")}
+                        onClick={() => {
+                            navigate("/constructor-standings")
+                            trackButtonClick(
+                                `Home/Click/F1/View Constructor Standings - /constructor-standings`
+                            );
+                        }}
                         className="w-full hover:scale-105 transition-all"
                     >
                         <img
@@ -206,7 +218,7 @@ export function LandingPage2025({ setResultPagePath }) {
                                                     result.position,
                                                     10
                                                 )}
-                                                year={2024} // back to selectedYear once season start
+                                                year={selectedYear}
                                                 time={
                                                     result.Time?.time ||
                                                     result.status
@@ -238,7 +250,7 @@ export function LandingPage2025({ setResultPagePath }) {
                                                     result.position,
                                                     10
                                                 )}
-                                                year={2024} // back to selectedYear once season start
+                                                year={selectedYear}
                                                 time={
                                                     result.Time?.time ||
                                                     result.status
@@ -265,7 +277,12 @@ export function LandingPage2025({ setResultPagePath }) {
 
                 <div className="flex flex-row items-center gap-32 md:gap-64 md:px-32 w-full ">
                     <button
-                        onClick={() => navigate("/f1a/driver-standings")}
+                        onClick={() => {
+                            navigate("/f1a/driver-standings")
+                            trackButtonClick(
+                                `Home/Click/F1A/View Driver Standings - /f1a/driver-standings`
+                            );
+                        }}
                         className="w-full hover:scale-105 transition-all"
                     >
                         <img
@@ -278,7 +295,12 @@ export function LandingPage2025({ setResultPagePath }) {
                         />
                     </button>
                     <button
-                        onClick={() => navigate("/f1a/constructor-standings")}
+                        onClick={() => {
+                            navigate("/f1a/constructor-standings")
+                            trackButtonClick(
+                                `Home/Click/F1A/View Constructor Standings - /f1a/constructor-standings`
+                            );
+                        }}
                         className="w-full hover:scale-105 transition-all"
                     >
                         <img
