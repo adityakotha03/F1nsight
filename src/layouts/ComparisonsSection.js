@@ -3,6 +3,7 @@ import { motion, useInView, useScroll, useTransform } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../components";
 import classNames from "classnames";
+import { trackButtonClick } from "../utils/gaTracking";
 
 const ComparisonsSection = ({ layoutMobile }) => {
     const navigate = useNavigate();
@@ -36,7 +37,12 @@ const ComparisonsSection = ({ layoutMobile }) => {
             <div className={classNames(customClassName, "z-10 w-full")}>
                 <Button
                     as="button"
-                    onClick={() => navigate("/driver-comparison")}
+                    onClick={() => {
+                        navigate("/driver-comparison")
+                        trackButtonClick(
+                            `Home/Click/Section/Comparions - /driver-comparison`
+                        );
+                    }}
                     size="sm"
                     className="shadow-xl max-sm:w-full"
                 >
@@ -44,7 +50,12 @@ const ComparisonsSection = ({ layoutMobile }) => {
                 </Button>
                 <Button
                     as="button"
-                    onClick={() => navigate("/teammates-comparison")}
+                    onClick={() => {
+                        navigate("/teammates-comparison")
+                        trackButtonClick(
+                            `Home/Click/Section/Comparions - /teammates-comparison`
+                        );
+                    }}
                     size="sm"
                     className="shadow-xl max-sm:w-full"
                 >

@@ -38,6 +38,12 @@ export const F1Links = () => {
             >
                 Team Comparisons
             </Link>
+            <Link
+                to="/ar-viewer"
+                className="hover:text-gray-300"
+            >
+                Team Hstory
+            </Link>
         </>
     );
 };

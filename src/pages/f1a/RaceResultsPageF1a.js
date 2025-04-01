@@ -37,7 +37,7 @@ const Top3Drivers = ({ year, circuitId, index }) => {
             <NavLink
                 disabled={!hasResults}
                 to={hasResults ? `/race-f1a/${year}${index}` : null}
-                onClick={trackButtonClick(`race-result-item-${raceName}`)}
+                onClick={trackButtonClick(`f1a/race-result-item-${raceName}`)}
                 className={classNames(
                     "bg-glow-dark rounded-[2.4rem] p-32 block mt-32 w-fit m-auto",
                     "bg-gradient-to-br from-neutral-950/50 via-neutral-800/50 to-neutral-900/50",

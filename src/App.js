@@ -8,7 +8,7 @@ import { fab } from '@fortawesome/free-brands-svg-icons'
 import { Header, Footer2025, ResultsSelector } from './components';
 import {  ReactComponent as Logo} from './components/F1Ansight.svg';
 import { DriverComparison, TeammatesComparison, RacePage, LandingPage2025, RaceResultsPage, DriverStandings, ConstructorStandings, ARViewer, RaceResultsPageF1a, RacePageF1a, DriverStandingsF1a, ConstructorStandingsF1a } from './pages'; 
-import { usePageTracking } from './utils/gaTracking';
+import { usePageTracking, useScrollTracking } from './utils/gaTracking';
 import { ScrollToTop } from './utils/ScrollToTop';
 
 import './App.scss';
@@ -48,6 +48,7 @@ function MainContent({ setSelectedYear, selectedYear, resultPage, resultPagePath
   const validF1APaths = useMemo(() => ['/f1a/race-results', '/f1a/constructor-standings', '/f1a/driver-standings', '/race-f1a/'], []);
 
   usePageTracking();
+  useScrollTracking();
   
   useEffect(() => {
     if (validF1APaths.includes(location) || location.startsWith('/race-f1a/')) {
