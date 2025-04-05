@@ -261,29 +261,19 @@ export const getPartialConstructorStandings = async (selectedYear, start, end) =
 
 export const getConstructorStandings = async (selectedYear) => {
   const baseURL = `https://praneeth7781.github.io/f1nsight-api-2/races/${selectedYear}`;
-  const urls = {
-    constructorUrl: `${baseURL}/constructorStandings.json`,
-    driverUrl: `${baseURL}/driverStandings.json`
-  };
+  const constructorUrl = `${baseURL}/constructorStandings.json`;
 
   try {
-    const [constructorResponse, driverResponse] = await Promise.all([
-      fetch(urls.constructorUrl),
-      fetch(urls.driverUrl)
-    ]);
-
-    if (!constructorResponse.ok || !driverResponse.ok) {
-      throw new Error('Failed to fetch data');
+    const constructorResponse = await fetch(constructorUrl);
+    if (!constructorResponse.ok) {
+      throw new Error('Failed to fetch constructor standings data');
     }
-
-    const [constructorData, driverData] = await Promise.all([
-      constructorResponse.json(),
-      driverResponse.json()
-    ]);
+    const constructorData = await constructorResponse.json();
 
     const raceKeys = Object.keys(constructorData).sort();
     const lastRaceKey = raceKeys[raceKeys.length - 1];
     const data_constructor = constructorData[lastRaceKey] || [];
+
     const constructorStandings = data_constructor.map(standing => ({
       constructorName: standing.Constructor.name,
       constructorId: standing.Constructor.constructorId,
@@ -291,18 +281,22 @@ export const getConstructorStandings = async (selectedYear) => {
       driverCodes: []
     }));
 
-    const Keys = Object.keys(driverData).sort();
-    const lastKey = Keys[Keys.length - 1];
-    const driverStandings = driverData[lastKey] || [];
-
-    driverStandings.forEach(standing => {
-      standing.Constructors.forEach(constructor => {
-        const constructorIndex = constructorStandings.findIndex(c => c.constructorId === constructor.constructorId);
-        if (constructorIndex !== -1) {
-          constructorStandings[constructorIndex].driverCodes.push(standing.Driver.code);
-        }
-      });
+    // For each constructor, fetch the associated drivers from the new endpoint
+    const driverFetchPromises = constructorStandings.map(async (constructorStanding) => {
+      const constructorId = constructorStanding.constructorId;
+      const driverUrl = `https://praneeth7781.github.io/f1nsight-api-2/constructors/${selectedYear}/${constructorId}.json`;
+      
+      const driverResponse = await fetch(driverUrl);
+      if (driverResponse.ok) {
+        const drivers = await driverResponse.json();
+        constructorStanding.driverCodes = drivers.map(driver => driver.code);
+      } else {
+        constructorStanding.driverCodes = [];
+      }
     });
+
+    await Promise.all(driverFetchPromises);
+
 
     constructorStandings.forEach(standing => {
       standing.driverCodes = [...new Set(standing.driverCodes)].sort();
