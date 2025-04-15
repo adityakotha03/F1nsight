@@ -106,25 +106,26 @@ export function RacePage() {
     }, []);
 
     const animatedLocations = [
-        "Sakhir",
-        "Suzuka",
-        "Melbourne",
-        "Monaco",
-        "Silverstone",
-        "Budapest",
-        "Spa-Francorchamps",
-        "Zandvoort",
-        "Monza",
-        "Baku",
-        "Marina Bay",
         "Austin",
-        "Mexico City",
-        "São Paulo",
+        "Bahrain",
+        "Baku",
+        "Budapest",
         "Las Vegas",
         "Lusail",
-        "Yas Island",
+        "Marina Bay",
+        "Melbourne",
+        "Mexico City",
         "Miami",
-        "Shanghai"
+        "Monaco",
+        "Monza",
+        "São Paulo",
+        "Sakhir",
+        "Shanghai",
+        "Silverstone",
+        "Spa-Francorchamps",
+        "Suzuka",
+        "Yas Island",
+        "Zandvoort",
     ];
 
     const selectedDriverData = drivers.find(
