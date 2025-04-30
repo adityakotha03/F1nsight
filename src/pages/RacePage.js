@@ -27,7 +27,6 @@ import {
 import Drawer from "../components/Drawer.js";
 import Accordion from "../components/Accordion.js";
 import { locationMaps } from "../utils/locationMaps.js";
-import LapSpeedComparison from "../components/LapSpeedComparison.js";
 import { fas } from "@fortawesome/free-solid-svg-icons";
 
 export function RacePage() {
@@ -944,7 +943,6 @@ export function RacePage() {
                                 drivers={drivers}
                             />
                         )}
-                        <LapSpeedComparison driver1LapData={driver1LapData} driver2LapData={driver2LapData} />
                     </div>
                 </div>
             </div>
