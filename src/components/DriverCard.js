@@ -6,7 +6,7 @@ import { Popover } from "flowbite-react";
 import { useInView } from "framer-motion";
 
 export const DriverCard = (props) => {
-    const { className, driver, driverColor, stint, fastestLap, startPosition, endPosition, isActive, layoutSmall, time, year, hasHover, index, mobileSmall, f1a, isRace} = props;
+    const { championshipLevel, className, driver, driverColor, stint, fastestLap, status, startPosition, endPosition, isActive, layoutSmall, time, year, hasHover, index, mobileSmall, isRace, darkBG} = props;
 
     const ref = useRef(null);
     const isInView = useInView(ref, { once: true });
@@ -58,14 +58,14 @@ export const DriverCard = (props) => {
     const driverImage = (
         <img 
             alt="" 
-            src={f1a ? 
-                `${process.env.PUBLIC_URL + "/images/" + year + "/F1A/" + driver.code + ".png"}`
+            src={championshipLevel ? 
+                `${process.env.PUBLIC_URL + "/images/" + year + "/" + championshipLevel + "/" + driver.code + ".png"}`
                 : `${process.env.PUBLIC_URL + "/images/" + year + "/drivers/" + driver.code + ".png"}`
             }
-            width={72} 
-            height={72} 
+            width={championshipLevel === 'F2' ? 54 : 72} 
+            height={championshipLevel === 'F2' ? 54 : 72} 
             ref={ref}
-            className="absolute block left-[28px] sm:left-52 inset-x-0 -bottom-1"
+            className={classNames('absolute block inset-x-0 bottom-[0px]', championshipLevel === 'F2' ? 'left-[46px] sm:left-46 rounded-r-md' : 'left-[28px] sm:left-46')}
             style={{
                 opacity: isInView ? 1 : 0,
                 transition: `all 1s cubic-bezier(0.17, 0.55, 0.55, 1) .${index}s`
@@ -80,6 +80,8 @@ export const DriverCard = (props) => {
                 'driver-card flex items-center bg-glow relative',
                 { 
                     'driver-card--canvas': mobileSmall,
+                    'hidden': status === "cancelled",
+                    'bg-neutral-800' : darkBG,
                 },
                 isActive ? "bg-glow--active" : hasHover ? "bg-glow--hover" : "",
                 mobileSmall ? "rounded-sm mb-4" : "rounded-md"
@@ -94,9 +96,7 @@ export const DriverCard = (props) => {
                 <p className=" text-xs pr-8">{time}</p>
             </div>
             <div className={classNames('flex item-center w-full', { "max-md:hidden": mobileSmall, "hidden": layoutSmall})}>
-                <p 
-                    className={classNames("driver-card-position heading-1 px-8 py-4 bg-neutral-700 rounded-l-md flex items-center")}
-                >
+                <p className={classNames("driver-card-position text-[24px] font-display px-8 py-4 bg-neutral-700 rounded-l-md flex items-center")}>
                     P{isRace ? endPosition : index + 1}
                 </p>
                 {driverImage}
@@ -204,5 +204,5 @@ DriverCard.propTypes = {
     year: PropTypes.number,
     layoutSmall: PropTypes.bool,
     mobileSmall: PropTypes.bool,
-    f1a: PropTypes.bool,
+    championshipLevel: PropTypes.string,
 };

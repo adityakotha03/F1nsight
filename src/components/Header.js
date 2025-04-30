@@ -11,7 +11,7 @@ import { RaceSelector } from "./RaceSelector";
 import { fetchRacesAndSessions } from "../utils/api";
 import { trackButtonClick } from "../utils/gaTracking";
 import { Modal } from "./Modal";
-import { F1ALinks, F1Links } from "./Links";
+import { F1ALinks, F1Links, F2Links } from "./Links";
 
 export const Header = ({ setResultPage, setResultPagePath }) => {
     const [races, setRaces] = useState([]);
@@ -233,6 +233,9 @@ export const Header = ({ setResultPage, setResultPagePath }) => {
                                     <div className="flex flex-col gap-4">
                                         <F1ALinks />
                                     </div>
+                                    <div className="flex flex-col gap-4">
+                                        <F2Links />
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -322,27 +325,23 @@ export const Header = ({ setResultPage, setResultPagePath }) => {
             <Modal isOpen={isOpen} onClose={toggleOpen}>
                 <div className="fixed top-[0] left-[0] w-full h-full bg-glow bg-neutral-900/95 backdrop-blur-sm md:hidden z-[1001]">
                     <div className="pt-64 px-32">
-                        <p className="font-display mt-16 border-b border-neutral-700">
-                            Results
-                        </p>
-                        <div className="divider-glow-dark" />
-                        <div className="flex flex-col gap-16 ml-8 mb-32 mt-16">
-                            {resultsContent}
+                        <div className="flex flex-col">
+                            <F1Links accordion />
                         </div>
-                        <p className="font-display mt-16 border-b border-neutral-700">
-                            Comparisons
-                        </p>
-                        <div className="divider-glow-dark" />
-                        <div className="flex flex-col gap-16 ml-8 mb-32 mt-16">
-                            {comparisonContent}
+                        <div className="flex flex-col">
+                            <F1ALinks accordion />
                         </div>
-                        <p className="font-display mt-16 border-b border-neutral-700">
+                        <div className="flex flex-col">
+                            <F2Links accordion />
+                        </div>
+                        
+                        {/* <p className="font-display mt-16 border-b border-neutral-700">
                             Race Viewer
                         </p>
                         <div className="divider-glow-dark" />
                         <div className="flex flex-col gap-16 mt-16">
                             {raceSelectorContent}
-                        </div>
+                        </div> */}
                     </div>
                 </div>
             </Modal>

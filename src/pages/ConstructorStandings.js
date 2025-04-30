@@ -53,6 +53,8 @@ export function ConstructorStandings({ selectedYear }) {
     );
   };
 
+  // console.log('standings', standings);
+
   return (
     <div className="max-w-[45rem] m-auto  pb-64">
       {isLoading ? (
@@ -72,16 +74,17 @@ export function ConstructorStandings({ selectedYear }) {
           />
           <ul>
             {standings.map((standing, index) => (
-              <li key={index} className='clickable-hover group -mb-32' onClick={()=> {navigateToTeamComp(standing.constructorId)}}>
+              <li key={index} className='mb-32 relative' onClick={()=> {navigateToTeamComp(standing.constructorId)}}  >
                 <ConstructorCar 
                   image={standing.constructorId} 
                   points={standing.points}
                   name={standing.constructorName}
                   year={selectedYear} 
                   drivers={standing.driverCodes}
+                  color={standing.constructorColor}
                   index={index}
-                  />
-                  <Button size='sm' disabled className="opacity-0 group-hover:opacity-100 absolute bottom-[2.4rem] left-1/2 -translate-x-1/2">View Comparison</Button>
+                />
+                <div className="h-full w-full absolute top-[0] inset z-[-1] opacity-10" style={{background: `radial-gradient(50% 50% at 50% 50%, ${standing.constructorColor} 0%, rgba(0,0,0,0) 100%)`}} />
               </li>
             ))}
           </ul>

@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { fetchF1aRaceResultsByCircuit, fetchCircuitData } from "../../utils/apiF1a";
+import { fetchRaceResultsByCircuit, fetchCircuitData } from "../../utils/apiF1a";
 
 import { RaceResultItem, Loading, Button } from "../../components";
 import { NavLink } from "react-router-dom";
 import classNames from "classnames";
 import { trackButtonClick } from "../../utils/gaTracking";
 
-const Top3Drivers = ({ year, circuitId, index }) => {
+const Top3Drivers = ({ year, circuitId, index, championshipLevel }) => {
     const [raceName, setRaceName] = useState("");
     const [top3RaceResults, setTop3RaceResults] = useState([]);
     const [top3RaceResults2, setTop3RaceResults2] = useState([]);
@@ -15,10 +15,11 @@ const Top3Drivers = ({ year, circuitId, index }) => {
 
     useEffect(() => {
         const fetchData = async () => {
-            const results = await fetchF1aRaceResultsByCircuit(
+            const results = await fetchRaceResultsByCircuit(
                 year,
                 circuitId,
-                true
+                true,
+                championshipLevel
             );
             // console.log('results', results);
             setRaceName(results.raceName);
@@ -33,7 +34,7 @@ const Top3Drivers = ({ year, circuitId, index }) => {
     const hasResults = top3RaceResults && top3RaceResults.length > 0;
 
     return (
-        <div className="relative group w-fit m-auto  pb-64">
+        <div className="relative group w-fit m-auto">
             <NavLink
                 disabled={!hasResults}
                 to={hasResults ? `/race-f1a/${year}${index}` : null}
@@ -74,7 +75,7 @@ const Top3Drivers = ({ year, circuitId, index }) => {
                                         time={result.Time.time}
                                         year={year}
                                         wireframe={result.length === 0}
-                                        f1a={true}
+                                        championshipLevel={championshipLevel}
                                         // hasHover={false}
                                     />
                                 ))}
@@ -120,7 +121,7 @@ const Top3Drivers = ({ year, circuitId, index }) => {
                                         time={result.Time.time}
                                         year={year}
                                         wireframe={result.length === 0}
-                                        f1a={true}
+                                        championshipLevel={championshipLevel}
                                     />
                                 ))}
                             </ul>
@@ -154,7 +155,7 @@ const Top3Drivers = ({ year, circuitId, index }) => {
                                         time={result.Time.time}
                                         year={year}
                                         wireframe={result.length === 0}
-                                        f1a={true}
+                                        championshipLevel={championshipLevel}
                                     />
                                 ))}
                             </ul>
@@ -175,14 +176,14 @@ const Top3Drivers = ({ year, circuitId, index }) => {
     );
 };
 
-export function RaceResultsPageF1a({ selectedYear }) {
+export function RaceResultsPageF1a({ selectedYear, championshipLevel }) {
     const [filteredCircuits, setFilteredCircuits] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
             setIsLoading(true);
-            const data = await fetchCircuitData();
+            const data = await fetchCircuitData(championshipLevel);
             setFilteredCircuits(
                 Object.values(data).filter(
                     (circuit) => circuit.year === selectedYear.toString()
@@ -210,6 +211,7 @@ export function RaceResultsPageF1a({ selectedYear }) {
                         year={selectedYear}
                         index={index + 1}
                         circuitId={circuit.circuitId}
+                        championshipLevel={championshipLevel}
                     />
                 ))
             )}

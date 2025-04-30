@@ -3,8 +3,8 @@ import { motion } from "framer-motion";
 import { FaChevronDown } from "react-icons/fa";
 import classNames from "classnames";
 
-const Accordion = ({ title, children, className, contentClasses }) => {
-  const [isOpen, setIsOpen] = useState(false);
+const Accordion = ({ title, children, className, contentClasses, defaultOpen = false }) => {
+  const [isOpen, setIsOpen] = useState(defaultOpen);
 
   return (
     <>

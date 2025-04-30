@@ -110,6 +110,7 @@ export function RacePage() {
         "Bahrain",
         "Baku",
         "Budapest",
+        "Jeddah",
         "Las Vegas",
         "Lusail",
         "Marina Bay",

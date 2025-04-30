@@ -64,7 +64,7 @@ export function RaceResultsPage({ selectedYear }) {
             <li 
               key={index}
               className={classNames(
-                  "bg-glow-dark rounded-[2.4rem] mt-[7.2rem] lg:mt-56 px-32 clickable-hover group", 
+                  "bg-glow-dark rounded-[2.4rem] mt-[7.2rem] lg:mt-56 px-32 group duration-150 transition-transform ease-in-out hover:scale-[.98] hover:cursor-pointer",
                   `${race.raceName}`
               )}
               onClick={()=>{
@@ -73,7 +73,7 @@ export function RaceResultsPage({ selectedYear }) {
               }}
             >
               {race.results && race.results.length > 0 ? (
-                <ul className="race-results__list -mt-48">
+                <ul className="race-results__list -mt-48 group-hover:scale-[1.10] duration-150 transition-transform ease-in-out">
                   {race.results.map((result, resultIndex) => (
                       <RaceResultItem 
                         className={`race-results__list__item-${resultIndex + 1}`}

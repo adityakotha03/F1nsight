@@ -1,3 +1,4 @@
+import axios from "axios";
 
 export const fetchDriversList = async () => {
   const response = await fetchWithCache(`https://praneeth7781.github.io/f1nsight-api-2/driversList.json`);
@@ -270,6 +271,9 @@ export const getConstructorStandings = async (selectedYear) => {
     }
     const constructorData = await constructorResponse.json();
 
+    const colorsResponse = await axios.get('https://praneeth7781.github.io/f1nsight-api-2/colors/teams.json');
+    const teamColors = colorsResponse.data;
+
     const raceKeys = Object.keys(constructorData).sort();
     const lastRaceKey = raceKeys[raceKeys.length - 1];
     const data_constructor = constructorData[lastRaceKey] || [];
@@ -278,7 +282,8 @@ export const getConstructorStandings = async (selectedYear) => {
       constructorName: standing.Constructor.name,
       constructorId: standing.Constructor.constructorId,
       points: standing.points,
-      driverCodes: []
+      driverCodes: [],
+      constructorColor: `#${teamColors[selectedYear][standing.Constructor.constructorId]}` || '#000000', // Default color if not found
     }));
 
     // For each constructor, fetch the associated drivers from the new endpoint
@@ -296,7 +301,6 @@ export const getConstructorStandings = async (selectedYear) => {
     });
 
     await Promise.all(driverFetchPromises);
-
 
     constructorStandings.forEach(standing => {
       standing.driverCodes = [...new Set(standing.driverCodes)].sort();
