@@ -55,7 +55,7 @@ export const fetchDriverInfo = async (year, championshipLevel) => {
 };
 
 const enrichDriverData = (raceData, driverInfo) => {
-  console.log('enrichDriverData', raceData, driverInfo);
+  // console.log('enrichDriverData', raceData, driverInfo);
   return raceData.map(driver => {
     const driverDetails = driverInfo[driver.number];
     return {
@@ -71,7 +71,7 @@ const enrichDriverData = (raceData, driverInfo) => {
 };
 
 const filterTop3 = (raceData) => {
-  console.log('filterTop3', raceData);
+  // console.log('filterTop3', raceData);
   return raceData.sort((a, b) => parseInt(a.position, 10) - parseInt(b.position, 10)).slice(0, 3);
 };
 
@@ -175,14 +175,14 @@ export const fetchMostRecentRaceWeekend = async (selectedYear, championshipLevel
     
     // Step 2: Sort races based on the `round` to get the most recent one
     const sortedRaces = races.sort((a, b) => parseInt(b.round) - parseInt(a.round)); // Sort in descending order by `round`
-    console.log('fetchMostRecentRaceWeekend sortedRaces', championshipLevel, {sortedRaces})
+    // console.log('fetchMostRecentRaceWeekend sortedRaces', championshipLevel, {sortedRaces})
     
     const driverInfo = await fetchDriverInfo(selectedYear, championshipLevel);
-    console.log('fetchMostRecentRaceWeekend driverInfo', championshipLevel, {driverInfo})
+    // console.log('fetchMostRecentRaceWeekend driverInfo', championshipLevel, {driverInfo})
     
     // Step 3: Extract top 3 results for each race (race1, race2, race3, etc.)
     const mostRecentRace = sortedRaces[0]; // Take the first race as the most recent
-    console.log('fetchMostRecentRaceWeekend mostRecentRace', championshipLevel, {mostRecentRace})
+    // console.log('fetchMostRecentRaceWeekend mostRecentRace', championshipLevel, {mostRecentRace})
     const race1Top3 = filterTop3(mostRecentRace.Results.race1 ? enrichDriverData(mostRecentRace.Results.race1, driverInfo) : []);
     const race2Top3 = filterTop3(mostRecentRace.Results.race2 ? enrichDriverData(mostRecentRace.Results.race2, driverInfo) : []);
     const race3Top3 = filterTop3(mostRecentRace.Results.race3 ? enrichDriverData(mostRecentRace.Results.race3, driverInfo) : []);

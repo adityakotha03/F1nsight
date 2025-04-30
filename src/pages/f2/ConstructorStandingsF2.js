@@ -14,7 +14,7 @@ export function ConstructorStandingsF2({ selectedYear, championshipLevel }) {
     const fetchData = async () => {
       setIsLoading(true);
       const allRaceResults = await fetchAllRaceResults(selectedYear, championshipLevel);
-      console.log({allRaceResults});
+      // console.log({allRaceResults});
 
       const { formattedConstructors } = calculateSeriesPoints2025(allRaceResults, championshipLevel);
       setStandings(formattedConstructors);

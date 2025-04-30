@@ -15,7 +15,7 @@ export function DriverStandingsF2({ selectedYear, championshipLevel }) {
                 championshipLevel
             );
             const driverInfoMap = await fetchDriverInfo(selectedYear, championshipLevel);
-            console.log("👀 driverInfoMap", driverInfoMap);
+            // console.log("👀 driverInfoMap", driverInfoMap);
 
             // Convert driverInfo array to map by driverId or code
             const driverIdToConstructor = {};
@@ -46,7 +46,7 @@ export function DriverStandingsF2({ selectedYear, championshipLevel }) {
         fetchData();
     }, [selectedYear]);
 
-    console.log("DriverStandingsF2", standings);
+    // console.log("DriverStandingsF2", standings);
 
     return (
         <div className="max-w-[45rem] m-auto mt-64  pb-64">

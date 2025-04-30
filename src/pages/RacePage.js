@@ -27,6 +27,8 @@ import {
 import Drawer from "../components/Drawer.js";
 import Accordion from "../components/Accordion.js";
 import { locationMaps } from "../utils/locationMaps.js";
+import LapSpeedComparison from "../components/LapSpeedComparison.js";
+import { fas } from "@fortawesome/free-solid-svg-icons";
 
 export function RacePage() {
     const { state } = useLocation();
@@ -59,6 +61,7 @@ export function RacePage() {
     const [topFollowView, setTopFollowView] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [selectedSession, setSelectedSession] = useState("Race");
+    const [selectedSessionKey, setSelectedSessionKey] = useState('');
     const [hasRaceSession, sethasRaceSession] = useState(false);
     const [hasQualifyingSession, sethasQualifyingSession] = useState(false);
     const [modalOpen, setModalOpen] = useState(false);
@@ -188,6 +191,7 @@ export function RacePage() {
                 );
                 if (!raceSession) throw new Error("Race session not found");
                 const sessionKey = raceSession.session_key;
+                setSelectedSessionKey(sessionKey);
 
                 const [
                     driverDetailsData,
@@ -356,6 +360,7 @@ export function RacePage() {
             console.error("Error fetching data:", error);
         }
     };
+
     useEffect(() => {
         fetchData();
     }, [year, location, selectedSession, raceName]);
@@ -490,6 +495,21 @@ export function RacePage() {
         </ul>
     )
 
+    const driver1LapData = {
+        driverNumber: '14',  // Driver 1's number (e.g., Piastri)
+        lap: 3,             // The lap number
+        sessionKey: selectedSessionKey,  // The session key of the race
+        fastestLapTime: "1:39.256",
+      };
+      
+      const driver2LapData = {
+        driverNumber: '4',   // Driver 2's number (e.g., Norris)
+        lap: 53,             // The lap number
+        sessionKey: selectedSessionKey,  // The session key of the race
+        fastestLapTime: "1:35.454",
+      };
+
+    //   console.log('selectedSessionKey:', selectedSessionKey);
     return isLoading ? (
         <Loading
             className="mt-[20rem] mb-[20rem]"
@@ -705,6 +725,8 @@ export function RacePage() {
                 </Drawer>
 
                 {selectedSession === "Race" && (
+                    <>
+                    <div className="bg-glow-dark text-center py-8 max-sm:hidden">Select a driver from the leaderboard to activate telemetry viewer</div>
                     <div className="race-page__track-view__display relative">
                         {driverSelectedShowTrack ? (
                             <ThreeCanvas
@@ -739,6 +761,7 @@ export function RacePage() {
                             {driverButtons(true)}
                         </div>
                     </div>
+                    </>
                 )}
             </div>
             {/* End .race-page__track-view */}
@@ -921,6 +944,7 @@ export function RacePage() {
                                 drivers={drivers}
                             />
                         )}
+                        <LapSpeedComparison driver1LapData={driver1LapData} driver2LapData={driver2LapData} />
                     </div>
                 </div>
             </div>
