@@ -12,7 +12,7 @@ export const ConstructorCar = (props) => {
     const isInView = useInView(ref, { once: true });
 
     const driverUrl = (index) => championshipLevel === 'f2' ? 
-    `${process.env.PUBLIC_URL + "/images/" + year + "/f2/" + drivers[index] + ".png"}` 
+    `${process.env.PUBLIC_URL + "/images/" + year + "/F2/" + drivers[index] + ".png"}` 
     : `${process.env.PUBLIC_URL + "/images/" + year + "/drivers/" + drivers[index] + ".png"}`
 
     const carUrl = championshipLevel === 'f2' ? 

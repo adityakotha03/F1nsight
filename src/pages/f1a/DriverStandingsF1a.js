@@ -44,7 +44,7 @@ export function DriverStandingsF1a({ selectedYear, championshipLevel }) {
     fetchData();
   }, [selectedYear]);
 
-  console.log('DriverStandingsF1a', standings);
+  // console.log('DriverStandingsF1a', standings);
 
   return (
     <div className="max-w-[45rem] m-auto mt-64  pb-64">

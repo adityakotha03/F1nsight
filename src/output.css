@@ -1321,6 +1321,10 @@ input[type="range"]::-ms-fill-lower {
   z-index: 50;
 }
 
+.z-\[-1\] {
+  z-index: -1;
+}
+
 .z-\[0\] {
   z-index: 0;
 }
@@ -1363,10 +1367,6 @@ input[type="range"]::-ms-fill-lower {
 
 .z-auto {
   z-index: auto;
-}
-
-.z-\[-1\] {
-  z-index: -1;
 }
 
 .-m-1 {
@@ -1825,11 +1825,6 @@ input[type="range"]::-ms-fill-lower {
   display: none;
 }
 
-.size-24 {
-  width: 2.4rem;
-  height: 2.4rem;
-}
-
 .\!h-8 {
   height: .8rem !important;
 }
@@ -1937,10 +1932,6 @@ input[type="range"]::-ms-fill-lower {
 
 .h-svh {
   height: 100svh;
-}
-
-.h-48 {
-  height: 4.8rem;
 }
 
 .max-h-\[0\] {
@@ -3069,11 +3060,6 @@ input[type="range"]::-ms-fill-lower {
   border-color: rgb(159 88 10 / var(--tw-border-opacity));
 }
 
-.border-b-white {
-  --tw-border-opacity: 1;
-  border-bottom-color: rgb(255 255 255 / var(--tw-border-opacity));
-}
-
 .\!bg-gray-50 {
   --tw-bg-opacity: 1 !important;
   background-color: rgb(249 250 251 / var(--tw-bg-opacity)) !important;
@@ -3430,26 +3416,6 @@ input[type="range"]::-ms-fill-lower {
   background-image: linear-gradient(to right, var(--tw-gradient-stops));
 }
 
-.bg-\[radial-gradient\(169\.40\%_89\.55\%_at_94\.76\%_6\.29\%\2c rgba\(0\2c 0\2c 0\2c 0\.40\)_0\%\2c rgba\(255\2c 255\2c 255\2c 0\.00\)_100\%\)\] {
-  background-image: radial-gradient(169.40% 89.55% at 94.76% 6.29%,rgba(0,0,0,0.40) 0%,rgba(255,255,255,0.00) 100%);
-}
-
-.bg-\[radial-gradient\(169\.40\%_89\.55\%_at_94\.76\%_6\.29\%\2c rgba\(0\2c 0\2c 0\2c 0\.40\)_0\%\2c rgba\(0\2c 0\2c 0\2c 0\.00\)_100\%\)\] {
-  background-image: radial-gradient(169.40% 89.55% at 94.76% 6.29%,rgba(0,0,0,0.40) 0%,rgba(0,0,0,0.00) 100%);
-}
-
-.bg-\[radial-gradient\(169\%_89\%_at_94\%_6\%\2c \$\{standing\.constructorColor\}_0\%\2c rgba\(0\2c 0\2c 0\2c 0\.00\)_100\%\)\] {
-  background-image: radial-gradient(169% 89% at 94% 6%,${standing.constructorColor} 0%,rgba(0,0,0,0.00) 100%);
-}
-
-.bg-\[radial-gradient\(169\%_89\%_at_94\%_6\%\2c \#000000_0\%\2c rgba\(0\2c 0\2c 0\2c 0\.00\)_100\%\)\] {
-  background-image: radial-gradient(169% 89% at 94% 6%,#000000 0%,rgba(0,0,0,0.00) 100%);
-}
-
-.bg-\[radial-gradient\(169\%_89\%_at_94\%_6\%\2c \$\{standing\.constructorClor\}_0\%\2c rgba\(0\2c 0\2c 0\2c 0\.00\)_100\%\)\] {
-  background-image: radial-gradient(169% 89% at 94% 6%,${standing.constructorClor} 0%,rgba(0,0,0,0.00) 100%);
-}
-
 .from-\[\#012845\] {
   --tw-gradient-from: #012845 var(--tw-gradient-from-position);
   --tw-gradient-to: rgb(1 40 69 / 0) var(--tw-gradient-to-position);
@@ -3591,12 +3557,6 @@ input[type="range"]::-ms-fill-lower {
 .from-teal-400 {
   --tw-gradient-from: #16BDCA var(--tw-gradient-from-position);
   --tw-gradient-to: rgb(22 189 202 / 0) var(--tw-gradient-to-position);
-  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
-}
-
-.from-white {
-  --tw-gradient-from: #ffffff var(--tw-gradient-from-position);
-  --tw-gradient-to: rgb(255 255 255 / 0) var(--tw-gradient-to-position);
   --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
 }
 
@@ -3762,14 +3722,6 @@ input[type="range"]::-ms-fill-lower {
 
 .to-yellow-200 {
   --tw-gradient-to: #FCE96A var(--tw-gradient-to-position);
-}
-
-.to-zinc-900 {
-  --tw-gradient-to: #18181b var(--tw-gradient-to-position);
-}
-
-.to-75\% {
-  --tw-gradient-to-position: 75%;
 }
 
 .fill-current {
@@ -4234,6 +4186,10 @@ input[type="range"]::-ms-fill-lower {
   font-size: 6.4rem;
 }
 
+.text-\[8px\] {
+  font-size: 8px;
+}
+
 .text-base {
   font-size: 1.6rem;
 }
@@ -4663,6 +4619,10 @@ input[type="range"]::-ms-fill-lower {
   opacity: 0;
 }
 
+.opacity-10 {
+  opacity: 0.1;
+}
+
 .opacity-100 {
   opacity: 1;
 }
@@ -4673,14 +4633,6 @@ input[type="range"]::-ms-fill-lower {
 
 .opacity-50 {
   opacity: 0.5;
-}
-
-.opacity-10 {
-  opacity: 0.1;
-}
-
-.opacity-20 {
-  opacity: 0.2;
 }
 
 .mix-blend-lighten {
@@ -5166,6 +5118,21 @@ button:hover {
 .recharts-rectangle:not(.recharts-bar-rectangle .recharts-rectangle) {
   fill: #1f1f1f;
 }
+
+.recharts-legend-item-text,
+.recharts-cartesian-axis-tick-value {
+  font-size: 8px;
+}
+
+.hide-grid .recharts-cartesian-grid-horizontal line,
+.hide-grid .recharts-cartesian-grid-vertical line,
+.hide-grid .recharts-cartesian-axis.recharts-xAxis,
+.hide-grid .recharts-cartesian-axis.recharts-yAxis {
+  stroke-opacity: 0 !important;
+  display: none !important;
+}
+
+/* recharts-layer recharts-cartesian-axis recharts-yAxis yAxis */
 
 .before\:absolute::before {
   content: var(--tw-content);

@@ -194,3 +194,18 @@ button:hover {
 .recharts-rectangle:not(.recharts-bar-rectangle .recharts-rectangle) {
   fill: #1f1f1f;
 }
+
+.recharts-legend-item-text,
+.recharts-cartesian-axis-tick-value {
+  font-size: 8px;
+}
+
+.hide-grid .recharts-cartesian-grid-horizontal line,
+.hide-grid .recharts-cartesian-grid-vertical line,
+.hide-grid .recharts-cartesian-axis.recharts-xAxis,
+.hide-grid .recharts-cartesian-axis.recharts-yAxis {
+    stroke-opacity: 0 !important;
+    display: none !important;
+}
+
+/* recharts-layer recharts-cartesian-axis recharts-yAxis yAxis */

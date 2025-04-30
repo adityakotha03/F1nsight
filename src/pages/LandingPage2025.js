@@ -42,7 +42,7 @@ export function LandingPage2025({ setResultPagePath }) {
             setRaceData(mostRecentRace);
             setF1aRaceData(mostRecentF1aRaceWeekend);
             set2RaceData(mostRecentF2RaceWeekend);
-            console.log('mostRecentF2RaceWeekend', {mostRecentF2RaceWeekend});
+            // console.log('mostRecentF2RaceWeekend', {mostRecentF2RaceWeekend});
             // setIsLoading(false);
         };
 

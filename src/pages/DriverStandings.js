@@ -19,7 +19,7 @@ export function DriverStandings({ selectedYear }) {
       const data2 = await fetchRaceDetails(selectedYear);
       setRaceDetails(data2.filter(race => (race.url)))
       setStandings(data);
-      console.log(data);
+      // console.log(data);
       setIsLoading(false);
     };
 

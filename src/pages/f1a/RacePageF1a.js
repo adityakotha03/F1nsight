@@ -69,7 +69,7 @@ export function RacePageF1a({championshipLevel}) {
                     false,
                     championshipLevel
                 );
-                console.log("results", results);
+                // console.log("results", results);
                 setRaceResults(results.race1);
                 setRaceResults2(results.race2);
                 setRaceResults3(results.race3);
