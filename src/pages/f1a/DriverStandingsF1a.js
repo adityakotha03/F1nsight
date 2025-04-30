@@ -1,19 +1,19 @@
 import React, { useEffect, useState } from 'react';
-import { fetchF1aAllRaceResults } from '../../utils/apiF1a';
-import { calculateF1aPoints2025 } from '../../utils/calculateF1aPoints2025';
+import { fetchAllRaceResults } from '../../utils/apiF1a';
+import { calculateSeriesPoints2025 } from '../../utils/calculateSeriesPoints2025';
 import { ConstructorDriver, Loading } from '../../components';
 
-export function DriverStandingsF1a({ selectedYear }) {
+export function DriverStandingsF1a({ selectedYear, championshipLevel }) {
   const [standings, setStandings] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
-      const allRaceResults = await fetchF1aAllRaceResults(selectedYear.toString());
+      const allRaceResults = await fetchAllRaceResults(selectedYear.toString(), championshipLevel);
 
       if (selectedYear === 2025) {
-        const { formattedDrivers } = calculateF1aPoints2025(allRaceResults);
+        const { formattedDrivers } = calculateSeriesPoints2025(allRaceResults, championshipLevel);
         setStandings(formattedDrivers);
       } else {
         const driverPoints = {};
@@ -44,7 +44,7 @@ export function DriverStandingsF1a({ selectedYear }) {
     fetchData();
   }, [selectedYear]);
 
-  // console.log('DriverStandingsF1a', standings);
+  console.log('DriverStandingsF1a', standings);
 
   return (
     <div className="max-w-[45rem] m-auto mt-64  pb-64">
@@ -65,7 +65,7 @@ export function DriverStandingsF1a({ selectedYear }) {
                   showDivider
                   index={index}
                   showStanding
-                  f1a
+                  championshipLevel={championshipLevel}
                 />
               </li>
             ))}

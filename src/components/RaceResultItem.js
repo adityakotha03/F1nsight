@@ -6,7 +6,7 @@ import { Popover } from "flowbite-react";
 import { useInView } from "framer-motion";
 
 export const RaceResultItem = (props) => {
-    const { className, driver, driverColor, fastestLap, startPosition, endPosition, isActive, layoutSmall, time, year, hasHover, index, mobileSmall, f1a} = props;
+    const { championshipLevel, className, driver, driverColor, fastestLap, startPosition, endPosition, isActive, layoutSmall, time, year, hasHover, index, mobileSmall, status} = props;
 
     const ref = useRef(null);
     const isInView = useInView(ref, { once: true });
@@ -18,6 +18,7 @@ export const RaceResultItem = (props) => {
             className={classNames(
                 className, 
                 'driver-card flex items-end relative mt-[9rem]',
+                {"hidden": status === "cancelled"},
             )}
             style={{borderColor: isActive && `#${driverColor}`}}
         >
@@ -25,8 +26,8 @@ export const RaceResultItem = (props) => {
                 <img 
                     alt="" 
                     src={
-                        f1a ?
-                        `${process.env.PUBLIC_URL + "/images/" + year + "/F1A/" + driver.code + ".png"}` :
+                        championshipLevel === 'F1A' || championshipLevel === 'F2' ?
+                        `${process.env.PUBLIC_URL + "/images/" + year + "/" + championshipLevel +"/" + driver.code + ".png"}` :
                         `${process.env.PUBLIC_URL + "/images/" + year + "/drivers/" + driver.code + ".png"}`
                     }
                     width={72} 

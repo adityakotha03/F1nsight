@@ -1,22 +1,22 @@
 import React, { useEffect, useState } from 'react';
 
-import { fetchF1aAllRaceResults } from '../../utils/apiF1a';
+import { fetchAllRaceResults } from '../../utils/apiF1a';
 import { ConstructorCarF1a, Loading } from '../../components';
-import {wildCardDrivers} from '../../utils/wildCards';
-import { calculateF1aPoints2025 } from '../../utils/calculateF1aPoints2025';
+import { wildCardDrivers } from '../../utils/wildCards';
+import { calculateSeriesPoints2025 } from '../../utils/calculateSeriesPoints2025';
 
 
-export function ConstructorStandingsF1a({ selectedYear }) {
+export function ConstructorStandingsF1a({ selectedYear, championshipLevel }) {
   const [standings, setStandings] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
-      const allRaceResults = await fetchF1aAllRaceResults(selectedYear);
+      const allRaceResults = await fetchAllRaceResults(selectedYear, championshipLevel);
 
       if (selectedYear === 2025) {
-        const { formattedConstructors } = calculateF1aPoints2025(allRaceResults);
+        const { formattedConstructors } = calculateSeriesPoints2025(allRaceResults, championshipLevel);
         setStandings(formattedConstructors);
       } else {
         const constructorPoints = {};
@@ -30,6 +30,7 @@ export function ConstructorStandingsF1a({ selectedYear }) {
               const driverCode = result.Driver.code;
 
               if (wildCardDrivers[selectedYear] && wildCardDrivers[selectedYear].includes(driverCode)) {
+                console.log(`Skipping wild card driver ${driverCode} for constructor ${constructorId}`);
                 return;
               }
 

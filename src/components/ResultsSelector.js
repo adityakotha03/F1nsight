@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { ReactSelectComponent } from './Select';
 import classNames from 'classnames';
 
-export const ResultsSelector = ({ className, setSelectedYear, selectedYear, resultPage, resultPagePath, f1a }) => {
+export const ResultsSelector = ({ className, setSelectedYear, selectedYear, resultPage, resultPagePath, championshipLevel }) => {
   const navigate = useNavigate();
 
   const [selectValue, setSelectValue] = useState(resultPage);
@@ -37,10 +37,14 @@ export const ResultsSelector = ({ className, setSelectedYear, selectedYear, resu
     setSelectedYear(selectedOption.value);
   };
 
-  const resultsOptions = f1a ? [
+  const resultsOptions = championshipLevel === "F1A" ? [
     { value: '/f1a/race-results', label: 'Race results' },
     { value: '/f1a/constructor-standings', label: 'Constructor standings' },
     { value: '/f1a/driver-standings', label: 'Driver standings' }
+  ] : championshipLevel === "F2" ? [
+    { value: '/f2/race-results', label: 'Race results' },
+    { value: '/f2/constructor-standings', label: 'Constructor standings' },
+    { value: '/f2/driver-standings', label: 'Driver standings' }
   ] : [
     { value: '/race-results', label: 'Race results' },
     { value: '/constructor-standings', label: 'Constructor standings' },

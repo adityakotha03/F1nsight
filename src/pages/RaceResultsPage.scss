@@ -18,6 +18,10 @@
     grid-template-areas: "item-2 item-1 item-3";
     justify-content: center;
     width: 100%;
+    img {
+        border-top-right-radius: 2rem;
+        border-top-left-radius: 2rem;
+    }
 }
 
 .race-results__list__item-1 {
@@ -33,7 +37,8 @@
     img {
         position: absolute;
         bottom: 7.6rem;
-        left: 0.4rem;
+        left: 50%;
+        transform: translateX(-50%);
         height: 9rem;
         width: 9rem;
     }
@@ -113,6 +118,16 @@
 }
 
 .clickable-hover:hover {
-    transform: scale(1.02);
+    transform: scale(.98);
+    transition-duration: 150ms;
+    transition-timing-function: ease-in-out;
+    transition-property: transform;
+    cursor: pointer;
+}
+.clickable-hover-foreground:hover {
+    transform: scale(1.10);
+    transition-duration: 150ms;
+    transition-timing-function: ease-in-out;
+    transition-property: transform;
     cursor: pointer;
 }

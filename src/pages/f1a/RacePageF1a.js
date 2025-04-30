@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import { fetchDriversAndTires } from "../../utils/api.js";
-import { fetchF1aRaceResultsByCircuit } from "../../utils/apiF1a.js";
+import { fetchRaceResultsByCircuit } from "../../utils/apiF1a.js";
 
 import {
     DriverCard,
@@ -9,7 +9,7 @@ import {
     FastestLapsF1A,
 } from "../../components/index.js";
 
-export function RacePageF1a() {
+export function RacePageF1a({championshipLevel}) {
     const { state } = useLocation();
     const { raceId } = useParams();
     const [raceName, setRaceName] = useState(state ? state.raceName : null);
@@ -18,6 +18,7 @@ export function RacePageF1a() {
     );
     const [year, setYear] = useState(state ? state.year : null);
     const [location, setLocation] = useState(state ? state.location : null);
+    const [circuitId, setCircuitId] = useState(state ? state.location : null);
     const [drivers, setDrivers] = useState([]);
     const [raceResults, setRaceResults] = useState([]);
     const [raceResults2, setRaceResults2] = useState([]);
@@ -30,6 +31,7 @@ export function RacePageF1a() {
             setRaceName(state.raceName);
             setYear(state.year);
             setLocation(state.location);
+            setCircuitId(state.circuitId);
             setMeetingKey(state.meetingKey);
         };
         if (state) setBaseData();
@@ -42,6 +44,7 @@ export function RacePageF1a() {
             ).then((res) => res.json());
             setYear(response[raceId]["year"]);
             setLocation(response[raceId]["location"]);
+            setCircuitId(response[raceId]["circuitId"]);
             setRaceName(response[raceId]["raceName"]);
             // console.log('fetchByMeetingKey', response[raceId]);
         };
@@ -57,91 +60,21 @@ export function RacePageF1a() {
         if (!raceName) return;
 
         try {
-            setActiveButtonIndex(null);
-
-            const locationMap = {
-                Melbourne: "albert_park",
-                Austin: "americas",
-                Sakhir: "bahrain",
-                Baku: "baku",
-                Budapest: "hungaroring",
-                Imola: "imola",
-                "São Paulo": "interlagos",
-                Jeddah: "jeddah",
-                "Marina Bay": "marina_bay",
-                Monaco: "monaco",
-                Spielberg: "red_bull_ring",
-                "Mexico City": "rodriguez",
-                Shanghai: "shanghai",
-                Silverstone: "silverstone",
-                "Spa-Francorchamps": "spa",
-                Suzuka: "suzuka",
-                "Las Vegas": "vegas",
-                Montréal: "villeneuve",
-                Zandvoort: "zandvoort",
-                Miami: "miami",
-                Monza: "monza",
-                Barcelona: "catalunya",
-                Lusail: "lusail",
-                "Yas Island": "yas_marina",
-            };
-
             setIsLoading(true);
-
-            const circuitId = locationMap[location];
-            // console.log("circuitId", circuitId);
-            const sessionsResponse = await fetch(
-                `https://api.openf1.org/v1/sessions?meeting_key=${meetingKey}`
-            );
-            const sessionsData = await sessionsResponse.json();
-
+            
             if (circuitId) {
-                const results = await fetchF1aRaceResultsByCircuit(
+                const results = await fetchRaceResultsByCircuit(
                     year,
-                    circuitId
+                    circuitId,
+                    false,
+                    championshipLevel
                 );
+                console.log("results", results);
                 setRaceResults(results.race1);
                 setRaceResults2(results.race2);
                 setRaceResults3(results.race3);
                 // console.log("setRaceResults", results);
             }
-
-            const raceSession = sessionsData.find(
-                (session) => session.session_name === "Race"
-            );
-            if (!raceSession) throw new Error("Race session not found");
-            const sessionKey = raceSession.session_key;
-
-            const [driverDetailsData, startingGridData, driversData] =
-                await Promise.all([
-                    fetch(
-                        `https://api.openf1.org/v1/drivers?session_key=${sessionKey}`
-                    ).then((res) => res.json()),
-                    fetch(
-                        `https://api.openf1.org/v1/position?session_key=${sessionKey}`
-                    ).then((res) => res.json()),
-                    fetchDriversAndTires(sessionKey),
-                    fetch(
-                        `https://api.openf1.org/v1/laps?session_key=${sessionKey}`
-                    ).then((res) => res.json()),
-                ]);
-
-            const driverDetailsMap = driverDetailsData.reduce(
-                (acc, driver) => ({
-                    ...acc,
-                    [driver.driver_number]: driver.name_acronym,
-                }),
-                {}
-            );
-
-            const latestDate = startingGridData[0].date;
-            const firstDifferentDate = startingGridData.find(
-                (item) => item.date !== latestDate
-            )?.date;
-            const date = new Date(firstDifferentDate);
-            date.setMinutes(date.getMinutes() - 1);
-
-            setDrivers(driversData);
 
             setIsLoading(false);
         } catch (error) {
@@ -151,7 +84,7 @@ export function RacePageF1a() {
 
     useEffect(() => {
         fetchData();
-    }, [year, location, raceName]);
+    }, [year, circuitId, raceName]);
 
     // Sort raceResults by endPosition (ascending order)
     raceResults.sort(
@@ -164,11 +97,17 @@ export function RacePageF1a() {
         (a, b) => parseInt(a.position, 10) - parseInt(b.position, 10)
     );
 
+    // console.log('racepagef1a', championshipLevel);
+
     return (
         <>
-            <h1 className="heading-1 mt-[12rem] text-center">{raceName}</h1>
+            <p class="text-sm tracking-sm mt-[4rem] text-center">{year}</p>
+            <h1 className="heading-1 text-center">{raceName}</h1>
+            <p class="text-sm tracking-sm text-center">{location}</p>
 
-            <div className="pt-[6.4rem] flex flex-col md:flex-row -mb-64">
+            <div className="mt-[6.4rem] divider-glow-dark -mb-16 relative z-10" />
+
+            <div className="flex flex-col md:flex-row">
                 {/* race 1 */}
                 <div className="flex flex-col items-center md:w-1/2 bg-gradient-to-br from-indigo-500/10 via-purple-500/10 to-pink-500/10 p-32">
                     <p className="heading-2 mb-32">Race 1</p>
@@ -176,7 +115,6 @@ export function RacePageF1a() {
                     <div className="bg-glow-large p-24 rounded-lg w-[25rem] mb-32">
                         {raceResults.map((result, index) => (
                             <DriverCard
-                                f1a={true}
                                 hasHover
                                 isActive={activeButtonIndex === index}
                                 index={index}
@@ -188,6 +126,7 @@ export function RacePageF1a() {
                                 time={result.Time?.time || result.status}
                                 fastestLap={result.FastestLap}
                                 layoutSmall={index > 2}
+                                championshipLevel={championshipLevel}
                             />
                         ))}
                     </div>
@@ -202,6 +141,7 @@ export function RacePageF1a() {
                     </div>
                 </div>
 
+
                 {/* Race 2 */}
                 {raceResults2.length > 0 && (
                     <div className="flex flex-col items-center md:w-1/2 bg-gradient-to-br from-pink-500/10 via-purple-500/10 to-indigo-500/10 p-32">
@@ -209,7 +149,6 @@ export function RacePageF1a() {
                         <div className="bg-glow-large p-24 rounded-lg w-[25rem] mb-32">
                             {raceResults2.map((result, index) => (
                                 <DriverCard
-                                    f1a={true}
                                     hasHover
                                     isActive={activeButtonIndex === index}
                                     index={index}
@@ -229,6 +168,7 @@ export function RacePageF1a() {
                                     }
                                     fastestLap={result.FastestLap}
                                     layoutSmall={index > 2}
+                                    championshipLevel={championshipLevel}
                                 />
                             ))}
                         </div>
@@ -251,7 +191,6 @@ export function RacePageF1a() {
                         <div className="bg-glow-large p-24 rounded-lg w-[25rem] mb-32">
                             {raceResults3.map((result, index) => (
                                 <DriverCard
-                                    f1a={true}
                                     hasHover
                                     isActive={activeButtonIndex === index}
                                     index={index}
@@ -271,6 +210,7 @@ export function RacePageF1a() {
                                     }
                                     fastestLap={result.FastestLap}
                                     layoutSmall={index > 2}
+                                    championshipLevel={championshipLevel}
                                 />
                             ))}
                         </div>

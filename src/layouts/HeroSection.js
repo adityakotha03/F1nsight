@@ -14,7 +14,7 @@ const HeroSection = ({ layoutMobile }) => {
   const yDecorRight = useTransform(scrollYProgress, [0, 1], [-500, 0]);
 
   return (
-    <section ref={sectionRef} className="bg-black relative h-[80vh] lg:h-[90vh] flex items-center justify-center">
+    <section ref={sectionRef} className="bg-black relative h-[80vh]  min-h-[300px] flex items-center justify-center">
       {/* Background Video */}
       <video className="absolute inset-0 w-full h-full object-cover" autoPlay loop muted playsInline style={{ opacity: 0.15 }}>
         <source src={`${process.env.PUBLIC_URL + "/Media/Hero.mp4"}`} type="video/mp4" />

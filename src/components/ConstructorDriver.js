@@ -6,10 +6,13 @@ import { useInView } from "framer-motion";
 import { wildCardDrivers } from '../utils/wildCards';
 
 export const ConstructorDriver = (props) => {
-    const { className, points, image, car, firstName, lastName, year, index, showStanding, f1a} = props;
+    const { className, points, image, car, firstName, lastName, year, index, showStanding, championshipLevel} = props;
     const ref = useRef(null);
     const isInView = useInView(ref, { once: true });
 
+    const F2F1A = championshipLevel === "F1A" || championshipLevel === "F2" 
+ 
+    const f2ImageSrc = `${process.env.PUBLIC_URL + "/images/" + year + "/F2/carSideView/" + car + ".png"}`
     const f1aImageSrc = wildCardDrivers[year].includes(image) 
         ? `${process.env.PUBLIC_URL + "/images/2024/F1A/carSideView/wildcard-side.png"}`
         : `${process.env.PUBLIC_URL + "/images/" + year + "/F1A/carSideView/" + image + "-side.png"}`;
@@ -26,21 +29,23 @@ export const ConstructorDriver = (props) => {
             >
                 <img 
                     alt="" 
-                    className="constructor-driver-card__person -mr-28 w-[12rem]"
-                    src={f1a ? `${process.env.PUBLIC_URL + "/images/" + year + "/F1A/" + image + ".png"}` : `${process.env.PUBLIC_URL + "/images/" + year + "/drivers/" + image + ".png"}`}
+                    className="constructor-driver-card__person -mr-28 w-[12rem] z-[0] rounded-t-lg"
+                    src={F2F1A ? 
+                        `${process.env.PUBLIC_URL + "/images/" + year + "/" + championshipLevel + "/" + image + ".png"}` 
+                        : `${process.env.PUBLIC_URL + "/images/" + year + "/drivers/" + image + ".png"}`}
                     style={{
                         opacity: isInView ? 1 : 0,
                         transition: "all 2s cubic-bezier(0.17, 0.55, 0.55, 1)"
                     }}
                 />
-                {f1a && wildCardDrivers[year].includes(image) && (
+                {championshipLevel === "F1A" && wildCardDrivers[year].includes(image) && (
                     <img 
                         alt=''
                         className="absolute left-[4rem] md:left-[6.4rem] bottom-[-1rem] w-64"
                         src={`${process.env.PUBLIC_URL + "/images/wildcardicon.png"}`}
                     />
                 )}
-                <div className="-mb-10">
+                <div className="-mb-10 relative z-10">
                     {/* position / firstname */}
                     <div className="w-fit mb-4">
                         {showStanding && (
@@ -61,10 +66,12 @@ export const ConstructorDriver = (props) => {
                         <img 
                             alt="" 
                             className="constructor-driver-card__car -mb-8 z-10 -ml-32 w-[20rem]"
-                            src={f1a ? f1aImageSrc : imageSrc}
+                            src={championshipLevel === "F1A" ? f1aImageSrc 
+                                : championshipLevel === "F2" ? f2ImageSrc 
+                                : imageSrc}
                             width={200} 
                             style={{
-                                transform: isInView ? "none" : "translateX(-50px)",
+                                transform: isInView ? "none" : championshipLevel === "F2" ? "translateX(50px)" : "translateX(-50px)",
                                 opacity: isInView ? 1 : 0,
                                 transition: "all 1s cubic-bezier(0.17, 0.55, 0.55, 1)"
                             }}

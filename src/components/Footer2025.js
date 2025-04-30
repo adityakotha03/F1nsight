@@ -5,7 +5,7 @@ import { FaLinkedin, FaGlobe, FaInstagram } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { ReactComponent as Logo } from "./f1nsight-outlined.svg";
 import { Button } from "./Button";
-import { F1ALinks, F1Links } from "./Links";
+import { F1ALinks, F1Links, F2Links } from "./Links";
 
 export const Footer2025 = ({ className }) => {
     const location = useLocation().pathname;
@@ -58,6 +58,9 @@ export const Footer2025 = ({ className }) => {
                     </div>
                     <div className="flex flex-col gap-4">
                         <F1ALinks />
+                    </div>
+                    <div className="flex flex-col gap-4">
+                        <F2Links />
                     </div>
                 </div>
             </div>
