@@ -107,7 +107,8 @@ function MainContent({ setSelectedYear, selectedYear, resultPage, resultPagePath
           setSelectedYear={setSelectedYear} 
           selectedYear={selectedYear} 
           resultPage={resultPage} 
-          resultPagePath={resultPagePath} 
+          resultPagePath={resultPagePath}
+          championshipLevel={isF1a ? 'F1A' : isF2 ? 'F2' : undefined}
         />
       )}
       {(isF1a || isF2 ) && (

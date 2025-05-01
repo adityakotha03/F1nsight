@@ -53,13 +53,15 @@ export const ResultsSelector = ({ className, setSelectedYear, selectedYear, resu
 
   // console.log('resultPagePath', resultPagePath);
 
+  const yearOptions = generateYearOptions(championshipLevel === "F1A" ? 2024 : championshipLevel === "F2" ? 2025 : 2023);
+
   return (
     <div className={classNames(className, 'flex items-center justify-center gap-16 m-auto')}>
       <ReactSelectComponent
         placeholder="Select Year"
-        options={generateYearOptions(2023)}
+        options={yearOptions}
         onChange={handleYearChange}
-        value={generateYearOptions(2023).find(option => option.value === selectedYear)}
+        value={yearOptions.find(option => option.value === selectedYear)}
         isSearchable={false}
         className="w-[17rem]"
       />
