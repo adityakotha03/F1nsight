@@ -93,7 +93,7 @@ const Top3Drivers = ({ year, circuitId, index, championshipLevel }) => {
                             </div>
                         )}
                     </div>
-                    {hasResults && top3RaceResults2.length > 0 && (
+                    {hasResults && top3RaceResults2.length > 1 && (
                         <div>
                             <p className="uppercase text-sm text-center text-neutral-400 tracking-sm leading-none mb-24">
                                 Race 2 Results
