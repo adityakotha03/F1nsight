@@ -91,6 +91,7 @@ export const ARViewer = () => {
                             className="ar-button shadow-md absolute left-1/2 translate-x-[-50%] w-[90%] flex justify-center items-center rounded-b-lg"
                             style={{
                                 borderBottom: `1px solid ${team.color}`,
+                                backgroundColor: team.color,
                             }}
                         >
                             <img
