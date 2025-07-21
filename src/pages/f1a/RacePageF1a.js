@@ -20,6 +20,7 @@ export function RacePageF1a({championshipLevel}) {
     const [location, setLocation] = useState(state ? state.location : null);
     const [circuitId, setCircuitId] = useState(state ? state.location : null);
     const [drivers, setDrivers] = useState([]);
+    const [raceResults0, setRaceResults0] = useState([]);
     const [raceResults, setRaceResults] = useState([]);
     const [raceResults2, setRaceResults2] = useState([]);
     const [raceResults3, setRaceResults3] = useState([]);
@@ -70,6 +71,7 @@ export function RacePageF1a({championshipLevel}) {
                     championshipLevel
                 );
                 // console.log("results", results);
+                setRaceResults0(results.race0);
                 setRaceResults(results.race1);
                 setRaceResults2(results.race2);
                 setRaceResults3(results.race3);
@@ -87,6 +89,9 @@ export function RacePageF1a({championshipLevel}) {
     }, [year, circuitId, raceName]);
 
     // Sort raceResults by endPosition (ascending order)
+    raceResults0.sort(
+        (a, b) => parseInt(a.position, 10) - parseInt(b.position, 10)
+    );
     raceResults.sort(
         (a, b) => parseInt(a.position, 10) - parseInt(b.position, 10)
     );
@@ -108,6 +113,41 @@ export function RacePageF1a({championshipLevel}) {
             <div className="mt-[6.4rem] divider-glow-dark -mb-16 relative z-10" />
 
             <div className="flex flex-col md:flex-row">
+                {/* race 0 rescheduled race */}
+                {raceResults0.length > 0 && (
+                    <div className="flex flex-col items-center md:w-1/2 bg-gradient-to-br from-indigo-500/10 via-purple-500/10 to-pink-500/10 p-32">
+                        <p className="heading-2 mb-32">Rescheduled Race</p>
+
+                        <div className="bg-glow-large p-24 rounded-lg w-[25rem] mb-32">
+                            {raceResults0.map((result, index) => (
+                                <DriverCard
+                                    hasHover
+                                    isActive={activeButtonIndex === index}
+                                    index={index}
+                                    driver={result.Driver}
+                                    stint={drivers}
+                                    startPosition={parseInt(result.grid, 10)}
+                                    endPosition={parseInt(result.position, 10)}
+                                    year={year}
+                                    time={result.Time?.time || result.status}
+                                    fastestLap={result.FastestLap}
+                                    layoutSmall={index > 2}
+                                    championshipLevel={championshipLevel}
+                                />
+                            ))}
+                        </div>
+
+                        <StartingGridF1A raceResults={raceResults0} year={year} />
+
+                        <div className="page-container-centered">
+                            <FastestLapsF1A
+                                raceResults={raceResults0}
+                                drivers={drivers}
+                            />
+                        </div>
+                    </div>
+                )}
+                
                 {/* race 1 */}
                 <div className="flex flex-col items-center md:w-1/2 bg-gradient-to-br from-indigo-500/10 via-purple-500/10 to-pink-500/10 p-32">
                     <p className="heading-2 mb-32">Race 1</p>
@@ -140,7 +180,6 @@ export function RacePageF1a({championshipLevel}) {
                         />
                     </div>
                 </div>
-
 
                 {/* Race 2 */}
                 {raceResults2.length > 0 && (

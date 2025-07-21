@@ -1,4 +1,9 @@
 export function calculateFastestLapDriver(results, eligibleLimit) {
+  // Safety check for undefined or invalid results
+  if (!results || !Array.isArray(results)) {
+    return null;
+  }
+
   let fastestLapTime = null;
   let fastestLapDriverNumber = null;
 

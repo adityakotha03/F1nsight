@@ -114,6 +114,11 @@ button:hover {
   height: 1.6rem;
   width: 100%;
 }
+.divider-glow-dark-vertical {
+  background: radial-gradient(ellipse at center right , theme('colors.neutral.950') 0%, transparent 75%);
+  height: 100%;
+  width: 1rem;
+}
 
 /* Text colors */
 .gradient-text-dark {
@@ -133,6 +138,11 @@ button:hover {
 }
 .gradient-text-white {
   background: -webkit-linear-gradient(#ffffff, theme('colors.neutral.500'));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.gradient-text {
+  background: -webkit-linear-gradient(#ffffff, theme('colors.neutral.300'));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }

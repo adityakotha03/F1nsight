@@ -19,7 +19,7 @@ import TelemetrySection from "../layouts/TelemetrySection";
 export function LandingPage2025({ setResultPagePath }) {
     const [raceData, setRaceData] = useState(null);
     const [F1aRaceData, setF1aRaceData] = useState(null);
-    const [F2RaceData, set2RaceData] = useState(true);
+    const [F2RaceData, setF2RaceData] = useState(true);
     const [selectedYear, setSelectedYear] = useState(2025);
     const [layoutSmall, setLayoutSmall] = useState();
     const [layoutMobile, setLayoutMobile] = useState();
@@ -41,7 +41,7 @@ export function LandingPage2025({ setResultPagePath }) {
                 await fetchMostRecentRaceWeekend(2025, "F2");
             setRaceData(mostRecentRace);
             setF1aRaceData(mostRecentF1aRaceWeekend);
-            set2RaceData(mostRecentF2RaceWeekend);
+            setF2RaceData(mostRecentF2RaceWeekend);
             // console.log('mostRecentF2RaceWeekend', {mostRecentF2RaceWeekend});
             // setIsLoading(false);
         };
@@ -157,6 +157,39 @@ export function LandingPage2025({ setResultPagePath }) {
             <>
                 <div className="relative w-full max-w-[350px]">
                     <div className="flex flex-col sm:flex-row gap-8 items-center py-[26px] -mx-16">
+                        {/* {data?.race0?.length > 0 && (
+                            <div className={f1aWrapperClasses}>
+                                <h3 className={f1aH3Classes}>Rescheduled Race</h3>
+                                <ul className={f1aListClasses}>
+                                    {data?.race1.map(
+                                        (result, resultIndex) => (
+                                            <DriverCard
+                                                key={resultIndex}
+                                                championshipLevel={championshipLevel}
+                                                darkBG
+                                                index={resultIndex}
+                                                driver={result.Driver}
+                                                startPosition={parseInt(
+                                                    result.grid,
+                                                    10
+                                                )}
+                                                endPosition={parseInt(
+                                                    result.position,
+                                                    10
+                                                )}
+                                                year={selectedYear}
+                                                time={
+                                                    result.Time?.time ||
+                                                    result.status
+                                                }
+                                                fastestLap={result.FastestLap}
+                                                layoutSmall={layoutSmall}
+                                            />
+                                        )
+                                    )}
+                                </ul>
+                            </div>
+                        )} */}
                         {data?.race1?.length > 0 && (
                             <div className={f1aWrapperClasses}>
                                 <h3 className={f1aH3Classes}>Race 1</h3>
