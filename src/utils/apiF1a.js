@@ -92,26 +92,28 @@ export const fetchRaceResultsByCircuit = async (year, circuitId, top3 = false, c
 
     if (!results) {
       console.error(`No race found for circuitId: ${circuitId}`);
-      return { raceName: '', race1: [], race2: [], race3: [] };
+      return { raceName: '', race0: [], race1: [], race2: [], race3: [] };
     }
   
     const driverInfo = await fetchDriverInfo(year, championshipLevel);
 
+    let race0Results = results.Results.race0 ? enrichDriverData(results.Results.race0, driverInfo) : []; // season >= 2025 rescheduled race
     let race1Results = results.Results.race1 ? enrichDriverData(results.Results.race1, driverInfo) : [];
     let race2Results = results.Results.race2 ? enrichDriverData(results.Results.race2, driverInfo) : [];
-    let race3Results = results.Results.race3 ? enrichDriverData(results.Results.race3, driverInfo) : [];
+    let race3Results = results.Results.race3 ? enrichDriverData(results.Results.race3, driverInfo) : []; // season < 2025
 
     if (top3) {
+      race0Results = race0Results ? filterTop3(race0Results) : [];
       race1Results = race1Results ? filterTop3(race1Results) : [];
       race2Results = race2Results ? filterTop3(race2Results) : [];
       race3Results = race3Results ? filterTop3(race3Results) : [];
     }
 
-    return { raceName: results.raceName, race1: race1Results, race2: race2Results, race3: race3Results };
+    return { raceName: results.raceName, race0: race0Results, race1: race1Results, race2: race2Results, race3: race3Results };
 
   } catch (error) {
     console.error("Error fetching race results:", error);
-    return { raceName: '', race1: [], race2: [], race3: [] };
+    return { raceName: '', race0: [], race1: [], race2: [], race3: [] };
   }
 };
 
@@ -133,13 +135,15 @@ export const fetchAllRaceResults = async (year, championshipLevel) => {
 
     // Map over each race to enrich and structure the results
     const races = data.map(race => {
+      let race0Results = race.Results.race0 ? enrichDriverData(race.Results.race0, driverInfo) : [];
       let race1Results = race.Results.race1 ? enrichDriverData(race.Results.race1, driverInfo) : [];
       let race2Results = race.Results.race2 ? enrichDriverData(race.Results.race2, driverInfo) : [];
-      let race3Results = race.Results.race3 ? enrichDriverData(race.Results.race3, driverInfo) : [];
+      let race3Results = race.Results.race0 ? enrichDriverData(race.Results.race0, driverInfo) : [];
 
       return {
         raceName: race.raceName,
         circuitId: race.Circuit.circuitId,
+        race0: race0Results,
         race1: race1Results,
         race2: race2Results,
         race3: race3Results,
@@ -183,6 +187,7 @@ export const fetchMostRecentRaceWeekend = async (selectedYear, championshipLevel
     // Step 3: Extract top 3 results for each race (race1, race2, race3, etc.)
     const mostRecentRace = sortedRaces[0]; // Take the first race as the most recent
     // console.log('fetchMostRecentRaceWeekend mostRecentRace', championshipLevel, {mostRecentRace})
+    const race0Top3 = filterTop3(mostRecentRace.Results.race0 ? enrichDriverData(mostRecentRace.Results.race0, driverInfo) : []);
     const race1Top3 = filterTop3(mostRecentRace.Results.race1 ? enrichDriverData(mostRecentRace.Results.race1, driverInfo) : []);
     const race2Top3 = filterTop3(mostRecentRace.Results.race2 ? enrichDriverData(mostRecentRace.Results.race2, driverInfo) : []);
     const race3Top3 = filterTop3(mostRecentRace.Results.race3 ? enrichDriverData(mostRecentRace.Results.race3, driverInfo) : []);
@@ -192,6 +197,7 @@ export const fetchMostRecentRaceWeekend = async (selectedYear, championshipLevel
       raceName: mostRecentRace.raceName,
       round: mostRecentRace.round,
       season: mostRecentRace.season,
+      race0: race0Top3,
       race1: race1Top3,
       race2: race2Top3,
       race3: race3Top3,
@@ -201,6 +207,7 @@ export const fetchMostRecentRaceWeekend = async (selectedYear, championshipLevel
     console.error("Error fetching most recent race weekend data:", error);
     return {
       raceName: '',
+      race0: [],
       race1: [],
       race2: [],
       race3: [],

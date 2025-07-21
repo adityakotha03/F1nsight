@@ -30,6 +30,7 @@ import { usePageTracking, useScrollTracking } from './utils/gaTracking';
 import { ScrollToTop } from './utils/ScrollToTop';
 
 import './App.scss';
+import SocialMedia from './pages/Socialmedia/SocialMedia';
 
 library.add(fas, fab);
 
@@ -148,6 +149,8 @@ function MainContent({ setSelectedYear, selectedYear, resultPage, resultPagePath
         <Route path="/race-f2/:raceId" element={<RacePageF2 championshipLevel="F2" />} />
         <Route path="/f2/driver-standings" element={<DriverStandingsF2 selectedYear={selectedYear} championshipLevel="F2" />} />
         <Route path="/f2/constructor-standings" element={<ConstructorStandingsF2 selectedYear={selectedYear} championshipLevel="F2" />} />
+        {/* Social Media Routes - not publicly available */}
+        <Route path="/social-media" element={<SocialMedia />} />
       </Routes>
     </div>
   );

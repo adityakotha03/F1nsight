@@ -3,6 +3,7 @@ import { wildCardDrivers } from "./wildCards";
 
 const scoringConfigs = {
   F1A: {
+    rescheduledFeatureKey: 'race0', // rescheduled race
     sprintKey: 'race1',
     featureKey: 'race2',
     sprintPoints: [10, 8, 6, 5, 4, 3, 2, 1],
@@ -11,6 +12,7 @@ const scoringConfigs = {
     poleBonusRace: 'race2',
   },
   F2: {
+    rescheduledFeatureKey: 'race0', // rescheduled race
     sprintKey: 'race1',
     featureKey: 'race2',
     sprintPoints: [10, 8, 6, 5, 4, 3, 2, 1],
@@ -32,6 +34,10 @@ export const calculateSeriesPoints2025 = (allRaceResults, championshipLevel) => 
         fastestLapLimit: config.fastestLapEligibility[config.sprintKey]
       },
       [config.featureKey]: {
+        points: config.featurePoints,
+        fastestLapLimit: config.fastestLapEligibility[config.featureKey]
+      },
+      [config.rescheduledFeatureKey]: {
         points: config.featurePoints,
         fastestLapLimit: config.fastestLapEligibility[config.featureKey]
       }
