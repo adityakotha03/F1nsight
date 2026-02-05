@@ -2,10 +2,14 @@ import React, { useEffect, useState } from "react";
 import { fetchAllRaceResults, fetchDriverInfo } from "../../utils/apiF1a";
 import { calculateSeriesPoints2025 } from "../../utils/calculateSeriesPoints2025";
 import { ConstructorDriver, Loading } from "../../components";
+import { PointsByRaceDropdown } from "../../components/PointsByRaceDropdown";
+import { buildRacePointsMaps } from "../../utils/pointsByRace";
 
 export function DriverStandingsF2({ selectedYear, championshipLevel }) {
     const [standings, setStandings] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
+    const [driverRacePoints, setDriverRacePoints] = useState(new Map());
+    const [racesMeta, setRacesMeta] = useState([]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -14,6 +18,9 @@ export function DriverStandingsF2({ selectedYear, championshipLevel }) {
                 selectedYear.toString(),
                 championshipLevel
             );
+            const { racesMeta, driverPointsByRace } = buildRacePointsMaps(allRaceResults);
+            setDriverRacePoints(driverPointsByRace);
+            setRacesMeta(racesMeta);
             const driverInfoMap = await fetchDriverInfo(selectedYear, championshipLevel);
             // console.log("👀 driverInfoMap", driverInfoMap);
 
@@ -44,7 +51,7 @@ export function DriverStandingsF2({ selectedYear, championshipLevel }) {
         };
 
         fetchData();
-    }, [selectedYear]);
+    }, [selectedYear, championshipLevel]);
 
     // console.log("DriverStandingsF2", standings);
 
@@ -72,6 +79,12 @@ export function DriverStandingsF2({ selectedYear, championshipLevel }) {
                                 showStanding
                                 championshipLevel={championshipLevel}
                             />
+                            {/* TODO: fix points by race dropdown */}
+                            {/* <PointsByRaceDropdown
+                              title="Points by race"
+                              racesMeta={racesMeta}
+                              pointsByRace={driverRacePoints.get(standing.driverId) || []}
+                            /> */}
                         </li>
                     ))}
                 </ul>

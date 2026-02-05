@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { getDriverStandings } from "./api";
-import { ReactComponent as Logo } from "../../components/f1nsight-outlined.svg";
+import { ReactComponent as Logo } from "../../components/f1nsight-logo-26.svg";
 import { darkenColor } from "../../utils/darkenColor";
 import { getPositionChange, storeStandings } from "./utils";
 

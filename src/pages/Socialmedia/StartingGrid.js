@@ -1,7 +1,7 @@
 import classNames from "classnames";
 import React from "react";
 import { darkenColor } from "../../utils/darkenColor";
-import { ReactComponent as Logo } from "../../components/f1nsight-outlined.svg";
+import { ReactComponent as Logo } from "../../components/f1nsight-logo-26.svg";
 
 const StartingGrid = ({ startingGrids, raceName }) => {
     if (!startingGrids || startingGrids.length === 0) {

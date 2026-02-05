@@ -2,18 +2,24 @@ import React, { useEffect, useState } from 'react';
 
 import { fetchAllRaceResults } from '../../utils/apiF1a';
 import { ConstructorCar, Loading } from '../../components';
-import {wildCardDrivers} from '../../utils/wildCards';
 import { calculateSeriesPoints2025 } from '../../utils/calculateSeriesPoints2025';
+import { PointsByRaceDropdown } from '../../components/PointsByRaceDropdown';
+import { buildRacePointsMaps } from '../../utils/pointsByRace';
 
 
 export function ConstructorStandingsF2({ selectedYear, championshipLevel }) {
   const [standings, setStandings] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [constructorRacePoints, setConstructorRacePoints] = useState(new Map());
+  const [racesMeta, setRacesMeta] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
       const allRaceResults = await fetchAllRaceResults(selectedYear, championshipLevel);
+      const { racesMeta, constructorPointsByRace } = buildRacePointsMaps(allRaceResults);
+      setConstructorRacePoints(constructorPointsByRace);
+      setRacesMeta(racesMeta);
       // console.log({allRaceResults});
 
       const { formattedConstructors } = calculateSeriesPoints2025(allRaceResults, championshipLevel);
@@ -23,7 +29,7 @@ export function ConstructorStandingsF2({ selectedYear, championshipLevel }) {
     };
 
     fetchData();
-  }, [selectedYear]);
+  }, [selectedYear, championshipLevel]);
 
   return (
     <div className="max-w-[45rem] m-auto mt-48  pb-64">
@@ -42,6 +48,12 @@ export function ConstructorStandingsF2({ selectedYear, championshipLevel }) {
                 index={index}
                 championshipLevel="f2"
               />
+          {/* TODO: fix points by race dropdown */}
+          {/* <PointsByRaceDropdown
+            title="Points by race"
+            racesMeta={racesMeta}
+            pointsByRace={constructorRacePoints.get(standing.constructorId) || []}
+          /> */}
             </li>
           ))}
         </ul>

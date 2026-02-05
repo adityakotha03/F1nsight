@@ -35,7 +35,7 @@ import SocialMedia from './pages/Socialmedia/SocialMedia';
 library.add(fas, fab);
 
 function App() {
-  const currentYear = new Date().getFullYear();
+  const currentYear = 2025;
   const [selectedYear, setSelectedYear] = useState(currentYear);
   const [resultPage, setResultPage] = useState('');
   const [resultPagePath, setResultPagePath] = useState('');

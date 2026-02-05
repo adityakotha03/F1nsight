@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import { ReactComponent as Logo} from './f1nsight.svg';
+import { ReactComponent as Logo} from './f1nsight-logo-26.svg';
 import { ReactSelectComponent } from './Select';
 import { RaceSelector } from './RaceSelector';
 import { fetchRacesAndSessions } from '../utils/api';
@@ -58,7 +58,7 @@ export const Header = ({ setResultPage, setResultPagePath }) => {
     
     const generateYears = (startYear) => {
         const years = [];
-        const currentYear = new Date().getFullYear();
+        const currentYear = 2025;
         for (let year = currentYear; year >= startYear; year--) {
           years.push({ value: year.toString(), label: year.toString() });
         }

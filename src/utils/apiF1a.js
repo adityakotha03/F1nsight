@@ -58,6 +58,14 @@ const enrichDriverData = (raceData, driverInfo) => {
   // console.log('enrichDriverData', raceData, driverInfo);
   return raceData.map(driver => {
     const driverDetails = driverInfo[driver.number];
+    if (!driverDetails || !driverDetails.Driver || !driverDetails.Constructor) {
+      console.error("enrichDriverData missing driver details", {
+        driverNumber: driver.number,
+        driverDetails,
+        availableDrivers: Object.keys(driverInfo || {}),
+      });
+      return driver;
+    }
     return {
       ...driver,
       Driver: {
