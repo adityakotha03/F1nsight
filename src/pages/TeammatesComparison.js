@@ -9,7 +9,7 @@ import { HeadToHeadChart, PositionsGainedLostChart, QualifyingLapTimesChart, Qua
 
 
 export const TeammatesComparison = () => {
-  const currentYear = new Date().getFullYear();
+  const currentYear = 2025;
   const years = Array.from({ length: currentYear - 1975 + 1 }, (_, i) => currentYear - i);
 
   const { state } = useLocation();

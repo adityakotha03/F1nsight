@@ -1,4 +1,4 @@
-const currentYear = new Date().getFullYear();
+const currentYear = 2025;
 export const teamHistory = {
     mercedes: {
       name: 'mercedes',

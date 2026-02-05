@@ -26,7 +26,7 @@ export const ResultsSelector = ({ className, setSelectedYear, selectedYear, resu
 
   const generateYearOptions = (startYear) => {
     const years = [];
-    let currentYear = new Date().getFullYear();
+    let currentYear = 2025;
     for (let year = currentYear; year >= startYear; year--) {
       years.push({ value: year, label: year.toString() });
     }

@@ -3,7 +3,7 @@ import React from "react";
 import { darkenColor } from "../../utils/darkenColor";
 import { lightenColor } from "../../utils/lightenColor";
 
-import { ReactComponent as Logo } from "../../components/f1nsight-outlined.svg";
+import { ReactComponent as Logo } from "../../components/f1nsight-logo-26.svg";
 
 const RaceResults = ({ raceResults, raceName }) => {
     if (!raceResults || raceResults.length === 0) {

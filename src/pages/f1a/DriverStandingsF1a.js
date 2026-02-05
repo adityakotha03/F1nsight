@@ -2,15 +2,22 @@ import React, { useEffect, useState } from 'react';
 import { fetchAllRaceResults } from '../../utils/apiF1a';
 import { calculateSeriesPoints2025 } from '../../utils/calculateSeriesPoints2025';
 import { ConstructorDriver, Loading } from '../../components';
+import { PointsByRaceDropdown } from '../../components/PointsByRaceDropdown';
+import { buildRacePointsMaps } from '../../utils/pointsByRace';
 
 export function DriverStandingsF1a({ selectedYear, championshipLevel }) {
   const [standings, setStandings] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [driverRacePoints, setDriverRacePoints] = useState(new Map());
+  const [racesMeta, setRacesMeta] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
       const allRaceResults = await fetchAllRaceResults(selectedYear.toString(), championshipLevel);
+      const { racesMeta, driverPointsByRace } = buildRacePointsMaps(allRaceResults);
+      setDriverRacePoints(driverPointsByRace);
+      setRacesMeta(racesMeta);
 
       if (selectedYear === 2025) {
         const { formattedDrivers } = calculateSeriesPoints2025(allRaceResults, championshipLevel);
@@ -42,7 +49,7 @@ export function DriverStandingsF1a({ selectedYear, championshipLevel }) {
     };
 
     fetchData();
-  }, [selectedYear]);
+  }, [selectedYear, championshipLevel]);
 
   // console.log('DriverStandingsF1a', standings);
 
@@ -67,6 +74,12 @@ export function DriverStandingsF1a({ selectedYear, championshipLevel }) {
                   showStanding
                   championshipLevel={championshipLevel}
                 />
+                {/* TODO: fix points by race dropdown */}
+                {/* <PointsByRaceDropdown
+                  title="Points by race"
+                  racesMeta={racesMeta}
+                  pointsByRace={driverRacePoints.get(standing.driverId) || []}
+                /> */}
               </li>
             ))}
           </ul>

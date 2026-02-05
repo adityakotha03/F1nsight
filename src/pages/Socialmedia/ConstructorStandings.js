@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { getConstructorStandings } from "./api";
 import { darkenColor } from "../../utils/darkenColor";
-import { ReactComponent as Logo } from "../../components/f1nsight-outlined.svg";
+import { ReactComponent as Logo } from "../../components/f1nsight-logo-26.svg";
 import { getPositionChange, storeStandings } from "./utils";
 
 const ConstructorStandings = ({ location, round }) => {
