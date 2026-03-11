@@ -15,12 +15,15 @@ import HeroSection from "../layouts/HeroSection";
 import ComparisonsSection from "../layouts/ComparisonsSection";
 import ArSection from "../layouts/ArSection";
 import TelemetrySection from "../layouts/TelemetrySection";
+import { getCurrentYear } from "../utils/currentYear";
+
+const currentYear = getCurrentYear();
 
 export function LandingPage2025({ setResultPagePath }) {
     const [raceData, setRaceData] = useState(null);
     const [F1aRaceData, setF1aRaceData] = useState(null);
     const [F2RaceData, setF2RaceData] = useState(true);
-    const [selectedYear, setSelectedYear] = useState(2025);
+    const [selectedYear, setSelectedYear] = useState(currentYear);
     const [layoutSmall, setLayoutSmall] = useState();
     const [layoutMobile, setLayoutMobile] = useState();
     const ref = useRef(null);
@@ -34,11 +37,11 @@ export function LandingPage2025({ setResultPagePath }) {
 
     useEffect(() => {
         const fetchData = async () => {
-            const mostRecentRace = await fetchMostRecentRace(2025);
+            const mostRecentRace = await fetchMostRecentRace(currentYear);
             const mostRecentF1aRaceWeekend =
-                await fetchMostRecentRaceWeekend(2025, "F1A");
+                await fetchMostRecentRaceWeekend(currentYear, "F1A");
             const mostRecentF2RaceWeekend =
-                await fetchMostRecentRaceWeekend(2025, "F2");
+                await fetchMostRecentRaceWeekend(currentYear, "F2");
             setRaceData(mostRecentRace);
             setF1aRaceData(mostRecentF1aRaceWeekend);
             setF2RaceData(mostRecentF2RaceWeekend);
@@ -307,7 +310,7 @@ export function LandingPage2025({ setResultPagePath }) {
                 Latest {championshipLevel} Academy Race Results
             </p>
             <p className="font-display text-xl leading-none mb-24">
-                2025 {raceName}
+                {selectedYear} {raceName}
             </p>
         </div> 
     )

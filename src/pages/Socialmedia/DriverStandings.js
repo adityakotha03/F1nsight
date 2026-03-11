@@ -4,18 +4,21 @@ import { getDriverStandings } from "./api";
 import { ReactComponent as Logo } from "../../components/f1nsight-logo-26.svg";
 import { darkenColor } from "../../utils/darkenColor";
 import { getPositionChange, storeStandings } from "./utils";
+import { getCurrentYear } from "../../utils/currentYear";
+
+const currentYear = getCurrentYear();
 
 const DriverStandings = ({ location, round }) => {
     const [driverStandings, setDriverStandings] = useState(null);
     const [teamColors, setTeamColors] = useState({});
 
     useEffect(() => {
-        getDriverStandings().then((standings) => {
+        getDriverStandings(currentYear).then((standings) => {
             setDriverStandings(standings);
             storeStandings('driverStandings', standings); // Store for next comparison
         });
         axios.get('https://praneeth7781.github.io/f1nsight-api-2/colors/teams.json')
-            .then(res => setTeamColors(res.data["2025"] || {}));
+            .then(res => setTeamColors(res.data[currentYear] || {}));
     }, []);
 
     console.log('driverStandings', driverStandings);
@@ -40,7 +43,7 @@ const DriverStandings = ({ location, round }) => {
                     }}
                 >
                     <div className="w-[70px] h-[150px] items-center justify-end overflow-hidden rounded-md -mt-32">
-                        <img className="max-w-[220%] -ml-[40px]" src={`${process.env.PUBLIC_URL}/images/2025/drivers/${driverData.driver.code}.png`} alt={driverData.driver.givenName} />
+                        <img className="max-w-[220%] -ml-[40px]" src={`${process.env.PUBLIC_URL}/images/${currentYear}/drivers/${driverData.driver.code}.png`} alt={driverData.driver.givenName} />
                     </div>
                 </div>
                 <div className="grow pr-16 py-16">
@@ -82,7 +85,7 @@ const DriverStandings = ({ location, round }) => {
                         </div>
                     </div>
                     <div className="w-[41px] h-[41px] overflow-hidden flex items-start justify-center -mb-3">
-                        <img className="shrink-0 max-w-[60px]" src={`${process.env.PUBLIC_URL}/images/2025/drivers/${driverData.driver.code}.png`} alt={driverData.driver.givenName} />
+                        <img className="shrink-0 max-w-[60px]" src={`${process.env.PUBLIC_URL}/images/${currentYear}/drivers/${driverData.driver.code}.png`} alt={driverData.driver.givenName} />
                     </div>
                     <div >
                         <p className="text-[8px] tracking-[2px] gradient-text-light leading-none">{driverData.driver.givenName}</p>
@@ -103,7 +106,7 @@ const DriverStandings = ({ location, round }) => {
                 {/* Left column: Top 3 */}
                 <div className="w-1/2 leading-none">
                     <div className="font-display mx-auto w-fit mt-24">
-                        <p className=" text-neutral-400 text-[20px] ">2025</p>
+                        <p className=" text-neutral-400 text-[20px] ">{currentYear}</p>
                         <p className="text-gradient text-[37px]">Driver</p>
                         <p className="text-gradient text-[25px]">Standings</p>
                     </div>

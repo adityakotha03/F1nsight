@@ -4,19 +4,22 @@ import { getConstructorStandings } from "./api";
 import { darkenColor } from "../../utils/darkenColor";
 import { ReactComponent as Logo } from "../../components/f1nsight-logo-26.svg";
 import { getPositionChange, storeStandings } from "./utils";
+import { getCurrentYear } from "../../utils/currentYear";
+
+const currentYear = getCurrentYear();
 
 const ConstructorStandings = ({ location, round }) => {
     const [constructorStandings, setConstructorStandings] = useState(null);
     const [teamColors, setTeamColors] = useState({});
 
     useEffect(() => {
-        getConstructorStandings().then((standings) => {
+        getConstructorStandings(currentYear).then((standings) => {
             setConstructorStandings(standings);
             storeStandings('constructorStandings', standings); // Store for next comparison
         });
         
         axios.get('https://praneeth7781.github.io/f1nsight-api-2/colors/teams.json')
-            .then(res => setTeamColors(res.data["2025"] || {}));
+            .then(res => setTeamColors(res.data[currentYear] || {}));
     }, []);
 
     console.log('constructorStandings', constructorStandings);
@@ -41,7 +44,7 @@ const ConstructorStandings = ({ location, round }) => {
                         filter: `drop-shadow(0 0 16px ${darkenColor(color)}) drop-shadow(0 2px 8px #0008)`
                     }}
                     src={`${
-                        process.env.PUBLIC_URL + "/images/2025/cars/" + standing.constructor.constructorId + ".png"
+                        process.env.PUBLIC_URL + `/images/${currentYear}/cars/` + standing.constructor.constructorId + ".png"
                     }`}
                     width={120}
                 />
@@ -68,7 +71,7 @@ const ConstructorStandings = ({ location, round }) => {
         >
             <div className="leading-none absolute top-24 left-40">
                 <div className="font-display mx-auto w-fit">
-                    <p className=" text-neutral-400 text-[20px] ">2025</p>
+                    <p className=" text-neutral-400 text-[20px] ">{currentYear}</p>
                     <p className="text-gradient text-[20px]">Constructor</p>
                     <p className="text-gradient text-[25px]">Standings</p>
                 </div>

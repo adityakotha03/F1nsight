@@ -2,8 +2,11 @@ import classNames from "classnames";
 import React from "react";
 import { darkenColor } from "../../utils/darkenColor";
 import { lightenColor } from "../../utils/lightenColor";
+import { getCurrentYear } from "../../utils/currentYear";
 
 import { ReactComponent as Logo } from "../../components/f1nsight-logo-26.svg";
+
+const currentYear = getCurrentYear();
 
 const RaceResults = ({ raceResults, raceName }) => {
     if (!raceResults || raceResults.length === 0) {
@@ -52,7 +55,7 @@ const RaceResults = ({ raceResults, raceName }) => {
                             className="max-w-[100px]"
                             src={`${
                                 process.env.PUBLIC_URL +
-                                "/images/2025/drivers/" +
+                                `/images/${currentYear}/drivers/` +
                                 driver.driver.name_acronym +
                                 ".png"
                             }`}
@@ -74,7 +77,7 @@ const RaceResults = ({ raceResults, raceName }) => {
                             className="drop-shadow-[0_0_14px_rgba(0,0,0,0.75)] z-10 -mt-4"
                             src={`${
                                 process.env.PUBLIC_URL +
-                                "/images/2025/cars/" +
+                                `/images/${currentYear}/cars/` +
                                 driver.driver.constructorId +
                                 ".png"
                             }`}

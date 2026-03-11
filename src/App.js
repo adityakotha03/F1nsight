@@ -28,14 +28,16 @@ import {
 } from './pages'; 
 import { usePageTracking, useScrollTracking } from './utils/gaTracking';
 import { ScrollToTop } from './utils/ScrollToTop';
+import { getCurrentYear } from './utils/currentYear';
 
 import './App.scss';
 import SocialMedia from './pages/Socialmedia/SocialMedia';
 
 library.add(fas, fab);
 
+const currentYear = getCurrentYear();
+
 function App() {
-  const currentYear = 2025;
   const [selectedYear, setSelectedYear] = useState(currentYear);
   const [resultPage, setResultPage] = useState('');
   const [resultPagePath, setResultPagePath] = useState('');

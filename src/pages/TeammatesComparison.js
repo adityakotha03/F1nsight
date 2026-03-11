@@ -5,11 +5,12 @@ import { useLocation, useParams, useNavigate } from 'react-router-dom';
 
 
 import { fetchDriverStats } from '../utils/api';
+import { getCurrentYear } from '../utils/currentYear';
 import { HeadToHeadChart, PositionsGainedLostChart, QualifyingLapTimesChart, QualifyingLapTimesDeltaChart, PositionsComparisonChart, ReactSelectComponent, Loading, Button } from '../components';
 
 
 export const TeammatesComparison = () => {
-  const currentYear = 2025;
+  const currentYear = getCurrentYear();
   const years = Array.from({ length: currentYear - 1975 + 1 }, (_, i) => currentYear - i);
 
   const { state } = useLocation();

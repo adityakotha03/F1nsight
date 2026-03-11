@@ -13,6 +13,7 @@ import {
     ScatterChart,
 } from "recharts";
 import LapTrackChart from "./LapTrackChart";
+import { buildOpenF1Url } from "../config/openf1";
 
 const gapConvertion = (driver1LapData, driver2LapData) => {
     const timeToSeconds = (time) => {
@@ -52,7 +53,7 @@ const LapSpeedComparison = ({ driver1LapData, driver2LapData }) => {
     const fetchLapData = async (driverNumber, lapNumber, sessionKey) => {
         try {
             const lapStartResponse = await fetch(
-                `https://api.openf1.org/v1/laps?driver_number=${driverNumber}&lap_number=${lapNumber}&session_key=${sessionKey}`
+                `${buildOpenF1Url("/laps")}?driver_number=${driverNumber}&lap_number=${lapNumber}&session_key=${sessionKey}`
             );
             const lapStartData = await lapStartResponse.json();
             const lapStartTime = lapStartData[0]?.date_start;
@@ -66,7 +67,7 @@ const LapSpeedComparison = ({ driver1LapData, driver2LapData }) => {
 
             // Fetch the car data within the lap timeframe
             const carDataResponse = await fetch(
-                `https://api.openf1.org/v1/car_data?driver_number=${driverNumber}&session_key=${sessionKey}`
+                `${buildOpenF1Url("/car_data")}?driver_number=${driverNumber}&session_key=${sessionKey}`
             );
             const carData = await carDataResponse.json();
 
@@ -84,7 +85,7 @@ const LapSpeedComparison = ({ driver1LapData, driver2LapData }) => {
 
             //Fetch Car coodinates from lapStartTime to adjustedLapEndTime
             const carCoordinatesResponse = await fetch(
-                `https://api.openf1.org/v1/location?session_key=${sessionKey}&driver_number=${driverNumber}&date%3E${lapStartTime}&date%3C${adjustedLapEndTime}`
+                `${buildOpenF1Url("/location")}?session_key=${sessionKey}&driver_number=${driverNumber}&date%3E${lapStartTime}&date%3C${adjustedLapEndTime}`
             );
             const carCoordinates = await carCoordinatesResponse.json();
 

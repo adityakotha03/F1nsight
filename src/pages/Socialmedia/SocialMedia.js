@@ -9,14 +9,16 @@ import RaceResults from "./RaceResults";
 import "./SocialMedia.scss";
 import { fetchMostRecentRace } from "../../utils/api";
 import { getRaceWeekendResults } from "./api";
+import { getCurrentYear } from "../../utils/currentYear";
 
+const currentYear = getCurrentYear();
 
 const SocialMedia = () => {
     const [weekendResults, setWeekendResults] = useState(null);
     const [recentRaceWeekend, setRecentRaceWeekend] = useState(null); 
 
     const fetch = async () => {
-        const mostRecentRaceWeekend = await fetchMostRecentRace(2025);
+        const mostRecentRaceWeekend = await fetchMostRecentRace(currentYear);
 
         console.log('mostRecentRaceWeekend', mostRecentRaceWeekend);
 

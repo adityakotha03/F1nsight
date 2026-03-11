@@ -10,6 +10,7 @@ import { ReactSelectComponent } from './Select';
 import { RaceSelector } from './RaceSelector';
 import { fetchRacesAndSessions } from '../utils/api';
 import { trackButtonClick } from '../utils/gaTracking';
+import { getCurrentYear } from '../utils/currentYear';
 
 export const Header = ({ setResultPage, setResultPagePath }) => {
 
@@ -58,7 +59,7 @@ export const Header = ({ setResultPage, setResultPagePath }) => {
     
     const generateYears = (startYear) => {
         const years = [];
-        const currentYear = 2025;
+        const currentYear = getCurrentYear();
         for (let year = currentYear; year >= startYear; year--) {
           years.push({ value: year.toString(), label: year.toString() });
         }

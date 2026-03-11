@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ReactSelectComponent } from './Select';
 import classNames from 'classnames';
+import { getCurrentYear } from '../utils/currentYear';
 
 export const ResultsSelector = ({ className, setSelectedYear, selectedYear, resultPage, resultPagePath, championshipLevel }) => {
   const navigate = useNavigate();
@@ -26,7 +27,7 @@ export const ResultsSelector = ({ className, setSelectedYear, selectedYear, resu
 
   const generateYearOptions = (startYear) => {
     const years = [];
-    let currentYear = 2025;
+    const currentYear = getCurrentYear();
     for (let year = currentYear; year >= startYear; year--) {
       years.push({ value: year, label: year.toString() });
     }

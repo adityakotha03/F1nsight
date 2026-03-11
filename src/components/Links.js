@@ -1,9 +1,11 @@
 import Accordion from "../components/Accordion.js";
 import React from "react";
 import { Link } from "react-router-dom";
+import { getCurrentYear } from "../utils/currentYear";
+
+const currentYear = getCurrentYear();
 
 export const F1Links = ({accordion = false}) => {
-    const currentYear = 2025; // Get the current year dynamically
     const links = (
         <>
             <Link to="/race-results" className="hover:text-gray-300">
@@ -59,7 +61,6 @@ export const F1Links = ({accordion = false}) => {
 };
 
 export const F1ALinks = ({accordion = false}) => {
-    const currentYear = 2025; // Get the current year dynamically
     const links = (
         <>
             <Link
@@ -100,7 +101,6 @@ export const F1ALinks = ({accordion = false}) => {
 };
 
 export const F2Links = ({accordion = false}) => {
-    const currentYear = 2025; // Get the current year dynamically
     const links = (
         <>
             <Link

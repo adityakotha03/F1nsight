@@ -1,4 +1,5 @@
 import axios from "axios";
+import { buildOpenF1Url, OPENF1_API_BASE_URL } from "../config/openf1";
 
 export const fetchDriversList = async () => {
   const response = await fetchWithCache(`https://praneeth7781.github.io/f1nsight-api-2/driversList.json`);
@@ -69,14 +70,14 @@ export const fetchRaceMeetingKeys = async (selectedYear) => {
 export const fetchRacesAndSessions = async (selectedYear) => {
   try {
       // Fetch races
-      const racesResponse = await fetch(`https://api.openf1.org/v1/meetings?year=${selectedYear}`);
+      const racesResponse = await fetch(`${buildOpenF1Url("/meetings")}?year=${selectedYear}`);
       if (!racesResponse.ok) {
           throw new Error('Failed to fetch races');
       }
       const racesData = await racesResponse.json();
 
       // Fetch sessions
-      const sessionsResponse = await fetch(`https://api.openf1.org/v1/sessions?year=${selectedYear}&session_name=Race`);
+      const sessionsResponse = await fetch(`${buildOpenF1Url("/sessions")}?year=${selectedYear}&session_name=Race`);
       if (!sessionsResponse.ok) {
           throw new Error('Failed to fetch sessions');
       }
@@ -372,8 +373,8 @@ export const fetchDriversAndTires = async (sessionKey) => {
   if (!sessionKey) return [];
 
   const urls = {
-    driversUrl: `https://api.openf1.org/v1/drivers?session_key=${sessionKey}`,
-    stintsUrl: `https://api.openf1.org/v1/stints?session_key=${sessionKey}`
+    driversUrl: `${buildOpenF1Url("/drivers")}?session_key=${sessionKey}`,
+    stintsUrl: `${buildOpenF1Url("/stints")}?session_key=${sessionKey}`
   };
 
   try {
@@ -444,7 +445,7 @@ export async function fetchLocationData(sessionKey, driverId, startTime, endTime
   // const fetchStartTime = performance.now();
 
   // Assuming the base URL for API calls might be reused
-  const baseUrl = 'https://api.openf1.org/v1';
+  const baseUrl = OPENF1_API_BASE_URL;
   const locationUrl = `${baseUrl}/location?session_key=${sessionKey}&driver_number=${driverId}&date>${startTime}&date<${endTime}`;
   const carDataUrl = `${baseUrl}/car_data?session_key=${sessionKey}&driver_number=${driverId}&date>${startTime}&date<${endTime}`;
 
