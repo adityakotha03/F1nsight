@@ -9,6 +9,7 @@ import {
     fetchQualifyingResultsByCircuit,
     fetchLocationData,
 } from "../utils/api.js";
+import { buildOpenF1Url } from "../config/openf1";
 import { organizeQualifyingResults } from "../utils/organizeQualifyingResults.js";
 
 import {
@@ -148,7 +149,7 @@ export function RacePage() {
 
             const circuitId = locationMaps[location];
             const sessionsResponse = await fetch(
-                `https://api.openf1.org/v1/sessions?meeting_key=${meetingKey}`
+                `${buildOpenF1Url("/sessions")}?meeting_key=${meetingKey}`
             );
             const sessionsData = await sessionsResponse.json();
 
@@ -199,14 +200,14 @@ export function RacePage() {
                     lapsData,
                 ] = await Promise.all([
                     fetch(
-                        `https://api.openf1.org/v1/drivers?session_key=${sessionKey}`
+                        `${buildOpenF1Url("/drivers")}?session_key=${sessionKey}`
                     ).then((res) => res.json()),
                     fetch(
-                        `https://api.openf1.org/v1/position?session_key=${sessionKey}`
+                        `${buildOpenF1Url("/position")}?session_key=${sessionKey}`
                     ).then((res) => res.json()),
                     fetchDriversAndTires(sessionKey),
                     fetch(
-                        `https://api.openf1.org/v1/laps?session_key=${sessionKey}`
+                        `${buildOpenF1Url("/laps")}?session_key=${sessionKey}`
                     ).then((res) => res.json()),
                 ]);
 
@@ -296,14 +297,14 @@ export function RacePage() {
                     lapsData,
                 ] = await Promise.all([
                     fetch(
-                        `https://api.openf1.org/v1/drivers?session_key=${sessionKey}`
+                        `${buildOpenF1Url("/drivers")}?session_key=${sessionKey}`
                     ).then((res) => res.json()),
                     fetch(
-                        `https://api.openf1.org/v1/position?session_key=${sessionKey}`
+                        `${buildOpenF1Url("/position")}?session_key=${sessionKey}`
                     ).then((res) => res.json()),
                     fetchDriversAndTires(sessionKey),
                     fetch(
-                        `https://api.openf1.org/v1/laps?session_key=${sessionKey}`
+                        `${buildOpenF1Url("/laps")}?session_key=${sessionKey}`
                     ).then((res) => res.json()),
                 ]);
 
@@ -384,7 +385,7 @@ export function RacePage() {
                 try {
                     // Fetch sessions to find the race session
                     const sessionsResponse = await fetch(
-                        `https://api.openf1.org/v1/sessions?meeting_key=${meetingKey}`
+                        `${buildOpenF1Url("/sessions")}?meeting_key=${meetingKey}`
                     );
                     const sessionsData = await sessionsResponse.json();
                     const raceSession = sessionsData.find(

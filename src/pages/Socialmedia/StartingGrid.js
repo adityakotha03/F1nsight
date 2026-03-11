@@ -2,6 +2,9 @@ import classNames from "classnames";
 import React from "react";
 import { darkenColor } from "../../utils/darkenColor";
 import { ReactComponent as Logo } from "../../components/f1nsight-logo-26.svg";
+import { getCurrentYear } from "../../utils/currentYear";
+
+const currentYear = getCurrentYear();
 
 const StartingGrid = ({ startingGrids, raceName }) => {
     if (!startingGrids || startingGrids.length === 0) {
@@ -33,7 +36,7 @@ const StartingGrid = ({ startingGrids, raceName }) => {
                         alt=""
                         className="drop-shadow-[0_0_7px_rgba(0,0,0,0.90)]"
                         src={`${
-                            process.env.PUBLIC_URL + "/images/2025/carTopView/" + driver.driver.constructorId + ".png"
+                            process.env.PUBLIC_URL + `/images/${currentYear}/carTopView/` + driver.driver.constructorId + ".png"
                         }`}
                         width={27}
                     />
@@ -47,7 +50,7 @@ const StartingGrid = ({ startingGrids, raceName }) => {
                         alt=""
                         className="drop-shadow-[0_0_14px_rgba(0,0,0,0.75)]"
                         src={`${
-                            process.env.PUBLIC_URL + "/images/2025/drivers/" + driver.driver.name_acronym + ".png"
+                            process.env.PUBLIC_URL + `/images/${currentYear}/drivers/` + driver.driver.name_acronym + ".png"
                         }`}
                         width={56}
                     />

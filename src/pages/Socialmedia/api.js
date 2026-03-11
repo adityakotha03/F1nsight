@@ -1,3 +1,6 @@
+import { buildOpenF1Url } from "../../config/openf1";
+import { getCurrentYear } from "../../utils/currentYear";
+
 // Utility function to map team names to constructor IDs
 export const mapTeamNameToConstructorId = (teamName) => {
     const teamMapping = {
@@ -16,7 +19,7 @@ export const mapTeamNameToConstructorId = (teamName) => {
     return teamMapping[teamName] || teamName?.toLowerCase().replace(/\s+/g, '_');
 };
 
-export async function getDriverStandings(year = 2025) {
+export async function getDriverStandings(year = getCurrentYear()) {
     try {
         const url = `https://api.jolpi.ca/ergast/f1/${year}/driverstandings/`;
         const response = await fetch(url);
@@ -58,7 +61,7 @@ export async function getDriverStandings(year = 2025) {
     }
 }
 
-export async function getConstructorStandings(year = 2025) {
+export async function getConstructorStandings(year = getCurrentYear()) {
     try {
         const url = `https://api.jolpi.ca/ergast/f1/${year}/constructorstandings/`;
         const response = await fetch(url);
@@ -95,7 +98,7 @@ export async function getConstructorStandings(year = 2025) {
 
 export async function getRaceWeekendResults(meeting_key) {
     console.log('meeting_key', meeting_key);
-    const url = `https://api.openf1.org/v1/sessions?meeting_key=${meeting_key}`;
+    const url = `${buildOpenF1Url("/sessions")}?meeting_key=${meeting_key}`;
     const response = await fetch(url);
     if (!response.ok) {
         throw new Error('Failed to fetch sessions');
@@ -107,18 +110,18 @@ export async function getRaceWeekendResults(meeting_key) {
     // For each session, fetch the starting grid and enrich with driver/team data
     const grids = await Promise.all(
         raceSessions.map(async session => {
-            const gridUrl = `https://api.openf1.org/v1/starting_grid?session_key=${session.session_key}`;
+            const gridUrl = `${buildOpenF1Url("/starting_grid")}?session_key=${session.session_key}`;
             const gridResponse = await fetch(gridUrl);
             if (!gridResponse.ok) {
                 throw new Error(`Failed to fetch starting grid for session_key ${session.session_key}`);
             }
 
-            const resultUrl = `https://api.openf1.org/v1/session_result?session_key=${session.session_key}`;
+            const resultUrl = `${buildOpenF1Url("/session_result")}?session_key=${session.session_key}`;
             const resultResponse = await fetch(resultUrl);
             if (!resultResponse.ok) {
                 throw new Error(`Failed to fetch results for session_key ${session.session_key}`);
             }
-            const driversUrl = `https://api.openf1.org/v1/drivers?session_key=${session.session_key}`;
+            const driversUrl = `${buildOpenF1Url("/drivers")}?session_key=${session.session_key}`;
             const driversResponse = await fetch(driversUrl);
             if (!driversResponse.ok) {
                 throw new Error(`Failed to fetch drivers for session_key ${session.session_key}`);

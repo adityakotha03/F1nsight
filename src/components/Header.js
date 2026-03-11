@@ -11,6 +11,7 @@ import { RaceSelector } from "./RaceSelector";
 import { fetchRacesAndSessions } from "../utils/api";
 import { trackButtonClick } from "../utils/gaTracking";
 import { Modal } from "./Modal";
+import { getCurrentYear } from "../utils/currentYear";
 import { F1ALinks, F1Links, F2Links } from "./Links";
 
 export const Header = ({ setResultPage, setResultPagePath }) => {
@@ -78,7 +79,7 @@ export const Header = ({ setResultPage, setResultPagePath }) => {
 
     const generateYears = (startYear) => {
         const years = [];
-        const currentYear = 2025;
+        const currentYear = getCurrentYear();
         for (let year = currentYear; year >= startYear; year--) {
             years.push({ value: year.toString(), label: year.toString() });
         }

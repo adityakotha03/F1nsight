@@ -6,11 +6,13 @@ import { Link } from "react-router-dom";
 import { ReactComponent as Logo } from "./f1nsight-logo-26.svg";
 import { Button } from "./Button";
 import { F1ALinks, F1Links, F2Links } from "./Links";
+import { getCurrentYear } from "../utils/currentYear";
+
+const currentYear = getCurrentYear();
 
 export const Footer2025 = ({ className }) => {
     const location = useLocation().pathname;
     const hideFooter = location.startsWith("/race/");
-    const currentYear = 2025; // Get the current year dynamically
 
     return (
         <footer

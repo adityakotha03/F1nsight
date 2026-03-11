@@ -1,4 +1,6 @@
-const currentYear = 2025;
+import { getCurrentYear } from "./currentYear";
+
+const currentYear = getCurrentYear();
 export const teamHistory = {
     mercedes: {
       name: 'mercedes',
