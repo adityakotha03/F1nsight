@@ -1,0 +1,14 @@
+/* tire strategy */
+.tire-compound--soft {
+    filter: url(#inset-shadow-soft);
+    fill: #230000;
+    border: 1px solid #ffffff;
+}
+.tire-compound--medium {
+    filter: url(#inset-shadow-medium);
+    fill: #372e00;
+}
+.tire-compound--hard {
+    filter: url(#inset-shadow-hard);
+    fill: #242424;
+}

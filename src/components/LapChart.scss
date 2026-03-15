@@ -1,0 +1,18 @@
+/* lap chart */
+.recharts-cartesian-axis-tick-value {
+    font-size: 1rem;
+    letter-spacing: .2rem;
+  }
+  .recharts-default-tooltip,
+  .custom-tooltip {
+    background-color: rgba(0, 0, 0, .75) !important;
+    backdrop-filter: blur(12px);
+    border: .1rem solid transparent !important;
+    border-image: linear-gradient(to bottom, theme('colors.neutral.600'), theme('colors.neutral.500')) 1;
+    padding: .8rem;
+    border-radius: 1.2rem;
+    box-shadow: 0 0 1rem rgba(0, 0, 0, .5);
+  }
+  .recharts-tooltip-label {
+    font-family: "Bungee", sans-serif;
+  }

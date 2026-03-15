@@ -1,0 +1,43 @@
+.modal-content {
+    @media (min-width: 768px) {
+        top: 5vh;
+        width: 50%;
+        position: relative;
+        height: 90vh;
+        left: 50%;
+        transform: translateX(-50%);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+    }
+
+    &__header{
+        top: 0;
+        width: 100%;
+        @media (max-width: 767px) {
+            position: fixed;
+        }
+        @media (min-width: 768px) {
+            position: absolute;
+        }
+    }
+    &__content {
+        overflow-y: scroll;
+        padding-top: 96px;
+        padding-bottom: 96px;
+        @media (max-width: 767px) {
+            height: 100vh;
+        }
+    }
+    &__footer {
+        bottom: 0;
+        width: 100%;
+        box-shadow: 0 -1rem 1rem 0 rgba(0, 0, 0, 1);
+        @media (max-width: 767px) {
+            position: fixed;
+        }
+        @media (min-width: 768px) {
+            position: absolute;
+        }
+    }
+}

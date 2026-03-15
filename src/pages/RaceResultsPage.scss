@@ -1,0 +1,133 @@
+/* Race Result */
+.race-result {
+    display: grid;
+    grid-template-columns: 1fr;
+    @media (min-width: 768px) {
+        gap: 1.6rem;
+        grid-template-columns: 1fr 1fr;
+    }
+    @media (min-width: 1280px) {
+        gap: 3.2rem;
+        grid-template-columns: 1fr 1fr 1fr;
+    }
+}
+
+.race-results__list {
+    display: grid;
+    grid-template-columns: 10.8rem 10.8rem 10.8rem;
+    grid-template-areas: "item-2 item-1 item-3";
+    justify-content: center;
+    width: 100%;
+    img {
+        border-top-right-radius: 2rem;
+        border-top-left-radius: 2rem;
+    }
+}
+
+.race-results__list__item-1 {
+    grid-area: item-1;
+    margin-bottom: -0.4rem;
+    z-index: 1;
+    .stand {
+        padding-bottom: 0.8rem;
+        padding-top: 1.6rem;
+        width: 100%;
+        background: #171717;
+    }
+    img {
+        position: absolute;
+        bottom: 7.6rem;
+        left: 50%;
+        transform: translateX(-50%);
+        height: 9rem;
+        width: 9rem;
+    }
+}
+
+.race-results__list__item-1:before,
+.race-results__list__item-1:after,
+.race-results__list__item-2:after,
+.race-results__list__item-3:after {
+    background: linear-gradient(
+        180deg,
+        rgba(34, 34, 34, 1) 0%,
+        rgba(138, 138, 138, 1) 100%
+    );
+    content: "";
+    height: 0.8rem;
+    position: absolute;
+    z-index: -1;
+}
+
+.race-results__list__item-1:before,
+.race-results__list__item-1:after {
+    top: -0.8rem;
+    width: 60%;
+}
+.race-results__list__item-1:before {
+    left: 0.7rem;
+    transform: skew(-1rad);
+}
+.race-results__list__item-1:after {
+    right: 0.7rem;
+    transform: skew(1rad);
+}
+
+.race-results__list__item-2 {
+    grid-area: item-2;
+    .stand {
+        padding-bottom: 0.4rem;
+        padding-top: 0.8rem;
+        width: 100%;
+        background: #171717;
+    }
+    img {
+        position: absolute;
+        bottom: 6.4rem;
+        left: 1.6rem;
+    }
+}
+.race-results__list__item-2:after {
+    left: 0.9rem;
+    position: absolute;
+    transform: skew(2rad);
+    top: 0;
+    width: 100%;
+}
+
+.race-results__list__item-3 {
+    grid-area: item-3;
+    .stand {
+        padding-bottom: 0.4rem;
+        padding-top: 0.4rem;
+        width: 100%;
+        background: #171717;
+    }
+    img {
+        position: absolute;
+        bottom: 6rem;
+        left: 1.6rem;
+    }
+}
+.race-results__list__item-3:after {
+    left: -0.9rem;
+    position: absolute;
+    transform: skew(-2rad);
+    top: 0.4rem;
+    width: 100%;
+}
+
+.clickable-hover:hover {
+    transform: scale(.98);
+    transition-duration: 150ms;
+    transition-timing-function: ease-in-out;
+    transition-property: transform;
+    cursor: pointer;
+}
+.clickable-hover-foreground:hover {
+    transform: scale(1.10);
+    transition-duration: 150ms;
+    transition-timing-function: ease-in-out;
+    transition-property: transform;
+    cursor: pointer;
+}

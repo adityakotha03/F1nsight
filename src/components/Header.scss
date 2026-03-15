@@ -1,0 +1,33 @@
+.global-header {
+    display: block;
+    top: 0;
+    width: 100vw;
+    z-index: 1000;
+    position: fixed;
+}
+
+.global-header__main-nav {
+    display: flex;
+    gap: .8rem;
+    justify-content: space-between;
+    padding: .8rem 1.6rem;
+}
+
+.global-header__main-nav__left {
+
+}
+
+.global-header__main-nav__right {
+    
+}
+
+.global-header__main-nav__button {
+    position: relative;
+
+    &__icon {
+        position: absolute;
+        bottom:.4rem;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+}

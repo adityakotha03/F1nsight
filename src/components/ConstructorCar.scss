@@ -1,0 +1,47 @@
+/* constructor card */
+.constructor-card {
+    position: relative;
+}
+.constructor-card:before {
+    content: "";
+    box-shadow: inset 0 0 2.4rem 0 rgba(0, 0, 0, .5);
+    border-radius: 2.4rem;
+    height: 60%;
+    position: absolute;
+    left:.8rem;
+    right:.8rem;
+    bottom: 0;
+    z-index: -1;
+}
+.constructor-stand {
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(12px);
+    position: relative;
+}
+
+.constructor-stand:before,
+.constructor-stand:after {
+    background: linear-gradient(
+        180deg,
+        rgb(42, 42, 42) 0%,
+        rgb(87, 87, 87) 100%
+    );
+    content: "";
+    height: 1.2rem;
+    position: absolute;
+    z-index: -1;
+}
+
+.constructor-stand:before,
+.constructor-stand:after {
+    top: -1.2rem;
+    width: 60%;
+}
+.constructor-stand:before {
+    left: 0.9rem;
+    transform: skew(-1rad);
+}
+.constructor-stand:after {
+    right: 0.9rem;
+    transform: skew(1rad);
+}

@@ -1,0 +1,28 @@
+/* Custom styles for WebKit browsers */
+input[type="range"].custom-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    height: 20px;
+    width: 10px;
+    background: theme('colors.plum.500');
+    border-radius: 24px;
+    margin-top: -2px;
+    cursor: pointer;
+    transition: background 0.3s;
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.75);
+  }
+  input[type="range"].custom-slider::-webkit-slider-thumb:hover {
+    background: theme('colors.plum.300');
+  }
+  
+  /* Firefox */
+  input[type="range"].custom-slider::-moz-range-thumb {
+    height: 20px;
+    width: 10px;
+    background: theme('colors.plum.500');
+    border-radius: 24px;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  input[type="range"].custom-slider::-moz-range-thumb:hover {
+    background: theme('colors.plum.300');
+  }

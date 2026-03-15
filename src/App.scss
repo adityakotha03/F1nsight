@@ -1,0 +1,16 @@
+@import "./components/DriverCard.scss";
+@import "./components/Footer.scss";
+@import "./components/Header.scss";
+@import "./pages/LandingPage.scss";
+@import "./components/LapChart.scss";
+@import "./components/Loading.scss";
+@import "./pages/RacePage.scss";
+@import "./pages/RaceResultsPage.scss";
+@import "./components/Select.scss";
+@import "./components/TireStrategy.scss";
+
+@import "./styles/typography.scss";
+
+.video-container {
+    background-color: red; /* Temporary check */
+}

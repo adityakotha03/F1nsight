@@ -1,0 +1,82 @@
+@mixin viewHeight {
+  height: 300px;
+  @media (min-width: 640px) {
+    height: 544px;
+  }
+  // @media (min-width: 1280px) {
+  //   height: 638px;
+  // }
+}
+
+.race-page {
+  display: flex;
+  flex-direction: column;
+
+  @media (max-width: 767px) {
+    margin-top: .8rem;
+    height: 100vh;
+    height: calc(100vh - .8rem);
+    overflow: hidden;
+  }
+
+  &__track-view {
+    &__display {
+      &__canvas {
+        .three-canvas-container {
+          position: relative;
+          width: 100%;
+          overflow: hidden;
+          @include viewHeight;
+        }
+      }
+      &__preview {
+        @include viewHeight;
+      }
+    }
+  }
+  &__scroll-container {
+    padding: 3rem 0;
+    @media (max-width: 767px) {
+      overflow-y: auto;
+      overflow-x: hidden;
+      flex: 1;
+    }
+  }
+}
+
+
+.canvas-container:after,
+.track-preview:after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  pointer-events: none;
+  box-shadow: inset 0 0 20rem 0 rgba(255, 255, 255, .3), 0 0 2.4rem 0 rgba(0, 0, 0, .5);
+}
+
+.track-preview {
+}
+
+.race-controls {
+  display: grid;
+  grid-template-columns: auto auto 50%;
+  grid-template-areas:
+    "play pause view"
+    "speed speed speed"
+  ;
+
+  @media (min-width: 1280px) {
+    grid-template-columns: auto auto auto 50%;
+    grid-template-areas:
+      "play pause view speed"
+    ;
+  }
+}
+
+.race-controls__play { grid-area: play; }
+.race-controls__pause { grid-area: pause; }
+.race-controls__speed { grid-area: speed; }
+.race-controls__view { grid-area: view; }
