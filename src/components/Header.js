@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { NavLink, useLocation } from "react-router-dom";
+import { Link, NavLink, useLocation } from "react-router-dom";
 import PropTypes from "prop-types";
 
 import classNames from "classnames";
@@ -217,6 +217,11 @@ export const Header = ({ setResultPage, setResultPagePath }) => {
 
                     {/* Desktop */}
                     <div className="flex items-center gap-16 max-md:hidden">
+                        {/* <div className="relative w-max uppercase text-sm ">
+                            <Link to="/about-us" className="global-header__main-nav__button py-12 px-24 rounded-[.8rem] uppercase tracking-xs">
+                                About
+                            </Link>
+                        </div> */}
                         <div className="relative group w-max uppercase text-sm ">
                             <button className="global-header__main-nav__button py-12 px-24 rounded-[.8rem] uppercase tracking-xs">
                                 Results
@@ -232,10 +237,10 @@ export const Header = ({ setResultPage, setResultPagePath }) => {
                                         <F1Links />
                                     </div>
                                     <div className="flex flex-col gap-4">
-                                        <F1ALinks />
+                                        <F2Links />
                                     </div>
                                     <div className="flex flex-col gap-4">
-                                        <F2Links />
+                                        <F1ALinks />
                                     </div>
                                 </div>
                             </div>
@@ -326,6 +331,10 @@ export const Header = ({ setResultPage, setResultPagePath }) => {
             <Modal isOpen={isOpen} onClose={toggleOpen}>
                 <div className="fixed top-[0] left-[0] w-full h-full bg-glow bg-neutral-900/95 backdrop-blur-sm md:hidden z-[1001]">
                     <div className="pt-64 px-32">
+                        <Link to="/about-us" className="w-full flex justify-between items-center py-16 px-8 tracking-sm uppercase">
+                            About
+                        </Link>
+                        <div className="divider-glow-dark mt-8 border-t border-neutral-700" />
                         <div className="flex flex-col">
                             <F1Links accordion />
                         </div>

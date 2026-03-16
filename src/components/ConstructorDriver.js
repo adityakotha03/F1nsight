@@ -13,7 +13,9 @@ export const ConstructorDriver = (props) => {
     const F2F1A = championshipLevel === "F1A" || championshipLevel === "F2" 
  
     const f2ImageSrc = `${process.env.PUBLIC_URL + "/images/" + year + "/F2/carSideView/" + car + ".png"}`
-    const f1aImageSrc = wildCardDrivers[year].includes(image) 
+    const wildcardDriversForYear = wildCardDrivers[year] || [];
+    const isWildcardDriver = wildcardDriversForYear.includes(image);
+    const f1aImageSrc = isWildcardDriver
         ? `${process.env.PUBLIC_URL + "/images/2024/F1A/carSideView/wildcard-side.png"}`
         : `${process.env.PUBLIC_URL + "/images/" + year + "/F1A/carSideView/" + image + "-side.png"}`;
     const imageSrc = `${process.env.PUBLIC_URL + "/images/" + year + "/cars/" + car + ".png"}`;
@@ -38,7 +40,7 @@ export const ConstructorDriver = (props) => {
                         transition: "all 2s cubic-bezier(0.17, 0.55, 0.55, 1)"
                     }}
                 />
-                {championshipLevel === "F1A" && wildCardDrivers[year].includes(image) && (
+                {championshipLevel === "F1A" && isWildcardDriver && (
                     <img 
                         alt=''
                         className="absolute left-[4rem] md:left-[6.4rem] bottom-[-1rem] w-64"

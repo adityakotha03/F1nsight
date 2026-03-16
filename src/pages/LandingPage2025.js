@@ -320,7 +320,12 @@ export function LandingPage2025({ setResultPagePath }) {
     return (
         <div>
             <HeroSection layoutMobile={layoutMobile} />
-
+            <TelemetrySection
+                layoutMobile={layoutMobile}
+                onClick={() => navigateToRaceResult(raceData)}
+            />
+            <ComparisonsSection layoutMobile={layoutMobile} />
+            <ArSection layoutMobile={layoutMobile} />
             <section className="bg-gradient-to-b from-neutral-950 to-plum-500 pt-24 pb-48">
                 <div className="max-w-screen-md mx-auto flex flex-col items-center justify-center px-16">
                     {latestResultsLayout()}
@@ -378,7 +383,7 @@ export function LandingPage2025({ setResultPagePath }) {
                     </div>
                 </div>
             </section>
-            <section ref={ref} className="my-72 ">
+            {/* <section ref={ref} className="my-72 ">
                 <motion.div
                     className="max-w-screen-md mx-auto text-center mb-64"
                     initial={{ opacity: 0, scale: 0.8 }}
@@ -387,7 +392,7 @@ export function LandingPage2025({ setResultPagePath }) {
                     // style={{ y: yHeading }}
                 >
                     <h2 className="heading-3 mb-16">
-                        Stay Updated with the Latest Formula 2 and Formula 1 Academy Results
+                        Stay Updated with the Latest Formula 2 and F1 Academy Results
                     </h2>  
                 </motion.div>
                 <div className="max-w-screen-xl mx-auto flex flex-col md:flex-row items-center justify-center max-md:gap-32">
@@ -430,14 +435,7 @@ export function LandingPage2025({ setResultPagePath }) {
                         {leagueButtons('F2')}
                     </div>
                 </div>
-            </section>
-
-            <ComparisonsSection layoutMobile={layoutMobile} />
-            <ArSection layoutMobile={layoutMobile} />
-            <TelemetrySection
-                layoutMobile={layoutMobile}
-                onClick={() => navigateToRaceResult(raceData)}
-            />
+            </section> */}
         </div>
     );
 }

@@ -59,10 +59,10 @@ export const Footer2025 = ({ className }) => {
                         <F1Links />
                     </div>
                     <div className="flex flex-col gap-4">
-                        <F1ALinks />
+                        <F2Links />
                     </div>
                     <div className="flex flex-col gap-4">
-                        <F2Links />
+                        <F1ALinks />
                     </div>
                 </div>
             </div>
@@ -70,7 +70,7 @@ export const Footer2025 = ({ className }) => {
             {/* Footer Bottom: Year and Copyright */}
             <div className="text-center text-neutral-400 mt-6 bg-gradient-to-b from-neutral-950/30 to-neutral-950/10 px-16 pb-16 text-xs">
                 <div className="divider-glow-dark mb-6" />
-                <p className="mb-8">This website is not associated in any way with the Formula 1 companies. F1, FORMULA ONE, FORMULA 1, FORMULA 1 ACADEMY, FIA FORMULA ONE WORLD CHAMPIONSHIP, GRAND PRIX and related marks are trade marks of Formula One Licensing B.V.</p>
+                <p className="mb-8">This website is not associated in any way with the Formula 1 companies. F1, FORMULA ONE, FORMULA 1, F1 ACADEMY, FIA FORMULA ONE WORLD CHAMPIONSHIP, GRAND PRIX and related marks are trade marks of Formula One Licensing B.V.</p>
                 <p>&copy; {currentYear} F1NSIGHT</p>
             </div>
         </footer>

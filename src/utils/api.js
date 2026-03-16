@@ -1,4 +1,4 @@
-import axios from "axios";
+import teamColors from "./teamColors.json";
 import { buildOpenF1Url, OPENF1_API_BASE_URL } from "../config/openf1";
 
 export const fetchDriversList = async () => {
@@ -272,9 +272,6 @@ export const getConstructorStandings = async (selectedYear) => {
     }
     const constructorData = await constructorResponse.json();
 
-    const colorsResponse = await axios.get('https://praneeth7781.github.io/f1nsight-api-2/colors/teams.json');
-    const teamColors = colorsResponse.data;
-
     const raceKeys = Object.keys(constructorData).sort();
     const lastRaceKey = raceKeys[raceKeys.length - 1];
     const data_constructor = constructorData[lastRaceKey] || [];
@@ -284,7 +281,9 @@ export const getConstructorStandings = async (selectedYear) => {
       constructorId: standing.Constructor.constructorId,
       points: standing.points,
       driverCodes: [],
-      constructorColor: `#${teamColors[selectedYear][standing.Constructor.constructorId]}` || '#000000', // Default color if not found
+      constructorColor: teamColors[selectedYear]?.[standing.Constructor.constructorId]
+        ? `#${teamColors[selectedYear][standing.Constructor.constructorId]}`
+        : '#000000', // Default color if not found
     }));
 
     // For each constructor, fetch the associated drivers from the new endpoint
