@@ -8,16 +8,19 @@ import { darkenColor } from "../utils/darkenColor";
 import { trackButtonClick } from "../utils/gaTracking";
 import { HistoryBar } from "../components/HistoryBar";
 import { teamHistory } from "../utils/teamHistory";
+import teamColors from "../utils/teamColors.json";
 
 import "./ARViewer.scss";
-import { Button } from "../components";
+import { ReactSelectComponent } from "../components";
 
 export const ARViewer = () => {
     const [glbLink, setGlbLink] = useState(ARViewer.defaultProps.glbLink);
     const [team, setTeam] = useState(ARViewer.defaultProps.team);
+    const [selectedModelYear, setSelectedModelYear] = useState("2024");
+    const [selectedTeamName, setSelectedTeamName] = useState(
+        ARViewer.defaultProps.team.name
+    );
     const [teamStatsOpen, setTeamStatsOpen] = useState(false);
-    const [year, setYear] = useState("2025");
-    const [isGLBLoading, setIsGLBLoading] = useState(true);
     const modelViewerRef = useRef(null);
 
     const ref = useRef(null);
@@ -25,7 +28,131 @@ export const ARViewer = () => {
     const showHistory = team.name !== "F1Nsight" && team.name !== "apx";
 
     const teamList = Object.values(teamHistory);
+    const teamOptions = teamList.map((teamItem) => ({
+        value: teamItem.name,
+        label: teamItem.name.replace(/_/g, " ").toUpperCase(),
+    }));
+    const getModelTeamNameForYear = (teamNameValue, yearValue) => {
+        if (teamNameValue === "audi") {
+            return Number(yearValue) < 2026 ? "sauber" : "audi";
+        }
+        return teamNameValue;
+    };
+
+    const getAvailableYearsForTeam = (teamNameValue) =>
+        Object.keys(teamColors)
+            .filter(
+                (yearValue) =>
+                    Number(yearValue) >= 2024 &&
+                    Boolean(
+                        teamColors[yearValue]?.[
+                            getModelTeamNameForYear(teamNameValue, yearValue)
+                        ]
+                    )
+            )
+            .sort((a, b) => Number(a) - Number(b));
+
+    const availableTeamYears = getAvailableYearsForTeam(selectedTeamName);
     const teamName = team.name.replace(/_/g, " ");
+    const activeModelTeamName = selectedModelYear
+        ? getModelTeamNameForYear(selectedTeamName, selectedModelYear)
+        : selectedTeamName;
+    const activeTeamColorHex = selectedModelYear
+        ? teamColors[selectedModelYear]?.[activeModelTeamName]
+        : null;
+    const activeThemeColor = activeTeamColorHex ? `#${activeTeamColorHex}` : team.color;
+
+    const setTeamModelByYear = (teamNameValue, modelYear) => {
+        const validYears = getAvailableYearsForTeam(teamNameValue);
+        const targetYear = validYears.includes(String(modelYear))
+            ? String(modelYear)
+            : validYears[validYears.length - 1];
+
+        if (!targetYear) return;
+        const modelTeamName = getModelTeamNameForYear(teamNameValue, targetYear);
+
+        const nextTeam =
+            teamList.find((teamItem) => teamItem.name === teamNameValue) ||
+            ARViewer.defaultProps.team;
+
+        setTeam(nextTeam);
+        setSelectedModelYear(targetYear);
+        setGlbLink(
+            `${
+                process.env.PUBLIC_URL +
+                "/ArFiles/glbs/" +
+                targetYear +
+                "/" +
+                modelTeamName +
+                ".glb"
+            }`
+        );
+        trackButtonClick(`team-viewer-${teamNameValue}-${targetYear}`);
+    };
+
+    const specialEditionModels = [
+        {
+            id: "apx",
+            label: "APX",
+            color: "#AE7D0E",
+            glbPath: "/ArFiles/glbs/2024/apx.glb",
+            imagePath: "/images/2024/cars/apx.png",
+            team: { name: "apx", color: "#AE7D0E" },
+            trackingId: "team-viewer-apx",
+        },
+        // {
+        //     id: "f1nsight2022",
+        //     label: "F1NSIGHT 2022",
+        //     color: "#7500AD",
+        //     glbPath: "/ArFiles/glbs/2024/f1nsight2022.glb",
+        //     imagePath: "/images/2024/cars/f1nsight-sideview.png",
+        //     team: { name: "F1Nsight", color: "#7500AD" },
+        //     trackingId: "team-viewer-f1nsight2022",
+        // },
+        {
+            id: "f1nsight2024",
+            label: "F1NSIGHT 2024",
+            color: "#7500AD",
+            glbPath: "/ArFiles/glbs/2024/f1nsight2024.glb",
+            imagePath: "/images/2024/cars/F1Nsight.png",
+            team: { name: "F1Nsight", color: "#7500AD" },
+            trackingId: "team-viewer-f1nsight2024",
+        },
+        {
+            id: "f1nsight2025",
+            label: "F1NSIGHT 2025",
+            color: "#7500AD",
+            glbPath: "/ArFiles/glbs/2025/f1nsight2025.glb",
+            imagePath: "/images/2025/cars/F1Nsight.png",
+            team: { name: "F1Nsight", color: "#7500AD" },
+            trackingId: "team-viewer-f1nsight2025",
+        },
+        // {
+        //     id: "f1nsight2026",
+        //     label: "F1NSIGHT 2026",
+        //     color: "#7500AD",
+        //     glbPath: "/ArFiles/glbs/2026/f1nsight2026.glb",
+        //     imagePath: "/images/2026/cars/F1Nsight.png",
+        //     team: { name: "F1Nsight", color: "#7500AD" },
+        //     trackingId: "team-viewer-f1nsight2026",
+        // },
+    ];
+
+    const handleSpecialEditionSelect = (specialModel) => {
+        setSelectedModelYear(null);
+        setGlbLink(`${process.env.PUBLIC_URL}${specialModel.glbPath}`);
+        setTeam(specialModel.team);
+        trackButtonClick(specialModel.trackingId);
+    };
+
+    const handleTeamChange = (selectedOption) => {
+        if (!selectedOption?.value) return;
+        const availableYears = getAvailableYearsForTeam(selectedOption.value);
+        const latestYear =
+            availableYears[availableYears.length - 1] || "2026";
+        setSelectedTeamName(selectedOption.value);
+        setTeamModelByYear(selectedOption.value, latestYear);
+    };
 
     useEffect(() => {
         const modelViewer = modelViewerRef.current;
@@ -43,32 +170,33 @@ export const ARViewer = () => {
             }
         };
 
-        const handleModelLoad = () => {
-            setIsGLBLoading(false);
-        };
-
         if (modelViewer) {
             modelViewer.addEventListener("progress", onProgress);
-            modelViewer.addEventListener("load", handleModelLoad);
         }
 
         return () => {
             if (modelViewer) {
                 modelViewer.removeEventListener("progress", onProgress);
-                modelViewer.removeEventListener("load", handleModelLoad);
             }
         };
     }, [team]); // Depend on glbLink to re-run the effect when it changes
-
-    useEffect(() => {
-        // Reset loading state when `glbLink` changes
-        setIsGLBLoading(true);
-    }, [glbLink]);
 
     return (
         <>
             <div className="ar-container">
                 <div className="model-viewer-wrapper">
+                    <div className="ar-team-select">
+                        <ReactSelectComponent
+                            placeholder="Select Team"
+                            options={teamOptions}
+                            onChange={handleTeamChange}
+                            value={teamOptions.find(
+                                (option) => option.value === selectedTeamName
+                            )}
+                            isSearchable={false}
+                            className="w-[17rem]"
+                        />
+                    </div>
                     <model-viewer
                         ref={modelViewerRef}
                         poster={ARViewer.defaultProps.img}
@@ -90,8 +218,8 @@ export const ARViewer = () => {
                             slot="ar-button"
                             className="ar-button shadow-md absolute left-1/2 translate-x-[-50%] w-[90%] flex justify-center items-center rounded-b-lg"
                             style={{
-                                borderBottom: `1px solid ${team.color}`,
-                                backgroundColor: team.color,
+                                borderBottom: `1px solid ${activeThemeColor}`,
+                                backgroundColor: activeThemeColor,
                             }}
                         >
                             <img
@@ -116,7 +244,7 @@ export const ARViewer = () => {
                                 "absolute left-1/2 translate-x-[-50%]"
                             )}
                             style={{
-                                borderTop: `1px solid ${team.color}`,
+                                borderTop: `1px solid ${activeThemeColor}`,
                                 transform: `translate(-50%, ${
                                     teamStatsOpen ? "0%" : "calc(100% - 42px)"
                                 })`,
@@ -129,6 +257,13 @@ export const ARViewer = () => {
                                     trackButtonClick(`team-history-${team.name}`);
                                 }}
                             >
+                                <FontAwesomeIcon
+                                    icon="chevron-down"
+                                    className={classNames(
+                                        "mr-16 fa-1x transition-all ease-in-out delay-75 duration-500",
+                                        { "fa-rotate-180": !teamStatsOpen }
+                                    )}
+                                />
                                 <span className="font-display">
                                     {teamName} History
                                 </span>
@@ -136,7 +271,7 @@ export const ARViewer = () => {
                                     icon="chevron-down"
                                     className={classNames(
                                         "ml-16 fa-1x transition-all ease-in-out delay-75 duration-500",
-                                        { "fa-rotate-180": teamStatsOpen }
+                                        { "fa-rotate-180": !teamStatsOpen }
                                     )}
                                 />
                             </button>
@@ -169,7 +304,7 @@ export const ARViewer = () => {
                                 </div>
                                 <HistoryBar
                                     history={team.teamHistory}
-                                    color={team.color}
+                                    color={activeThemeColor}
                                 />
                             </div>
                         </div>
@@ -179,11 +314,11 @@ export const ARViewer = () => {
                 {/* todo: redo this if possible */}
                 <style jsx="true">{`
                     model-viewer {
-                        background-color: ${team.color};
+                        background-color: ${activeThemeColor};
                         background: radial-gradient(
                             circle,
-                            ${team.color} 0%,
-                            ${darkenColor(team.color, 40)} 80%
+                            ${activeThemeColor} 0%,
+                            ${darkenColor(activeThemeColor, 40)} 80%
                         );
                     }
                     model-viewer::before {
@@ -194,176 +329,76 @@ export const ARViewer = () => {
 
             {/* Team Buttons */}
             <div className="mt-64">
-                <div className="flex flex-row justify-center gap-16 pt-40">
-                    <Button as="button" size="sm" buttonStyle="hollow" onClick={() => setYear("2024")}>
-                        2024
-                    </Button>
-                    <Button as="button" size="sm" buttonStyle="hollow" onClick={() => setYear("2025")}>
-                        2025
-                    </Button>
-                </div>
-
-                <div className="flex flex-row justify-center flex-wrap gap-16 p-40">
-                    {teamList.map((team, index) => {
+                <div className="flex flex-row justify-center gap-16 p-60">
+                    {availableTeamYears.map((modelYear, index) => {
+                        const modelTeamName = getModelTeamNameForYear(
+                            selectedTeamName,
+                            modelYear
+                        );
+                        const yearButtonColor = teamColors[modelYear]?.[modelTeamName]
+                            ? `#${teamColors[modelYear][modelTeamName]}`
+                            : activeThemeColor;
                         return (
                             <button
                                 key={index}
-                                style={{ backgroundColor: team.color }}
+                                style={{
+                                    backgroundColor: yearButtonColor,
+                                }}
                                 className={classNames(
                                     "text-white p-2 rounded inline-flex flex-col items-center text-center bg-glow-dark mt-16 max-md:w-[45%]"
                                 )}
                                 onClick={() => {
-                                    setGlbLink(
-                                        `${
-                                            process.env.PUBLIC_URL +
-                                            "/ArFiles/glbs/" + year + "/" +
-                                            team.name +
-                                            ".glb"
-                                        }`
-                                    );
-                                    setTeam(team);
-                                    trackButtonClick(`team-viewer-${team.name}-${year}`);
+                                    setTeamModelByYear(selectedTeamName, modelYear);
                                 }}
                             >
                                 <img
                                     src={`${
                                         process.env.PUBLIC_URL +
-                                        "/images/" + year + "/cars/" +
-                                        team.name +
+                                        "/images/" + modelYear + "/cars/" +
+                                        modelTeamName +
                                         ".png"
                                     }`}
-                                    alt={team.name}
-                                    className="w-[10rem] -mt-16"
+                                    alt={`${selectedTeamName}-${modelYear}`}
+                                    className="w-[16rem] -mt-32"
                                 />
-                                <p className="font-display">
-                                    {team.name.replace(/_/g, " ")}
+                                <p className="font-display text-24">
+                                    {modelYear}
                                 </p>
                             </button>
                         );
                     })}
                 </div>
+            </div>
+
+            <div className="flex flex-col justify-center pb-40">
+                <div className="divider-glow-dark mb-40" />
 
                 <h2 className="tracking-wide text-center gradient-text-light">
                     Special edition
                 </h2>
 
                 <div className="flex flex-row justify-center flex-wrap gap-16 p-32">
-                    <button
-                        style={{ backgroundColor: "#AE7D0E" }}
-                        className={classNames(
-                            "text-white p-2 rounded inline-flex flex-col items-center text-center bg-glow-dark mt-16 max-md:w-[45%]"
-                        )}
-                        onClick={() => {
-                            setGlbLink(
-                                `${
-                                    process.env.PUBLIC_URL +
-                                    "/ArFiles/glbs/2024/apx.glb"
-                                }`
-                            );
-                            setTeam({
-                                name: "apx",
-                                color: "#AE7D0E",
-                            });
-                            trackButtonClick(`team-viewer-apx`);
-                        }}
-                    >
-                        <img
-                            src={`${
-                                process.env.PUBLIC_URL +
-                                "/images/2024/cars/apx.png"
-                            }`}
-                            alt={team.name}
-                            className="w-[10rem] -mt-16"
-                        />
-                        <p className="font-display">APX</p>
-                    </button>
-                    <button
-                        style={{ backgroundColor: "#7500AD" }}
-                        className={classNames(
-                            "text-white p-2 rounded inline-flex flex-col items-center text-center bg-glow-dark mt-16 max-md:w-[45%]"
-                        )}
-                        onClick={() => {
-                            setGlbLink(
-                                `${
-                                    process.env.PUBLIC_URL +
-                                    "/ArFiles/glbs/2024/f1nsight2022.glb"
-                                }`
-                            );
-                            setTeam({
-                                name: "F1Nsight",
-                                color: "#7500AD",
-                            });
-                            trackButtonClick(`team-viewer-f1nsight2022`);
-                        }}
-                    >
-                        <img
-                            src={`${
-                                process.env.PUBLIC_URL +
-                                "/images/2024/cars/f1nsight-sideview.png"
-                            }`}
-                            alt={team.name}
-                            className="w-[10rem] -mt-16"
-                        />
-                        <p className="font-display">F1NSIGHT 2022</p>
-                    </button>
-                    <button
-                        style={{ backgroundColor: "#7500AD" }}
-                        className={classNames(
-                            "text-white p-2 rounded inline-flex flex-col items-center text-center bg-glow-dark mt-16 max-md:w-[45%]"
-                        )}
-                        onClick={() => {
-                            setGlbLink(
-                                `${
-                                    process.env.PUBLIC_URL +
-                                    "/ArFiles/glbs/2024/f1nsight2024.glb"
-                                }`
-                            );
-                            setTeam({
-                                name: "F1Nsight",
-                                color: "#7500AD",
-                            });
-                            trackButtonClick(`team-viewer-f1nsight2024`);
-                        }}
-                    >
-                        <img
-                            src={`${
-                                process.env.PUBLIC_URL +
-                                "/images/2024/cars/F1Nsight.png"
-                            }`}
-                            alt={team.name}
-                            className="w-[10rem] -mt-16"
-                        />
-                        <p className="font-display">F1NSIGHT 2024</p>
-                    </button>
-                    <button
-                        style={{ backgroundColor: "#7500AD" }}
-                        className={classNames(
-                            "text-white p-2 rounded inline-flex flex-col items-center text-center bg-glow-dark mt-16 max-md:w-[45%]"
-                        )}
-                        onClick={() => {
-                            setGlbLink(
-                                `${
-                                    process.env.PUBLIC_URL +
-                                    "/ArFiles/glbs/2025/f1nsight2025.glb"
-                                }`
-                            );
-                            setTeam({
-                                name: "F1Nsight",
-                                color: "#7500AD",
-                            });
-                            trackButtonClick(`team-viewer-f1nsight2025`);
-                        }}
-                    >
-                        <img
-                            src={`${
-                                process.env.PUBLIC_URL +
-                                "/images/2025/cars/F1Nsight.png"
-                            }`}
-                            alt={team.name}
-                            className="w-[10rem] -mt-16"
-                        />
-                        <p className="font-display">F1NSIGHT 2025</p>
-                    </button>
+                    {specialEditionModels.map((specialModel) => (
+                        <button
+                            key={specialModel.id}
+                            style={{ backgroundColor: specialModel.color }}
+                            className={classNames(
+                                "text-white p-2 rounded inline-flex flex-col items-center text-center bg-glow-dark mt-16 max-md:w-[45%]"
+                            )}
+                            onClick={() =>
+                                handleSpecialEditionSelect(specialModel)
+                            }
+                        >
+                            <img
+                                src={`${process.env.PUBLIC_URL}${specialModel.imagePath}`}
+                                alt={specialModel.label}
+                                className="w-[16rem] -mt-32"
+                            />
+                            <p className="font-display text-24">
+                                {specialModel.label}
+                            </p>
+                        </button>
+                    ))}
                 </div>
             </div>
         </>

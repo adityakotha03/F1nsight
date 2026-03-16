@@ -84,14 +84,14 @@ export const F1ALinks = ({accordion = false}) => {
         </>
     )
     return accordion ? (
-        <Accordion title="Formula 1 Academy" contentClasses="flex flex-col gap-8 items-start">
+        <Accordion title="F1 Academy" contentClasses="flex flex-col gap-8 items-start">
             {links}
         </Accordion>
     ) : (
         <>
             <div>
                 <p className="uppercase tracking-xs gradient-text-light">
-                    Formula 1 Academy
+                    F1 Academy
                 </p>
                 <div className="divider-glow-dark mt-8 border-t border-neutral-700" />
             </div>

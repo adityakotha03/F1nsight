@@ -51,8 +51,8 @@ export const teamHistory = {
     mclaren: {
       name: 'mclaren',
       color: '#FF8000',
-      constructorTitles: ['1974', '1984', '1985', '1988', '1989', '1990', '1991', '1998', '2024'],
-      driversChampionships: ['1974', '1976', '1984', '1985', '1986', '1988', '1989', '1990', '1991', '1998', '1999', '2008'],
+      constructorTitles: ['1974', '1984', '1985', '1988', '1989', '1990', '1991', '1998', '2024', '2025'],
+      driversChampionships: ['1974', '1976', '1984', '1985', '1986', '1988', '1989', '1990', '1991', '1998', '1999', '2008', '2025'],
       teamExistedSince: '1966',
       teamHistory: [
         { team: 'Mclaren', startYear: 1966, endYear: currentYear },
@@ -114,18 +114,19 @@ export const teamHistory = {
       // podiums: 11,
       // polePositions: 1,
     },
-    sauber: {
-      name: 'sauber',
-      color: '#52E252',
+    audi: {
+      name: 'audi',
+      color: '#F50537',
       constructorTitles: [],
       driversChampionships: [],
-      teamExistedSince: '2024',
+      teamExistedSince: '2026',
       teamHistory: [
         { team: 'Sauber', startYear: 1993, endYear: 2005 },
         { team: 'BMW', startYear: 2006, endYear: 2009 },
         { team: 'Sauber', startYear: 2010, endYear: 2018 },
         { team: 'Alfa Romeo', startYear: 2019, endYear: 2023 },
-        { team: 'Stake', startYear: 2024, endYear: currentYear },
+        { team: 'Stake', startYear: 2024, endYear: 2025 },
+        { team: 'Audi', startYear: 2026, endYear: currentYear },
       ],
       // raceVictories: 111,
       // podiums: 11,
@@ -156,5 +157,18 @@ export const teamHistory = {
       // raceVictories: 111,
       // podiums: 11,
       // polePositions: 1,
-    }
+    },
+    cadillac: {
+      name: 'cadillac',
+      color: '#909090',
+      constructorTitles: [],
+      driversChampionships: [],
+      teamExistedSince: '2026',
+      teamHistory: [
+        { team: 'Cadillac', startYear: 2026, endYear: currentYear },
+      ],
+      // raceVictories: 111,
+      // podiums: 11,
+      // polePositions: 1,
+    },
   };
