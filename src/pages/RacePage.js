@@ -139,6 +139,45 @@ export function RacePage() {
         (obj) => obj["number"] === driverNumber
     );
 
+    const getPositionTimeBounds = (positionData, sessionData) => {
+        if (!positionData.length) {
+            return {
+                startTime: sessionData?.date_start || "",
+                endTime: sessionData?.date_end || "",
+            };
+        }
+
+        const snapshotDate = positionData[0]?.date;
+        const firstDifferentDate = positionData.find(
+            (item) => item.date !== snapshotDate
+        )?.date;
+
+        if (firstDifferentDate) {
+            const date = new Date(firstDifferentDate);
+
+            if (!Number.isNaN(date.getTime())) {
+                date.setMinutes(date.getMinutes() - 1);
+                return {
+                    startTime: date.toISOString(),
+                    endTime:
+                        positionData[positionData.length - 1]?.date ||
+                        sessionData?.date_end ||
+                        snapshotDate ||
+                        "",
+                };
+            }
+        }
+
+        return {
+            startTime: sessionData?.date_start || snapshotDate || "",
+            endTime:
+                sessionData?.date_end ||
+                positionData[positionData.length - 1]?.date ||
+                snapshotDate ||
+                "",
+        };
+    };
+
     const fetchData = async () => {
         if (!raceName) return;
 
@@ -233,16 +272,13 @@ export function RacePage() {
 
                 setDriversColor(driverColorMap);
 
-                const latestDate = startingGridData[0].date;
-                const firstDifferentDate = startingGridData.find(
-                    (item) => item.date !== latestDate
-                )?.date;
-                const date = new Date(firstDifferentDate);
-                date.setMinutes(date.getMinutes() - 1);
-                const updatedDate = date.toISOString();
+                const { startTime, endTime } = getPositionTimeBounds(
+                    startingGridData,
+                    raceSession
+                );
 
-                setStartTime(updatedDate);
-                setEndTime(startingGridData[startingGridData.length - 1].date);
+                setStartTime(startTime);
+                setEndTime(endTime);
 
                 const earliestDateTime = startingGridData[0]?.date;
                 const filteredStartingGrid = startingGridData.filter(
@@ -328,16 +364,13 @@ export function RacePage() {
 
                 setDriversColor(driverColorMap);
 
-                const latestDate = startingGridData[0].date;
-                const firstDifferentDate = startingGridData.find(
-                    (item) => item.date !== latestDate
-                )?.date;
-                const date = new Date(firstDifferentDate);
-                date.setMinutes(date.getMinutes() - 1);
-                const updatedDate = date.toISOString();
+                const { startTime, endTime } = getPositionTimeBounds(
+                    startingGridData,
+                    raceSession
+                );
 
-                setStartTime(updatedDate);
-                setEndTime(startingGridData[startingGridData.length - 1].date);
+                setStartTime(startTime);
+                setEndTime(endTime);
 
                 const earliestDateTime = startingGridData[0]?.date;
                 const filteredStartingGrid = startingGridData.filter(
