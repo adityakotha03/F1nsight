@@ -22,6 +22,7 @@ import {
     SelectedDriverStats,
     FastestLaps,
     PositionCharts,
+    Tabs,
     ReactSelectComponent,
     Modal,
 } from "../components";
@@ -542,6 +543,62 @@ export function RacePage() {
         fastestLapTime: "1:35.454",
       };
 
+    const selectedDriverAcronym = driverSelected
+        ? driversDetails[driverNumber]
+        : null;
+    const statsTabs = [
+        selectedSession === "Race" && {
+            id: "position",
+            label: "Position",
+            content: (
+                <PositionCharts
+                    laps={laps}
+                    pos={pos}
+                    startGrid={startingGrid}
+                    driversDetails={driversDetails}
+                    driversColor={driversColor}
+                    raceResults={raceResults}
+                    driverCode={selectedDriverAcronym}
+                />
+            ),
+        },
+        {
+            id: "laps",
+            label: "Lap Chart",
+            content: (
+                <LapChart
+                    laps={laps}
+                    setLaps={() => setLaps}
+                    driversDetails={driversDetails}
+                    driversColor={driversColor}
+                    raceResults={raceResults}
+                    className="lap-chart"
+                    driverCode={selectedDriverAcronym}
+                />
+            ),
+        },
+        {
+            id: "tires",
+            label: "Tire Strategy",
+            content: (
+                <TireStrategy
+                    drivers={drivers}
+                    raceResults={raceResults}
+                    driverCode={selectedDriverAcronym}
+                    driverColor={driversColor[driverCode]}
+                />
+            ),
+        },
+        !driverSelected &&
+            selectedSession === "Race" && {
+                id: "fastest",
+                label: "Fastest Laps",
+                content: (
+                    <FastestLaps raceResults={raceResults} drivers={drivers} />
+                ),
+            },
+    ].filter(Boolean);
+
     //   console.log('selectedSessionKey:', selectedSessionKey);
     return isLoading ? (
         <Loading
@@ -933,50 +990,7 @@ export function RacePage() {
                     )}
 
                     <div className="sm:grow">
-                        {selectedSession === "Race" && (
-                            <PositionCharts
-                                laps={laps}
-                                pos={pos}
-                                startGrid={startingGrid}
-                                driversDetails={driversDetails}
-                                driversColor={driversColor}
-                                raceResults={raceResults}
-                                driverCode={
-                                    driverSelected
-                                        ? driversDetails[driverNumber]
-                                        : null
-                                }
-                            />
-                        )}
-                        <LapChart
-                            laps={laps}
-                            setLaps={() => setLaps}
-                            driversDetails={driversDetails}
-                            driversColor={driversColor}
-                            raceResults={raceResults}
-                            className="lap-chart"
-                            driverCode={
-                                driverSelected
-                                    ? driversDetails[driverNumber]
-                                    : null
-                            }
-                        />
-                        <TireStrategy
-                            drivers={drivers}
-                            raceResults={raceResults}
-                            driverCode={
-                                driverSelected
-                                    ? driversDetails[driverNumber]
-                                    : null
-                            }
-                            driverColor={driversColor[driverCode]}
-                        />
-                        {!driverSelected && selectedSession === "Race" && (
-                            <FastestLaps
-                                raceResults={raceResults}
-                                drivers={drivers}
-                            />
-                        )}
+                        <Tabs tabs={statsTabs} />
                     </div>
                 </div>
             </div>
