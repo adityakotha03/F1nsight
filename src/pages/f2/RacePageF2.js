@@ -26,6 +26,33 @@ export function RacePageF2({championshipLevel}) {
     const [activeButtonIndex, setActiveButtonIndex] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
 
+    const lapTimeToMs = (lapTime) => {
+        if (!lapTime || typeof lapTime !== "string") return Number.POSITIVE_INFINITY;
+        const [minutesPart, secondsPart] = lapTime.split(":");
+        const minutes = Number(minutesPart);
+        const seconds = Number(secondsPart);
+        if (Number.isNaN(minutes) || Number.isNaN(seconds)) {
+            return Number.POSITIVE_INFINITY;
+        }
+        return minutes * 60000 + seconds * 1000;
+    };
+
+    const getFastestDriverCode = (results) => {
+        if (!Array.isArray(results) || results.length === 0) return null;
+
+        return results.reduce(
+            (fastestCode, result) => {
+                const lapTime = result?.FastestLap?.Time?.time;
+                const ms = lapTimeToMs(lapTime);
+                if (ms < fastestCode.ms) {
+                    return { code: result?.Driver?.code || null, ms };
+                }
+                return fastestCode;
+            },
+            { code: null, ms: Number.POSITIVE_INFINITY }
+        ).code;
+    };
+
     useEffect(() => {
         const setBaseData = async () => {
             setRaceName(state.raceName);
@@ -96,6 +123,9 @@ export function RacePageF2({championshipLevel}) {
         (a, b) => parseInt(a.position, 10) - parseInt(b.position, 10)
     );
 
+    const fastestRace1DriverCode = getFastestDriverCode(raceResults);
+    const fastestRace2DriverCode = getFastestDriverCode(raceResults2);
+
     return (
         <>
             <p class="text-sm tracking-sm mt-[4rem] text-center">{year}</p>
@@ -122,7 +152,15 @@ export function RacePageF2({championshipLevel}) {
                                 endPosition={parseInt(result.position, 10)}
                                 year={year}
                                 time={result.Time?.time || result.status}
-                                fastestLap={result.FastestLap}
+                                fastestLap={{
+                                    ...result.FastestLap,
+                                    rank:
+                                        result.FastestLap?.rank ??
+                                        (result.Driver?.code ===
+                                        fastestRace1DriverCode
+                                            ? "1"
+                                            : undefined),
+                                }}
                                 layoutSmall={index > 2}
                                 championshipLevel={championshipLevel}
                             />
@@ -164,7 +202,15 @@ export function RacePageF2({championshipLevel}) {
                                     time={
                                         result.Time?.time || result.status
                                     }
-                                    fastestLap={result.FastestLap}
+                                    fastestLap={{
+                                        ...result.FastestLap,
+                                        rank:
+                                            result.FastestLap?.rank ??
+                                            (result.Driver?.code ===
+                                            fastestRace2DriverCode
+                                                ? "1"
+                                                : undefined),
+                                    }}
                                     layoutSmall={index > 2}
                                     championshipLevel={championshipLevel}
                                 />

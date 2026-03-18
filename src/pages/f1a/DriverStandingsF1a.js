@@ -19,7 +19,7 @@ export function DriverStandingsF1a({ selectedYear, championshipLevel }) {
       setDriverRacePoints(driverPointsByRace);
       setRacesMeta(racesMeta);
 
-      if (selectedYear === 2025) {
+      if (Number(selectedYear) >= 2025) {
         const { formattedDrivers } = calculateSeriesPoints2025(allRaceResults, championshipLevel);
         setStandings(formattedDrivers);
       } else {
