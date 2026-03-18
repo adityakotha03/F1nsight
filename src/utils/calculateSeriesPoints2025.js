@@ -37,6 +37,9 @@ export const calculateSeriesPoints2025 = (allRaceResults, championshipLevel) => 
   };
 
   allRaceResults.forEach(race => {
+    const raceSeason = Number(race?.season);
+    const wildcardCodesForSeason = wildCardDrivers[raceSeason] || [];
+
     const raceMap = {
       [config.sprintKey]: {
         points: config.sprintPoints,
@@ -105,7 +108,10 @@ export const calculateSeriesPoints2025 = (allRaceResults, championshipLevel) => 
         }
         driverPoints[driverId].points += pointsFromFinish + fastestLapPoint;
 
-        if ((championshipLevel === 'F1A' && wildCardDrivers[2025]) && wildCardDrivers[2025].includes(code)) {
+        if (
+          championshipLevel === "F1A" &&
+          wildcardCodesForSeason.includes(code)
+        ) {
           console.log(`Skipping wild card driver ${code} for constructor ${constructorId}`);
           return;
         }
@@ -132,7 +138,10 @@ export const calculateSeriesPoints2025 = (allRaceResults, championshipLevel) => 
 
       if (poleDriver) {
         const resolvedPoleDriver = poleDriver?.Driver;
+        const resolvedPoleConstructor = poleDriver?.Constructor;
         const driverId = resolvedPoleDriver?.driverId;
+        const constructorId = resolvedPoleConstructor?.constructorId;
+        const code = resolvedPoleDriver?.code;
         if (!driverId) {
           console.warn("Skipping pole bonus: missing enriched pole driver", {
             championshipLevel,
@@ -152,6 +161,37 @@ export const calculateSeriesPoints2025 = (allRaceResults, championshipLevel) => 
           };
         }
         driverPoints[driverId].points += 2;
+
+        // F1A wildcard drivers should not score constructor points
+        if (
+          championshipLevel === "F1A" &&
+          wildcardCodesForSeason.includes(code)
+        ) {
+          return;
+        }
+
+        if (!constructorId) {
+          console.warn("Skipping pole bonus: missing enriched pole constructor", {
+            championshipLevel,
+            raceName: race?.raceName,
+            raceKey: config.poleBonusRace,
+            number: poleDriver?.number,
+            grid: poleDriver?.grid,
+          });
+          return;
+        }
+
+        if (!constructorPoints[constructorId]) {
+          constructorPoints[constructorId] = {
+            ...resolvedPoleConstructor,
+            points: 0,
+            driverCodes: new Set()
+          };
+        }
+        constructorPoints[constructorId].points += 2;
+        if (code) {
+          constructorPoints[constructorId].driverCodes.add(code);
+        }
       }
     }
   });
