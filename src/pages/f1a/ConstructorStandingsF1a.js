@@ -22,7 +22,7 @@ export function ConstructorStandingsF1a({ selectedYear, championshipLevel }) {
       setConstructorRacePoints(constructorPointsByRace);
       setRacesMeta(racesMeta);
 
-      if (selectedYear === 2025) {
+      if (Number(selectedYear) >= 2025) {
         const { formattedConstructors } = calculateSeriesPoints2025(allRaceResults, championshipLevel);
         setStandings(formattedConstructors);
       } else {

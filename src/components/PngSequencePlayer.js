@@ -17,22 +17,37 @@ const PngSequencePlayer = ({
 
   // Load the image sequence
   useEffect(() => {
-    const loadedImages = [];
-    let imagesLoaded = 0;
+    let isCancelled = false;
+    setLoaded(false);
 
-    for (let i = 0; i < frameCount; i++) {
-      const img = new Image();
-      img.src = `${path}${String(i).padStart(5, "0")}.${fileExtension}`;
-      img.onload = () => {
-        imagesLoaded++;
-        if (imagesLoaded === frameCount) {
-          setImages(loadedImages);
-          setLoaded(true);
-        }
-      };
-      img.onerror = (e) => console.error(`Error loading image: ${img.src}`, e);
-      loadedImages.push(img);
-    }
+    const loadImage = (index) =>
+      new Promise((resolve) => {
+        const img = new Image();
+        img.src = `${path}${String(index).padStart(5, "0")}.${fileExtension}`;
+        img.onload = () => resolve(img);
+        img.onerror = (e) => {
+          console.error(`Error loading image: ${img.src}`, e);
+          resolve(null);
+        };
+      });
+
+    const loadAllImages = async () => {
+      const loadedImages = await Promise.all(
+        Array.from({ length: frameCount }, (_, index) => loadImage(index))
+      );
+
+      if (isCancelled) return;
+
+      const validImages = loadedImages.filter(Boolean);
+      setImages(validImages);
+      setLoaded(validImages.length > 0);
+    };
+
+    loadAllImages();
+
+    return () => {
+      isCancelled = true;
+    };
   }, [frameCount, path, fileExtension]);
 
   // Use IntersectionObserver to detect if the element is in view
@@ -45,13 +60,15 @@ const PngSequencePlayer = ({
       { threshold: 0.5 } // Trigger when 50% of the element is in view
     );
 
-    if (canvasRef.current) {
-      observer.observe(canvasRef.current);
+    const canvasElement = canvasRef.current;
+
+    if (canvasElement) {
+      observer.observe(canvasElement);
     }
 
     return () => {
-      if (canvasRef.current) {
-        observer.unobserve(canvasRef.current);
+      if (canvasElement) {
+        observer.unobserve(canvasElement);
       }
     };
   }, []);
@@ -62,22 +79,32 @@ const PngSequencePlayer = ({
 
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
+    const msPerFrame = 1000 / Math.max(1, frameRate);
 
     let currentFrame = 0;
     let animationFrameId;
+    let previousTimestamp = 0;
 
-    const update = () => {
+    const update = (timestamp) => {
+      if (!previousTimestamp) previousTimestamp = timestamp;
+      const elapsed = timestamp - previousTimestamp;
+
       if (ctx && images[currentFrame]) {
         canvas.width = images[0].width;
         canvas.height = images[0].height;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.drawImage(images[currentFrame], 0, 0, canvas.width, canvas.height);
       }
-      currentFrame = (currentFrame + 1) % frameCount;
+
+      if (elapsed >= msPerFrame) {
+        currentFrame = (currentFrame + 1) % frameCount;
+        previousTimestamp = timestamp;
+      }
+
       animationFrameId = requestAnimationFrame(update);
     };
 
-    requestAnimationFrame(update); // Start animation immediately when in view
+    animationFrameId = requestAnimationFrame(update); // Start animation immediately when in view
 
     return () => cancelAnimationFrame(animationFrameId); // Clean up animation when the component unmounts or goes out of view
   }, [inView, loaded, images, frameCount, frameRate]);

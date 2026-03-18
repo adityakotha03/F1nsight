@@ -72,6 +72,16 @@ export const DriverCard = (props) => {
             }}
         />
     )
+
+    const isFastestLapDriver = String(fastestLap?.rank) === "1";
+    const fastestLapTime =
+        fastestLap?.Time?.time ||
+        fastestLap?.time?.time ||
+        fastestLap?.Time ||
+        fastestLap?.time ||
+        "";
+    const fastestLapAverageSpeed =
+        fastestLap?.AverageSpeed || fastestLap?.averageSpeed;
     
     return (
         <div 
@@ -118,8 +128,8 @@ export const DriverCard = (props) => {
                 </div>
             )}
             
-            <div className="popover-wrapper flex flex-col items-center absolute -right-8">
-                {fastestLap?.rank === "1" && (
+            <div className="fastest-lap-popover popover-wrapper flex flex-col items-center absolute -right-8">
+                {isFastestLapDriver && (
                     <Popover
                         aria-labelledby="default-popover"
                         className="bg-glow border-plum-500 border-[.1rem] rounded-md p-4 bg-neutral-950 z-[10]"
@@ -130,26 +140,26 @@ export const DriverCard = (props) => {
                         content={
                             <div className="p-4">
                                 <div className="bg-plum-500 text-center font-display rounded">
-                                    {fastestLap.Time.time}
+                                    {fastestLapTime}
                                 </div>
 
                                 <div className="flex align-start justify-around">
                                     <div className="flex flex-col items-center">
                                         <span className="text-sm">Lap</span>
-                                        <span className="font-display">{fastestLap.lap}</span>
+                                        <span className="font-display">{fastestLap?.lap || "-"}</span>
                                     </div>
                                     <div className="flex flex-col items-center">
                                         <span className="text-sm">Tyre</span>
-                                        <span className="font-display">{getTireCompound(driver.code, fastestLap.lap).charAt(0)}</span>
+                                        <span className="font-display">{getTireCompound(driver.code, fastestLap?.lap).charAt(0)}</span>
                                     </div>
                                 </div>
 
-                                {fastestLap?.AverageSpeed && (
+                                {fastestLapAverageSpeed && (
                                     <div className="flex flex-col items-center">
                                         <span className="text-sm">Avg Speed</span>
                                         <div>
-                                            <span className="font-display">{fastestLap?.AverageSpeed?.speed}</span>
-                                            <span className="text-sm">{fastestLap?.AverageSpeed?.units}</span>
+                                            <span className="font-display">{fastestLapAverageSpeed?.speed}</span>
+                                            <span className="text-sm">{fastestLapAverageSpeed?.units}</span>
                                         </div>
                                     </div>
                                 )}

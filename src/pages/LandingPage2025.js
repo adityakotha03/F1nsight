@@ -383,7 +383,7 @@ export function LandingPage2025({ setResultPagePath }) {
                     </div>
                 </div>
             </section>
-            {/* <section ref={ref} className="my-72 ">
+            <section ref={ref} className="my-72 ">
                 <motion.div
                     className="max-w-screen-md mx-auto text-center mb-64"
                     initial={{ opacity: 0, scale: 0.8 }}
@@ -435,7 +435,7 @@ export function LandingPage2025({ setResultPagePath }) {
                         {leagueButtons('F2')}
                     </div>
                 </div>
-            </section> */}
+            </section>
         </div>
     );
 }
