@@ -89,9 +89,9 @@ export const DriverCard = (props) => {
             style={{borderColor: isActive && `#${driverColor}`}}
         >
             <div className={classNames("flex items-center justify-between w-full", { "max-md:hidden": mobileSmall, "hidden": !layoutSmall})}>
-                <div className="flex items-center">
-                    <p className={classNames("heading-4 w-64 bg-neutral-600 py-2 text-center rounded-l-md")}>P{isRace ? endPosition : index + 1}</p>
-                    <span className="font-display pl-16 mr-4">{driver.code}</span>
+                <div className="flex items-center font-display leading-none text-sm">
+                    <p className={classNames("w-48 bg-neutral-600 py-2 text-center rounded-l-md")}>P{isRace ? endPosition : index + 1}</p>
+                    <span className="pl-16 mr-4">{driver.code}</span>
                 </div>
                 <p className=" text-xs pr-8">{time}</p>
             </div>

@@ -148,7 +148,6 @@ export const PositionCharts = ({ laps, pos, startGrid, driversDetails, driversCo
 
   return (
     <>
-      <h3 className="heading-4 mb-16 text-neutral-400 ml-24">Position Data</h3>
       <div className="mb-16 bg-glow-large max-sm:py-[3.2rem] sm:p-32 rounded-md sm:rounded-xlarge">
         <ResponsiveContainer width="100%" height={400}>
           <LineChart data={chartData}>
