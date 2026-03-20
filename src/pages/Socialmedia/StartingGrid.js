@@ -77,6 +77,13 @@ const StartingGrid = ({ startingGrids, raceName }) => {
         { top: "730px", left: "300px"},
     ]
 
+    const formatSessionLabel = (sessionName = "") => {
+        const normalized = String(sessionName).toLowerCase();
+        if (normalized.includes("sprint")) return "Sprint Race";
+        if (normalized === "race") return "Feature Race";
+        return sessionName || "Race";
+    };
+
     return (
         <div className="relative starting-grid overflow-hidden">
             {startingGrids.map((startingGrid) => (
@@ -90,9 +97,11 @@ const StartingGrid = ({ startingGrids, raceName }) => {
                         className="starting-grid--header flex flex-col items-center justify-center leading-none py-32"
                     >
                         <p className="text-lg font-display z-10">Starting Grid</p>
-                        <p className="text-xs uppercase tracking-sm z-10">{raceName} {startingGrid.session_name}</p>
+                        <p className="text-xs uppercase tracking-sm z-10">
+                            {raceName} {formatSessionLabel(startingGrid.session_name)}
+                        </p>
                     </div>
-                    <div className="starting-grid--columns flex flex-row my-16 z-10">
+                    <div className="starting-grid--columns flex flex-row z-10">
                         {/* Left Column - Odd Indexes */}
                         <div className="grow relative">
                             {startingGrid.grid

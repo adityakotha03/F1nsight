@@ -2014,6 +2014,10 @@ input[type="range"]::-ms-fill-lower {
   height: 100svh;
 }
 
+.h-\[41\.25px\] {
+  height: 41.25px;
+}
+
 .max-h-\[0\] {
   max-height: 0;
 }
@@ -4107,6 +4111,11 @@ input[type="range"]::-ms-fill-lower {
 .py-\[26px\] {
   padding-top: 26px;
   padding-bottom: 26px;
+}
+
+.py-20 {
+  padding-top: 2.0rem;
+  padding-bottom: 2.0rem;
 }
 
 .pb-10 {

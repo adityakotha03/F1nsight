@@ -1,25 +1,22 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { getConstructorStandings } from "./api";
 import { darkenColor } from "../../utils/darkenColor";
 import { ReactComponent as Logo } from "../../components/f1nsight-logo-26.svg";
 import { getPositionChange, storeStandings } from "./utils";
 import { getCurrentYear } from "../../utils/currentYear";
+import teamColorsByYear from "../../utils/teamColors.json";
 
 const currentYear = getCurrentYear();
 
 const ConstructorStandings = ({ location, round }) => {
     const [constructorStandings, setConstructorStandings] = useState(null);
-    const [teamColors, setTeamColors] = useState({});
+    const teamColors = teamColorsByYear[currentYear] || {};
 
     useEffect(() => {
         getConstructorStandings(currentYear).then((standings) => {
             setConstructorStandings(standings);
             storeStandings('constructorStandings', standings); // Store for next comparison
         });
-        
-        axios.get('https://praneeth7781.github.io/f1nsight-api-2/colors/teams.json')
-            .then(res => setTeamColors(res.data[currentYear] || {}));
     }, []);
 
     console.log('constructorStandings', constructorStandings);
@@ -46,7 +43,7 @@ const ConstructorStandings = ({ location, round }) => {
                     src={`${
                         process.env.PUBLIC_URL + `/images/${currentYear}/cars/` + standing.constructor.constructorId + ".png"
                     }`}
-                    width={120}
+                    width={140}
                 />
                 <div className="constructor-stand flex flex-row justify-between w-full bg-glow">
                     <div className="bg-neutral-900/50 w-32 rounded-r-sm text-center flex items-center justify-center gap-2" style={{ borderRight: `2px solid ${color}` }}>
@@ -83,7 +80,7 @@ const ConstructorStandings = ({ location, round }) => {
             </div>
             <img src={`${process.env.PUBLIC_URL}/images/constructorGraphic.png`} alt="constructor graphic" className="w-full" />
             <div className="divider-glow-dark-vertical rotate-180 absolute top-0 left-[220px]" />
-            <div className="social-constructor-standings--teams flex flex-col items-center justify-between py-32 px-12">
+            <div className="social-constructor-standings--teams flex flex-col items-center justify-between py-24 px-12">
                 {constructorStandings.map((standing) => (
                     contructorItem(standing)
                 ))}

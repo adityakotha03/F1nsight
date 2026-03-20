@@ -103,6 +103,13 @@ const RaceResults = ({ raceResults, raceName }) => {
         { top: "730px", left: "300px" },
     ];
 
+    const formatSessionLabel = (sessionName = "") => {
+        const normalized = String(sessionName).toLowerCase();
+        if (normalized.includes("sprint")) return "Sprint Race";
+        if (normalized === "race") return "Feature Race";
+        return sessionName || "Race";
+    };
+
     return (
         <div className="relative starting-grid overflow-hidden">
             {raceResults.map((raceResult) => (
@@ -121,7 +128,7 @@ const RaceResults = ({ raceResults, raceName }) => {
                             Race Result
                         </p>
                         <p className=" text-xs uppercase tracking-sm z-10">
-                            {raceName} {raceResult.session_name}
+                            {raceName} {formatSessionLabel(raceResult.session_name)}
                         </p>
                     </div>
                     <div className="starting-grid--columns flex flex-row z-10">
@@ -131,7 +138,7 @@ const RaceResults = ({ raceResults, raceName }) => {
                                 .filter(
                                     (driver) =>
                                         driver.position >= 1 &&
-                                        driver.position <= 10
+                                        driver.position <= 11
                                 )
                                 .map((SGdriver, idx) => (
                                     <div key={SGdriver.driver_number || idx}>
@@ -145,8 +152,8 @@ const RaceResults = ({ raceResults, raceName }) => {
                             {raceResult.result
                                 .filter(
                                     (driver) =>
-                                        (driver.position >= 11 &&
-                                            driver.position <= 20) ||
+                                        (driver.position >= 12 &&
+                                            driver.position <= 22) ||
                                         ((driver.position === null ||
                                             driver.position === undefined) &&
                                             (driver.dnf || driver.dns))

@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
 import ConstructorStandings from "./ConstructorStandings";
 import DriverStandings from "./DriverStandings";
-import F1ConstructorStandings from "./F1ConstructorStandings";
-import F1DriverStandings from "./F1DriverStandings";
 import StartingGrid from "./StartingGrid";
 import RaceResults from "./RaceResults";
 
