@@ -127,15 +127,15 @@ export const ARViewer = () => {
             team: { name: "F1Nsight", color: "#7500AD" },
             trackingId: "team-viewer-f1nsight2025",
         },
-        // {
-        //     id: "f1nsight2026",
-        //     label: "F1NSIGHT 2026",
-        //     color: "#7500AD",
-        //     glbPath: "/ArFiles/glbs/2026/f1nsight2026.glb",
-        //     imagePath: "/images/2026/cars/F1Nsight.png",
-        //     team: { name: "F1Nsight", color: "#7500AD" },
-        //     trackingId: "team-viewer-f1nsight2026",
-        // },
+        {
+            id: "f1nsight2026",
+            label: "F1NSIGHT 2026",
+            color: "#7500AD",
+            glbPath: "/ArFiles/glbs/2026/f1nsight2026.glb",
+            imagePath: "/images/2026/cars/F1Nsight.png",
+            team: { name: "F1Nsight", color: "#7500AD" },
+            trackingId: "team-viewer-f1nsight2026",
+        },
     ];
 
     const handleSpecialEditionSelect = (specialModel) => {
