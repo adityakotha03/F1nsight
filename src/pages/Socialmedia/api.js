@@ -2,6 +2,10 @@ import { buildOpenF1Url } from "../../config/openf1";
 import { getCurrentYear } from "../../utils/currentYear";
 
 const OPENF1_DIRECT_API_BASE_URL = "https://api.openf1.org/v1";
+const OPENF1_MIN_REQUEST_GAP_MS = 450;
+const OPENF1_MAX_RETRIES = 2;
+const OPENF1_RETRY_BASE_DELAY_MS = 900;
+let lastOpenF1RequestAt = 0;
 
 // Utility function to map team names to constructor IDs
 export const mapTeamNameToConstructorId = (teamName) => {
@@ -26,6 +30,18 @@ const buildDirectOpenF1Url = (path = "") => {
     return `${OPENF1_DIRECT_API_BASE_URL}${normalizedPath}`;
 };
 
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+const throttleOpenF1Requests = async () => {
+    const now = Date.now();
+    const elapsed = now - lastOpenF1RequestAt;
+    const waitMs = Math.max(0, OPENF1_MIN_REQUEST_GAP_MS - elapsed);
+    if (waitMs > 0) {
+        await sleep(waitMs);
+    }
+    lastOpenF1RequestAt = Date.now();
+};
+
 const fetchOpenF1JsonWithFallback = async (
     path,
     queryParams = {},
@@ -37,27 +53,56 @@ const fetchOpenF1JsonWithFallback = async (
     const proxyUrl = `${buildOpenF1Url(path)}${queryString ? `?${queryString}` : ""}`;
     const directUrl = `${buildDirectOpenF1Url(path)}${queryString ? `?${queryString}` : ""}`;
 
-    try {
-        // Prefer official OpenF1 directly to avoid proxy CORS/runtime noise.
-        const directResponse = await fetch(directUrl);
-        if (!directResponse.ok) {
+    let retryAttempt = 0;
+    while (retryAttempt <= OPENF1_MAX_RETRIES) {
+        await throttleOpenF1Requests();
+
+        try {
+            // Prefer official OpenF1 directly to avoid proxy CORS/runtime noise.
+            const directResponse = await fetch(directUrl);
+            if (directResponse.ok) {
+                return await directResponse.json();
+            }
+
             if (allow404 && directResponse.status === 404) {
                 return [];
             }
-            throw new Error(`OpenF1 direct request failed: ${directResponse.status}`);
-        }
-        return await directResponse.json();
-    } catch (directError) {
-        // Fallback to proxy backend if direct request fails.
-        const proxyResponse = await fetch(proxyUrl);
-        if (!proxyResponse.ok) {
-            if (allow404 && proxyResponse.status === 404) {
-                return [];
+
+            if (directResponse.status === 429 && retryAttempt < OPENF1_MAX_RETRIES) {
+                await sleep(
+                    OPENF1_RETRY_BASE_DELAY_MS * Math.pow(2, retryAttempt)
+                );
+                retryAttempt += 1;
+                continue;
             }
-            throw new Error(`OpenF1 proxy request failed: ${proxyResponse.status}`);
+
+            // Only fallback to proxy for non-rate-limit HTTP errors.
+            if (directResponse.status !== 429) {
+                const proxyResponse = await fetch(proxyUrl);
+                if (proxyResponse.ok) {
+                    return await proxyResponse.json();
+                }
+                if (allow404 && proxyResponse.status === 404) {
+                    return [];
+                }
+                throw new Error(`OpenF1 proxy request failed: ${proxyResponse.status}`);
+            }
+
+            throw new Error(`OpenF1 direct request failed: ${directResponse.status}`);
+        } catch (directError) {
+            // Retry network failures as well.
+            if (retryAttempt < OPENF1_MAX_RETRIES) {
+                await sleep(
+                    OPENF1_RETRY_BASE_DELAY_MS * Math.pow(2, retryAttempt)
+                );
+                retryAttempt += 1;
+                continue;
+            }
+            throw directError;
         }
-        return await proxyResponse.json();
     }
+
+    return [];
 };
 
 export async function getDriverStandings(year = getCurrentYear()) {
@@ -174,8 +219,8 @@ export async function getRaceWeekendResults(meeting_key) {
     };
     // console.log('raceSessions', raceSessions);
     // For each session, fetch the starting grid and enrich with driver/team data
-    const grids = await Promise.all(
-        raceSessions.map(async session => {
+    const grids = [];
+    for (const session of raceSessions) {
             let grid = await fetchOpenF1JsonWithFallback("/starting_grid", {
                 session_key: session.session_key,
             }, { allow404: true });
@@ -190,14 +235,12 @@ export async function getRaceWeekendResults(meeting_key) {
                 }, { allow404: true });
             }
 
-            const [result, drivers] = await Promise.all([
-                fetchOpenF1JsonWithFallback("/session_result", {
-                    session_key: session.session_key,
-                }),
-                fetchOpenF1JsonWithFallback("/drivers", {
-                    session_key: session.session_key,
-                }),
-            ]);
+            const result = await fetchOpenF1JsonWithFallback("/session_result", {
+                session_key: session.session_key,
+            }, { allow404: true });
+            const drivers = await fetchOpenF1JsonWithFallback("/drivers", {
+                session_key: session.session_key,
+            }, { allow404: true });
             const safeGrid = Array.isArray(grid) ? grid : [];
             const safeResult = Array.isArray(result) ? result : [];
             const safeDrivers = Array.isArray(drivers) ? drivers : [];
@@ -236,13 +279,12 @@ export async function getRaceWeekendResults(meeting_key) {
                 return posA - posB;
             });
             
-            return {
+            grids.push({
                 session_key: session.session_key,
                 session_name: session.session_name,
                 grid: enrichedGrid,
                 result: enrichedResult,
-            };
-        })
-    );
+            });
+    }
     return grids;
 }

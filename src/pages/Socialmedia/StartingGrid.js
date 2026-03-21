@@ -1,17 +1,57 @@
 import classNames from "classnames";
-import React from "react";
+import React, { useEffect } from "react";
+import { motion, useAnimationControls } from "framer-motion";
 import { darkenColor } from "../../utils/darkenColor";
 import { ReactComponent as Logo } from "../../components/f1nsight-logo-26.svg";
+import { Loading } from "../../components";
 import { getCurrentYear } from "../../utils/currentYear";
 
 const currentYear = getCurrentYear();
 
-const StartingGrid = ({ startingGrids, raceName }) => {
-    if (!startingGrids || startingGrids.length === 0) {
-        return <div className="social-media-container">No starting grid data available.</div>;
-    }
+const StartingGrid = ({ startingGrids, raceName, isLoading = false }) => {
+    const rowControls = useAnimationControls();
 
-    const startingGridItem = (driver, reversed = false) => {
+    useEffect(() => {
+        if (!startingGrids || startingGrids.length === 0) return;
+
+        let isCancelled = false;
+        const timeoutIds = [];
+
+        const sleep = (ms) =>
+            new Promise((resolve) => {
+                const timeoutId = setTimeout(resolve, ms);
+                timeoutIds.push(timeoutId);
+            });
+
+        const runLoop = async () => {
+            while (!isCancelled) {
+                rowControls.set("hidden");
+                await sleep(180);
+                if (isCancelled) break;
+
+                await rowControls.start("visible");
+                if (isCancelled) break;
+
+                await sleep(6500);
+                if (isCancelled) break;
+
+                await rowControls.start("fade");
+                if (isCancelled) break;
+
+                await sleep(900);
+            }
+        };
+
+        runLoop();
+
+        return () => {
+            isCancelled = true;
+            timeoutIds.forEach((id) => clearTimeout(id));
+            rowControls.stop();
+        };
+    }, [rowControls, startingGrids]);
+
+    const startingGridItem = (driver, reversed = false, staggerOrder = 0) => {
         const colorgradientStyletoRight = {
             background: `linear-gradient(to right, ${darkenColor(driver.driver.team_colour)}30, ${darkenColor(driver.driver.team_colour)}90)`,
             backgroundColor: '#000000'
@@ -32,9 +72,13 @@ const StartingGrid = ({ startingGrids, raceName }) => {
                     className={classNames("divider-glow-dark absolute top-0 !h-8 !w-3/4")} 
                 />
                 <div className={classNames("flex flex-row items-center w-[64px] ", reversed ? "flex-row-reverse" : "flex-row")}>
-                    <img
+                    <motion.img
                         alt=""
                         className="drop-shadow-[0_0_7px_rgba(0,0,0,0.90)]"
+                        custom={staggerOrder}
+                        variants={rowVariants}
+                        initial="hidden"
+                        animate={rowControls}
                         src={`${
                             process.env.PUBLIC_URL + `/images/${currentYear}/carTopView/` + driver.driver.constructorId + ".png"
                         }`}
@@ -77,6 +121,49 @@ const StartingGrid = ({ startingGrids, raceName }) => {
         { top: "730px", left: "300px"},
     ]
 
+    const rowVariants = {
+        hidden: {
+            y: 2000,
+            opacity: 0,
+        },
+        visible: (order = 0) => ({
+            y: 0,
+            opacity: 1,
+            transition: {
+                duration: 2.6,
+                delay: order * 0.18,
+                ease: [0.16, 1, 0.3, 1],
+            },
+        }),
+        fade: {
+            opacity: 0,
+            transition: {
+                duration: 1.2,
+                ease: "easeInOut",
+            },
+        },
+    };
+
+    const getStaggerOrder = (driver, fallbackIndex) => {
+        const positionNumber = Number(driver?.position);
+        if (Number.isFinite(positionNumber) && positionNumber > 0) {
+            return positionNumber - 1;
+        }
+        return fallbackIndex;
+    };
+
+    if (isLoading) {
+        return (
+            <div className="social-media-container bg-glow-dark flex items-center justify-center">
+                <Loading className="scale-75" message="Loading starting grid..." />
+            </div>
+        );
+    }
+
+    if (!startingGrids || startingGrids.length === 0) {
+        return <div className="social-media-container bg-glow-dark">No starting grid data available.</div>;
+    }
+
     const formatSessionLabel = (sessionName = "") => {
         const normalized = String(sessionName).toLowerCase();
         if (normalized.includes("sprint")) return "Sprint Race";
@@ -88,7 +175,7 @@ const StartingGrid = ({ startingGrids, raceName }) => {
         <div className="relative starting-grid overflow-hidden">
             {startingGrids.map((startingGrid) => (
                 <div 
-                    className="social-media-container flex flex-col justify-between" 
+                    className="social-media-container bg-glow-dark flex flex-col justify-between" 
                     key={startingGrid.session_key}
                     style={{ backgroundImage: `url(${process.env.PUBLIC_URL}/images/bg.png)` }}
                 >
@@ -108,7 +195,11 @@ const StartingGrid = ({ startingGrids, raceName }) => {
                                 .filter((_, idx) => idx % 2 === 0) // Odd positions (0, 2, 4, etc.)
                                 .map((SGdriver, idx) => (
                                     <div key={SGdriver.driver_number || idx}>
-                                        {startingGridItem(SGdriver, true)}
+                                        {startingGridItem(
+                                            SGdriver,
+                                            true,
+                                            getStaggerOrder(SGdriver, idx)
+                                        )}
                                     </div>
                                 ))}
                             <div className={classNames("divider-glow-dark-vertical absolute top-[0] right-[54px] rotate-180")} />
@@ -120,7 +211,11 @@ const StartingGrid = ({ startingGrids, raceName }) => {
                                 .filter((_, idx) => idx % 2 === 1) // Even positions (1, 3, 5, etc.)
                                 .map((SGdriver, idx) => (
                                     <div key={SGdriver.driver_number || idx}>
-                                        {startingGridItem(SGdriver, false)}
+                                        {startingGridItem(
+                                            SGdriver,
+                                            false,
+                                            getStaggerOrder(SGdriver, idx)
+                                        )}
                                     </div>
                                 ))}
                             <div className={classNames("divider-glow-dark-vertical absolute top-[0] left-[54px]")} />
@@ -128,7 +223,7 @@ const StartingGrid = ({ startingGrids, raceName }) => {
                     </div>
                     <div
                         style={headerFooterBG}
-                        className="starting-grid--footer flex flex-col items-center justify-center leading-none py-16"
+                        className="starting-grid--footer flex flex-col items-center justify-center leading-none py-16 z-10"
                     >
                         <Logo className="h-32" />
                     </div>
