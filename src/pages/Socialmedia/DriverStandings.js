@@ -1,24 +1,22 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { getDriverStandings } from "./api";
 import { ReactComponent as Logo } from "../../components/f1nsight-logo-26.svg";
 import { darkenColor } from "../../utils/darkenColor";
-import { getPositionChange, storeStandings } from "./utils";
+import { storeStandings } from "./utils";
 import { getCurrentYear } from "../../utils/currentYear";
+import teamColorsByYear from "../../utils/teamColors.json";
 
 const currentYear = getCurrentYear();
 
 const DriverStandings = ({ location, round }) => {
     const [driverStandings, setDriverStandings] = useState(null);
-    const [teamColors, setTeamColors] = useState({});
+    const teamColors = teamColorsByYear[currentYear] || {};
 
     useEffect(() => {
         getDriverStandings(currentYear).then((standings) => {
             setDriverStandings(standings);
             storeStandings('driverStandings', standings); // Store for next comparison
         });
-        axios.get('https://praneeth7781.github.io/f1nsight-api-2/colors/teams.json')
-            .then(res => setTeamColors(res.data[currentYear] || {}));
     }, []);
 
     console.log('driverStandings', driverStandings);
@@ -31,7 +29,6 @@ const DriverStandings = ({ location, round }) => {
         const color = teamColors[driverData.constructor.constructorId]
             ? `#${teamColors[driverData.constructor.constructorId]}`
             : "#222";
-        const positionChange = getPositionChange(driverData.position, driverData.driver.driverId);
         
         return (
             <div className="top-three-driver bg-neutral-900 bg-glow-dark rounded-lg flex flex-row items-center">
@@ -69,10 +66,8 @@ const DriverStandings = ({ location, round }) => {
     }
 
     const DriverRowItem = ({ driverData }) => {
-        const positionChange = getPositionChange(driverData.position, driverData.driver.driverId);
-        
         return (
-            <div className="top-three-driver flex flex-row items-center justify-between h-[43.5px] uppercase border-b border-neutral-700 w-full">
+            <div className="top-three-driver flex flex-row items-center justify-between h-[41.25px] uppercase border-b border-neutral-700 w-full">
                 <div className="flex flex-row items-center gap-4 h-full">
                     <div className="text-xs font-display leading-none bg-neutral-950 flex items-center justify-center h-full w-32 -mr-16">
                         <div className="flex items-center gap-1">
@@ -127,7 +122,10 @@ const DriverStandings = ({ location, round }) => {
                         {driverStandings
                             .filter((driverData) => Number(driverData.position) >= 1 && Number(driverData.position) <= 3)
                             .map((driverData) => (
-                                <Top3 driverData={driverData} />
+                                <Top3
+                                    key={driverData.driver.driverId}
+                                    driverData={driverData}
+                                />
                             ))}
                     </div>
                 </div>
@@ -137,7 +135,10 @@ const DriverStandings = ({ location, round }) => {
                     {driverStandings
                         .filter((driverData) => Number(driverData.position) > 3)
                         .map((driverData) => (
-                            <DriverRowItem driverData={driverData} />
+                            <DriverRowItem
+                                key={driverData.driver.driverId}
+                                driverData={driverData}
+                            />
                         ))}
                 </div>
             </div>

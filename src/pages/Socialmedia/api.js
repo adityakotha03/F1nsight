@@ -1,6 +1,12 @@
 import { buildOpenF1Url } from "../../config/openf1";
 import { getCurrentYear } from "../../utils/currentYear";
 
+const OPENF1_DIRECT_API_BASE_URL = "https://api.openf1.org/v1";
+const OPENF1_MIN_REQUEST_GAP_MS = 450;
+const OPENF1_MAX_RETRIES = 2;
+const OPENF1_RETRY_BASE_DELAY_MS = 900;
+let lastOpenF1RequestAt = 0;
+
 // Utility function to map team names to constructor IDs
 export const mapTeamNameToConstructorId = (teamName) => {
     const teamMapping = {
@@ -17,6 +23,86 @@ export const mapTeamNameToConstructorId = (teamName) => {
         // Add more mappings as needed
     };
     return teamMapping[teamName] || teamName?.toLowerCase().replace(/\s+/g, '_');
+};
+
+const buildDirectOpenF1Url = (path = "") => {
+    const normalizedPath = path.startsWith("/") ? path : `/${path}`;
+    return `${OPENF1_DIRECT_API_BASE_URL}${normalizedPath}`;
+};
+
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+const throttleOpenF1Requests = async () => {
+    const now = Date.now();
+    const elapsed = now - lastOpenF1RequestAt;
+    const waitMs = Math.max(0, OPENF1_MIN_REQUEST_GAP_MS - elapsed);
+    if (waitMs > 0) {
+        await sleep(waitMs);
+    }
+    lastOpenF1RequestAt = Date.now();
+};
+
+const fetchOpenF1JsonWithFallback = async (
+    path,
+    queryParams = {},
+    options = {}
+) => {
+    const { allow404 = false } = options;
+    const searchParams = new URLSearchParams(queryParams);
+    const queryString = searchParams.toString();
+    const proxyUrl = `${buildOpenF1Url(path)}${queryString ? `?${queryString}` : ""}`;
+    const directUrl = `${buildDirectOpenF1Url(path)}${queryString ? `?${queryString}` : ""}`;
+
+    let retryAttempt = 0;
+    while (retryAttempt <= OPENF1_MAX_RETRIES) {
+        await throttleOpenF1Requests();
+
+        try {
+            // Prefer official OpenF1 directly to avoid proxy CORS/runtime noise.
+            const directResponse = await fetch(directUrl);
+            if (directResponse.ok) {
+                return await directResponse.json();
+            }
+
+            if (allow404 && directResponse.status === 404) {
+                return [];
+            }
+
+            if (directResponse.status === 429 && retryAttempt < OPENF1_MAX_RETRIES) {
+                await sleep(
+                    OPENF1_RETRY_BASE_DELAY_MS * Math.pow(2, retryAttempt)
+                );
+                retryAttempt += 1;
+                continue;
+            }
+
+            // Only fallback to proxy for non-rate-limit HTTP errors.
+            if (directResponse.status !== 429) {
+                const proxyResponse = await fetch(proxyUrl);
+                if (proxyResponse.ok) {
+                    return await proxyResponse.json();
+                }
+                if (allow404 && proxyResponse.status === 404) {
+                    return [];
+                }
+                throw new Error(`OpenF1 proxy request failed: ${proxyResponse.status}`);
+            }
+
+            throw new Error(`OpenF1 direct request failed: ${directResponse.status}`);
+        } catch (directError) {
+            // Retry network failures as well.
+            if (retryAttempt < OPENF1_MAX_RETRIES) {
+                await sleep(
+                    OPENF1_RETRY_BASE_DELAY_MS * Math.pow(2, retryAttempt)
+                );
+                retryAttempt += 1;
+                continue;
+            }
+            throw directError;
+        }
+    }
+
+    return [];
 };
 
 export async function getDriverStandings(year = getCurrentYear()) {
@@ -98,42 +184,70 @@ export async function getConstructorStandings(year = getCurrentYear()) {
 
 export async function getRaceWeekendResults(meeting_key) {
     console.log('meeting_key', meeting_key);
-    const url = `${buildOpenF1Url("/sessions")}?meeting_key=${meeting_key}`;
-    const response = await fetch(url);
-    if (!response.ok) {
-        throw new Error('Failed to fetch sessions');
-    }
-    const data = await response.json();
-    // Filter for session_type === 'Race'
-    const raceSessions = data.filter(session => session.session_type === 'Race');
+    const data = await fetchOpenF1JsonWithFallback("/sessions", { meeting_key });
+    // Include both Sprint and Race sessions when available.
+    const raceSessions = data
+        .filter((session) => session.session_type === "Race")
+        .sort(
+            (a, b) =>
+                new Date(a.date_start || 0).getTime() -
+                new Date(b.date_start || 0).getTime()
+        );
+    const qualifyingSessions = data.filter((session) => {
+        const sessionName = session.session_name || "";
+        return (
+            sessionName === "Qualifying" ||
+            sessionName === "Sprint Qualifying" ||
+            sessionName === "Sprint Shootout"
+        );
+    });
+
+    const getGridFallbackSessionKey = (raceSession) => {
+        const raceStart = new Date(raceSession?.date_start || 0).getTime();
+        const sortedCandidates = [...qualifyingSessions].sort((a, b) => {
+            const aStart = new Date(a?.date_start || 0).getTime();
+            const bStart = new Date(b?.date_start || 0).getTime();
+            return bStart - aStart;
+        });
+
+        const beforeRace = sortedCandidates.find((candidate) => {
+            const candidateStart = new Date(candidate?.date_start || 0).getTime();
+            return Number.isFinite(raceStart) && candidateStart <= raceStart;
+        });
+
+        return beforeRace?.session_key || sortedCandidates[0]?.session_key || null;
+    };
     // console.log('raceSessions', raceSessions);
     // For each session, fetch the starting grid and enrich with driver/team data
-    const grids = await Promise.all(
-        raceSessions.map(async session => {
-            const gridUrl = `${buildOpenF1Url("/starting_grid")}?session_key=${session.session_key}`;
-            const gridResponse = await fetch(gridUrl);
-            if (!gridResponse.ok) {
-                throw new Error(`Failed to fetch starting grid for session_key ${session.session_key}`);
+    const grids = [];
+    for (const session of raceSessions) {
+            let grid = await fetchOpenF1JsonWithFallback("/starting_grid", {
+                session_key: session.session_key,
+            }, { allow404: true });
+            const fallbackGridSessionKey = getGridFallbackSessionKey(session);
+            if (
+                (!Array.isArray(grid) || grid.length === 0) &&
+                fallbackGridSessionKey &&
+                fallbackGridSessionKey !== session.session_key
+            ) {
+                grid = await fetchOpenF1JsonWithFallback("/starting_grid", {
+                    session_key: fallbackGridSessionKey,
+                }, { allow404: true });
             }
 
-            const resultUrl = `${buildOpenF1Url("/session_result")}?session_key=${session.session_key}`;
-            const resultResponse = await fetch(resultUrl);
-            if (!resultResponse.ok) {
-                throw new Error(`Failed to fetch results for session_key ${session.session_key}`);
-            }
-            const driversUrl = `${buildOpenF1Url("/drivers")}?session_key=${session.session_key}`;
-            const driversResponse = await fetch(driversUrl);
-            if (!driversResponse.ok) {
-                throw new Error(`Failed to fetch drivers for session_key ${session.session_key}`);
-            }
-            
-            const grid = await gridResponse.json();
-            const result = await resultResponse.json();
-            const drivers = await driversResponse.json();
+            const result = await fetchOpenF1JsonWithFallback("/session_result", {
+                session_key: session.session_key,
+            }, { allow404: true });
+            const drivers = await fetchOpenF1JsonWithFallback("/drivers", {
+                session_key: session.session_key,
+            }, { allow404: true });
+            const safeGrid = Array.isArray(grid) ? grid : [];
+            const safeResult = Array.isArray(result) ? result : [];
+            const safeDrivers = Array.isArray(drivers) ? drivers : [];
             
             // Enrich grid data with driver information
-            const enrichedGrid = grid.map(gridEntry => {
-                const driver = drivers.find(d => d.driver_number === gridEntry.driver_number);
+            const enrichedGrid = safeGrid.map(gridEntry => {
+                const driver = safeDrivers.find(d => d.driver_number === gridEntry.driver_number);
                 return {
                     ...gridEntry,
                     driver: driver ? {
@@ -144,8 +258,8 @@ export async function getRaceWeekendResults(meeting_key) {
             });
             
             // Enrich result data with driver information
-            const enrichedResult = result.map(resultEntry => {
-                const driver = drivers.find(d => d.driver_number === resultEntry.driver_number);
+            const enrichedResult = safeResult.map(resultEntry => {
+                const driver = safeDrivers.find(d => d.driver_number === resultEntry.driver_number);
                 return {
                     ...resultEntry,
                     driver: driver ? {
@@ -165,13 +279,12 @@ export async function getRaceWeekendResults(meeting_key) {
                 return posA - posB;
             });
             
-            return {
+            grids.push({
                 session_key: session.session_key,
                 session_name: session.session_name,
                 grid: enrichedGrid,
                 result: enrichedResult,
-            };
-        })
-    );
+            });
+    }
     return grids;
 }

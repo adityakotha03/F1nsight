@@ -1,23 +1,104 @@
 import classNames from "classnames";
-import React from "react";
-import { darkenColor } from "../../utils/darkenColor";
+import React, { useEffect } from "react";
+import { motion, useAnimationControls } from "framer-motion";
 import { lightenColor } from "../../utils/lightenColor";
 import { getCurrentYear } from "../../utils/currentYear";
+import { Loading } from "../../components";
 
 import { ReactComponent as Logo } from "../../components/f1nsight-logo-26.svg";
 
 const currentYear = getCurrentYear();
 
-const RaceResults = ({ raceResults, raceName }) => {
+const RaceResults = ({ raceResults, raceName, isLoading = false }) => {
+    const carControls = useAnimationControls();
+
+    useEffect(() => {
+        if (!raceResults || raceResults.length === 0) return;
+
+        let isCancelled = false;
+        const timeoutIds = [];
+
+        const sleep = (ms) =>
+            new Promise((resolve) => {
+                const timeoutId = setTimeout(resolve, ms);
+                timeoutIds.push(timeoutId);
+            });
+
+        const runLoop = async () => {
+            while (!isCancelled) {
+                carControls.set("hidden");
+                await sleep(180);
+                if (isCancelled) break;
+
+                await carControls.start("visible");
+                if (isCancelled) break;
+
+                await sleep(6500);
+                if (isCancelled) break;
+
+                await carControls.start("fade");
+                if (isCancelled) break;
+
+                await sleep(900);
+            }
+        };
+
+        runLoop();
+
+        return () => {
+            isCancelled = true;
+            timeoutIds.forEach((id) => clearTimeout(id));
+            carControls.stop();
+        };
+    }, [carControls, raceResults]);
+
+    const carVariants = {
+        hidden: {
+            x: -500,
+            opacity: 0,
+        },
+        visible: (order = 0) => ({
+            x: 0,
+            opacity: 1,
+            transition: {
+                duration: 2.4,
+                delay: order * 0.16,
+                ease: [0.16, 1, 0.3, 1],
+            },
+        }),
+        fade: {
+            opacity: 0,
+            transition: {
+                duration: 1.1,
+                ease: "easeInOut",
+            },
+        },
+    };
+
+    const getStaggerOrder = (driver, fallbackIndex) => {
+        // Use rendered list order for smoother pacing within each column.
+        return fallbackIndex;
+    };
+
+    const RIGHT_COLUMN_DELAY_OFFSET = 12;
+
+    if (isLoading) {
+        return (
+            <div className="social-media-container bg-glow-dark flex items-center justify-center">
+                <Loading className="scale-75" message="Loading race results..." />
+            </div>
+        );
+    }
+
     if (!raceResults || raceResults.length === 0) {
         return (
-            <div className="social-media-container">
+            <div className="social-media-container bg-glow-dark">
                 No race results data available.
             </div>
         );
     }
 
-    const raceResultItem = (driver) => {
+    const raceResultItem = (driver, staggerOrder = 0) => {
         const colorgradientStyletoLeft = {
             background: `linear-gradient(to left, ${lightenColor(
                 driver.driver.team_colour
@@ -28,7 +109,7 @@ const RaceResults = ({ raceResults, raceName }) => {
         return (
             <div
                 className={classNames(
-                    "starting-grid--item flex w-full relative"
+                    "starting-grid--item flex w-full relative overflow-hidden"
                 )}
             >
                 <div
@@ -72,9 +153,13 @@ const RaceResults = ({ raceResults, raceName }) => {
                         <p className="font-display leading-none gradient-text -mt-1">
                             {driver.driver?.last_name || "Unknown"}
                         </p>
-                        <img
+                        <motion.img
                             alt=""
                             className="drop-shadow-[0_0_14px_rgba(0,0,0,0.75)] z-10 -mt-4"
+                            custom={staggerOrder}
+                            variants={carVariants}
+                            initial="hidden"
+                            animate={carControls}
                             src={`${
                                 process.env.PUBLIC_URL +
                                 `/images/${currentYear}/cars/` +
@@ -103,11 +188,18 @@ const RaceResults = ({ raceResults, raceName }) => {
         { top: "730px", left: "300px" },
     ];
 
+    const formatSessionLabel = (sessionName = "") => {
+        const normalized = String(sessionName).toLowerCase();
+        if (normalized.includes("sprint")) return "Sprint Race";
+        if (normalized === "race") return "Feature Race";
+        return sessionName || "Race";
+    };
+
     return (
         <div className="relative starting-grid overflow-hidden">
             {raceResults.map((raceResult) => (
                 <div
-                    className="social-media-container flex flex-col justify-between"
+                    className="social-media-container bg-glow-dark flex flex-col justify-between"
                     key={raceResult.session_key}
                     style={{
                         backgroundImage: `url(${process.env.PUBLIC_URL}/images/bg.png)`,
@@ -121,39 +213,46 @@ const RaceResults = ({ raceResults, raceName }) => {
                             Race Result
                         </p>
                         <p className=" text-xs uppercase tracking-sm z-10">
-                            {raceName} {raceResult.session_name}
+                            {raceName} {formatSessionLabel(raceResult.session_name)}
                         </p>
                     </div>
                     <div className="starting-grid--columns flex flex-row z-10">
                         {/* Left Column - Positions 1-10 */}
-                        <div className="grow relative">
+                        <div className="grow relative overflow-hidden">
                             {raceResult.result
                                 .filter(
                                     (driver) =>
                                         driver.position >= 1 &&
-                                        driver.position <= 10
+                                        driver.position <= 11
                                 )
                                 .map((SGdriver, idx) => (
                                     <div key={SGdriver.driver_number || idx}>
-                                        {raceResultItem(SGdriver)}
+                                        {raceResultItem(
+                                            SGdriver,
+                                            getStaggerOrder(SGdriver, idx)
+                                        )}
                                     </div>
                                 ))}
                         </div>
 
                         {/* Right Column - Positions 11-20 */}
-                        <div className="grow relative">
+                        <div className="grow relative overflow-hidden">
                             {raceResult.result
                                 .filter(
                                     (driver) =>
-                                        (driver.position >= 11 &&
-                                            driver.position <= 20) ||
+                                        (driver.position >= 12 &&
+                                            driver.position <= 22) ||
                                         ((driver.position === null ||
                                             driver.position === undefined) &&
                                             (driver.dnf || driver.dns))
                                 )
                                 .map((SGdriver, idx) => (
                                     <div key={SGdriver.driver_number || idx}>
-                                        {raceResultItem(SGdriver)}
+                                        {raceResultItem(
+                                            SGdriver,
+                                            getStaggerOrder(SGdriver, idx) +
+                                                RIGHT_COLUMN_DELAY_OFFSET
+                                        )}
                                     </div>
                                 ))}
                         </div>
