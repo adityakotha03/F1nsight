@@ -1,20 +1,20 @@
 {
   "files": {
-    "main.css": "/static/css/main.11319a2d.css",
-    "main.js": "/static/js/main.dd65a93b.js",
+    "main.css": "/static/css/main.d9afacac.css",
+    "main.js": "/static/js/main.cef2c1ba.js",
     "static/js/453.23e117ad.chunk.js": "/static/js/453.23e117ad.chunk.js",
     "static/media/bg.png": "/static/media/bg.ddb11df4ffa336e4ee1e.png",
     "static/media/dataBg.png": "/static/media/dataBg.01cd0445083ae9defe73.png",
     "static/media/f1nsight-logo-26.svg": "/static/media/f1nsight-logo-26.a1b9ba14900d88e552764c2a5b1b6566.svg",
     "static/media/F1Ansight.svg": "/static/media/F1Ansight.ddf3bfa517971ba45cc01a7573060a12.svg",
-    "static/media/F2nsight.svg": "/static/media/F2nsight.c7a96d1b84a5fd5dfc3ed5eb5f2eb549.svg",
+    "static/media/F2nsight.svg": "/static/media/F2nsight.cd5d5965d0c44117cbeadc53256a16d2.svg",
     "index.html": "/index.html",
-    "main.11319a2d.css.map": "/static/css/main.11319a2d.css.map",
-    "main.dd65a93b.js.map": "/static/js/main.dd65a93b.js.map",
+    "main.d9afacac.css.map": "/static/css/main.d9afacac.css.map",
+    "main.cef2c1ba.js.map": "/static/js/main.cef2c1ba.js.map",
     "453.23e117ad.chunk.js.map": "/static/js/453.23e117ad.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.11319a2d.css",
-    "static/js/main.dd65a93b.js"
+    "static/css/main.d9afacac.css",
+    "static/js/main.cef2c1ba.js"
   ]
 }
