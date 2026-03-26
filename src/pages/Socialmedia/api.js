@@ -172,7 +172,7 @@ export async function getConstructorStandings(year = getCurrentYear()) {
             wins: standing.wins,
             constructor: {
                 constructorId: standing.Constructor.constructorId,
-                name: standing.Constructor.name,
+                name: standing.Constructor.name.replace(/\s*F1 Team$/, ""),
                 nationality: standing.Constructor.nationality
             }
         }));

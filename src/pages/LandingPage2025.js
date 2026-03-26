@@ -86,8 +86,8 @@ export function LandingPage2025() {
     };
     const latestResultsLayout = () => {
         return (
-                <div className="relative w-full flex flex-col items-center bg-glow-dark rounded-md">
-                    <div className="flex flex-col items-center z-10 pt-32">
+                <div className="relative w-full h-full flex flex-col items-center justify-center bg-glow-dark">
+                    <div className="flex flex-col items-center z-10">
                         <p className="text-sm tracking-xs uppercase gradient-text-light">
                             Latest F1 Race Results
                         </p>
@@ -126,9 +126,17 @@ export function LandingPage2025() {
                         <p className="text-center mb-56 w-2/3">
                             Get detailed stats, strategic insights, and experience the interactive telemetry map of the race.
                         </p>
+                        <Button
+                            as="button"
+                            onClick={() => navigateToRaceResult(raceData)}
+                            className="mb-48 -mt-24 mx-auto"
+                            size="md"
+                        >
+                            View Full Race Details
+                        </Button>
                     </div>
 
-                    <div className="bg-neutral-950/40 absolute w-full h-full rounded-md overflow-hidden">
+                    <div className="bg-neutral-950/40 absolute w-full h-full overflow-hidden">
                         <video
                             src={
                                 raceData &&
@@ -149,7 +157,6 @@ export function LandingPage2025() {
                             className="object-cover opacity-15 h-full w-full"
                         />
                     </div>
-                    <div className="divider-glow-dark absolute bottom-[-16px] !w-[95%]" />
                 </div>
         );
     };
@@ -195,18 +202,10 @@ export function LandingPage2025() {
                     </div>
                 </div>
             </section>
-            <section className="h-screen snap-start bg-gradient-to-b from-neutral-950 to-plum-500 flex items-center">
-                <div className="max-w-screen-md mx-auto flex flex-col items-center justify-center px-16">
+            <section className="h-screen snap-start flex items-start landing-page-snap-section">
                     {latestResultsLayout()}
-                    <Button
-                        as="button"
-                        onClick={() => navigateToRaceResult(raceData)}
-                        className="mb-48 -mt-24"
-                        size="md"
-                    >
-                        View Full Race Details
-                    </Button>
-                    <div className="w-full flex flex-col gap-16 md:flex-row items-center justify-center"> 
+                    
+                    {/* <div className="w-full flex flex-col gap-16 md:flex-row items-center justify-center"> 
                         <button
                             onClick={() => {
                                 navigate("/driver-standings")
@@ -249,8 +248,7 @@ export function LandingPage2025() {
                                 className="w-[200px] mx-auto -mb-12 group-hover:scale-110 transition-transform duration-300"
                             />
                         </button>
-                    </div>
-                </div>
+                    </div> */}
             </section>
         </div>
     );

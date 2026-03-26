@@ -48,7 +48,7 @@ export function ViewLatestRaceButton({
                         alt={`${code} driver`}
                         className={classNames(
                             "drop-shadow-[0_12px_18px_rgba(0,0,0,0.55)] transition-all duration-300 ease-out",
-                            slot === "center" ? "z-30 w-[104px]" : "z-20 w-[82px]",
+                            slot === "center" ? "z-30 w-[96px]" : "z-20 w-[82px]",
                             isHovered
                                 ? "opacity-100 translate-y-0"
                                 : "opacity-0 translate-y-16"

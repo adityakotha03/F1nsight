@@ -23,8 +23,8 @@ const ArSection = ({ layoutMobile }) => {
     );
 
     return (
-        <section className="ar-experience-section pb-64 bg-gradient-to-b from-neutral-950/30 to-neutral-950/5">
-            <div className="divider-glow-dark mb-64" />
+        <section className="ar-experience-section h-screen bg-gradient-to-b from-neutral-950/30 to-neutral-950/5">
+            <div className="divider-glow-dark mb-[128px]" />
             <div className="max-w-screen-lg mx-auto">
                 <h2 className="heading-3 text-center mb-64">
                     bring the excitement of F1 right into your own space

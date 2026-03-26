@@ -35,6 +35,9 @@ module.exports = {
           300: '#835897',
           500: '#5F0B84',
         },
+        deepPurple: {
+          500: '#271D5A',
+        },
       },
       boxShadow: {
         '12-light': '0 4px 12px 0 rgba(0, 0, 0, 0.25)',
