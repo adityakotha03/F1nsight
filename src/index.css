@@ -61,6 +61,15 @@ button:hover {
   padding: 0 2.4rem;
 }
 
+/* Buttons */
+.primary-button {
+  background-color: #5F0B84;
+}
+
+.primary-button:hover {
+  background-image: linear-gradient(to bottom right, #5F0B84, #835897);
+}
+
 /* backgrounds */
 .bg-glow {
   box-shadow: inset 0 0 2.4rem 0 rgba(255, 255, 255, .25), 0 0 2.4rem 0 rgba(0, 0, 0, .5);

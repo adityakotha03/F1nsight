@@ -217,11 +217,11 @@ export const Header = ({ setResultPage, setResultPagePath }) => {
 
                     {/* Desktop */}
                     <div className="flex items-center gap-16 max-md:hidden">
-                        {/* <div className="relative w-max uppercase text-sm ">
+                        <div className="relative w-max uppercase text-sm ">
                             <Link to="/about-us" className="global-header__main-nav__button py-12 px-24 rounded-[.8rem] uppercase tracking-xs">
                                 About
                             </Link>
-                        </div> */}
+                        </div>
                         <div className="relative group w-max uppercase text-sm ">
                             <button className="global-header__main-nav__button py-12 px-24 rounded-[.8rem] uppercase tracking-xs">
                                 Results

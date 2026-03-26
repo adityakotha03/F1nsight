@@ -12,6 +12,7 @@ import {
   DriverComparison,
   TeammatesComparison, 
   LandingPage2025, 
+  AboutPage2025,
   ARViewer, 
   RaceResultsPage, 
   RacePage, 
@@ -134,6 +135,7 @@ function MainContent({ setSelectedYear, selectedYear, resultPage, resultPagePath
 
       <Routes>
         <Route exact path="/" element={<LandingPage2025 setResultPagePath={setResultPagePath} />} />
+        <Route path="/about-us" element={<AboutPage2025 />} />
         <Route path="/race-results" element={<RaceResultsPage selectedYear={selectedYear} />} />
         <Route path="/constructor-standings" element={<ConstructorStandings selectedYear={selectedYear} />} />
         <Route path="/driver-standings" element={<DriverStandings selectedYear={selectedYear} />} />
