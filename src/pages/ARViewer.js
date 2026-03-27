@@ -11,7 +11,6 @@ import { teamHistory } from "../utils/teamHistory";
 import teamColors from "../utils/teamColors.json";
 
 import "./ARViewer.scss";
-import { ReactSelectComponent } from "../components";
 
 export const ARViewer = () => {
     const [glbLink, setGlbLink] = useState(ARViewer.defaultProps.glbLink);
@@ -20,18 +19,11 @@ export const ARViewer = () => {
     const [selectedTeamName, setSelectedTeamName] = useState(
         ARViewer.defaultProps.team.name
     );
-    const [teamStatsOpen, setTeamStatsOpen] = useState(false);
+    const [teamSelectionOpen, setTeamSelectionOpen] = useState(false);
     const modelViewerRef = useRef(null);
-
-    const ref = useRef(null);
-
-    const showHistory = team.name !== "F1Nsight" && team.name !== "apx";
+    const showTeamSelectionDrawer = true;
 
     const teamList = Object.values(teamHistory);
-    const teamOptions = teamList.map((teamItem) => ({
-        value: teamItem.name,
-        label: teamItem.name.replace(/_/g, " ").toUpperCase(),
-    }));
     const getModelTeamNameForYear = (teamNameValue, yearValue) => {
         if (teamNameValue === "audi") {
             return Number(yearValue) < 2026 ? "sauber" : "audi";
@@ -145,13 +137,13 @@ export const ARViewer = () => {
         trackButtonClick(specialModel.trackingId);
     };
 
-    const handleTeamChange = (selectedOption) => {
-        if (!selectedOption?.value) return;
-        const availableYears = getAvailableYearsForTeam(selectedOption.value);
+    const handleTeamSelection = (teamNameValue) => {
+        if (!teamNameValue) return;
+        const availableYears = getAvailableYearsForTeam(teamNameValue);
         const latestYear =
             availableYears[availableYears.length - 1] || "2026";
-        setSelectedTeamName(selectedOption.value);
-        setTeamModelByYear(selectedOption.value, latestYear);
+        setSelectedTeamName(teamNameValue);
+        setTeamModelByYear(teamNameValue, latestYear);
     };
 
     useEffect(() => {
@@ -184,19 +176,7 @@ export const ARViewer = () => {
     return (
         <>
             <div className="ar-container">
-                <div className="model-viewer-wrapper">
-                    <div className="ar-team-select">
-                        <ReactSelectComponent
-                            placeholder="Select Team"
-                            options={teamOptions}
-                            onChange={handleTeamChange}
-                            value={teamOptions.find(
-                                (option) => option.value === selectedTeamName
-                            )}
-                            isSearchable={false}
-                            className="w-[17rem]"
-                        />
-                    </div>
+                <div className="model-viewer-wrapper relative">
                     <model-viewer
                         ref={modelViewerRef}
                         poster={ARViewer.defaultProps.img}
@@ -230,13 +210,15 @@ export const ARViewer = () => {
                         </button>
                     </model-viewer>
 
+                    <div className="model-viewer-text-large">{teamName}</div>
+
                     <div className="ar-badge leading-none text-sm">
                         <div>AR Enabled</div>
                         <div>Mobile Devices</div>
                     </div>
 
-                    {/* Team History */}
-                    {showHistory && (
+                    {/* Team Selection */}
+                    {showTeamSelectionDrawer && (
                         <div
                             className={classNames(
                                 "ar-history shadow-md pt-8 px-8 sm:px-32 rounded-t-lg w-[90%]",
@@ -246,66 +228,76 @@ export const ARViewer = () => {
                             style={{
                                 borderTop: `1px solid ${activeThemeColor}`,
                                 transform: `translate(-50%, ${
-                                    teamStatsOpen ? "0%" : "calc(100% - 42px)"
+                                    teamSelectionOpen ? "0%" : "calc(100% - 42px)"
                                 })`,
                             }}
                         >
                             <button
                                 className="mb-8"
                                 onClick={() => {
-                                    setTeamStatsOpen(!teamStatsOpen)
-                                    trackButtonClick(`team-history-${team.name}`);
+                                    setTeamSelectionOpen(!teamSelectionOpen);
+                                    trackButtonClick(`team-selection-${team.name}`);
                                 }}
                             >
                                 <FontAwesomeIcon
                                     icon="chevron-down"
                                     className={classNames(
                                         "mr-16 fa-1x transition-all ease-in-out delay-75 duration-500",
-                                        { "fa-rotate-180": !teamStatsOpen }
+                                        { "fa-rotate-180": !teamSelectionOpen }
                                     )}
                                 />
                                 <span className="font-display">
-                                    {teamName} History
+                                    Select Team
                                 </span>
                                 <FontAwesomeIcon
                                     icon="chevron-down"
                                     className={classNames(
                                         "ml-16 fa-1x transition-all ease-in-out delay-75 duration-500",
-                                        { "fa-rotate-180": !teamStatsOpen }
+                                        { "fa-rotate-180": !teamSelectionOpen }
                                     )}
                                 />
                             </button>
 
-                            <div
-                                className="team-stats flex flex-col gap-4 text-left"
-                                ref={ref}
-                            >
+                            <div className="team-stats flex flex-col gap-8 text-left">
                                 <div className="divider-glow-dark w-full" />
-                                <div className="flex flex-col md:flex-row md:flex-wrap md:justify-between mb-8">
-                                    <div className="text-center">
-                                        <div className="uppercase tracking-xs text-xs">
-                                            Constructor Titles
-                                        </div>
-                                        <div className="font-display">
-                                            {team.constructorTitles.length}
-                                        </div>
-                                    </div>
-                                    <div className="text-center">
-                                        <div className="uppercase tracking-xs text-xs">
-                                            Drivers Championships
-                                        </div>
-                                        <div className="font-display">
-                                            {team.driversChampionships.length}
-                                        </div>
-                                    </div>
+                                <div className="grid grid-cols-2 sm:grid-cols-3 gap-8 pb-8">
+                                    {teamList.map((teamItem) => {
+                                        const availableYears =
+                                            getAvailableYearsForTeam(teamItem.name);
+                                        const latestTeamYear =
+                                            availableYears[availableYears.length - 1];
+                                        const modelTeamName = getModelTeamNameForYear(
+                                            teamItem.name,
+                                            latestTeamYear
+                                        );
+                                        const teamButtonColor = latestTeamYear
+                                            ? `#${
+                                                  teamColors[latestTeamYear]?.[modelTeamName] ||
+                                                  "5F0B84"
+                                              }`
+                                            : "#5F0B84";
+                                        const isSelected = selectedTeamName === teamItem.name;
+
+                                        return (
+                                            <button
+                                                key={teamItem.name}
+                                                type="button"
+                                                onClick={() =>
+                                                    handleTeamSelection(teamItem.name)
+                                                }
+                                                className={classNames(
+                                                    "text-white text-xs uppercase tracking-xs rounded-sm px-8 py-6 transition-all",
+                                                    isSelected
+                                                        ? "bg-glow--active"
+                                                        : "bg-glow-dark"
+                                                )}
+                                                style={{ backgroundColor: teamButtonColor }}
+                                            >
+                                                {teamItem.name.replace(/_/g, " ")}
+                                            </button>
+                                        );
+                                    })}
                                 </div>
-                                <div className="uppercase tracking-xs text-xs w-full text-center">
-                                    Team History
-                                </div>
-                                <HistoryBar
-                                    history={team.teamHistory}
-                                    color={activeThemeColor}
-                                />
                             </div>
                         </div>
                     )}
@@ -313,7 +305,7 @@ export const ARViewer = () => {
 
                 {/* todo: redo this if possible */}
                 <style jsx="true">{`
-                    model-viewer {
+                    .model-viewer-wrapper {
                         background-color: ${activeThemeColor};
                         background: radial-gradient(
                             circle,
@@ -321,14 +313,11 @@ export const ARViewer = () => {
                             ${darkenColor(activeThemeColor, 40)} 80%
                         );
                     }
-                    model-viewer::before {
-                        content: "${teamName}";
-                    }
                 `}</style>
             </div>
 
-            {/* Team Buttons */}
             <div className="mt-64">
+                {/* Team Buttons */}
                 <div className="flex flex-row justify-center gap-16 p-60">
                     {availableTeamYears.map((modelYear, index) => {
                         const modelTeamName = getModelTeamNameForYear(
@@ -368,13 +357,30 @@ export const ARViewer = () => {
                         );
                     })}
                 </div>
+                <HistoryBar
+                    history={team.teamHistory}
+                    color={activeThemeColor}
+                />
             </div>
 
-            <div className="flex flex-col justify-center pb-40">
+            <div className="model-viewer-text-medium-wrapper flex flex-row justify-center gap-32 mx-32 my-64 font-display leading-none" style={{ color: darkenColor(activeThemeColor, 5) }}>
+                <div className="model-viewer-text-medium flex flex-col items-end justify-start">
+                    <div>constructor</div> 
+                    <div>titles</div>
+                    <div className="model-viewer-text-medium text-[3.2rem]">{team.constructorTitles.length}</div>
+                </div>
+                <div className="model-viewer-text-medium flex flex-col items-start justify-end">
+                    <div>drivers</div>
+                    <div>championships</div>
+                    <div className="model-viewer-text-medium text-[3.2rem]">{team.driversChampionships.length}</div>
+                </div>
+            </div>
+
+            <div className="flex flex-col justify-center pb-40 bg-gradient-to-b from-plum-500/50 to-transparent">
                 <div className="divider-glow-dark mb-40" />
 
                 <h2 className="tracking-wide text-center gradient-text-light">
-                    Special edition
+                    Garage Collection
                 </h2>
 
                 <div className="flex flex-row justify-center flex-wrap gap-16 p-32">
@@ -394,7 +400,7 @@ export const ARViewer = () => {
                                 alt={specialModel.label}
                                 className="w-[16rem] -mt-32"
                             />
-                            <p className="font-display text-24">
+                            <p className="font-display">
                                 {specialModel.label}
                             </p>
                         </button>
