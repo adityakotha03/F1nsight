@@ -53,6 +53,11 @@ export const ARViewer = () => {
         ? teamColors[selectedModelYear]?.[activeModelTeamName]
         : null;
     const activeThemeColor = activeTeamColorHex ? `#${activeTeamColorHex}` : team.color;
+    const teamHistoryData = team?.teamHistory || [];
+    const constructorTitlesCount = team?.constructorTitles?.length || 0;
+    const driversChampionshipsCount = team?.driversChampionships?.length || 0;
+    const isGarageCollectionCar =
+        team?.name === "F1Nsight" || team?.name === "apx";
 
     const setTeamModelByYear = (teamNameValue, modelYear) => {
         const validYears = getAvailableYearsForTeam(teamNameValue);
@@ -144,6 +149,7 @@ export const ARViewer = () => {
             availableYears[availableYears.length - 1] || "2026";
         setSelectedTeamName(teamNameValue);
         setTeamModelByYear(teamNameValue, latestYear);
+        setTeamSelectionOpen(false);
     };
 
     useEffect(() => {
@@ -175,8 +181,9 @@ export const ARViewer = () => {
 
     return (
         <>
-            <div className="ar-container">
+            <div className="ar-container mb-64">
                 <div className="model-viewer-wrapper relative">
+                    <div className="model-viewer-text-large pointer-events-none">{teamName}</div>
                     <model-viewer
                         ref={modelViewerRef}
                         poster={ARViewer.defaultProps.img}
@@ -209,8 +216,6 @@ export const ARViewer = () => {
                             Launch AR
                         </button>
                     </model-viewer>
-
-                    <div className="model-viewer-text-large">{teamName}</div>
 
                     <div className="ar-badge leading-none text-sm">
                         <div>AR Enabled</div>
@@ -316,65 +321,67 @@ export const ARViewer = () => {
                 `}</style>
             </div>
 
-            <div className="mt-64">
-                {/* Team Buttons */}
-                <div className="flex flex-row justify-center gap-16 p-60">
-                    {availableTeamYears.map((modelYear, index) => {
-                        const modelTeamName = getModelTeamNameForYear(
-                            selectedTeamName,
-                            modelYear
-                        );
-                        const yearButtonColor = teamColors[modelYear]?.[modelTeamName]
-                            ? `#${teamColors[modelYear][modelTeamName]}`
-                            : activeThemeColor;
-                        return (
-                            <button
-                                key={index}
-                                style={{
-                                    backgroundColor: yearButtonColor,
-                                }}
-                                className={classNames(
-                                    "text-white p-2 rounded inline-flex flex-col items-center text-center bg-glow-dark mt-16 max-md:w-[45%]"
-                                )}
-                                onClick={() => {
-                                    setTeamModelByYear(selectedTeamName, modelYear);
-                                }}
-                            >
-                                <img
-                                    src={`${
-                                        process.env.PUBLIC_URL +
-                                        "/images/" + modelYear + "/cars/" +
-                                        modelTeamName +
-                                        ".png"
-                                    }`}
-                                    alt={`${selectedTeamName}-${modelYear}`}
-                                    className="w-[16rem] -mt-32"
-                                />
-                                <p className="font-display text-24">
-                                    {modelYear}
-                                </p>
-                            </button>
-                        );
-                    })}
-                </div>
-                <HistoryBar
-                    history={team.teamHistory}
-                    color={activeThemeColor}
-                />
-            </div>
+            {!isGarageCollectionCar && (
+                <>
+                    {/* Team Buttons */}
+                    <div className="flex flex-row justify-center gap-16 p-60">
+                        {availableTeamYears.map((modelYear, index) => {
+                            const modelTeamName = getModelTeamNameForYear(
+                                selectedTeamName,
+                                modelYear
+                            );
+                            const yearButtonColor = teamColors[modelYear]?.[modelTeamName]
+                                ? `#${teamColors[modelYear][modelTeamName]}`
+                                : activeThemeColor;
+                            return (
+                                <button
+                                    key={index}
+                                    style={{
+                                        backgroundColor: yearButtonColor,
+                                    }}
+                                    className={classNames(
+                                        "text-white p-2 rounded inline-flex flex-col items-center text-center bg-glow-dark mt-16 max-md:w-[45%]"
+                                    )}
+                                    onClick={() => {
+                                        setTeamModelByYear(selectedTeamName, modelYear);
+                                    }}
+                                >
+                                    <img
+                                        src={`${
+                                            process.env.PUBLIC_URL +
+                                            "/images/" + modelYear + "/cars/" +
+                                            modelTeamName +
+                                            ".png"
+                                        }`}
+                                        alt={`${selectedTeamName}-${modelYear}`}
+                                        className="w-[16rem] -mt-32"
+                                    />
+                                    <p className="font-display text-24">
+                                        {modelYear}
+                                    </p>
+                                </button>
+                            );
+                        })}
+                    </div>
+                    <HistoryBar
+                        history={teamHistoryData}
+                        color={activeThemeColor}
+                    />
 
-            <div className="model-viewer-text-medium-wrapper flex flex-row justify-center gap-32 mx-32 my-64 font-display leading-none" style={{ color: darkenColor(activeThemeColor, 5) }}>
-                <div className="model-viewer-text-medium flex flex-col items-end justify-start">
-                    <div>constructor</div> 
-                    <div>titles</div>
-                    <div className="model-viewer-text-medium text-[3.2rem]">{team.constructorTitles.length}</div>
-                </div>
-                <div className="model-viewer-text-medium flex flex-col items-start justify-end">
-                    <div>drivers</div>
-                    <div>championships</div>
-                    <div className="model-viewer-text-medium text-[3.2rem]">{team.driversChampionships.length}</div>
-                </div>
-            </div>
+                    <div className="model-viewer-text-medium-wrapper flex flex-row justify-center gap-32 mx-32 my-64 font-display leading-none" style={{ color: darkenColor(activeThemeColor, 5) }}>
+                        <div className="model-viewer-text-medium flex flex-col items-end justify-start">
+                            <div>constructor</div> 
+                            <div>titles</div>
+                            <div className="model-viewer-text-medium text-[3.2rem]">{constructorTitlesCount}</div>
+                        </div>
+                        <div className="model-viewer-text-medium flex flex-col items-start justify-end">
+                            <div>drivers</div>
+                            <div>championships</div>
+                            <div className="model-viewer-text-medium text-[3.2rem]">{driversChampionshipsCount}</div>
+                        </div>
+                    </div>
+                </>
+            )}
 
             <div className="flex flex-col justify-center pb-40 bg-gradient-to-b from-plum-500/50 to-transparent">
                 <div className="divider-glow-dark mb-40" />

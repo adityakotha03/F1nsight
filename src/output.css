@@ -2591,6 +2591,10 @@ input[type="range"]::-ms-fill-lower {
   cursor: wait;
 }
 
+.cursor-none {
+  cursor: none;
+}
+
 .resize {
   resize: both;
 }
