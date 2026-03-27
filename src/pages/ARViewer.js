@@ -152,6 +152,31 @@ export const ARViewer = () => {
         setTeamSelectionOpen(false);
     };
 
+    const CarSelectionButton = ({
+        backgroundColor,
+        onClick,
+        imageSrc,
+        imageAlt,
+        label,
+    }) => (
+        <button
+            style={{ backgroundColor }}
+            className={classNames(
+                "text-white p-2 rounded inline-flex flex-col items-center text-center bg-glow-dark mt-16 max-md:w-[45%] group transition-transform duration-300 hover:scale-95"
+            )}
+            onClick={onClick}
+        >
+            <img
+                src={imageSrc}
+                alt={imageAlt}
+                className="w-[16rem] -mt-32 transition-transform duration-300 group-hover:scale-110"
+            />
+            <p className="font-display text-24 transition-transform duration-300 group-hover:scale-95">
+                {label}
+            </p>
+        </button>
+    );
+
     useEffect(() => {
         const modelViewer = modelViewerRef.current;
 
@@ -322,9 +347,12 @@ export const ARViewer = () => {
             </div>
 
             {!isGarageCollectionCar && (
-                <>
+                <div className="flex flex-col justify-center pt-64">
                     {/* Team Buttons */}
-                    <div className="flex flex-row justify-center gap-16 p-60">
+                    <h2 className="tracking-sm uppercase gradient-text-light text-center mb-32">
+                        Team Garage
+                    </h2>
+                    <div className="flex flex-row justify-center gap-16 px-60 pb-32">
                         {availableTeamYears.map((modelYear, index) => {
                             const modelTeamName = getModelTeamNameForYear(
                                 selectedTeamName,
@@ -334,41 +362,40 @@ export const ARViewer = () => {
                                 ? `#${teamColors[modelYear][modelTeamName]}`
                                 : activeThemeColor;
                             return (
-                                <button
+                                <CarSelectionButton
                                     key={index}
-                                    style={{
-                                        backgroundColor: yearButtonColor,
-                                    }}
-                                    className={classNames(
-                                        "text-white p-2 rounded inline-flex flex-col items-center text-center bg-glow-dark mt-16 max-md:w-[45%]"
-                                    )}
+                                    backgroundColor={yearButtonColor}
                                     onClick={() => {
                                         setTeamModelByYear(selectedTeamName, modelYear);
                                     }}
-                                >
-                                    <img
-                                        src={`${
-                                            process.env.PUBLIC_URL +
-                                            "/images/" + modelYear + "/cars/" +
-                                            modelTeamName +
-                                            ".png"
-                                        }`}
-                                        alt={`${selectedTeamName}-${modelYear}`}
-                                        className="w-[16rem] -mt-32"
-                                    />
-                                    <p className="font-display text-24">
-                                        {modelYear}
-                                    </p>
-                                </button>
+                                    imageSrc={`${
+                                        process.env.PUBLIC_URL +
+                                        "/images/" + modelYear + "/cars/" +
+                                        modelTeamName +
+                                        ".png"
+                                    }`}
+                                    imageAlt={`${selectedTeamName}-${modelYear}`}
+                                    label={modelYear}
+                                />
                             );
                         })}
                     </div>
+
+                    <h2 className="tracking-sm uppercase gradient-text-light text-center mb-32">
+                        History
+                    </h2>
                     <HistoryBar
                         history={teamHistoryData}
                         color={activeThemeColor}
                     />
 
-                    <div className="model-viewer-text-medium-wrapper flex flex-row justify-center gap-32 mx-32 my-64 font-display leading-none" style={{ color: darkenColor(activeThemeColor, 5) }}>
+                    <h2 className="tracking-sm uppercase gradient-text-light text-center mb-32">
+                        Titles & Championships
+                    </h2>
+                    <div 
+                        className="model-viewer-text-medium-wrapper flex flex-row justify-center gap-32 mx-32 mb-64 font-display leading-none" 
+                        style={{ color: darkenColor(activeThemeColor, 5) }}
+                    >
                         <div className="model-viewer-text-medium flex flex-col items-end justify-start">
                             <div>constructor</div> 
                             <div>titles</div>
@@ -380,37 +407,28 @@ export const ARViewer = () => {
                             <div className="model-viewer-text-medium text-[3.2rem]">{driversChampionshipsCount}</div>
                         </div>
                     </div>
-                </>
+                </div>
             )}
 
             <div className="flex flex-col justify-center pb-40 bg-gradient-to-b from-plum-500/50 to-transparent">
                 <div className="divider-glow-dark mb-40" />
 
-                <h2 className="tracking-wide text-center gradient-text-light">
-                    Garage Collection
+                <h2 className="tracking-sm uppercase gradient-text-light mx-auto">
+                    F1NSIGHT Collection
                 </h2>
 
                 <div className="flex flex-row justify-center flex-wrap gap-16 p-32">
                     {specialEditionModels.map((specialModel) => (
-                        <button
+                        <CarSelectionButton
                             key={specialModel.id}
-                            style={{ backgroundColor: specialModel.color }}
-                            className={classNames(
-                                "text-white p-2 rounded inline-flex flex-col items-center text-center bg-glow-dark mt-16 max-md:w-[45%]"
-                            )}
+                            backgroundColor={specialModel.color}
                             onClick={() =>
                                 handleSpecialEditionSelect(specialModel)
                             }
-                        >
-                            <img
-                                src={`${process.env.PUBLIC_URL}${specialModel.imagePath}`}
-                                alt={specialModel.label}
-                                className="w-[16rem] -mt-32"
-                            />
-                            <p className="font-display">
-                                {specialModel.label}
-                            </p>
-                        </button>
+                            imageSrc={`${process.env.PUBLIC_URL}${specialModel.imagePath}`}
+                            imageAlt={specialModel.label}
+                            label={specialModel.label}
+                        />
                     ))}
                 </div>
             </div>

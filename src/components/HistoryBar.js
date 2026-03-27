@@ -77,8 +77,8 @@ export const HistoryBar = ({ history, color }) => {
     // }, [history]);
 
     return (
-        <div className="history-bar-container">
-            <div className="flex flex-col sm:flex-row rounded-sm overflow-hidden mx-32">
+        <div className="history-bar-container pb-32">
+            <div className="flex flex-col sm:flex-row rounded-sm overflow-hidden w-[90%] mx-auto">
                 {history.map((d, i) => (
                     <div 
                         className="text-xs flex flex-row max-sm:justify-between items-center sm:flex-col leading-none w-full shadow-md p-8 bg-glow-dark" 
