@@ -1,33 +1,116 @@
 import teamColors from "./teamColors.json";
 import { buildOpenF1Url, OPENF1_API_BASE_URL } from "../config/openf1";
 
+const CANCELLED_RACES_2026 = ["Bahrain Grand Prix", "Saudi Arabian Grand Prix"];
+
+/**
+ * Normalizes a date string to the format expected by the OpenF1 API (YYYY-MM-DDTHH:MM:SS.mmm)
+ * @param {string|Date} date - The date to normalize
+ * @returns {string} The normalized date string
+ */
+export function normalizeOpenF1Date(date) {
+  if (!date) return "";
+  const d = new Date(date);
+  if (isNaN(d.getTime())) return "";
+  
+  // OpenF1 expects UTC time in format YYYY-MM-DDTHH:MM:SS.mmm
+  // toISOString gives YYYY-MM-DDTHH:MM:SS.mmmZ
+  // We trim the 'Z' and ensure only 3 decimal places
+  return d.toISOString().split('.')[0] + '.' + d.toISOString().split('.')[1].slice(0, 3);
+}
+
+const CACHE_PREFIX = "f1_cache_";
+const CACHE_TTL = 6 * 60 * 60 * 1000; // 6 hours in milliseconds
+
+const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+export const fetchOpenF1Data = async (url, retries = 3, backoff = 500) => {
+    try {
+        const response = await fetch(url);
+        
+        if (response.status === 429 && retries > 0) {
+            console.warn(`[API] Rate limited (429) on ${url}. Retrying in ${backoff}ms... (${retries} retries left)`);
+            await delay(backoff);
+            return fetchOpenF1Data(url, retries - 1, backoff * 2);
+        }
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    } catch (error) {
+        if (retries > 0) {
+            console.warn(`[API] Fetch error for ${url}. Retrying in ${backoff}ms... (${retries} retries left)`);
+            await delay(backoff);
+            return fetchOpenF1Data(url, retries - 1, backoff * 2);
+        }
+        console.error(`[API] Final failure for ${url}:`, error);
+        throw error;
+    }
+};
+
+/**
+ * Fetches data from localStorage if available and not expired,
+ * otherwise fetches from network and updates cache.
+ * Robustified to return stale data if network fetch fails (e.g. 429).
+ */
+export const fetchWithPersistentCache = async (url) => {
+    const cacheKey = CACHE_PREFIX + btoa(url);
+    let cachedData = null;
+
+    // 1. Try to get from localStorage first
+    try {
+        const cachedItem = localStorage.getItem(cacheKey);
+        if (cachedItem) {
+            const { data, timestamp } = JSON.parse(cachedItem);
+            const isExpired = Date.now() - timestamp > CACHE_TTL;
+            if (!isExpired) {
+                return data;
+            }
+            cachedData = data; // Keep for fallback if network fails
+        }
+    } catch (e) {
+        console.warn("[Cache] Error reading from localStorage", e);
+    }
+
+    // 2. Fetch from network
+    try {
+        const data = await fetchOpenF1Data(url);
+        
+        // 3. Save to localStorage if successful
+        if (data && !data.error) {
+            try {
+                const cacheEntry = JSON.stringify({
+                    data,
+                    timestamp: Date.now()
+                });
+                localStorage.setItem(cacheKey, cacheEntry);
+            } catch (e) {
+                if (e.name === 'QuotaExceededError') {
+                    console.warn("[Cache] localStorage full, clearing oldest entries...");
+                    Object.keys(localStorage).forEach(key => {
+                        if (key.startsWith(CACHE_PREFIX)) localStorage.removeItem(key);
+                    });
+                }
+            }
+        }
+        return data;
+    } catch (error) {
+        // 4. FALLBACK: If network fails but we had expired data, return it
+        if (cachedData) {
+            console.warn(`[Cache] Network failed for ${url}, returning stale data.`, error);
+            return cachedData;
+        }
+        throw error;
+    }
+};
+
 export const fetchDriversList = async () => {
-  const response = await fetchWithCache(`https://praneeth7781.github.io/f1nsight-api-2/driversList.json`);
-  // console.log("New one");
-  return response.map(driver => ({
-    id: driver.driverId,
-    name: `${driver.givenName} ${driver.familyName}`
-  }));
-};
-
-const fetchData = async (url) => {
-    const response = await fetch(url);
-    if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    return response.json();
-};
-
-// Simple in-memory cache
-const cache = {};
-
-const fetchWithCache = async (url) => {
-    if (cache[url]) {
-        return cache[url];
-    }
-    const data = await fetchData(url);
-    cache[url] = data;
-    return data;
+    const response = await fetchWithPersistentCache(`https://praneeth7781.github.io/f1nsight-api-2/driversList.json`);
+    return response.map(driver => ({
+        id: driver.driverId,
+        name: `${driver.givenName} ${driver.familyName}`
+    }));
 };
 
 export const fetchDriverStats = async (driverId1, driverId2) => {
@@ -60,7 +143,19 @@ export const fetchRaceMeetingKeys = async (selectedYear) => {
       throw new Error('Failed to fetch races');
     }
     const races = await raceResponse.json();
-    return races[selectedYear]
+    const yearRaces = races[selectedYear];
+
+    if (Number(selectedYear) === 2026 && yearRaces) {
+      const filteredRaces = {};
+      for (const [key, value] of Object.entries(yearRaces)) {
+        if (!CANCELLED_RACES_2026.includes(key)) {
+          filteredRaces[key] = value;
+        }
+      }
+      return filteredRaces;
+    }
+
+    return yearRaces;
   } catch(error) {
     console.error('Error fetching data:', error);
   }
@@ -70,22 +165,22 @@ export const fetchRaceMeetingKeys = async (selectedYear) => {
 export const fetchRacesAndSessions = async (selectedYear) => {
   try {
       // Fetch races
-      const racesResponse = await fetch(`${buildOpenF1Url("/meetings")}?year=${selectedYear}`);
-      if (!racesResponse.ok) {
-          throw new Error('Failed to fetch races');
-      }
-      const racesData = await racesResponse.json();
+      const racesData = await fetchWithPersistentCache(`${buildOpenF1Url("/meetings")}?year=${selectedYear}`);
 
-      // Fetch sessions
-      const sessionsResponse = await fetch(`${buildOpenF1Url("/sessions")}?year=${selectedYear}&session_name=Race`);
-      if (!sessionsResponse.ok) {
-          throw new Error('Failed to fetch sessions');
+      // Filter out cancelled races for 2026
+      let filteredRacesData = racesData || [];
+      if (Number(selectedYear) === 2026) {
+        filteredRacesData = filteredRacesData.filter(race => 
+          !CANCELLED_RACES_2026.includes(race.meeting_name)
+        );
       }
-      const sessionsData = await sessionsResponse.json();
+
+      // Fetch sessions (using cached sessionsData if possible, but specifically for 'Race' filter)
+      const f1apiMeetingSessionsList = await fetchWithPersistentCache(`${buildOpenF1Url("/sessions")}?year=${selectedYear}&session_name=Race`);
 
       // Filter races based on meeting_key presence in sessions
-      const filteredRaces = racesData.filter(race => 
-          sessionsData.some(session => session.meeting_key === race.meeting_key)
+      const filteredRaces = filteredRacesData.filter(race => 
+          Array.isArray(f1apiMeetingSessionsList) && f1apiMeetingSessionsList.some(session => session.meeting_key === race.meeting_key)
       );
       // console.log('12', filteredRaces);
       return filteredRaces;
@@ -100,10 +195,14 @@ export const fetchRaceDetails = async (selectedYear) => {
   try {
     const response = await fetch(url);
     if (response.ok) {
-      // const data = await response.json();
-      // const races = data.MRData.RaceTable.Races;
-      const races = await response.json();
-      const raceResultsPromises = races.map(race => {
+      let races = await response.json();
+
+      // Filter out cancelled races for 2026
+      if (Number(selectedYear) === 2026) {
+        races = races.filter(race => !CANCELLED_RACES_2026.includes(race.raceName));
+      }
+
+      const raceResultsPromises = races.map((race, index) => {
         if (new Date(race.date) < new Date()) {
           return fetchRaceResults(selectedYear, race.round)
             .then(results => ({
@@ -111,11 +210,13 @@ export const fetchRaceDetails = async (selectedYear) => {
               results,
             }));
         } else {
-          return Promise.resolve({ raceName: race.raceName, 
+          return Promise.resolve({ 
+            raceName: race.raceName, 
             date: race.date,
             season: race.season,
             round: race.round,
-            time: race.time, });
+            time: race.time, 
+          });
         }
       });
 
@@ -136,7 +237,11 @@ const fetchRaceResults = async (selectedYear, raceId) => {
     if (response.ok) {
       // const data = await response.json();
       const tempdata = await response.json();
-      const data = tempdata.find(element => element.round === raceId).Results.slice(0,3);
+      const raceData = tempdata.find(element => element.round === raceId);
+      if (!raceData || !raceData.Results) {
+        return [];
+      }
+      const data = raceData.Results.slice(0,3);
       // console.log('response', data);
 
       // console.log(data.slice(0,3));
@@ -377,18 +482,8 @@ export const fetchDriversAndTires = async (sessionKey) => {
   };
 
   try {
-    const [driversResponse, stintsResponse] = await Promise.all([
-      fetch(urls.driversUrl),
-      fetch(urls.stintsUrl)
-    ]);
-
-    if (!driversResponse.ok) throw new Error('Failed to fetch drivers');
-    if (!stintsResponse.ok) throw new Error('Failed to fetch stints');
-
-    const [driversData, stintsData] = await Promise.all([
-      driversResponse.json(),
-      stintsResponse.json()
-    ]);
+    const driversData = await fetchWithPersistentCache(urls.driversUrl);
+    const stintsData = await fetchWithPersistentCache(urls.stintsUrl);
 
     const stintsByDriver = stintsData.reduce((acc, { driver_number, lap_end, compound }) => {
       acc[driver_number] = acc[driver_number] || [];
@@ -441,26 +536,16 @@ function scaleCoordinates(x, y, scale_factor) {
 }
 
 export async function fetchLocationData(sessionKey, driverId, startTime, endTime, scaleFactor = 100) {
-  // const fetchStartTime = performance.now();
+  const normStartTime = normalizeOpenF1Date(startTime);
+  const normEndTime = normalizeOpenF1Date(endTime);
 
-  // Assuming the base URL for API calls might be reused
-  const baseUrl = OPENF1_API_BASE_URL;
-  const locationUrl = `${baseUrl}/location?session_key=${sessionKey}&driver_number=${driverId}&date>${startTime}&date<${endTime}`;
-  const carDataUrl = `${baseUrl}/car_data?session_key=${sessionKey}&driver_number=${driverId}&date>${startTime}&date<${endTime}`;
+  const locationUrl = `${buildOpenF1Url("/location")}?session_key=${sessionKey}&driver_number=${driverId}&date>${normStartTime}&date<${normEndTime}`;
+  const carDataUrl = `${buildOpenF1Url("/car_data")}?session_key=${sessionKey}&driver_number=${driverId}&date>${normStartTime}&date<${normEndTime}`;
 
-  const [locationResponse, carDataResponse] = await Promise.all([
-    fetch(locationUrl),
-    fetch(carDataUrl)
-  ]);
+  console.log('[DEBUG] Fetching location/car data with normalized dates:', { normStartTime, normEndTime });
 
-  if (!locationResponse.ok || !carDataResponse.ok) {
-    throw new Error('Failed to fetch data');
-  }
-
-  const [locationData, carData] = await Promise.all([
-    locationResponse.json(),
-    carDataResponse.json()
-  ]);
+  const locationData = await fetchWithPersistentCache(locationUrl);
+  const carData = await fetchWithPersistentCache(carDataUrl);
 
   // const fetchEndTime = performance.now();
   // console.log(`Time taken to fetch data: ${(fetchEndTime - fetchStartTime).toFixed(2)} milliseconds`);
@@ -510,7 +595,13 @@ export const fetchMostRecentRace = async (selectedYear) => {
     if (!raceDetailsResponse.ok) {
       throw new Error('Failed to fetch race details');
     }
-    const raceDetails = await raceDetailsResponse.json();    
+    let raceDetails = await raceDetailsResponse.json();    
+
+    // Filter out cancelled races for 2026
+    if (Number(selectedYear) === 2026) {
+      raceDetails = raceDetails.filter(race => !CANCELLED_RACES_2026.includes(race.raceName));
+    }
+
     // Fetch the meeting keys
     const meetingKeys = await fetchRaceMeetingKeys(selectedYear);    
     // Filter out races that haven't happened yet
@@ -544,4 +635,28 @@ export const fetchMostRecentRace = async (selectedYear) => {
     console.error('Error fetching race details:', error);
   }
   return null;  // Return null if there's an error
+};
+
+export const fetchRaceControl = async (sessionKey) => {
+  if (!sessionKey) return [];
+  const url = `${buildOpenF1Url("/race_control")}?session_key=${sessionKey}`;
+  try {
+    const data = await fetchWithPersistentCache(url);
+    return data || [];
+  } catch (error) {
+    console.error("Error fetching race control data:", error);
+    return [];
+  }
+};
+
+export const fetchPitStops = async (sessionKey) => {
+  if (!sessionKey) return [];
+  const url = `${buildOpenF1Url("/pit")}?session_key=${sessionKey}`;
+  try {
+    const data = await fetchWithPersistentCache(url);
+    return data || [];
+  } catch (error) {
+    console.error("Error fetching pit stop data:", error);
+    return [];
+  }
 };

@@ -1,28 +1,41 @@
 /* Custom styles for WebKit browsers */
 input[type="range"].custom-slider::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    height: 20px;
-    width: 10px;
-    background: theme('colors.plum.500');
-    border-radius: 24px;
-    margin-top: -2px;
-    cursor: pointer;
-    transition: background 0.3s;
-    box-shadow: 0 0 6px rgba(0, 0, 0, 0.75);
+    -webkit-appearance: none !important;
+    height: 24px !important;
+    width: 12px !important; 
+    background: #9333ea !important; /* plum-600 */
+    border-radius: 4px !important;
+    margin-top: -9px !important; /* Center on 6px track */
+    cursor: pointer !important;
+    transition: background 0.3s !important;
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.75) !important;
+    border: none !important;
   }
   input[type="range"].custom-slider::-webkit-slider-thumb:hover {
-    background: theme('colors.plum.300');
+    background: #a855f7 !important; /* plum-500 */
   }
   
   /* Firefox */
   input[type="range"].custom-slider::-moz-range-thumb {
-    height: 20px;
-    width: 10px;
-    background: theme('colors.plum.500');
-    border-radius: 24px;
-    cursor: pointer;
-    transition: background 0.3s;
+    height: 24px !important;
+    width: 12px !important;
+    background: #9333ea !important;
+    border-radius: 4px !important;
+    cursor: pointer !important;
+    transition: background 0.3s !important;
+    border: none !important;
   }
   input[type="range"].custom-slider::-moz-range-thumb:hover {
-    background: theme('colors.plum.300');
+    background: #a855f7 !important;
   }
+
+  /* Track styling */
+  input[type="range"].custom-slider {
+    -webkit-appearance: none !important;
+    width: 100% !important;
+    height: 6px !important;
+    background: #171717 !important; /* neutral-900 */
+    border-radius: 3px !important;
+    outline: none !important;
+  }
+
