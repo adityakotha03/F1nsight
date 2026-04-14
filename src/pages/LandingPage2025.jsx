@@ -10,9 +10,7 @@ import {
 } from "../components";
 import { fetchMostRecentRace } from "../utils/api";
 import { getCurrentYear } from "../utils/currentYear";
-import TelemetrySection from "../layouts/TelemetrySection";
-import ArSection from "../layouts/ArSection";
-import ComparisonsSection from "../layouts/ComparisonsSection";
+import DatesSection from "../layouts/DatesSection";
 
 const currentYear = getCurrentYear();
 const HERO_BACKGROUND_IMAGES = [
@@ -246,19 +244,7 @@ export function LandingPage2025() {
         {latestResultsLayout()}
       </section>
 
-      <TelemetrySection
-        layoutMobile={isBelowLargeBreakpoint}
-        onClick={() => navigateToRaceResult(raceData)}
-        container={snapContainerRef}
-      />
-      <ArSection
-        layoutMobile={isBelowLargeBreakpoint}
-        container={snapContainerRef}
-      />
-      <ComparisonsSection
-        layoutMobile={isBelowLargeBreakpoint}
-        container={snapContainerRef}
-      />
+      <DatesSection />
 
       <section className="snap-start bg-black">
         <Footer2025 />
