@@ -71,15 +71,17 @@ export const Footer2025 = ({ className }) => {
       </div>
 
       {/* Footer Bottom: Year and Copyright */}
-      <div className="text-center text-neutral-400 mt-6 bg-gradient-to-b from-neutral-950/30 to-neutral-950/10 px-16 pb-16 text-base">
-        <div className="divider-glow-dark mb-6" />
-        <p className="mb-8">
+      <div className="text-center text-neutral-500 mt-6 bg-gradient-to-b from-neutral-950/40 to-neutral-950/10 px-24 pb-24 text-[11px] uppercase tracking-widest leading-relaxed">
+        <div className="divider-glow-dark mb-16 opacity-30" />
+        <p className="max-w-[900px] mx-auto mb-8 font-light">
           This website is not associated in any way with the Formula 1
-          companies. F1, FORMULA ONE, FORMULA 1, F1 ACADEMY, FIA FORMULA ONE
-          WORLD CHAMPIONSHIP, GRAND PRIX and related marks are trade marks of
-          Formula One Licensing B.V.
+          companies. F1, FORMULA ONE, FORMULA 1, F2, FORMULA 2, FIA FORMULA 2
+          CHAMPIONSHIP, F1 ACADEMY, FIA FORMULA ONE WORLD CHAMPIONSHIP, GRAND
+          PRIX and related marks are trade marks of Formula One Licensing B.V.
         </p>
-        <p>&copy; {currentYear} F1-Telemetry</p>
+        <p className="text-neutral-400 font-medium tracking-normal lowercase first-letter:uppercase">
+          &copy; {currentYear} F1-Telemetry
+        </p>
       </div>
     </footer>
   );

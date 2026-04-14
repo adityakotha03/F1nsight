@@ -111,9 +111,9 @@ const PrivacyPolicy = () => {
 
         <div className="divider-glow-dark my-48" />
 
-        <p className="text-neutral-500 text-sm italic">
-          Disclaimer: This website is a fan-made project and is not associated
-          in any way with the Formula 1 companies.
+        <p className="text-neutral-500 text-[11px] uppercase tracking-widest leading-relaxed font-light opacity-80">
+          Disclaimer: This website is an unofficial fan-made project and is not
+          associated in any way with the Formula 1 or Formula 2 companies.
         </p>
       </div>
     </div>
