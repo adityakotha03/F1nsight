@@ -1,4 +1,4 @@
-# F1-Telemetry
+# Rebranded to F1-Telemetry
 
 Welcome to **F1-Telemetry**! This project is dedicated to providing Formula 1 enthusiasts with detailed analyses of past race data, including leaderboards, lap times, tire strategies, and the fastest laps for each driver. Explore an interactive 3D canvas that lets you visualize the telemetry data of selected F1 drivers, tracing their performance on the track lap by lap with high-fidelity telemetry sync and dynamic camera angles.
 
