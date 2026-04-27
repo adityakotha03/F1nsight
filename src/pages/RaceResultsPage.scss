@@ -131,3 +131,28 @@
     transition-property: transform;
     cursor: pointer;
 }
+/* Cancelled Overlays */
+.cancelled-banner {
+    position: absolute;
+    top: 55%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-30deg);
+    background-color: #e10600; /* F1 Red */
+    border: 3px solid white;
+    box-shadow: 0 0 30px rgba(0,0,0,0.9);
+    color: white;
+    font-weight: 900;
+    text-transform: uppercase;
+    font-size: 2rem;
+    padding: 1.2rem 4.8rem;
+    z-index: 100;
+    white-space: nowrap;
+    letter-spacing: 0.3rem;
+    pointer-events: none;
+}
+
+.is-cancelled {
+    filter: grayscale(1) opacity(0.4);
+    pointer-events: none !important;
+    cursor: default !important;
+}

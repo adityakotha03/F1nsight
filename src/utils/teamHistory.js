@@ -128,7 +128,7 @@ export const teamHistory = {
       // polePositions: 1,
     },
     rb: {
-      name: 'rb',
+      name: 'red_bull_racing',
       color: '#6692FF',
       constructorTitles: [],
       driversChampionships: [],
@@ -137,7 +137,7 @@ export const teamHistory = {
         { team: 'Minardi', startYear: 1985, endYear: 2005 },
         { team: 'Torro Rosso', startYear: 2006, endYear: 2019 },
         { team: 'Alpha Tauri', startYear: 2020, endYear: 2023 },
-        { team: 'rb', startYear: 2024, endYear: currentYear }
+        { team: 'Red Bull Racing', startYear: 2024, endYear: currentYear }
       ],
       // raceVictories: 111,
       // podiums: 11,
@@ -172,3 +172,4 @@ export const teamHistory = {
       // polePositions: 1,
     }
   };
+

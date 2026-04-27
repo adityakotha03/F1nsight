@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+  <head>
+
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="apple-mobile-web-app-title"
+      content="F1-Telemetry"
+    />
+    <meta
+      name="description"
+      content="Welcome to F1-Telemetry! This project is dedicated to providing Formula 1 enthusiasts with detailed analyses of past race data, including leaderboards, lap times, tire strategies, and the fastest laps for each driver"
+    />
+    <meta
+      name="keywords"
+      content="Formula 1, Motorsports, Data visualization, Virtual racing, Racing analytics, Race statistics, Vehicle telemetry data, Grand Prix, Race strategy"
+    />
+
+    <!-- Google Site Verification Meta Tag -->
+    <!--<meta
+      name="google-site-verification"
+      content="xx5-2JiNTvosons5FyDpaE69YK50jceNHwmlxCTn5qI"
+    />-->
+
+    <meta name="theme-color" content="#000000" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
+
+    <meta property="og:type" content="website" />
+    <meta
+      property="og:url"
+      content="https://f1-telemetry.matthews-world.co.uk/"
+    />
+    <meta
+      property="og:title"
+      content="F1-Telemetry"
+    />
+    <meta
+      property="og:description"
+      content="Welcome to F1-Telemetry! This project is dedicated to providing Formula 1 enthusiasts with detailed analyses of past race data, including leaderboards, lap times, tire strategies, and the fastest laps for each driver"
+    />
+    <meta property="og:image" content="/images/F1nsightMeta.jpg" />
+
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta
+      property="twitter:url"
+      content="https://f1-telemetry.matthews-world.co.uk/"
+    />
+    <meta
+      property="twitter:title"
+      content="F1-Telemetry"
+    />
+    <meta
+      property="twitter:description"
+      content="Welcome to F1-Telemetry! This project is dedicated to providing Formula 1 enthusiasts with detailed analyses of past race data, including leaderboards, lap times, tire strategies, and the fastest laps for each driver"
+    />
+    <meta property="twitter:image" content="/images/F1nsightMeta.jpg" />
+
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bungee&family=Lato:wght@300;400;700&display=swap"
+      rel="stylesheet"
+    />
+    <title>F1-Telemetry</title>
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+    <script>
+      // Global tracking shim to send events to Google Analytics
+      window.trackButtonClick = function (event) {
+        console.log("[Analytics] Track:", event);
+        if (typeof gtag === "function") {
+          gtag("event", "click", {
+            event_category: "Interaction",
+            event_label: event,
+          });
+        }
+      };
+    </script>
+    <script type="module" src="/src/index.jsx"></script>
+  </body>
+</html>

@@ -1,56 +1,182 @@
-# F1nsight
+<p align="center">
+  <img src="public/images/HeroImage.png" alt="F1-Telemetry Hero" width="720" />
+</p>
 
-Welcome to F1nsight! This project is dedicated to providing Formula 1 enthusiasts with detailed analyses of past race data, including leaderboards, lap times, tire strategies, and the fastest laps for each driver. Explore an interactive canvas that lets you visualize the telemetry data of selected F1 drivers, tracing their performance on the track lap by lap, complemented by different camera angles for an enhanced viewing experience.
+<h1 align="center">F1-Telemetry</h1>
 
-![F1nsight Animation](/public/Media/animation-grid_1.gif)
-![F1nsight Visualization](/public/images/F1nsightMeta.jpg)
+<p align="center">
+  <strong>Interactive Formula 1, F2 &amp; F1 Academy race analytics — powered by real telemetry data.</strong>
+</p>
+
+<p align="center">
+  <a href="https://f1-telemetry.matthews-world.co.uk/">🌐&nbsp;Live Site</a>&nbsp;&nbsp;·&nbsp;&nbsp;
+  <a href="#features">✨&nbsp;Features</a>&nbsp;&nbsp;·&nbsp;&nbsp;
+  <a href="#tech-stack">🛠&nbsp;Tech&nbsp;Stack</a>&nbsp;&nbsp;·&nbsp;&nbsp;
+  <a href="#getting-started">🚀&nbsp;Getting&nbsp;Started</a>&nbsp;&nbsp;·&nbsp;&nbsp;
+  <a href="#license">📄&nbsp;License</a>
+</p>
+
+---
+
+## About
+
+F1-Telemetry is a fork of the original [f1nsight](https://github.com/adityakotha03/F1nsight) project, refactored to **React 19** and **Vite 8** with additional features and enhancements. It's an interactive web application built for motorsport fans who want to go deeper than the broadcast — providing detailed race analytics, real-time telemetry visualisation, driver comparisons, and a 3D race viewer across **Formula 1**, **Formula 2**, and **F1 Academy**.
+
+> **Attribution** — This project builds upon the work of the original f1nsight developers. Driver comparison data continues to be powered by the [f1nsight-api-2](https://github.com/praneeth7781/f1nsight-api-2) repository.
+
+---
 
 ## Features
 
-**F1nsight** offers several exciting features:
+| Feature                 | Description                                                                                              |
+| ----------------------- | -------------------------------------------------------------------------------------------------------- |
+| **Race Leaderboards**   | Comprehensive race results with position changes, intervals and gap analysis                             |
+| **Lap-Time Analysis**   | Lap-by-lap performance metrics for studying consistency and strategy                                     |
+| **Tire Strategies**     | Visual breakdown of compound choices and stint lengths across the grid                                   |
+| **Fastest Laps**        | Highlights of the quickest laps set during each session                                                  |
+| **Pit Stop Analytics**  | Scatter-chart visualisation of pit-stop durations per driver                                             |
+| **Driver Comparisons**  | Head-to-head telemetry overlays for any two drivers in a session                                         |
+| **3D Telemetry Viewer** | Follow drivers around the circuit in a synchronised 3D scene with multiple broadcast-style camera angles |
+| **AR Car Viewer**       | High-fidelity 3D car models with Draco / Meshopt compression (90 MB → 23 MB)                             |
+| **2026 Race Calendar**  | Up-to-date schedule covering F1, F2, and F1 Academy                                                      |
 
-- **Detailed Leaderboards:** Get comprehensive rankings and statistics from previous races.
-- **Lap Times Analysis:** Dive into lap-by-lap performance metrics to study consistency and strategy.
-- **Tire Strategies:** Understand how different tire choices play out during a race.
-- **Fastest Laps:** Discover which drivers achieved the fastest laps during each event.
-- **Interactive Telemetry Viewer:** Follow your favorite drivers' telemetry data as they navigate the track, with options to switch between various camera angles for a dynamic perspective.
+---
 
-## Interactive Canvas
+## Tech Stack
 
-Our interactive canvas is a standout feature, offering users a real-time simulation of telemetry data. This tool allows fans to:
+| Layer             | Technologies                                      |
+| ----------------- | ------------------------------------------------- |
+| **Framework**     | React 19 · Vite 8 · React Router 7                |
+| **Styling**       | Tailwind CSS 4 · Flowbite React                   |
+| **3D / Graphics** | Three.js · `@google/model-viewer` · Tween.js      |
+| **Data Viz**      | Recharts · D3.js                                  |
+| **Animation**     | Framer Motion · Lottie                            |
+| **Tooling**       | PWA (vite-plugin-pwa) · Sitemap generation · SVGR |
 
-- Select a driver and watch their race unfold lap by lap.
-- Switch between multiple camera views to get a closer look at race strategies and driver skills.
-- Analyze detailed representations of speed, gear, and track position per driver.
+---
 
-## Notice
+## Getting Started
 
-Please note that F1nsight is an unofficial project and is not associated in any way with the Formula 1 companies. F1, FORMULA ONE, FORMULA 1, FIA FORMULA ONE WORLD CHAMPIONSHIP, GRAND PRIX, and related marks are trademarks of Formula One Licensing B.V.
+### Prerequisites
 
-## Website
+- **Node.js** ≥ 18
+- **npm** ≥ 9
 
-For more information and to access the interactive features, visit our website at [F1nsight](https://f1nsight.com/).
+### Install & Run
 
-## Our Custom API
+```bash
+# Clone the repo
+git clone https://github.com/your-username/F1nsight.git
+cd F1nsight
 
-Some of the information related to driver comparison and other important statistics are provided by our own API found at [F1nsight API](https://github.com/praneeth7781/f1nsight-api-2)
+# Install dependencies
+npm install
 
-## Support and Contribution
+# Start the dev server
+npm run dev
+```
 
-Contributions to F1nsight are always welcome! Whether it's improving the codebase, adding new features, or fixing bugs, please feel free to fork the repository and submit a pull request.
+The app will be available at **http://localhost:3006** (or the port shown in your terminal).
+
+### Production Build
+
+```bash
+npm run build
+npm run preview   # preview the production build locally
+```
+
+---
+
+## Developer Workflow
+
+<details>
+<summary><strong>AR Model Compression</strong></summary>
+
+Optimize `.glb` files added to `public/ArFiles/glbs/` for web delivery:
+
+```powershell
+npm run compress-models
+```
+
+Script: `scripts/robust-compress-glbs.ps1` (requires PowerShell & Node.js).
+
+</details>
+
+<details>
+<summary><strong>Transparent Video System (Luma Key)</strong></summary>
+
+Videos use a custom **Luma Key** pipeline for cross-browser transparency:
+
+- Videos are encoded in a _side-by-side_ layout — **left half = RGB**, **right half = alpha mask**.
+- The `LumaKeyVideo` component composites both halves onto a `<canvas>` at runtime.
+
+**Generate a side-by-side asset from a PNG sequence:**
+
+```powershell
+& "node_modules/ffmpeg-static/ffmpeg.exe" -y -i "input_%05d.png" `
+  -filter_complex "[0:v]pad=w=iw:h=ceil(ih/2)*2,split[v1][v2]; [v2]alphaextract[alpha]; [v1][alpha]hstack" `
+  -c:v libx264 -crf 18 -pix_fmt yuv420p "output.mp4"
+```
+
+> The `pad` filter ensures the height is divisible by 2 for H.264 compatibility.
+
+</details>
+
+<details>
+<summary><strong>Driver Image Background Removal</strong></summary>
+
+Remove backgrounds from F2 driver headshots for a consistent look:
+
+```bash
+npm run remove-f2-bg
+```
+
+To process a different directory, edit the `dirs` array in `scripts/remove-backgrounds.mjs`.  
+Uses `@imgly/background-removal-node` for automatic detection.
+
+</details>
+
+<details>
+<summary><strong>Local Decoders</strong></summary>
+
+Draco and Meshopt decoders are bundled locally in `public/decoders/` to bypass browser Tracking Prevention and ensure 100 % reliability.
+
+</details>
+
+---
+
+## Deployment
+
+F1nsight is deployed as a static site on IONOS. Key deployment notes:
+
+1. The `.htaccess` in `public/` must be deployed at the web root to enable **Gzip compression** for `.glb` files.
+2. The `public/decoders/` folder must be included in the build output to avoid cross-domain script blocking.
+
+---
+
+## Data Sources
+
+This project pulls data from four sources:
+
+- **[OpenF1 API](https://openf1.org)** — Real-time and historical telemetry, track positioning, and stint data.
+- **[f1nsight-api-2](https://github.com/praneeth7781/f1nsight-api-2)** — Race results, driver standings, qualifying data, constructor stats, and head-to-head comparison analytics.
+- **[f1aapi](https://ant-dot-comm.github.io/f1aapi/)** — Custom API for F1 Academy race results, driver info, and standings.
+- **[f2api](https://ant-dot-comm.github.io/f2api/)** — Custom API for Formula 2 race results, driver info, and standings.
+
+---
+
+## Contributing
+
+Contributions are welcome! Whether it's improving the codebase, adding features, or fixing bugs — feel free to fork the repo and open a pull request.
+
+---
 
 ## License
 
-This project is licensed under our custom license. For more details, please refer to the [LICENSE](https://github.com/adityakotha03/F1nsight?tab=License-1-ov-file).
+This project is available under a [custom open-source license](LICENSE.md) — free for non-commercial use with attribution.
 
-## Acknowledgements
+---
 
-- Thanks to all the Formula 1 fans and community contributors who keep this project running!
-- Special thanks to data providers and API service [OpenF1](https://openf1.org/) that enable access to current and historical F1 data.
-- This work is based on "basic Lowpoly F1 Car V1" by arthihalder, available under a Creative Commons Attribution 4.0 International license. [View the model on Sketchfab](https://sketchfab.com/3d-models/basic-lowpoly-f1-car-v1-b4c6a1cfe0154f4d86b39ff3b7f955a1). License details can be found at [CC-BY-4.0](http://creativecommons.org/licenses/by/4.0/).
+## Disclaimer
 
-## Contact
-
-For any questions or suggestions, please [open an discussion](https://github.com/adityakotha03/F1nsight/discussions) on GitHub.
-
-Enjoy exploring the data and insights at F1nsight!
+F1-Telemetry is an **unofficial** fan project and is not associated with Formula One companies. _F1, FORMULA ONE, FORMULA 1, F2, FORMULA 2, FIA FORMULA 2 CHAMPIONSHIP, F1 ACADEMY, FIA FORMULA ONE WORLD CHAMPIONSHIP, GRAND PRIX_, and related marks are trademarks of Formula One Licensing B.V.

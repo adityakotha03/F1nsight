@@ -3,14 +3,16 @@
   @media (min-width: 640px) {
     height: 544px;
   }
-  // @media (min-width: 1280px) {
-  //   height: 638px;
-  // }
 }
 
 .race-page {
   display: flex;
   flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
 
   @media (max-width: 767px) {
     margin-top: .8rem;
@@ -32,6 +34,16 @@
       &__preview {
         @include viewHeight;
       }
+    }
+  }
+
+  &__leaderboard-desktop-wrapper {
+    max-height: 100%;
+    overflow-y: auto;
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+    &::-webkit-scrollbar {
+      display: none; /* Chrome, Safari, Opera */
     }
   }
   &__scroll-container {
