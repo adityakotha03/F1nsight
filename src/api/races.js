@@ -42,15 +42,11 @@ export const fetchRacesAndSessions = async (selectedYear) => {
 
 const fetchRaceResults = async (selectedYear, raceId) => {
   const resultsUrl = buildF1nsightApiUrl(`/races/${selectedYear}/results.json`);
-  console.log('inside fetchRaceResults', resultsUrl)
   try {
     const response = await fetch(resultsUrl);
-    console.log('response', response)
     if (response.ok) {
       const tempdata = await response.json();
-      console.log('tempdata', tempdata)
       const raceData = tempdata.find(element => element.round === raceId);
-      console.log('raceData', raceData)
       if (!raceData?.Results) return [];
 
       return raceData.Results.slice(0, 3).map(result => ({
@@ -123,7 +119,6 @@ export const fetchMostRecentRace = async (selectedYear) => {
       throw new Error("Failed to fetch race details");
     }
     const raceDetails = await raceDetailsResponse.json();
-    console.log('raceDetails', raceDetails)
     const meetingKeys = await fetchRaceMeetingKeys(selectedYear);
     const pastRaces = raceDetails.filter(race => new Date(race.date) <= new Date());
     const sortedRaces = pastRaces.sort((a, b) => new Date(b.date) - new Date(a.date));
@@ -135,7 +130,6 @@ export const fetchMostRecentRace = async (selectedYear) => {
     }
 
     const meetingKey = meetingKeys[mostRecentRace.raceName]?.meeting_key || "unknown";
-    console.log('outside fetchRaceResults')
     const raceResults = await fetchRaceResults(selectedYear, mostRecentRace.round);
 
     return {

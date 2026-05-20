@@ -15,9 +15,9 @@ export function RaceResultsPage({ selectedYear }) {
     const fetchData = async () => {
       setIsLoading(true);
       const details = await fetchRaceDetails(selectedYear);
-      const races = await fetchRaceMeetingKeys(selectedYear); // race name, location, and meeting key
-      console.log('details', details) 
-      console.log('races', races) 
+      const races = await fetchRaceMeetingKeys(selectedYear);
+      // console.log('details', details) 
+      // console.log('races', races) 
 
       setRaceDetails(details);
       setRaces(races);

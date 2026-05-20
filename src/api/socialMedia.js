@@ -166,7 +166,7 @@ export async function getSocialConstructorStandings(year = getCurrentYear()) {
 }
 
 export async function getRaceWeekendResults(meeting_key) {
-  console.log("meeting_key", meeting_key);
+  // console.log("meeting_key", meeting_key);
   const data = await fetchOpenF1JsonWithFallback("/sessions", { meeting_key });
   const raceSessions = data
     .filter((session) => session.session_type === "Race")

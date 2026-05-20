@@ -19,7 +19,7 @@ const DriverStandings = ({ location, round }) => {
         });
     }, []);
 
-    console.log('driverStandings', driverStandings);
+    // console.log('driverStandings', driverStandings);
 
     if (!driverStandings || driverStandings.length === 0) {
         return <div className="social-media-container">Loading driver standings...</div>;
