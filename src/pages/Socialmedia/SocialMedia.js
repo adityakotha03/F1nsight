@@ -21,7 +21,7 @@ const SocialMedia = () => {
         setIsWeekendLoading(true);
         const mostRecentRaceWeekend = await fetchMostRecentRace(currentYear);
 
-        console.log('mostRecentRaceWeekend', mostRecentRaceWeekend);
+        // console.log('mostRecentRaceWeekend', mostRecentRaceWeekend);
 
         if (mostRecentRaceWeekend?.meetingKey) {
             const results = await getRaceWeekendResults(
@@ -39,8 +39,8 @@ const SocialMedia = () => {
         fetchData();
     }, []);
 
-    console.log('weekendResults', weekendResults);
-    console.log('recentRaceWeekend', recentRaceWeekend);
+    // console.log('weekendResults', weekendResults);
+    // console.log('recentRaceWeekend', recentRaceWeekend);
 
     return (
         <div className="flex flex-col gap-32 items-center py-96">

@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { fetchRaceDetails, fetch, fetchRaceMeetingKeys } from '../utils/api';
+import { fetchRaceDetails, fetchRaceMeetingKeys } from '../utils/api';
 import classNames from 'classnames';
 
 import { RaceResultItem, Loading, Button } from '../components';
 import { useNavigate } from 'react-router-dom';
 import { trackButtonClick } from '../utils/gaTracking';
-
 
 export function RaceResultsPage({ selectedYear }) {
   const [raceDetails, setRaceDetails] = useState([]);
@@ -17,7 +16,8 @@ export function RaceResultsPage({ selectedYear }) {
       setIsLoading(true);
       const details = await fetchRaceDetails(selectedYear);
       const races = await fetchRaceMeetingKeys(selectedYear);
-      // console.log('details', races) 
+      // console.log('details', details) 
+      // console.log('races', races) 
 
       setRaceDetails(details);
       setRaces(races);
@@ -68,7 +68,7 @@ export function RaceResultsPage({ selectedYear }) {
                   `${race.raceName}`
               )}
               onClick={()=>{
-                if(race.results && race.results.length >0 ) navigateToRaceResult(race)
+                if(!race.isCancelled && race.results && race.results.length >0 ) navigateToRaceResult(race)
                 trackButtonClick(`race-result-item-${race.raceName}`)
               }}
             >
@@ -98,13 +98,13 @@ export function RaceResultsPage({ selectedYear }) {
               )}
               <div className='text-center mb-8 mt-12'>
                 <div className='uppercase text-xs text-neutral-400 tracking-sm leading-none mb-4 mt-24'>
-                  {`Round ${index + 1}`}
+                  {`Round ${race.round || index + 1}`}
                 </div>
-                <p className='font-display tracking-xs leading-none mb-4 font-bold'>
+                <p className='font-display tracking-xs leading-none mb-3 font-bold'>
                   {race.raceName}
                 </p>
-                <div className='text-xs text-neutral-400 tracking-sm leading-none'>
-                  {formatTime(race.date, race.time)}
+                <div className='uppercase text-xs text-neutral-400 tracking-sm leading-none'>
+                  {race.isCancelled ? 'Cancelled' : formatTime(race.date, race.time)}
                 </div>
               </div>
               {/* <div className={classNames("divider-glow-medium mb-16",  {"mt-32" : !race.results})} /> */}

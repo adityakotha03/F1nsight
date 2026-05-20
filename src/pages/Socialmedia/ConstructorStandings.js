@@ -21,8 +21,8 @@ const ConstructorStandings = ({ location, round }) => {
         });
     }, []);
 
-    console.log('constructorStandings', constructorStandings);
-    console.log('teamColors', teamColors);
+    // console.log('constructorStandings', constructorStandings);
+    // console.log('teamColors', teamColors);
 
     const getTeamColor = (constructorId) =>
         teamColors[constructorId] ? `#${teamColors[constructorId]}` : "#222";

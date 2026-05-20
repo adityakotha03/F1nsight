@@ -188,6 +188,7 @@ export function RacePage() {
             setIsLoading(true);
 
             const circuitId = locationMaps[location];
+            console.log('circuitId', circuitId)
             const sessionsResponse = await fetch(
                 `${buildOpenF1Url("/sessions")}?meeting_key=${meetingKey}`
             );
