@@ -9,6 +9,7 @@ export const locationMaps = {
     Jeddah: "jeddah",
     "Marina Bay": "marina_bay",
     Monaco: "monaco",
+    "Monte Carlo": "monaco",
     Spielberg: "red_bull_ring",
     "Mexico City": "rodriguez",
     Shanghai: "shanghai",
@@ -19,8 +20,10 @@ export const locationMaps = {
     Montréal: "villeneuve",
     Zandvoort: "zandvoort",
     Miami: "miami",
+    "Miami Gardens": "miami",
     Monza: "monza",
     Barcelona: "catalunya",
     Lusail: "losail",
+    "Yas Marina": "yas_marina",
     "Yas Island": "yas_marina",
 };
