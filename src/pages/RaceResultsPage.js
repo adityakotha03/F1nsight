@@ -68,7 +68,7 @@ export function RaceResultsPage({ selectedYear }) {
                   `${race.raceName}`
               )}
               onClick={()=>{
-                if(!race.isCancelled && race.results && race.results.length >0 ) navigateToRaceResult(race)
+                if(race.results && race.results.length >0 ) navigateToRaceResult(race)
                 trackButtonClick(`race-result-item-${race.raceName}`)
               }}
             >
@@ -104,7 +104,7 @@ export function RaceResultsPage({ selectedYear }) {
                   {race.raceName}
                 </p>
                 <div className='uppercase text-xs text-neutral-400 tracking-sm leading-none'>
-                  {race.isCancelled ? 'Cancelled' : formatTime(race.date, race.time)}
+                  {formatTime(race.date, race.time)}
                 </div>
               </div>
               {/* <div className={classNames("divider-glow-medium mb-16",  {"mt-32" : !race.results})} /> */}

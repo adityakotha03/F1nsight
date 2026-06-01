@@ -1,10 +1,6 @@
 import { buildOpenF1Url } from "../config/openf1";
 import { buildF1nsightApiUrl } from "./client";
 
-const isCancelledRace = (selectedYear, round) => (
-  Number(selectedYear) === 2026 && ["4", "5"].includes(String(round))
-);
-
 export const fetchRaceMeetingKeys = async (selectedYear) => {
   try {
     const raceResponse = await fetch(buildF1nsightApiUrl("/races/races.json"));
@@ -72,14 +68,6 @@ export const fetchRaceDetails = async (selectedYear) => {
     if (response.ok) {
       const races = await response.json();
       const raceResultsPromises = races.map(race => {
-        if (isCancelledRace(selectedYear, race.round)) {
-          return Promise.resolve({
-            ...race,
-            results: [],
-            isCancelled: true,
-          });
-        }
-
         if (new Date(race.date) < new Date()) {
           return fetchRaceResults(selectedYear, race.round)
             .then(results => ({
