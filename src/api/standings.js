@@ -141,6 +141,7 @@ export const getDriverStandings = async (selectedYear) => {
       const lastRaceKey = raceKeys[raceKeys.length - 1];
       const standings = data[lastRaceKey] || [];
       return standings.map(standing => ({
+        driverId: standing.Driver.driverId,
         driverCode: standing.Driver.code,
         firstName: standing.Driver.givenName,
         lastName: standing.Driver.familyName,
