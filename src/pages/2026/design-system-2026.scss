@@ -29,6 +29,7 @@ body.bg-gradient-2026 {
     --ds-2026-radius-md: 1.6rem;
     --ds-2026-radius-lg: 2.4rem;
     --ds-2026-shadow: 0 2.4rem 8rem rgba(0, 0, 0, 0.34);
+    --ds-2026-page-max-width: 136rem;
 
     color: var(--ds-2026-text);
     min-height: 100%;
@@ -76,6 +77,13 @@ body.bg-gradient-2026 {
     }
 }
 
+.ds-2026-page-width {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: var(--ds-2026-page-max-width);
+    width: 100%;
+}
+
 .ds-2026-dotted-texture {
     background-image:
         radial-gradient(rgba(20, 18, 23, 0.12) 0.08rem, transparent 0.11rem),
@@ -89,34 +97,41 @@ body.bg-gradient-2026 {
         radial-gradient(circle at 14% 8%, color-mix(in srgb, var(--ds-2026-accent) 26%, transparent), transparent 34rem),
         radial-gradient(circle at 82% 18%, color-mix(in srgb, var(--ds-2026-accent) 14%, transparent), transparent 42rem),
         linear-gradient(180deg, var(--ds-2026-bg), #07070a 58%, var(--ds-2026-bg));
+    overflow-x: clip;
 }
 
 .ds-2026-hero-lockup {
     --ds-2026-hero-x: 0;
     --ds-2026-hero-y: 0;
+    --ds-2026-hero-bleed: max(0rem, calc((100vw - var(--ds-2026-page-max-width)) / 2));
 
     min-height: clamp(46rem, 66vh, 70rem);
-    overflow: hidden;
+    overflow: visible;
     padding: 10rem 4.5% 11rem;
     position: relative;
 }
 
-.ds-2026-hero-lockup::before {
-    color: transparent;
-    content: attr(data-year-suffix);
-    font-family: "Anton", sans-serif;
-    font-size: clamp(18rem, 32vw, 42rem);
-    left: 1%;
-    line-height: 0.8;
-    opacity: 0.16;
+.ds-2026-team-logo {
+    display: block;
+    fill: currentColor;
+    height: auto;
+    stroke: currentColor;
+    width: 100%;
+}
+
+.ds-2026-hero-lockup__team-mark {
+    color: var(--ds-2026-paper);
+    left: 2%;
+    opacity: 0.14;
     position: absolute;
-    top: 5%;
+    top: 7%;
     transform: translate(
         calc(var(--ds-2026-hero-x) * -3.2rem),
         calc(var(--ds-2026-hero-y) * -2.4rem)
     );
     transition: transform 180ms ease-out;
-    -webkit-text-stroke: 0.2rem var(--ds-2026-paper);
+    width: min(46vw, 54rem);
+    z-index: 1;
 }
 
 .ds-2026-paper-panel {
@@ -127,9 +142,9 @@ body.bg-gradient-2026 {
     opacity: 0.96;
     overflow: hidden;
     position: absolute;
-    right: 0;
+    right: calc(var(--ds-2026-hero-bleed) * -1);
     top: 0;
-    width: min(36vw, 48rem);
+    width: calc(min(36vw, 48rem) + var(--ds-2026-hero-bleed) + 4rem);
     z-index: 1;
 }
 
@@ -137,19 +152,22 @@ body.bg-gradient-2026 {
     background-image:
         radial-gradient(rgba(233, 228, 216, 0.2) 0.08rem, transparent 0.11rem),
         linear-gradient(rgba(233, 228, 216, 0.07) 0.1rem, transparent 0.1rem),
-        linear-gradient(90deg, rgba(233, 228, 216, 0.07) 0.1rem, transparent 0.1rem);
+        linear-gradient(90deg, rgba(233, 228, 216, 0.07) 0.1rem, transparent 0.1rem),
+        linear-gradient(90deg, var(--ds-2026-paper-panel-bg, #5f0b84) 25%, #050607 100%);
+    background-repeat: repeat, repeat, repeat, no-repeat;
+    background-size: 0.5rem 0.5rem, 3.4rem 3.4rem, 3.4rem 3.4rem, 100% 100%;
 }
 
 .ds-2026-paper-panel__meta {
     font-family: "IBM Plex Mono", monospace;
-    font-size: 1rem;
-    font-weight: 700;
+    font-size: .8rem;
+    font-weight: 400;
     font-variant-numeric: tabular-nums;
-    letter-spacing: 0.28em;
-    line-height: 1.55;
-    opacity: 0.72;
+    letter-spacing: 0.5em;
+    line-height: 1.25;
+    opacity: 0.75;
     position: absolute;
-    right: 2.4rem;
+    right: calc(var(--ds-2026-hero-bleed) + 2.4rem);
     text-align: right;
     text-transform: uppercase;
     top: 8rem;
@@ -285,10 +303,10 @@ body.bg-gradient-2026 {
 
 .ds-2026-hero-lockup__shard {
     background: #24242b;
-    bottom: 4rem;
+    bottom: -4rem;
     clip-path: polygon(0 18%, 13% 8%, 29% 15%, 46% 4%, 62% 13%, 79% 2%, 100% 11%, 100% 80%, 85% 92%, 67% 83%, 51% 95%, 34% 85%, 17% 96%, 0 87%);
-    height: 16rem;
-    left: -5%;
+    height: 22rem;
+    left: calc(var(--ds-2026-hero-bleed) * -1);
     position: absolute;
     transform:
         translate(
@@ -297,12 +315,13 @@ body.bg-gradient-2026 {
         )
         rotate(-6deg);
     transition: transform 180ms ease-out;
-    width: 74%;
+    width: calc(82% + var(--ds-2026-hero-bleed));
     z-index: 2;
 }
 
 .ds-2026-control-deck {
     background: var(--ds-2026-paper);
+    box-shadow: 0 -3rem 6rem rgba(0, 0, 0, 0.9);
     color: var(--ds-2026-paper-text);
     margin-top: -6.4rem;
     padding: 3rem 4.5% 4rem;
@@ -453,7 +472,6 @@ body.bg-gradient-2026 {
 .ds-2026-empty-state,
 .ds-2026-teammates {
     margin: 0 auto;
-    max-width: 136rem;
     padding: 8rem 4.5%;
 }
 
@@ -473,6 +491,103 @@ body.bg-gradient-2026 {
     margin-bottom: 4rem;
     text-align: center;
     text-transform: uppercase;
+}
+
+.ds-2026-tabs {
+    border-bottom: 0.1rem solid rgba(237, 232, 220, 0.14);
+    display: flex;
+    gap: clamp(1.8rem, 3.5vw, 5.6rem);
+    overflow-x: auto;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+        display: none;
+    }
+}
+
+.ds-2026-tabs__tab {
+    background: transparent;
+    border: 0;
+    color: var(--ds-2026-text-muted);
+    cursor: pointer;
+    flex: 0 0 auto;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    padding: 1.6rem 0 1.8rem;
+    position: relative;
+    text-transform: uppercase;
+    transition: color 220ms ease;
+
+    &::after {
+        background: var(--ds-2026-accent);
+        bottom: -0.1rem;
+        content: "";
+        height: 0.3rem;
+        left: 0;
+        position: absolute;
+        transform: scaleX(0);
+        transform-origin: right center;
+        transition: transform 280ms cubic-bezier(0.22, 1, 0.36, 1);
+        width: 100%;
+    }
+
+    &:hover {
+        color: color-mix(in srgb, var(--ds-2026-accent) 72%, var(--ds-2026-text));
+    }
+
+    &:hover::after {
+        transform: scaleX(0.35);
+        transform-origin: left center;
+    }
+
+    &[aria-selected="true"] {
+        color: var(--ds-2026-text);
+    }
+
+    &[aria-selected="true"]::after {
+        transform: scaleX(1);
+        transform-origin: left center;
+    }
+
+    &:focus-visible {
+        color: var(--ds-2026-accent);
+        outline: 0.2rem solid var(--ds-2026-accent);
+        outline-offset: 0.5rem;
+    }
+}
+
+.ds-2026-tabs__panel {
+    animation: ds-2026-tab-panel-in 360ms cubic-bezier(0.22, 1, 0.36, 1);
+
+    &:focus-visible {
+        outline: 0.1rem solid var(--ds-2026-border);
+        outline-offset: 1rem;
+    }
+}
+
+@keyframes ds-2026-tab-panel-in {
+    from {
+        opacity: 0;
+        transform: translateY(1.2rem);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ds-2026-tabs__tab,
+    .ds-2026-tabs__tab::after {
+        transition: none;
+    }
+
+    .ds-2026-tabs__panel {
+        animation: none;
+    }
 }
 
 .ds-2026-section-header {

@@ -1,0 +1,13 @@
+<svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 88.2 48.4">
+  
+  <defs>
+    <style>
+      .st0 {
+        fill: none;
+        stroke: currentColor;
+        stroke-miterlimit: 10;
+      }
+    </style>
+  </defs>
+  <path class="st0" d="M74.4.5c-9,0-21.5,2.7-35.2,7.7C27,12.6,15.3,18.4,4.3,25.4c10.5-3.9,21.6-5.9,32.8-6.1,15.7,0,26.8,6.1,10.4,27C96,14.4,94.8.5,74.4.5"/>
+</svg>

@@ -1,8 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 
 import {
     Button,
-    HeadToHeadChart,
     Loading,
     PositionsComparisonChart,
     PositionsGainedLostChart,
@@ -23,6 +22,12 @@ import { darkenColor } from "../../utils/darkenColor";
 
 const BRAND_PLUM = "5F0B84";
 
+const DOSSIER_TABS = [
+    { id: "scoreboard", label: "Scoreboard" },
+    { id: "qualifying", label: "Qualifying" },
+    { id: "race-day", label: "Race Day" },
+];
+
 const formatDate = (isoString) => {
     if (!isoString) return "";
 
@@ -30,6 +35,7 @@ const formatDate = (isoString) => {
 };
 
 export const TeammatesComparison2026 = () => {
+    const [activeTab, setActiveTab] = useState(DOSSIER_TABS[0].id);
     const {
         ambQ,
         ambR,
@@ -60,6 +66,22 @@ export const TeammatesComparison2026 = () => {
     const lastUpdated = formatDate(headToHeadData?.lastUpdate);
     const accentColor = `#${teamColor || BRAND_PLUM}`;
     const darkTeamColor = darkenColor(teamColor || BRAND_PLUM);
+    const handleTabKeyDown = (event, tabIndex) => {
+        let nextIndex = tabIndex;
+
+        if (event.key === "ArrowRight") nextIndex = (tabIndex + 1) % DOSSIER_TABS.length;
+        if (event.key === "ArrowLeft") {
+            nextIndex = (tabIndex - 1 + DOSSIER_TABS.length) % DOSSIER_TABS.length;
+        }
+        if (event.key === "Home") nextIndex = 0;
+        if (event.key === "End") nextIndex = DOSSIER_TABS.length - 1;
+        if (nextIndex === tabIndex) return;
+
+        event.preventDefault();
+        const nextTab = DOSSIER_TABS[nextIndex];
+        setActiveTab(nextTab.id);
+        document.getElementById(`ds-2026-tab-${nextTab.id}`)?.focus();
+    };
 
     return (
         <DesignSystem2026
@@ -71,6 +93,7 @@ export const TeammatesComparison2026 = () => {
         >
             <DriverHeroLockup2026
                 year={year}
+                teamId={team}
                 teamName={selectedTeamName}
                 comparison={headToHeadData}
             />
@@ -106,88 +129,114 @@ export const TeammatesComparison2026 = () => {
             )}
 
             {!isLoading && hasComparison && (
-                <div className="ds-2026-teammates">
+                <div className="ds-2026-teammates ds-2026-page-width">
                     {(ambQ || ambR) && (
                         <p className="ds-2026-teammates__notice">
                             These drivers have limited same-season overlap in the archive.
                         </p>
                     )}
 
-                    <DossierSectionHeader2026
-                        eyebrow="01 — The Count"
-                        title="The Scoreboard"
-                        accent="Scoreboard"
-                        meta="Season verdicts"
-                    />
-                    <Scoreboard2026 comparison={headToHeadData} />
-
-                    <StatSheet2026 comparison={headToHeadData} />
-
-                    <DossierSectionHeader2026
-                        eyebrow="02 — Racecraft"
-                        title="Gained Or Lost"
-                        accent="Lost"
-                        meta="Grid slot to chequered flag"
-                    />
-                    <ChartPanel2026 label="Positions gained (+) or lost (-) per grand prix">
-                        <PositionsGainedLostChart
-                            headToHeadData={headToHeadData}
-                            teamColor={teamColor}
-                        />
-                    </ChartPanel2026>
-
-                    <DossierSectionHeader2026
-                        eyebrow="03 — Saturday"
-                        title="The Quali Gap"
-                        accent="Gap"
-                        meta="Qualifying gap in seconds"
-                    />
-                    <ChartPanel2026 label="Fastest qualifying lap comparison">
-                        <div className="ds-2026-chart-panel__actions">
-                            <Button
-                                onClick={handleShowTimes}
-                                buttonStyle="hollow"
-                                active={showTimes}
-                                size="sm"
+                    <div className="ds-2026-tabs" role="tablist" aria-label="Teammate comparison sections">
+                        {DOSSIER_TABS.map(({ id, label }, index) => (
+                            <button
+                                key={id}
+                                id={`ds-2026-tab-${id}`}
+                                className="ds-2026-tabs__tab"
+                                type="button"
+                                role="tab"
+                                aria-controls={`ds-2026-panel-${id}`}
+                                aria-selected={activeTab === id}
+                                tabIndex={activeTab === id ? 0 : -1}
+                                onClick={() => setActiveTab(id)}
+                                onKeyDown={(event) => handleTabKeyDown(event, index)}
                             >
-                                Show Times
-                            </Button>
-                            <Button
-                                onClick={handleShowDifference}
-                                buttonStyle="hollow"
-                                active={!showTimes}
-                                size="sm"
-                            >
-                                Show Deltas
-                            </Button>
-                        </div>
-                        {showTimes ? (
-                            <QualifyingLapTimesChart
-                                headToHeadData={headToHeadData}
-                                teamColor={teamColor}
-                            />
-                        ) : (
-                            <QualifyingLapTimesDeltaChart
-                                headToHeadData={headToHeadData}
-                                teamColor={teamColor}
-                            />
+                                {label}
+                            </button>
+                        ))}
+                    </div>
+
+                    <div
+                        key={activeTab}
+                        id={`ds-2026-panel-${activeTab}`}
+                        className="ds-2026-tabs__panel"
+                        role="tabpanel"
+                        aria-labelledby={`ds-2026-tab-${activeTab}`}
+                        tabIndex={0}
+                    >
+                        {activeTab === "scoreboard" && (
+                            <>
+                                <DossierSectionHeader2026
+                                    eyebrow="01 — The Count"
+                                    title="The Scoreboard"
+                                    accent="Scoreboard"
+                                    meta="Season verdicts"
+                                />
+                                <Scoreboard2026 comparison={headToHeadData} />
+                                <StatSheet2026 comparison={headToHeadData} />
+                            </>
                         )}
-                    </ChartPanel2026>
 
-                    {!ambQ && !ambR && (
-                        <>
-                            <DossierSectionHeader2026
-                                eyebrow="04 — Traces"
-                                title="Season Traces"
-                                accent="Traces"
-                                meta="Position by round"
-                            />
-                            <div className="ds-2026-chart-grid">
+                        {activeTab === "qualifying" && (
+                            <>
+                                <DossierSectionHeader2026
+                                    eyebrow="02 — Saturday"
+                                    title="The Quali Gap"
+                                    accent="Gap"
+                                    meta="Qualifying performance by round"
+                                />
+                                <ChartPanel2026 label="Fastest qualifying lap comparison">
+                                    <div className="ds-2026-chart-panel__actions">
+                                        <Button
+                                            onClick={handleShowTimes}
+                                            buttonStyle="hollow"
+                                            active={showTimes}
+                                            size="sm"
+                                        >
+                                            Show Times
+                                        </Button>
+                                        <Button
+                                            onClick={handleShowDifference}
+                                            buttonStyle="hollow"
+                                            active={!showTimes}
+                                            size="sm"
+                                        >
+                                            Show Deltas
+                                        </Button>
+                                    </div>
+                                    {showTimes ? (
+                                        <QualifyingLapTimesChart
+                                            headToHeadData={headToHeadData}
+                                            teamColor={teamColor}
+                                        />
+                                    ) : (
+                                        <QualifyingLapTimesDeltaChart
+                                            headToHeadData={headToHeadData}
+                                            teamColor={teamColor}
+                                        />
+                                    )}
+                                </ChartPanel2026>
                                 <ChartPanel2026 label="Qualifying positions">
                                     <PositionsComparisonChart
                                         headToHeadData={headToHeadData}
                                         teamColor={teamColor}
                                         isQualifying
+                                    />
+                                </ChartPanel2026>
+                            </>
+                        )}
+
+                        {activeTab === "race-day" && (
+                            <>
+                                <DossierSectionHeader2026
+                                    eyebrow="03 — Sunday"
+                                    title="Race Day"
+                                    accent="Race"
+                                    meta="Grand prix performance by round"
+                                />
+                                <ChartPanel2026 label="Positions gained (+) or lost (-) per grand prix">
+                                    <PositionsGainedLostChart
+                                        headToHeadData={headToHeadData}
+                                        teamColor={teamColor}
                                     />
                                 </ChartPanel2026>
                                 <ChartPanel2026 label="Race positions">
@@ -197,22 +246,9 @@ export const TeammatesComparison2026 = () => {
                                         isQualifying={false}
                                     />
                                 </ChartPanel2026>
-                            </div>
-                        </>
-                    )}
-
-                    <DossierSectionHeader2026
-                        eyebrow="05 — Summary"
-                        title="Head To Head"
-                        accent="Head"
-                        meta="Legacy chart reference"
-                    />
-                    <ChartPanel2026>
-                        <HeadToHeadChart
-                            headToHeadData={headToHeadData}
-                            color={`#${teamColor}`}
-                        />
-                    </ChartPanel2026>
+                            </>
+                        )}
+                    </div>
                 </div>
             )}
         </DesignSystem2026>

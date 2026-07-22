@@ -1,6 +1,8 @@
 import React, { useRef } from "react";
 import classNames from "classnames";
 
+import { TeamLogo2026 } from "../teamLogos";
+
 const splitDriverName = (name = "") => {
     const [firstName = "", ...rest] = name.split(" ");
     return {
@@ -149,6 +151,7 @@ export const DossierControlDeck2026 = ({
 
 export const DriverHeroLockup2026 = ({
     year,
+    teamId,
     teamName,
     comparison,
 }) => {
@@ -165,19 +168,22 @@ export const DriverHeroLockup2026 = ({
     };
     const driver1 = splitDriverName(primaryDriver.name);
     const driver2 = splitDriverName(secondaryDriver.name);
-    const imageYear = "2026";
+    const imageYear = Number(year);
+    const usesSeasonDriverImages = imageYear >= 2023;
     const yearSuffix = year ? String(year).slice(-2) : "26";
     const teamCode = teamName ? teamName.replace(/\s+/g, "").slice(0, 3).toUpperCase() : "F1N";
     const currentYear = new Date().getFullYear();
     const currentRound = Object.keys(comparison?.driver1RacePosList || {}).length;
     const formattedCurrentRound = String(currentRound).padStart(2, "0");
     const showCurrentRound = Number(year) === currentYear && currentRound > 0;
-    const driver1Image = primaryDriver.code
+    const defaultDriver1Image = `${process.env.PUBLIC_URL}/images/default/driver1.png`;
+    const defaultDriver2Image = `${process.env.PUBLIC_URL}/images/default/driver2.png`;
+    const driver1Image = usesSeasonDriverImages && primaryDriver.code
         ? `${process.env.PUBLIC_URL}/images/${imageYear}/drivers/${primaryDriver.code}.png`
-        : "";
-    const driver2Image = secondaryDriver.code
+        : defaultDriver1Image;
+    const driver2Image = usesSeasonDriverImages && secondaryDriver.code
         ? `${process.env.PUBLIC_URL}/images/${imageYear}/drivers/${secondaryDriver.code}.png`
-        : "";
+        : defaultDriver2Image;
 
     const handleMouseMove = (event) => {
         const hero = heroRef.current;
@@ -199,18 +205,27 @@ export const DriverHeroLockup2026 = ({
         hero.style.setProperty("--ds-2026-hero-y", "0");
     };
 
-    const hideMissingImage = (event) => {
-        event.currentTarget.style.display = "none";
+    const fallbackToDefaultDriverImage = (event, defaultImage) => {
+        if (event.currentTarget.src.endsWith(defaultImage)) {
+            event.currentTarget.style.display = "none";
+            return;
+        }
+
+        event.currentTarget.src = defaultImage;
     };
 
     return (
         <section
             ref={heroRef}
-            className="ds-2026-hero-lockup"
+            className="ds-2026-hero-lockup ds-2026-page-width"
             data-year-suffix={yearSuffix}
             onMouseMove={handleMouseMove}
             onMouseLeave={handleMouseLeave}
         >
+            <TeamLogo2026
+                teamId={teamId}
+                className="ds-2026-hero-lockup__team-mark"
+            />
             <aside className="ds-2026-paper-panel ds-2026-dotted-texture" aria-hidden="true">
                 <div className="ds-2026-paper-panel__meta">
                     Archive sheet
@@ -238,9 +253,11 @@ export const DriverHeroLockup2026 = ({
             {comparison && (
                 <div className="ds-2026-hero-lockup__drivers">
                     <div className="ds-2026-hero-lockup__driver ds-2026-hero-lockup__driver--a">
-                        {driver1Image && (
-                            <img src={driver1Image} alt="" onError={hideMissingImage} />
-                        )}
+                        <img
+                            src={driver1Image}
+                            alt=""
+                            onError={(event) => fallbackToDefaultDriverImage(event, defaultDriver1Image)}
+                        />
                         <div className="ds-2026-hero-lockup__driver-name">
                             <span>{driver1.firstName}</span>
                             <strong>{driver1.lastName}</strong>
@@ -248,9 +265,11 @@ export const DriverHeroLockup2026 = ({
                     </div>
                     <div className="ds-2026-hero-lockup__vs">VS</div>
                     <div className="ds-2026-hero-lockup__driver ds-2026-hero-lockup__driver--b">
-                        {driver2Image && (
-                            <img src={driver2Image} alt="" onError={hideMissingImage} />
-                        )}
+                        <img
+                            src={driver2Image}
+                            alt=""
+                            onError={(event) => fallbackToDefaultDriverImage(event, defaultDriver2Image)}
+                        />
                         <div className="ds-2026-hero-lockup__driver-name">
                             <span>{driver2.firstName}</span>
                             <strong>{driver2.lastName}</strong>
@@ -279,9 +298,12 @@ export const Scoreboard2026 = ({ comparison }) => {
     return (
         <div className="ds-2026-scoreboard">
             {rows.map(([label, driver1Value, driver2Value]) => {
-                const total = Math.max(driver1Value + driver2Value, 1);
-                const driver1Width = `${(driver1Value / total) * 100}%`;
-                const driver2Width = `${(driver2Value / total) * 100}%`;
+                const driver1Score = Number(driver1Value) || 0;
+                const driver2Score = Number(driver2Value) || 0;
+                const total = driver1Score + driver2Score;
+                const hasScore = total > 0;
+                const driver1Width = `${hasScore ? (driver1Score / total) * 100 : 0}%`;
+                const driver2Width = `${hasScore ? (driver2Score / total) * 100 : 0}%`;
 
                 return (
                     <div className="ds-2026-scoreboard__row" key={label}>
@@ -289,8 +311,12 @@ export const Scoreboard2026 = ({ comparison }) => {
                         <div>
                             <span>{label}</span>
                             <div className="ds-2026-scoreboard__bar">
-                                <i style={{ width: driver1Width }} />
-                                <b style={{ width: driver2Width }} />
+                                {hasScore && (
+                                    <>
+                                        <i style={{ width: driver1Width }} />
+                                        <b style={{ width: driver2Width }} />
+                                    </>
+                                )}
                             </div>
                         </div>
                         <strong>{driver2Value}</strong>
