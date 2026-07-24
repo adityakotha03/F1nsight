@@ -31,12 +31,14 @@ const principles = [
 
 const componentPatterns = [
     ["DesignSystem2026", "Route wrapper that scopes tokens and per-page custom properties."],
-    ["DriverHeroLockup2026", "Dossier hero for driver/team identity and matchup framing."],
-    ["DossierControlDeck2026", "Torn-paper season/team/driver selection controls."],
-    ["DossierSectionHeader2026", "Reusable numbered section header with accent word and metadata."],
-    ["Scoreboard2026", "Horizontal tally rows for head-to-head season verdicts."],
-    ["StatSheet2026", "Paper-style stat table for archived comparison facts."],
-    ["ChartPanel2026", "Dark framed panel for existing and future chart components."],
+    ["DriverNameLockup2026", "Shared sm–xl handwritten-first-name and Lato-last-name identity lockup."],
+    ["HeroShell2026", "Shared max-width, minimum-height, and responsive page-hero padding shell."],
+    ["TeammateComparisonHero2026", "Dossier hero for driver/team identity and matchup framing."],
+    ["TeammateComparisonControlDeck2026", "Torn-paper season/team/driver selection controls."],
+    ["SectionHeader2026", "Reusable numbered section header with accent word and metadata."],
+    ["TeammateComparisonScoreboard2026", "Horizontal tally rows for head-to-head season verdicts."],
+    ["TeammateComparisonStatSheet2026", "Paper-style stat table for archived comparison facts."],
+    ["TeammateComparisonChartPanel2026", "Dark framed panel for existing and future chart components."],
 ];
 
 const architectureNotes = [
@@ -48,9 +50,9 @@ const architectureNotes = [
 export const DesignSystemDocs2026 = () => {
     return (
         <DesignSystem2026 className="design-system-2026--docs">
-            <section className="ds-2026-docs">
-                <div className="ds-2026-docs__hero">
-                    <p className="ds-2026-docs__eyebrow">F1nsight 2026</p>
+            <section className="design-system-docs-2026">
+                <div className="design-system-docs-2026__hero">
+                    <p className="design-system-docs-2026__eyebrow">F1nsight 2026</p>
                     <h1>Design System Documentation</h1>
                     <p>
                         A scoped design system for new 2026 pages. Use this page
@@ -59,8 +61,8 @@ export const DesignSystemDocs2026 = () => {
                     </p>
                 </div>
 
-                <div className="ds-2026-docs__grid">
-                    <section className="ds-2026-docs__panel">
+                <div className="design-system-docs-2026__grid">
+                    <section className="design-system-docs-2026__panel">
                         <h2>Principles</h2>
                         <ul>
                             {principles.map((principle) => (
@@ -69,7 +71,7 @@ export const DesignSystemDocs2026 = () => {
                         </ul>
                     </section>
 
-                    <section className="ds-2026-docs__panel">
+                    <section className="design-system-docs-2026__panel">
                         <h2>Route Scope</h2>
                         <p>
                             Active 2026 routes get the <code>bg-gradient-2026</code>
@@ -83,7 +85,7 @@ export const DesignSystemDocs2026 = () => {
                     </section>
                 </div>
 
-                <section className="ds-2026-docs__panel">
+                <section className="design-system-docs-2026__panel">
                     <h2>Architecture</h2>
                     <ul>
                         {architectureNotes.map((note) => (
@@ -92,12 +94,12 @@ export const DesignSystemDocs2026 = () => {
                     </ul>
                 </section>
 
-                <section className="ds-2026-docs__panel">
+                <section className="design-system-docs-2026__panel">
                     <h2>Component Patterns</h2>
-                    <div className="ds-2026-docs__tokens">
+                    <div className="design-system-docs-2026__tokens">
                         {componentPatterns.map(([name, description]) => (
-                            <article className="ds-2026-docs__token" key={name}>
-                                <span className="ds-2026-docs__component-mark" />
+                            <article className="design-system-docs-2026__token" key={name}>
+                                <span className="design-system-docs-2026__component-mark" />
                                 <div>
                                     <h3>{name}</h3>
                                     <p>{description}</p>
@@ -107,13 +109,13 @@ export const DesignSystemDocs2026 = () => {
                     </div>
                 </section>
 
-                <section className="ds-2026-docs__panel">
+                <section className="design-system-docs-2026__panel">
                     <h2>Color Tokens</h2>
-                    <div className="ds-2026-docs__tokens">
+                    <div className="design-system-docs-2026__tokens">
                         {colorTokens.map(([name, token, description]) => (
-                            <article className="ds-2026-docs__token" key={token}>
+                            <article className="design-system-docs-2026__token" key={token}>
                                 <span
-                                    className="ds-2026-docs__swatch"
+                                    className="design-system-docs-2026__swatch"
                                     style={{ background: `var(${token})` }}
                                 />
                                 <div>
@@ -126,13 +128,13 @@ export const DesignSystemDocs2026 = () => {
                     </div>
                 </section>
 
-                <section className="ds-2026-docs__panel">
+                <section className="design-system-docs-2026__panel">
                     <h2>Radius Tokens</h2>
-                    <div className="ds-2026-docs__tokens ds-2026-docs__tokens--compact">
+                    <div className="design-system-docs-2026__tokens design-system-docs-2026__tokens--compact">
                         {radiusTokens.map(([name, token, description]) => (
-                            <article className="ds-2026-docs__token" key={token}>
+                            <article className="design-system-docs-2026__token" key={token}>
                                 <span
-                                    className="ds-2026-docs__radius"
+                                    className="design-system-docs-2026__radius"
                                     style={{ borderRadius: `var(${token})` }}
                                 />
                                 <div>

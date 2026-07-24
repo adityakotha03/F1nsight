@@ -8,8 +8,7 @@ import { fab } from '@fortawesome/free-brands-svg-icons'
 import { Header, Footer2025, ResultsSelector } from './components';
 import {  ReactComponent as F1ALogo} from './components/F1Ansight.svg';
 import {  ReactComponent as F2Logo} from './components/F2nsight.svg';
-import { 
-  DriverComparison,
+import {
   LandingPage2025, 
   AboutPage2025,
   ARViewer, 
@@ -26,7 +25,7 @@ import {
   DriverStandingsF2, 
   ConstructorStandingsF2
 } from './pages'; 
-import { DesignSystemDocs2026, TeammatesComparison2026 } from './pages/2026';
+import { DesignSystemDocs2026, DriverComparison2026, TeammatesComparison2026 } from './pages/2026';
 import { usePageTracking, useScrollTracking } from './utils/gaTracking';
 import { ScrollToTop } from './utils/ScrollToTop';
 import { getCurrentYear } from './utils/currentYear';
@@ -81,6 +80,7 @@ function MainContent({ setSelectedYear, selectedYear, resultPage, resultPagePath
   ], []);
   const valid2026Paths = useMemo(() => [
     '/2026/design-system',
+    '/driver-comparison',
     '/teammates-comparison',
   ], []);
 
@@ -148,7 +148,7 @@ function MainContent({ setSelectedYear, selectedYear, resultPage, resultPagePath
         <Route path="/driver-standings" element={<DriverStandings selectedYear={selectedYear} />} />
         <Route path="/2026/design-system" element={<DesignSystemDocs2026 />} />
         <Route path="/teammates-comparison/:urlYear?/:urlTeam?" element={<TeammatesComparison2026 />}/>
-        <Route path="/driver-comparison/:urlDriver1?/:urlDriver2?" element={<DriverComparison selectedYear={selectedYear} />} />
+        <Route path="/driver-comparison/:urlDriver1?/:urlDriver2?" element={<DriverComparison2026 />} />
         <Route path="/race/:raceId" element={<RacePage />} />
         <Route path="/ar-viewer" element={<ARViewer />} />
         {/* F1A Routes */}

@@ -4,7 +4,9 @@ export const fetchDriversList = async () => {
   const response = await fetchJsonWithCache(buildF1nsightApiUrl("/driversList.json"));
   return response.map(driver => ({
     id: driver.driverId,
-    name: `${driver.givenName} ${driver.familyName}`
+    name: `${driver.givenName} ${driver.familyName}`,
+    code: driver.code,
+    permanentNumber: driver.permanentNumber
   }));
 };
 

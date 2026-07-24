@@ -1,0 +1,82 @@
+.design-system-2026 {
+    .ds-2026-statistics-sheet {
+        background-color: var(--ds-2026-paper);
+        box-shadow: var(--ds-2026-shadow);
+        color: var(--ds-2026-paper-text);
+        margin: 0 auto 8rem;
+        max-width: 100rem;
+        padding: 3.8rem 4.4rem 4.4rem;
+        position: relative;
+        transform: rotate(-1deg);
+    }
+
+    .ds-2026-statistics-sheet__header {
+        align-items: baseline;
+        border-bottom: 0.2rem solid rgba(20, 18, 23, 0.7);
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 0.8rem;
+        padding-bottom: 1.4rem;
+
+        h3 {
+            font-family: "Anton", sans-serif;
+            font-size: 3rem;
+            text-transform: uppercase;
+        }
+
+        span {
+            font-family: "IBM Plex Mono", monospace;
+            font-size: 1rem;
+            letter-spacing: 0.24em;
+            text-transform: uppercase;
+        }
+    }
+
+    .ds-2026-statistics-sheet__grid {
+        display: grid;
+        grid-template-columns: minmax(18rem, 1.4fr) repeat(2, 1fr);
+
+        > * {
+            border-bottom: 0.1rem dashed rgba(20, 18, 23, 0.28);
+            font-family: "IBM Plex Mono", monospace;
+            font-size: 1.1rem;
+            letter-spacing: 0.12em;
+            padding: 1.1rem 0.4rem;
+            text-transform: uppercase;
+        }
+
+        strong,
+        b { text-align: center; }
+    }
+
+    .ds-2026-statistics-sheet__stamp {
+        align-items: center;
+        border: 0.3rem solid color-mix(in srgb, var(--ds-2026-accent) 70%, transparent);
+        border-radius: 50%;
+        bottom: 2.6rem;
+        color: var(--ds-2026-accent);
+        display: flex;
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 0.9rem;
+        height: 9.6rem;
+        justify-content: center;
+        letter-spacing: 0.16em;
+        opacity: 0.82;
+        position: absolute;
+        right: 3.4rem;
+        text-align: center;
+        text-transform: uppercase;
+        transform: rotate(-14deg);
+        width: 9.6rem;
+    }
+}
+
+@media (max-width: 600px) {
+    .design-system-2026 {
+        .ds-2026-statistics-sheet { padding: 2.4rem 1.8rem; transform: none; }
+        .ds-2026-statistics-sheet__header { align-items: flex-start; flex-direction: column; gap: 0.8rem; }
+        .ds-2026-statistics-sheet__grid { grid-template-columns: minmax(12rem, 1.4fr) repeat(2, 1fr); }
+        .ds-2026-statistics-sheet__grid > * { font-size: 0.9rem; letter-spacing: 0.05em; }
+        .ds-2026-statistics-sheet__stamp { display: none; }
+    }
+}

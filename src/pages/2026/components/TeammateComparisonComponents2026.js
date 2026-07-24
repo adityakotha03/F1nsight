@@ -2,49 +2,12 @@ import React, { useRef } from "react";
 import classNames from "classnames";
 
 import { TeamLogo2026 } from "../teamLogos";
+import { DriverNameLockup2026, splitDriverName2026 } from "./DriverNameLockup2026";
+import { HeroShell2026 } from "./HeroShell2026";
+import { JaggedContainer2026 } from "./JaggedContainer2026";
+import { StatisticsSheet2026 } from "./StatisticsSheet2026";
 
-const splitDriverName = (name = "") => {
-    const [firstName = "", ...rest] = name.split(" ");
-    return {
-        firstName,
-        lastName: rest.join(" ") || firstName,
-    };
-};
-
-export const DossierSectionHeader2026 = ({
-    eyebrow,
-    title,
-    accent,
-    meta,
-    className,
-}) => {
-    const titleParts = title.split(" ");
-    const accentIndex = accent ? titleParts.findIndex((part) => part === accent) : -1;
-
-    return (
-        <div className={classNames("ds-2026-section-header", className)}>
-            <div className="ds-2026-section-header__eyebrow">{eyebrow}</div>
-            <div className="ds-2026-section-header__rule" />
-            {meta && <div className="ds-2026-section-header__meta">{meta}</div>}
-            <h2>
-                {titleParts.map((part, index) => (
-                    <React.Fragment key={`${part}-${index}`}>
-                        {index > 0 && " "}
-                        <span
-                            className={classNames({
-                                "ds-2026-section-header__accent": index === accentIndex,
-                            })}
-                        >
-                            {part}
-                        </span>
-                    </React.Fragment>
-                ))}
-            </h2>
-        </div>
-    );
-};
-
-export const DossierSelect2026 = ({
+export const TeammateComparisonSelect2026 = ({
     label,
     value,
     options,
@@ -53,15 +16,15 @@ export const DossierSelect2026 = ({
     variant = "light",
 }) => {
     return (
-        <label className="ds-2026-select">
+        <label className="teammates-2026-select">
             <span>{label}</span>
             <select
                 value={value || ""}
                 onChange={(event) => onChange({ value: event.target.value })}
                 disabled={disabled}
-                className={classNames("ds-2026-select__control", {
-                    "ds-2026-select__control--accent": variant === "accent",
-                    "ds-2026-select__control--dark": variant === "dark",
+                className={classNames("teammates-2026-select__control", {
+                    "teammates-2026-select__control--accent": variant === "accent",
+                    "teammates-2026-select__control--dark": variant === "dark",
                 })}
             >
                 <option value="">Select</option>
@@ -75,7 +38,7 @@ export const DossierSelect2026 = ({
     );
 };
 
-export const DossierControlDeck2026 = ({
+export const TeammateComparisonControlDeck2026 = ({
     year,
     yearOptions,
     team,
@@ -92,16 +55,22 @@ export const DossierControlDeck2026 = ({
     lastUpdated,
 }) => {
     return (
-        <section className="ds-2026-control-deck">
-            <div className="ds-2026-control-deck__inner">
-                <div className="ds-2026-control-deck__controls">
-                    <DossierSelect2026
+        <JaggedContainer2026
+            as="section"
+            className="teammates-2026-control-deck"
+            color="var(--ds-2026-paper)"
+            edge="both"
+            lifted
+        >
+            <div className="teammates-2026-control-deck__inner">
+                <div className="teammates-2026-control-deck__controls">
+                    <TeammateComparisonSelect2026
                         label="Season"
                         value={year}
                         options={yearOptions}
                         onChange={onYearChange}
                     />
-                    <DossierSelect2026
+                    <TeammateComparisonSelect2026
                         label="Team"
                         value={team}
                         options={teamOptions}
@@ -111,7 +80,7 @@ export const DossierControlDeck2026 = ({
                     />
                     {showDriverSelectors && (
                         <>
-                            <DossierSelect2026
+                            <TeammateComparisonSelect2026
                                 label="Driver A"
                                 value={selectedDriver1}
                                 options={driverOptions.filter(
@@ -122,13 +91,13 @@ export const DossierControlDeck2026 = ({
                             />
                             <button
                                 type="button"
-                                className="ds-2026-swap-button"
+                                className="teammates-2026-swap-button"
                                 onClick={onSwapDrivers}
                                 aria-label="Swap selected drivers"
                             >
                                 ⇄
                             </button>
-                            <DossierSelect2026
+                            <TeammateComparisonSelect2026
                                 label="Driver B"
                                 value={selectedDriver2}
                                 options={driverOptions.filter(
@@ -140,16 +109,16 @@ export const DossierControlDeck2026 = ({
                     )}
                 </div>
                 {lastUpdated && (
-                    <div className="ds-2026-control-deck__source">
+                    <div className="teammates-2026-control-deck__source">
                         Last updated {lastUpdated}
                     </div>
                 )}
             </div>
-        </section>
+        </JaggedContainer2026>
     );
 };
 
-export const DriverHeroLockup2026 = ({
+export const TeammateComparisonHero2026 = ({
     year,
     teamId,
     teamName,
@@ -166,8 +135,6 @@ export const DriverHeroLockup2026 = ({
         name: shouldSwapVisualOrder ? comparison?.driver1 : comparison?.driver2,
         code: shouldSwapVisualOrder ? comparison?.driver1Code : comparison?.driver2Code,
     };
-    const driver1 = splitDriverName(primaryDriver.name);
-    const driver2 = splitDriverName(secondaryDriver.name);
     const imageYear = Number(year);
     const usesSeasonDriverImages = imageYear >= 2023;
     const yearSuffix = year ? String(year).slice(-2) : "26";
@@ -187,22 +154,22 @@ export const DriverHeroLockup2026 = ({
 
     const handleMouseMove = (event) => {
         const hero = heroRef.current;
-        if (!hero) return;
+        if (!hero || window.matchMedia("(max-width: 900px)").matches) return;
 
         const rect = hero.getBoundingClientRect();
         const x = (event.clientX - rect.left) / rect.width - 0.5;
         const y = (event.clientY - rect.top) / rect.height - 0.5;
 
-        hero.style.setProperty("--ds-2026-hero-x", x.toFixed(3));
-        hero.style.setProperty("--ds-2026-hero-y", y.toFixed(3));
+        hero.style.setProperty("--teammates-2026-hero-x", x.toFixed(3));
+        hero.style.setProperty("--teammates-2026-hero-y", y.toFixed(3));
     };
 
     const handleMouseLeave = () => {
         const hero = heroRef.current;
         if (!hero) return;
 
-        hero.style.setProperty("--ds-2026-hero-x", "0");
-        hero.style.setProperty("--ds-2026-hero-y", "0");
+        hero.style.setProperty("--teammates-2026-hero-x", "0");
+        hero.style.setProperty("--teammates-2026-hero-y", "0");
     };
 
     const fallbackToDefaultDriverImage = (event, defaultImage) => {
@@ -215,21 +182,19 @@ export const DriverHeroLockup2026 = ({
     };
 
     return (
-        <section
+        <HeroShell2026
             ref={heroRef}
-            className="ds-2026-hero-lockup ds-2026-page-width"
+            className="teammates-2026-hero-lockup"
             data-year-suffix={yearSuffix}
             onMouseMove={handleMouseMove}
             onMouseLeave={handleMouseLeave}
         >
             <TeamLogo2026
                 teamId={teamId}
-                className="ds-2026-hero-lockup__team-mark"
+                className="teammates-2026-hero-lockup__team-mark"
             />
-            <aside className="ds-2026-paper-panel ds-2026-dotted-texture" aria-hidden="true">
-                <div className="ds-2026-paper-panel__meta">
-                    Archive sheet
-                    <br />
+            <aside className="teammates-2026-paper-panel ds-2026-dotted-texture" aria-hidden="true">
+                <div className="teammates-2026-paper-panel__meta">
                     File {teamCode}-{yearSuffix}
                     {showCurrentRound && (
                         <>
@@ -239,50 +204,50 @@ export const DriverHeroLockup2026 = ({
                     )}
                 </div>
             </aside>
-            <div className="ds-2026-hero-lockup__content">
-                <div className="ds-2026-hero-lockup__tag">
+            <div className="teammates-2026-hero-lockup__content">
+                <div className="teammates-2026-hero-lockup__tag">
                     {teamName || "Select a team"} — {year || "Season"}
                 </div>
                 <h1>
                     Head
                     <span>To Head</span>
                 </h1>
-                <p className="ds-2026-hero-lockup__strap">Who owns the garage</p>
+                <p className="teammates-2026-hero-lockup__strap">Who owns the garage?</p>
             </div>
 
             {comparison && (
-                <div className="ds-2026-hero-lockup__drivers">
-                    <div className="ds-2026-hero-lockup__driver ds-2026-hero-lockup__driver--a">
+                <div className="teammates-2026-hero-lockup__drivers">
+                    <div className="teammates-2026-hero-lockup__driver teammates-2026-hero-lockup__driver--a">
                         <img
                             src={driver1Image}
                             alt=""
                             onError={(event) => fallbackToDefaultDriverImage(event, defaultDriver1Image)}
                         />
-                        <div className="ds-2026-hero-lockup__driver-name">
-                            <span>{driver1.firstName}</span>
-                            <strong>{driver1.lastName}</strong>
-                        </div>
+                        <DriverNameLockup2026
+                            name={primaryDriver.name}
+                            className="teammates-2026-hero-lockup__driver-name"
+                        />
                     </div>
-                    <div className="ds-2026-hero-lockup__vs">VS</div>
-                    <div className="ds-2026-hero-lockup__driver ds-2026-hero-lockup__driver--b">
+                    <div className="teammates-2026-hero-lockup__vs">VS</div>
+                    <div className="teammates-2026-hero-lockup__driver teammates-2026-hero-lockup__driver--b">
                         <img
                             src={driver2Image}
                             alt=""
                             onError={(event) => fallbackToDefaultDriverImage(event, defaultDriver2Image)}
                         />
-                        <div className="ds-2026-hero-lockup__driver-name">
-                            <span>{driver2.firstName}</span>
-                            <strong>{driver2.lastName}</strong>
-                        </div>
+                        <DriverNameLockup2026
+                            name={secondaryDriver.name}
+                            className="teammates-2026-hero-lockup__driver-name"
+                        />
                     </div>
                 </div>
             )}
-            <div className="ds-2026-hero-lockup__shard" />
-        </section>
+            <div className="teammates-2026-hero-lockup__shard" />
+        </HeroShell2026>
     );
 };
 
-export const Scoreboard2026 = ({ comparison }) => {
+export const TeammateComparisonScoreboard2026 = ({ comparison }) => {
     if (!comparison) return null;
 
     const rows = [
@@ -296,7 +261,7 @@ export const Scoreboard2026 = ({ comparison }) => {
     ];
 
     return (
-        <div className="ds-2026-scoreboard">
+        <div className="teammates-2026-scoreboard">
             {rows.map(([label, driver1Value, driver2Value]) => {
                 const driver1Score = Number(driver1Value) || 0;
                 const driver2Score = Number(driver2Value) || 0;
@@ -306,11 +271,16 @@ export const Scoreboard2026 = ({ comparison }) => {
                 const driver2Width = `${hasScore ? (driver2Score / total) * 100 : 0}%`;
 
                 return (
-                    <div className="ds-2026-scoreboard__row" key={label}>
+                    <div className="teammates-2026-scoreboard__row" key={label}>
                         <strong>{driver1Value}</strong>
                         <div>
                             <span>{label}</span>
-                            <div className="ds-2026-scoreboard__bar">
+                            {label === "DNF" && (
+                                <em className="teammates-2026-scoreboard__note">
+                                    the expensive row
+                                </em>
+                            )}
+                            <div className="teammates-2026-scoreboard__bar">
                                 {hasScore && (
                                     <>
                                         <i style={{ width: driver1Width }} />
@@ -327,7 +297,7 @@ export const Scoreboard2026 = ({ comparison }) => {
     );
 };
 
-export const StatSheet2026 = ({ comparison }) => {
+export const TeammateComparisonStatSheet2026 = ({ comparison, fileMeta }) => {
     if (!comparison) return null;
 
     const rows = [
@@ -339,31 +309,21 @@ export const StatSheet2026 = ({ comparison }) => {
     ];
 
     return (
-        <section className="ds-2026-stat-sheet">
-            <div className="ds-2026-stat-sheet__header">
-                <h3>Driver Statistics</h3>
-                <span>Doc 02.1</span>
-            </div>
-            <div className="ds-2026-stat-sheet__grid">
-                <span>Metric</span>
-                <strong>{splitDriverName(comparison.driver1).lastName}</strong>
-                <strong>{splitDriverName(comparison.driver2).lastName}</strong>
-                {rows.map(([label, driver1Value, driver2Value]) => (
-                    <React.Fragment key={label}>
-                        <span>{label}</span>
-                        <b>{driver1Value}</b>
-                        <b>{driver2Value}</b>
-                    </React.Fragment>
-                ))}
-            </div>
-            <div className="ds-2026-stat-sheet__stamp">F1nsight Verified</div>
-        </section>
+        <StatisticsSheet2026
+            title="Driver Statistics"
+            fileMeta={fileMeta}
+            columns={[
+                splitDriverName2026(comparison.driver1).lastName,
+                splitDriverName2026(comparison.driver2).lastName,
+            ]}
+            rows={rows}
+        />
     );
 };
 
-export const ChartPanel2026 = ({ children, label, className }) => {
+export const TeammateComparisonChartPanel2026 = ({ children, label, className }) => {
     return (
-        <div className={classNames("ds-2026-chart-panel", className)}>
+        <div className={classNames("teammates-2026-chart-panel", className)}>
             {label && <p>{label}</p>}
             {children}
         </div>

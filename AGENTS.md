@@ -11,7 +11,11 @@
 ## 2026 Design System
 
 - Wrap redesigned pages with `DesignSystem2026`.
-- Scope component and page styles under `.design-system-2026` or page-specific `ds-2026-*` classes.
+- Scope component and page styles under `.design-system-2026`.
+- Reserve the `ds-2026-*` namespace for shared, reusable design-system resources; use route-specific namespaces such as `teammates-2026-*` for page-only classes and custom properties.
+- Prefer Tailwind utilities for component layout and spacing when existing utilities cover the need.
+- When a reusable 2026 component needs unique CSS, colocate it in a component-specific stylesheet instead of adding it to `design-system-2026.scss`.
+- Prefer reusable components with small, explicit prop APIs and locked-in variants over requiring callers to remember combinations of utility or modifier classes.
 - Use existing 2026 CSS tokens before adding one-off values:
   - `--ds-2026-bg`
   - `--ds-2026-paper`
@@ -30,7 +34,8 @@
 
 - Prefer shared hooks for data and transformation logic when redesigning legacy pages.
 - `useTeammatesComparison` owns teammate comparison fetches, URL state, team color fallback, driver selection, and head-to-head calculation.
-- 2026 pages may reuse legacy chart components, but should wrap them in 2026 layout primitives such as `ChartPanel2026`.
+- `useDriverComparison` owns cross-era driver selection, URL state, comparison fetches, and career/shared-season transformations.
+- 2026 pages may reuse legacy chart components, but should wrap them in route-appropriate 2026 layout primitives and extract a shared wrapper once multiple pages need it.
 - Use `src/utils/teamColors.json` for team colors instead of fetching color data from the API.
 
 ## API Guidance
