@@ -177,7 +177,7 @@ export function RacePageF1a({championshipLevel}) {
                             ))}
                         </div>
 
-                        <StartingGridF1A raceResults={raceResults0} year={year} />
+                        {/* <StartingGridF1A raceResults={raceResults0} year={year} /> */}
 
                         <div className="page-container-centered">
                             <FastestLapsF1A
@@ -318,7 +318,7 @@ export function RacePageF1a({championshipLevel}) {
                             ))}
                         </div>
 
-                        <StartingGridF1A raceResults={raceResults3} year={year} />
+                        {/* <StartingGridF1A raceResults={raceResults3} year={year} /> */}
 
                         <div className="page-container-centered">
                             <FastestLapsF1A

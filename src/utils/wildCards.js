@@ -2,5 +2,5 @@
 export const wildCardDrivers = {
     2024: ['JUF', 'CRO', 'GAD', 'LLO', 'PAL', 'HAN'],
     2025: ['SHI', 'ALY', 'DOB', 'PAA', 'WES', 'ROB', 'BIL', 'KOS'],
-    2026: ['SHI']
+    2026: ['SHI', 'FIS', 'BAT', 'FLO']
 };
