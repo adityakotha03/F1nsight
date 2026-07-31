@@ -6,16 +6,22 @@ export const Tabs = ({
     className,
     tabListClassName,
     panelClassName,
+    activeTabId: controlledActiveTabId,
+    onTabChange,
 }) => {
     const visibleTabs = useMemo(
         () => tabs.filter((tab) => tab && tab.id && tab.label),
         [tabs]
     );
-    const [activeTabId, setActiveTabId] = useState(visibleTabs[0]?.id || "");
+    const [internalActiveTabId, setInternalActiveTabId] = useState(
+        visibleTabs[0]?.id || ""
+    );
+    const activeTabId = controlledActiveTabId || internalActiveTabId;
 
     useEffect(() => {
         if (!visibleTabs.length) {
-            setActiveTabId("");
+            setInternalActiveTabId("");
+            onTabChange?.("");
             return;
         }
 
@@ -23,9 +29,10 @@ export const Tabs = ({
             (tab) => tab.id === activeTabId
         );
         if (!activeTabStillVisible) {
-            setActiveTabId(visibleTabs[0].id);
+            setInternalActiveTabId(visibleTabs[0].id);
+            onTabChange?.(visibleTabs[0].id);
         }
-    }, [activeTabId, visibleTabs]);
+    }, [activeTabId, onTabChange, visibleTabs]);
 
     if (!visibleTabs.length) return null;
 
@@ -50,7 +57,10 @@ export const Tabs = ({
                                 ? "bg-plum-500 text-white"
                                 : "bg-glow text-neutral-300 hover:text-white"
                         )}
-                        onClick={() => setActiveTabId(tab.id)}
+                        onClick={() => {
+                            setInternalActiveTabId(tab.id);
+                            onTabChange?.(tab.id);
+                        }}
                     >
                         {tab.label}
                     </button>

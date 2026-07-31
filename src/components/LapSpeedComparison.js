@@ -13,7 +13,7 @@ import {
     ScatterChart,
 } from "recharts";
 import LapTrackChart from "./LapTrackChart";
-import { buildOpenF1Url } from "../config/openf1";
+import { fetchOpenF1Json } from "../config/openf1";
 
 const gapConvertion = (driver1LapData, driver2LapData) => {
     const timeToSeconds = (time) => {
@@ -52,10 +52,11 @@ const LapSpeedComparison = ({ driver1LapData, driver2LapData }) => {
     // Function to fetch lap data (speed during a specific lap for a given driver)
     const fetchLapData = async (driverNumber, lapNumber, sessionKey) => {
         try {
-            const lapStartResponse = await fetch(
-                `${buildOpenF1Url("/laps")}?driver_number=${driverNumber}&lap_number=${lapNumber}&session_key=${sessionKey}`
-            );
-            const lapStartData = await lapStartResponse.json();
+            const lapStartData = await fetchOpenF1Json("/laps", {
+                driver_number: driverNumber,
+                lap_number: lapNumber,
+                session_key: sessionKey,
+            });
             const lapStartTime = lapStartData[0]?.date_start;
             const lapDuration = lapStartData[0]?.lap_duration;
 
@@ -66,10 +67,10 @@ const LapSpeedComparison = ({ driver1LapData, driver2LapData }) => {
             setLongestLapDuration((prev) => Math.max(prev, lapDuration));
 
             // Fetch the car data within the lap timeframe
-            const carDataResponse = await fetch(
-                `${buildOpenF1Url("/car_data")}?driver_number=${driverNumber}&session_key=${sessionKey}`
-            );
-            const carData = await carDataResponse.json();
+            const carData = await fetchOpenF1Json("/car_data", {
+                driver_number: driverNumber,
+                session_key: sessionKey,
+            });
 
             // Find the closest timestamp that is greater than or equal to lapEndTime
             let closestEndTime = carData.find(
@@ -84,10 +85,12 @@ const LapSpeedComparison = ({ driver1LapData, driver2LapData }) => {
             ).toISOString();
 
             //Fetch Car coodinates from lapStartTime to adjustedLapEndTime
-            const carCoordinatesResponse = await fetch(
-                `${buildOpenF1Url("/location")}?session_key=${sessionKey}&driver_number=${driverNumber}&date%3E${lapStartTime}&date%3C${adjustedLapEndTime}`
-            );
-            const carCoordinates = await carCoordinatesResponse.json();
+            const carCoordinates = await fetchOpenF1Json("/location", {
+                session_key: sessionKey,
+                driver_number: driverNumber,
+                "date>": lapStartTime,
+                "date<": adjustedLapEndTime,
+            });
 
             // Filter car data for the time within the lap duration (using adjustedLapEndTime)
             const filteredCarData = carData.filter((data) => {

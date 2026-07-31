@@ -2,7 +2,7 @@ import { buildOpenF1Url } from "../config/openf1";
 import { getCurrentYear } from "../utils/currentYear";
 
 const OPENF1_DIRECT_API_BASE_URL = "https://api.openf1.org/v1";
-const OPENF1_MIN_REQUEST_GAP_MS = 450;
+const OPENF1_MIN_REQUEST_GAP_MS = 1200;
 const OPENF1_MAX_RETRIES = 2;
 const OPENF1_RETRY_BASE_DELAY_MS = 900;
 let lastOpenF1RequestAt = 0;

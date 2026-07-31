@@ -35,6 +35,18 @@ For more information and to access the interactive features, visit our website a
 
 Some of the information related to driver comparison and other important statistics are provided by our own API found at [F1nsight API](https://github.com/praneeth7781/f1nsight-api-2)
 
+## OpenF1
+
+The app reads OpenF1 data from `REACT_APP_OPENF1_BACKEND_BASE_URL`.
+
+By default this points directly to:
+
+```txt
+https://api.openf1.org
+```
+
+The app adds `/v1` automatically, so do not include `/v1` in the env value. OpenF1 requests are routed through a shared frontend helper that slows calls down, retries rate limits, and caches repeated responses in memory.
+
 ## Support and Contribution
 
 Contributions to F1nsight are always welcome! Whether it's improving the codebase, adding new features, or fixing bugs, please feel free to fork the repository and submit a pull request.
