@@ -9,7 +9,7 @@ import {
     fetchQualifyingResultsByCircuit,
     fetchLocationData,
 } from "../utils/api.js";
-import { buildOpenF1Url } from "../config/openf1";
+import { fetchOpenF1Json } from "../config/openf1";
 import { organizeQualifyingResults } from "../utils/organizeQualifyingResults.js";
 
 import {
@@ -63,6 +63,7 @@ export function RacePage() {
     const [isLoading, setIsLoading] = useState(false);
     const [selectedSession, setSelectedSession] = useState("Race");
     const [selectedSessionKey, setSelectedSessionKey] = useState('');
+    const [selectedSessionData, setSelectedSessionData] = useState(null);
     const [hasRaceSession, sethasRaceSession] = useState(false);
     const [hasQualifyingSession, sethasQualifyingSession] = useState(false);
     const [modalOpen, setModalOpen] = useState(false);
@@ -71,6 +72,13 @@ export function RacePage() {
     const [showStartingGrid, setShowStartingGrid] = useState(false);
     const [showCarDetails, setShowCarDetails] = useState(true);
     const [showCameraControls, setShowCameraControls] = useState(false);
+    const [activeStatsTab, setActiveStatsTab] = useState("");
+    const [loadedStatsData, setLoadedStatsData] = useState({
+        drivers: false,
+        position: false,
+        laps: false,
+        tires: false,
+    });
 
     useEffect(() => {
         const setBaseData = async () => {
@@ -179,6 +187,134 @@ export function RacePage() {
         };
     };
 
+    const safeFetch = async (label, request, fallback = []) => {
+        try {
+            return await request;
+        } catch (error) {
+            console.warn(`Optional race page data failed: ${label}`, error);
+            return fallback;
+        }
+    };
+
+    const setTrackAssets = (circuitId) => {
+        if (!circuitId) {
+            setMapPath("");
+            setAnimatedMap("");
+            console.warn(`No track asset mapped for location: ${location}`);
+            return;
+        }
+
+        setMapPath(`${process.env.PUBLIC_URL + "/map/" + circuitId + ".gltf"}`);
+        setAnimatedMap(
+            `${
+                process.env.PUBLIC_URL +
+                "/mapsAnimated/" +
+                circuitId +
+                "Animated.mp4"
+            }`
+        );
+    };
+
+    const resetOpenF1StatsData = () => {
+        setDrivers([]);
+        setLaps([]);
+        setPos([]);
+        setDriversDetails({});
+        setDriversColor({});
+        setStartingGrid([]);
+        setSelectedSessionData(null);
+        setLoadedStatsData({
+            drivers: false,
+            position: false,
+            laps: false,
+            tires: false,
+        });
+    };
+
+    const loadDriverDetails = async (sessionKey, force = false) => {
+        if (!sessionKey || (!force && loadedStatsData.drivers)) return driversDetails;
+
+        const driverDetailsData = await safeFetch(
+            "drivers",
+            fetchOpenF1Json("/drivers", { session_key: sessionKey })
+        );
+
+        const driverDetailsMap = driverDetailsData.reduce(
+            (acc, driver) => ({
+                ...acc,
+                [driver.driver_number]: driver.name_acronym,
+            }),
+            {}
+        );
+
+        const driverColorMap = driverDetailsData.reduce(
+            (acc, driver) => ({
+                ...acc,
+                [driver.name_acronym]: driver.team_colour,
+            }),
+            {}
+        );
+
+        setDriversDetails(driverDetailsMap);
+        setDriversColor(driverColorMap);
+        setLoadedStatsData((prev) => ({ ...prev, drivers: true }));
+        return driverDetailsMap;
+    };
+
+    const loadPositionData = async (sessionKey, sessionData, force = false) => {
+        if (!sessionKey || (!force && loadedStatsData.position)) return;
+
+        await loadDriverDetails(sessionKey, force);
+        const positionData = await safeFetch(
+            "position",
+            fetchOpenF1Json("/position", { session_key: sessionKey })
+        );
+
+        setPos(positionData);
+
+        const { startTime, endTime } = getPositionTimeBounds(
+            positionData,
+            sessionData
+        );
+        setStartTime(startTime);
+        setEndTime(endTime);
+
+        const earliestDateTime = positionData[0]?.date;
+        setStartingGrid(
+            positionData.filter((item) => item.date === earliestDateTime)
+        );
+        setLoadedStatsData((prev) => ({ ...prev, position: true }));
+    };
+
+    const loadLapData = async (sessionKey) => {
+        if (!sessionKey || loadedStatsData.laps) return;
+
+        const driverDetailsMap = await loadDriverDetails(sessionKey);
+        const lapsData = await safeFetch(
+            "laps",
+            fetchOpenF1Json("/laps", { session_key: sessionKey })
+        );
+
+        setLaps(
+            lapsData.map((lap) => ({
+                ...lap,
+                driver_acronym: driverDetailsMap[lap.driver_number],
+            }))
+        );
+        setLoadedStatsData((prev) => ({ ...prev, laps: true }));
+    };
+
+    const loadTireData = async (sessionKey) => {
+        if (!sessionKey || loadedStatsData.tires) return;
+
+        const driversData = await safeFetch(
+            "drivers and tires",
+            fetchDriversAndTires(sessionKey)
+        );
+        setDrivers(driversData);
+        setLoadedStatsData((prev) => ({ ...prev, tires: true }));
+    };
+
     const fetchData = async () => {
         if (!raceName) return;
 
@@ -186,13 +322,16 @@ export function RacePage() {
             setDriverSelected(false);
             setActiveButtonIndex(null);
             setIsLoading(true);
+            resetOpenF1StatsData();
 
             const circuitId = locationMaps[location];
-            console.log('circuitId', circuitId)
-            const sessionsResponse = await fetch(
-                `${buildOpenF1Url("/sessions")}?meeting_key=${meetingKey}`
+            setTrackAssets(circuitId);
+            const sessionsData = await safeFetch(
+                "sessions",
+                fetchOpenF1Json("/sessions", {
+                    meeting_key: meetingKey,
+                })
             );
-            const sessionsData = await sessionsResponse.json();
 
             const hasRaceSession = sessionsData.some(
                 (session) => session.session_name === "Race"
@@ -206,22 +345,10 @@ export function RacePage() {
             if (selectedSession === "Race") {
                 setIsLoading(true);
 
-                setMapPath(
-                    `${process.env.PUBLIC_URL + "/map/" + circuitId + ".gltf"}`
-                );
-                setAnimatedMap(
-                    `${
-                        process.env.PUBLIC_URL +
-                        "/mapsAnimated/" +
-                        circuitId +
-                        "Animated.mp4"
-                    }`
-                );
-
                 if (circuitId) {
-                    const results = await fetchRaceResultsByCircuit(
-                        year,
-                        circuitId
+                    const results = await safeFetch(
+                        "race results",
+                        fetchRaceResultsByCircuit(year, circuitId)
                     );
                     setRaceResults(results);
                     // console.log(results);
@@ -230,93 +357,26 @@ export function RacePage() {
                 const raceSession = sessionsData.find(
                     (session) => session.session_name === "Race"
                 );
-                if (!raceSession) throw new Error("Race session not found");
+                if (!raceSession) {
+                    console.warn("Race session not found");
+                    return;
+                }
                 const sessionKey = raceSession.session_key;
                 setSelectedSessionKey(sessionKey);
-
-                const [
-                    driverDetailsData,
-                    startingGridData,
-                    driversData,
-                    lapsData,
-                ] = await Promise.all([
-                    fetch(
-                        `${buildOpenF1Url("/drivers")}?session_key=${sessionKey}`
-                    ).then((res) => res.json()),
-                    fetch(
-                        `${buildOpenF1Url("/position")}?session_key=${sessionKey}`
-                    ).then((res) => res.json()),
-                    fetchDriversAndTires(sessionKey),
-                    fetch(
-                        `${buildOpenF1Url("/laps")}?session_key=${sessionKey}`
-                    ).then((res) => res.json()),
-                ]);
-
-                setPos(startingGridData);
-
-                const driverDetailsMap = driverDetailsData.reduce(
-                    (acc, driver) => ({
-                        ...acc,
-                        [driver.driver_number]: driver.name_acronym,
-                    }),
-                    {}
-                );
-
-                setDriversDetails(driverDetailsMap);
-
-                const driverColorMap = driverDetailsData.reduce(
-                    (acc, driver) => ({
-                        ...acc,
-                        [driver.name_acronym]: driver.team_colour,
-                    }),
-                    {}
-                );
-
-                setDriversColor(driverColorMap);
-
-                const { startTime, endTime } = getPositionTimeBounds(
-                    startingGridData,
-                    raceSession
-                );
-
-                setStartTime(startTime);
-                setEndTime(endTime);
-
-                const earliestDateTime = startingGridData[0]?.date;
-                const filteredStartingGrid = startingGridData.filter(
-                    (item) => item.date === earliestDateTime
-                );
-                setStartingGrid(filteredStartingGrid);
-
-                setDrivers(driversData);
-
-                setLaps(
-                    lapsData.map((lap) => ({
-                        ...lap,
-                        driver_acronym: driverDetailsMap[lap.driver_number],
-                    }))
-                );
+                setSelectedSessionData(raceSession);
+                setStartTime(raceSession.date_start || "");
+                setEndTime(raceSession.date_end || "");
+                setActiveStatsTab("position");
+                await loadPositionData(sessionKey, raceSession, true);
 
                 setIsLoading(false);
             } else if (selectedSession === "Qualifying") {
                 setIsLoading(true);
 
-                setMapPath(
-                    `${process.env.PUBLIC_URL + "/map/" + circuitId + ".gltf"}`
-                );
-                setAnimatedMap(
-                    `${
-                        process.env.PUBLIC_URL +
-                        "/mapsAnimated/" +
-                        circuitId +
-                        "Animated.mp4"
-                    }`
-                );
-
                 if (circuitId) {
-                    const results = await fetchQualifyingResultsByCircuit(
-                        year,
-                        circuitId
+                    const results = await safeFetch(
+                        "qualifying results",
+                        fetchQualifyingResultsByCircuit(year, circuitId)
                     );
                     setRaceResults(results);
                     // console.log(results);
@@ -325,80 +385,47 @@ export function RacePage() {
                 const raceSession = sessionsData.find(
                     (session) => session.session_name === "Qualifying"
                 );
-                if (!raceSession) throw new Error("Race session not found");
+                if (!raceSession) {
+                    console.warn("Qualifying session not found");
+                    return;
+                }
                 const sessionKey = raceSession.session_key;
-
-                const [
-                    driverDetailsData,
-                    startingGridData,
-                    driversData,
-                    lapsData,
-                ] = await Promise.all([
-                    fetch(
-                        `${buildOpenF1Url("/drivers")}?session_key=${sessionKey}`
-                    ).then((res) => res.json()),
-                    fetch(
-                        `${buildOpenF1Url("/position")}?session_key=${sessionKey}`
-                    ).then((res) => res.json()),
-                    fetchDriversAndTires(sessionKey),
-                    fetch(
-                        `${buildOpenF1Url("/laps")}?session_key=${sessionKey}`
-                    ).then((res) => res.json()),
-                ]);
-
-                const driverDetailsMap = driverDetailsData.reduce(
-                    (acc, driver) => ({
-                        ...acc,
-                        [driver.driver_number]: driver.name_acronym,
-                    }),
-                    {}
-                );
-
-                setDriversDetails(driverDetailsMap);
-
-                const driverColorMap = driverDetailsData.reduce(
-                    (acc, driver) => ({
-                        ...acc,
-                        [driver.name_acronym]: driver.team_colour,
-                    }),
-                    {}
-                );
-
-                setDriversColor(driverColorMap);
-
-                const { startTime, endTime } = getPositionTimeBounds(
-                    startingGridData,
-                    raceSession
-                );
-
-                setStartTime(startTime);
-                setEndTime(endTime);
-
-                const earliestDateTime = startingGridData[0]?.date;
-                const filteredStartingGrid = startingGridData.filter(
-                    (item) => item.date === earliestDateTime
-                );
-                setStartingGrid(filteredStartingGrid);
-
-                setDrivers(driversData);
-
-                setLaps(
-                    lapsData.map((lap) => ({
-                        ...lap,
-                        driver_acronym: driverDetailsMap[lap.driver_number],
-                    }))
-                );
+                setSelectedSessionKey(sessionKey);
+                setSelectedSessionData(raceSession);
+                setStartTime(raceSession.date_start || "");
+                setEndTime(raceSession.date_end || "");
+                setActiveStatsTab("laps");
 
                 setIsLoading(false);
             }
         } catch (error) {
             console.error("Error fetching data:", error);
+        } finally {
+            setIsLoading(false);
         }
     };
 
     useEffect(() => {
         fetchData();
     }, [year, location, selectedSession, raceName]);
+
+    useEffect(() => {
+        if (!selectedSessionKey || !activeStatsTab) return;
+
+        if (activeStatsTab === "position") {
+            loadPositionData(selectedSessionKey, selectedSessionData);
+            return;
+        }
+
+        if (activeStatsTab === "laps") {
+            loadLapData(selectedSessionKey);
+            return;
+        }
+
+        if (activeStatsTab === "tires" || activeStatsTab === "fastest") {
+            loadTireData(selectedSessionKey);
+        }
+    }, [activeStatsTab, selectedSessionKey, selectedSessionData]);
 
     const handleDriverSelectionClick = (index) => {
         // console.log(raceResults[index].Driver.code); // Log the driver code
@@ -419,10 +446,9 @@ export function RacePage() {
             (async () => {
                 try {
                     // Fetch sessions to find the race session
-                    const sessionsResponse = await fetch(
-                        `${buildOpenF1Url("/sessions")}?meeting_key=${meetingKey}`
-                    );
-                    const sessionsData = await sessionsResponse.json();
+                    const sessionsData = await fetchOpenF1Json("/sessions", {
+                        meeting_key: meetingKey,
+                    });
                     const raceSession = sessionsData.find(
                         (session) => session.session_name === "Race"
                     );
@@ -991,7 +1017,11 @@ export function RacePage() {
                     )}
 
                     <div className="sm:grow">
-                        <Tabs tabs={statsTabs} />
+                        <Tabs
+                            tabs={statsTabs}
+                            activeTabId={activeStatsTab}
+                            onTabChange={setActiveStatsTab}
+                        />
                     </div>
                 </div>
             </div>

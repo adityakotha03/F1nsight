@@ -1,4 +1,4 @@
-import { buildOpenF1Url } from "../config/openf1";
+import { fetchOpenF1Json } from "../config/openf1";
 import { buildF1nsightApiUrl } from "./client";
 
 export const fetchRaceMeetingKeys = async (selectedYear) => {
@@ -16,17 +16,11 @@ export const fetchRaceMeetingKeys = async (selectedYear) => {
 
 export const fetchRacesAndSessions = async (selectedYear) => {
   try {
-    const racesResponse = await fetch(`${buildOpenF1Url("/meetings")}?year=${selectedYear}`);
-    if (!racesResponse.ok) {
-      throw new Error("Failed to fetch races");
-    }
-    const racesData = await racesResponse.json();
-
-    const sessionsResponse = await fetch(`${buildOpenF1Url("/sessions")}?year=${selectedYear}&session_name=Race`);
-    if (!sessionsResponse.ok) {
-      throw new Error("Failed to fetch sessions");
-    }
-    const sessionsData = await sessionsResponse.json();
+    const racesData = await fetchOpenF1Json("/meetings", { year: selectedYear });
+    const sessionsData = await fetchOpenF1Json("/sessions", {
+      year: selectedYear,
+      session_name: "Race",
+    });
 
     return racesData.filter(race =>
       sessionsData.some(session => session.meeting_key === race.meeting_key)

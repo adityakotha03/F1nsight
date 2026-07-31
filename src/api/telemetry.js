@@ -1,25 +1,12 @@
-import { buildOpenF1Url, OPENF1_API_BASE_URL } from "../config/openf1";
+import { fetchOpenF1Json } from "../config/openf1";
 
 export const fetchDriversAndTires = async (sessionKey) => {
   if (!sessionKey) return [];
 
-  const urls = {
-    driversUrl: `${buildOpenF1Url("/drivers")}?session_key=${sessionKey}`,
-    stintsUrl: `${buildOpenF1Url("/stints")}?session_key=${sessionKey}`
-  };
-
   try {
-    const [driversResponse, stintsResponse] = await Promise.all([
-      fetch(urls.driversUrl),
-      fetch(urls.stintsUrl)
-    ]);
-
-    if (!driversResponse.ok) throw new Error("Failed to fetch drivers");
-    if (!stintsResponse.ok) throw new Error("Failed to fetch stints");
-
     const [driversData, stintsData] = await Promise.all([
-      driversResponse.json(),
-      stintsResponse.json()
+      fetchOpenF1Json("/drivers", { session_key: sessionKey }),
+      fetchOpenF1Json("/stints", { session_key: sessionKey })
     ]);
 
     const stintsByDriver = stintsData.reduce((acc, { driver_number, lap_end, compound }) => {
@@ -45,22 +32,19 @@ function scaleCoordinates(x, y, scaleFactor) {
 }
 
 export async function fetchLocationData(sessionKey, driverId, startTime, endTime, scaleFactor = 100) {
-  const baseUrl = OPENF1_API_BASE_URL;
-  const locationUrl = `${baseUrl}/location?session_key=${sessionKey}&driver_number=${driverId}&date>${startTime}&date<${endTime}`;
-  const carDataUrl = `${baseUrl}/car_data?session_key=${sessionKey}&driver_number=${driverId}&date>${startTime}&date<${endTime}`;
-
-  const [locationResponse, carDataResponse] = await Promise.all([
-    fetch(locationUrl),
-    fetch(carDataUrl)
-  ]);
-
-  if (!locationResponse.ok || !carDataResponse.ok) {
-    throw new Error("Failed to fetch data");
-  }
-
   const [locationData, carData] = await Promise.all([
-    locationResponse.json(),
-    carDataResponse.json()
+    fetchOpenF1Json("/location", {
+      session_key: sessionKey,
+      driver_number: driverId,
+      "date>": startTime,
+      "date<": endTime,
+    }),
+    fetchOpenF1Json("/car_data", {
+      session_key: sessionKey,
+      driver_number: driverId,
+      "date>": startTime,
+      "date<": endTime,
+    })
   ]);
 
   locationData.sort((a, b) => new Date(a.date) - new Date(b.date));
