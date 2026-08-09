@@ -145,7 +145,7 @@ export function RacePage() {
         (obj) => obj["acronym"] === driverCode
     );
     const selectedDriverRaceData = raceResults.find(
-        (obj) => obj["number"] === driverNumber
+        (obj) => String(obj["number"]) === String(driverNumber)
     );
 
     const getPositionTimeBounds = (positionData, sessionData) => {
@@ -264,13 +264,25 @@ export function RacePage() {
     const loadPositionData = async (sessionKey, sessionData, force = false) => {
         if (!sessionKey || (!force && loadedStatsData.position)) return;
 
-        await loadDriverDetails(sessionKey, force);
-        const positionData = await safeFetch(
-            "position",
-            fetchOpenF1Json("/position", { session_key: sessionKey })
-        );
+        const driverDetailsMap = await loadDriverDetails(sessionKey, force);
+        const [positionData, lapsData] = await Promise.all([
+            safeFetch(
+                "position",
+                fetchOpenF1Json("/position", { session_key: sessionKey })
+            ),
+            safeFetch(
+                "laps for position chart",
+                fetchOpenF1Json("/laps", { session_key: sessionKey })
+            ),
+        ]);
 
         setPos(positionData);
+        setLaps(
+            lapsData.map((lap) => ({
+                ...lap,
+                driver_acronym: driverDetailsMap[lap.driver_number],
+            }))
+        );
 
         const { startTime, endTime } = getPositionTimeBounds(
             positionData,
@@ -283,7 +295,11 @@ export function RacePage() {
         setStartingGrid(
             positionData.filter((item) => item.date === earliestDateTime)
         );
-        setLoadedStatsData((prev) => ({ ...prev, position: true }));
+        setLoadedStatsData((prev) => ({
+            ...prev,
+            position: true,
+            laps: true,
+        }));
     };
 
     const loadLapData = async (sessionKey) => {
@@ -427,7 +443,7 @@ export function RacePage() {
         }
     }, [activeStatsTab, selectedSessionKey, selectedSessionData]);
 
-    const handleDriverSelectionClick = (index) => {
+    const handleDriverSelectionClick = async (index) => {
         // console.log(raceResults[index].Driver.code); // Log the driver code
         // console.log(raceResults[index].number);
 
@@ -437,6 +453,7 @@ export function RacePage() {
             setActiveButtonIndex(null); // Reset the active button index
             setDriverCode("");
         } else {
+            await loadTireData(selectedSessionKey);
             setLocData({});
             setDriverSelected(true);
             setDriverCode(raceResults[index].Driver.code);
@@ -851,7 +868,7 @@ export function RacePage() {
                                 MapFile={MapPath}
                                 locData={locData}
                                 driverSelected={driverSelected}
-                                constructorId={selectedDriverRaceData ? selectedDriverRaceData.Constructor.constructorId : ""}
+                                constructorId={selectedDriverRaceData?.Constructor?.constructorId || ""}
                                 driverCode={driverCode}
                                 driverColor={driversColor[driverCode]}
                                 isPaused={isPaused}
@@ -956,7 +973,9 @@ export function RacePage() {
                 <div className="page-container-centered flex flex-col justify-center sm:flex-row gap-16 mt-32">
                     {selectedSession === "Race" && (
                         <div className="sm:w-[26rem]">
-                            {driverSelected && (
+                            {driverSelected &&
+                                selectedDriverData &&
+                                selectedDriverRaceData && (
                                 <SelectedDriverStats
                                     selectedDriverData={selectedDriverData}
                                     selectedDriverRaceData={
