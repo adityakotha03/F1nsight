@@ -2,6 +2,13 @@ import React from "react";
 
 export const SelectedDriverStats = (props) => {
     const { selectedDriverData, selectedDriverRaceData, year } = props;
+    if (!selectedDriverData || !selectedDriverRaceData) return null;
+
+    const fastestLap = selectedDriverRaceData.FastestLap;
+    const finishTime =
+        selectedDriverRaceData.status === "Finished"
+            ? selectedDriverRaceData.Time?.time || "N/A"
+            : selectedDriverRaceData.status;
 
     return (
         <div className="mb-32">
@@ -27,7 +34,7 @@ export const SelectedDriverStats = (props) => {
                         "/images/" +
                         year +
                         "/cars/" +
-                        selectedDriverRaceData.Constructor.constructorId +
+                        selectedDriverRaceData.Constructor?.constructorId +
                         ".png"
                     }`}
                     width={150}
@@ -55,9 +62,7 @@ export const SelectedDriverStats = (props) => {
                                 {selectedDriverRaceData.position}
                             </span>
                             <span className="uppercase tracking-xs text-xs ml-4">
-                                {selectedDriverRaceData.status === "Finished"
-                                    ? selectedDriverRaceData.Time.time
-                                    : selectedDriverRaceData.status}
+                                {finishTime}
                             </span>
                         </div>
                     </div>
@@ -83,13 +88,13 @@ export const SelectedDriverStats = (props) => {
                             Time
                         </div>
                         <div className="font-display">
-                            {selectedDriverRaceData.FastestLap.Time.time}
+                            {fastestLap?.Time?.time || "N/A"}
                         </div>
                     </div>
                     <div className="text-right">
                         <div className="uppercase tracking-xs text-xs">Lap</div>
                         <div className="font-display">
-                            {selectedDriverRaceData.FastestLap.lap}
+                            {fastestLap?.lap || "N/A"}
                         </div>
                     </div>
                 </div>
@@ -103,12 +108,12 @@ export const SelectedDriverStats = (props) => {
                         <div>
                             <span className="font-display">
                                 {
-                                    selectedDriverRaceData.FastestLap?.AverageSpeed ? selectedDriverRaceData.FastestLap?.AverageSpeed?.speed : "N/A"
+                                    fastestLap?.AverageSpeed?.speed || "N/A"
                                 }
                             </span>
                             <span className="uppercase tracking-xs text-xs">
                                 {
-                                    selectedDriverRaceData.FastestLap?.AverageSpeed?.units
+                                    fastestLap?.AverageSpeed?.units
                                 }
                             </span>
                         </div>
@@ -118,7 +123,7 @@ export const SelectedDriverStats = (props) => {
                             Rank
                         </div>
                         <div>
-                            <span className="font-display">{selectedDriverRaceData.FastestLap.rank}</span> <span className="text-xs">/ 20</span>
+                            <span className="font-display">{fastestLap?.rank || "N/A"}</span> <span className="text-xs">/ 20</span>
                         </div>
                     </div>
                 </div>
