@@ -1,0 +1,70 @@
+.design-system-2026 {
+    .ds-2026-tabs__list {
+        border-bottom: 0.1rem solid rgba(237, 232, 220, 0.14);
+        display: flex;
+        gap: clamp(1.8rem, 3.5vw, 5.6rem);
+        justify-content: safe center;
+        overflow-x: auto;
+        scrollbar-width: none;
+
+        &::-webkit-scrollbar { display: none; }
+    }
+
+    .ds-2026-tabs__tab {
+        background: transparent;
+        border: 0;
+        color: var(--ds-2026-text-muted);
+        cursor: pointer;
+        flex: 0 0 auto;
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 1.1rem;
+        font-weight: 700;
+        letter-spacing: 0.2em;
+        padding: 1.6rem 0 1.8rem;
+        position: relative;
+        text-transform: uppercase;
+        transition: color 220ms ease;
+
+        &::after {
+            background: var(--ds-2026-accent);
+            bottom: -0.1rem;
+            content: "";
+            height: 0.3rem;
+            left: 0;
+            position: absolute;
+            transform: scaleX(0);
+            transform-origin: right center;
+            transition: transform 280ms cubic-bezier(0.22, 1, 0.36, 1);
+            width: 100%;
+        }
+
+        &:hover { color: color-mix(in srgb, var(--ds-2026-accent) 72%, var(--ds-2026-text)); }
+        &:hover::after { transform: scaleX(0.35); transform-origin: left center; }
+        &[aria-selected="true"] { color: var(--ds-2026-text); }
+        &[aria-selected="true"]::after { transform: scaleX(1); transform-origin: left center; }
+        &:focus-visible {
+            color: var(--ds-2026-accent);
+            outline: 0.2rem solid var(--ds-2026-accent);
+            outline-offset: 0.5rem;
+        }
+    }
+
+    .ds-2026-tabs__panel {
+        animation: ds-2026-tab-panel-in 360ms cubic-bezier(0.22, 1, 0.36, 1);
+
+        &:focus-visible { outline: 0.1rem solid var(--ds-2026-border); outline-offset: 1rem; }
+    }
+}
+
+@keyframes ds-2026-tab-panel-in {
+    from { opacity: 0; transform: translateY(1.2rem); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .design-system-2026 {
+        .ds-2026-tabs__tab,
+        .ds-2026-tabs__tab::after { transition: none; }
+        .ds-2026-tabs__panel { animation: none; }
+    }
+}

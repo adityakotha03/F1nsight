@@ -6,6 +6,7 @@ import { useLocation, useParams, useNavigate } from 'react-router-dom';
 
 import { fetchDriverStats } from '../utils/api';
 import { getCurrentYear } from '../utils/currentYear';
+import teamColorsByYear from '../utils/teamColors.json';
 import { HeadToHeadChart, PositionsGainedLostChart, QualifyingLapTimesChart, QualifyingLapTimesDeltaChart, PositionsComparisonChart, ReactSelectComponent, Loading, Button } from '../components';
 
 
@@ -103,10 +104,7 @@ export const TeammatesComparison = () => {
       const fetchedDrivers = response.data;
       setDrivers(fetchedDrivers);
 
-      const colorsResponse = await axios.get('https://praneeth7781.github.io/f1nsight-api-2/colors/teams.json');
-      const teamColors = colorsResponse.data;
-
-      setTeamColor(teamColors[year]?.[selectedTeam] || '5F0B84');
+      setTeamColor(teamColorsByYear[year]?.[selectedTeam] || '5F0B84');
 
       if (fetchedDrivers.length > 2) {
         setShowDriverSelectors(true);

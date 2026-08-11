@@ -8,9 +8,7 @@ import { fab } from '@fortawesome/free-brands-svg-icons'
 import { Header, Footer2025, ResultsSelector } from './components';
 import {  ReactComponent as F1ALogo} from './components/F1Ansight.svg';
 import {  ReactComponent as F2Logo} from './components/F2nsight.svg';
-import { 
-  DriverComparison,
-  TeammatesComparison, 
+import {
   LandingPage2025, 
   AboutPage2025,
   ARViewer, 
@@ -27,6 +25,7 @@ import {
   DriverStandingsF2, 
   ConstructorStandingsF2
 } from './pages'; 
+import { DesignSystemDocs2026, DriverComparison2026, TeammatesComparison2026 } from './pages/2026';
 import { usePageTracking, useScrollTracking } from './utils/gaTracking';
 import { ScrollToTop } from './utils/ScrollToTop';
 import { getCurrentYear } from './utils/currentYear';
@@ -79,15 +78,23 @@ function MainContent({ setSelectedYear, selectedYear, resultPage, resultPagePath
     '/f2/driver-standings', 
     '/race-f2/'
   ], []);
+  const valid2026Paths = useMemo(() => [
+    '/2026/design-system',
+    '/driver-comparison',
+    '/teammates-comparison',
+  ], []);
 
   const isF1a = validF1APaths.includes(location) || location.startsWith('/race-f1a/')
   const isF2 = validF2Paths.includes(location) || location.startsWith('/race-f2/')
+  const is2026Page = valid2026Paths.some(path => location === path || location.startsWith(`${path}/`));
 
   useEffect(() => {
     // Always clean up first
-    document.body.classList.remove('bg-gradient-f1a', 'bg-gradient-f2', 'bg-gradient');
+    document.body.classList.remove('bg-gradient-f1a', 'bg-gradient-f2', 'bg-gradient', 'bg-gradient-2026');
 
-    if (isF1a) {
+    if (is2026Page) {
+      document.body.classList.add('bg-gradient-2026');
+    } else if (isF1a) {
       document.body.classList.add('bg-gradient-f1a');
     } else if (isF2) {
       document.body.classList.add('bg-gradient-f2');
@@ -96,9 +103,9 @@ function MainContent({ setSelectedYear, selectedYear, resultPage, resultPagePath
     }
 
     return () => {
-      document.body.classList.remove('bg-gradient-f1a', 'bg-gradient-f2', 'bg-gradient');
+      document.body.classList.remove('bg-gradient-f1a', 'bg-gradient-f2', 'bg-gradient', 'bg-gradient-2026');
     };
-  }, [location]);
+  }, [location, is2026Page, isF1a, isF2]);
 
   usePageTracking();
   useScrollTracking();
@@ -139,8 +146,9 @@ function MainContent({ setSelectedYear, selectedYear, resultPage, resultPagePath
         <Route path="/race-results" element={<RaceResultsPage selectedYear={selectedYear} />} />
         <Route path="/constructor-standings" element={<ConstructorStandings selectedYear={selectedYear} />} />
         <Route path="/driver-standings" element={<DriverStandings selectedYear={selectedYear} />} />
-        <Route path="/teammates-comparison/:urlYear?/:urlTeam?" element={<TeammatesComparison />}/>
-        <Route path="/driver-comparison/:urlDriver1?/:urlDriver2?" element={<DriverComparison selectedYear={selectedYear} />} />
+        <Route path="/2026/design-system" element={<DesignSystemDocs2026 />} />
+        <Route path="/teammates-comparison/:urlYear?/:urlTeam?" element={<TeammatesComparison2026 />}/>
+        <Route path="/driver-comparison/:urlDriver1?/:urlDriver2?" element={<DriverComparison2026 />} />
         <Route path="/race/:raceId" element={<RacePage />} />
         <Route path="/ar-viewer" element={<ARViewer />} />
         {/* F1A Routes */}

@@ -1,0 +1,70 @@
+.ds-2026-driver-name-lockup {
+    display: grid;
+    gap: 0.2rem;
+}
+
+.ds-2026-driver-name-lockup__first,
+.ds-2026-driver-name-lockup__last {
+    line-height: 0.95;
+}
+
+.ds-2026-driver-name-lockup__first {
+    color: #fff;
+    font-family: "Gochi Hand", cursive;
+    font-weight: 400;
+    letter-spacing: 0.04em;
+}
+
+.ds-2026-driver-name-lockup__last {
+    background: #fff;
+    clip-path: polygon(2% 8%, 98% 0, 100% 86%, 1% 100%);
+    color: #000;
+    display: inline-block;
+    font-family: "Anton", sans-serif;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    width: fit-content;
+}
+
+.ds-2026-driver-name-lockup--sm {
+    .ds-2026-driver-name-lockup__first { font-size: 1.3rem; }
+    .ds-2026-driver-name-lockup__last { font-size: 1.2rem; padding: .5rem; }
+}
+
+.ds-2026-driver-name-lockup--md {
+    .ds-2026-driver-name-lockup__first { font-size: 1.7rem; }
+    .ds-2026-driver-name-lockup__last { font-size: 1.6rem; padding: .5rem; }
+}
+
+.ds-2026-driver-name-lockup--lg {
+    .ds-2026-driver-name-lockup__first { font-size: clamp(2rem, 2vw, 2.8rem); }
+    .ds-2026-driver-name-lockup__last { font-size: clamp(2.6rem, 3vw, 4rem); padding: .75rem; }
+}
+
+.ds-2026-driver-name-lockup--xl {
+    .ds-2026-driver-name-lockup__first { font-size: clamp(2rem, 2.2vw, 3.4rem); }
+    .ds-2026-driver-name-lockup__last {
+        font-size: clamp(5rem, 6vw, 10rem);
+        letter-spacing: 0;
+        padding: 1rem 2rem;
+    }
+}
+
+@media (max-width: 900px) {
+    .ds-2026-driver-name-lockup--xl .ds-2026-driver-name-lockup__last {
+        font-size: clamp(4rem, 8vw, 7rem);
+    }
+
+    .ds-2026-driver-name-lockup--shrink-for-mobile {
+        .ds-2026-driver-name-lockup__first {
+            font-size: 1.7rem;
+        }
+
+        .ds-2026-driver-name-lockup__last {
+            font-size: 1.6rem;
+            letter-spacing: 0.14em;
+            padding: 0.5rem;
+        }
+    }
+}
