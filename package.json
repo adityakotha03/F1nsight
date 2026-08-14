@@ -66,5 +66,11 @@
     "postcss-import": "^16.1.0",
     "postcss-nesting": "^12.1.1",
     "tailwindcss": "^3.4.3"
+  },
+  "resolutions": {
+    "shell-quote": "1.8.4"
+  },
+  "overrides": {
+    "shell-quote": "1.8.4"
   }
 }
